@@ -1,0 +1,22 @@
+{
+  "name": "EvergreenJs",
+  "version": "0.0.0",
+  "authors": [
+    "NAVER corp"
+  ],
+  "moduleType": [
+    "globals"
+  ],
+  "license": "LGPL v2",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.3",
+    "qunit": "~1.17.1"
+  }
+}
