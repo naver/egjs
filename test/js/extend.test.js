@@ -5,26 +5,22 @@ module("extend Test", {
 	}
 });
 
-test("default", function() {
-	var result = jQuery.useCss3d();
-
+test("isHardwareAccelerable", function() {
+	var result = $.naver.isHardwareAccelerable();
 	if(result) {
-		jQuery.default.useCss3d = -1;
+		$.naver.defaults.isHardwareAccelerable = function(agent) {
+			return -1;
+		};
 	} else {
-		jQuery.default.useCss3d = 1;
+		$.naver.defaults.isHardwareAccelerable = function(agent) {
+			return 1;
+		};
 	}
-	equal(!result, jQuery.useCss3d(), "change default value");
-	jQuery.default.useCss3d  = 0;
-	equal(result, jQuery.useCss3d(), "restore default value");
-
-	if(result) {
-		jQuery.default.useCss3d = function() { return -1; };
-	} else {
-		jQuery.default.useCss3d = function() { return 1; };
-	}
-	equal(!result, jQuery.useCss3d(), "change default value");
-	jQuery.default.useCss3d  = function() { return 0; };
-	equal(result, jQuery.useCss3d(), "restore default value");
-	delete jQuery.default.useCss3d;
-	equal(result, jQuery.useCss3d(), "delete default value");
+	equal(!result, $.naver.isHardwareAccelerable(), "change default value");
+	$.naver.defaults.isHardwareAccelerable  = function(agent) {
+		return 0;
+	};
+	equal(result, $.naver.isHardwareAccelerable(), "restore default value");
+	delete $.naver.defaults.isHardwareAccelerable;
+	equal(result, $.naver.isHardwareAccelerable(), "delete default value");
 });
