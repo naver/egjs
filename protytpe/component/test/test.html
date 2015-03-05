@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<html lang="ko" class="">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+<style type="text/css">
+	#drag{
+		width: 100px;
+		height: 100px;	
+		background-color: red;
+		position: absolute;
+		top:0px;
+		left: 0px;
+	}
+</style>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="../src/AsyncDOM.js"></script>
+<script type="text/javascript" src="../src/component.js"></script>
+</head>
+<div id="drag"></div>
+
+<script type="text/javascript">
+
+var mousedown = "touchstart";
+var mousemove = "touchmove";
+var mouseup = "touchend";
+// var mousedown = "mousedown";
+// var mousemove = "mousemove";
+// var mouseup = "mouseup";
+
+	var Some = Component({
+		"$events" : {
+			"touchstart@#drag" : "start",
+			"touchmove" : "move",
+			"touchend" : "end"
+		},
+		// "$events" : {
+		// 	"mousedown@#drag" : "start",
+		// 	"mousemove" : "move",
+		// 	"mouseup" : "end"
+		// },
+		"$init" : function(option){
+			this.option({
+				"autoBind" : false,
+				"autoSetup" : true,
+				"baseElement" : document
+			},option);
+			this.bind(mousedown+"@#drag");
+		},
+		"setup" : function(e){
+			console.log("setup");
+		},
+		"start" : function(e){
+			this.left = $("#drag").offset().left - e.originalEvent.changedTouches[0].pageX;
+			this.topc = $("#drag").offset().top - e.originalEvent.changedTouches[0].pageY;
+
+			// this.startLeft = $("#drag").offset().left - e.pageX;
+			// this.startTop = $("#drag").offset().top - e.pageY;
+
+			this.fireEvent("start");
+			this.bind(mousemove);
+			this.bind(mouseup);
+		},
+		"move" : function(e){
+			
+			var left = e.originalEvent.changedTouches[0].pageX;
+			var topc = e.originalEvent.changedTouches[0].pageY;
+			// var left = e.pageX;
+			// var topc = e.pageY;
+			
+			this.$("#drag").css({
+				"left" : this.left + left,
+				"top" : this.topc + topc
+			});
+			this.$("#drag").css("left");
+			
+			this.fireEvent("move");
+		},
+		"end" : function(e){
+			this.unbind(mousemove);
+			this.unbind(mouseup);
+			this.fireEvent("end");
+		}
+		
+	});
+
+
+	var some =  new Some();
+	some.attach("start",function(){
+		console.log('start');
+	});
+	some.attach("move",function(){
+		// console.log('move');
+	});
+	some.attach("end",function(){
+		console.log('end');
+	});
+
+	// var  __ = new AsyncDOM();
+
+
+	// var left = 0,topc = 0;
+	// $("#drag").on("touchstart",function(e){
+		// left = e.originalEvent.changedTouches[0].pageX;
+		// topc = e.originalEvent.changedTouches[0].pageY;
+		// var eleLeft = $("#drag").offset().left;
+		// var eleTop = $("#drag").offset().top;
+		
+	// 	var callback = function(e){
+	// 		// $("#drag").css("left",eleLeft + e.pageX - left);
+	// 		// $("#drag").css("top",eleTop + e.pageY - topc);
+	// 		// console.log(eleLeft , e.originalEvent.changedTouches[0].pageX , left);
+	// 		// var param = {
+	// 		// 	"left" : eleLeft + e.originalEvent.changedTouches[0].pageX - left,
+	// 		// 	"top" : eleTop + e.originalEvent.changedTouches[0].pageY - topc
+	// 		// };
+	// 		// console.log(param);
+
+	// 		$("#drag").css({
+	// 			"left" : eleLeft + e.originalEvent.changedTouches[0].pageX - left,
+	// 			"top" : eleTop + e.originalEvent.changedTouches[0].pageY - topc
+	// 		});
+
+			// __("#drag").css({
+			// 	"left" : eleLeft + e.originalEvent.changedTouches[0].pageX - left,
+			// 	"top" : eleTop + e.originalEvent.changedTouches[0].pageY - topc
+			// });
+	// 	};
+	// 	$(document).on("touchmove",callback);
+	// 	$(document).on("tochend",function(){
+	// 		$(document).off("touchmove",callback);
+	// 		$(document).off("tochend",arguments.callee);
+	// 	});
+	// });
+	
+</script>
