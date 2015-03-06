@@ -1,4 +1,6 @@
 // redefine requestAnimationFrame and cancelAnimationFrame
+
+// @todo change to jindo 'timer.js'
 var raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame|| window.msRequestAnimationFrame;
 var caf = window.cancelAnimationFrame || window.webkitCancelAnimationFrame|| window.mozCancelAnimationFrame|| window.msCancelAnimationFrame;
 
