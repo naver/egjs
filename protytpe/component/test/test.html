@@ -76,6 +76,7 @@ var mouseup = "touchend";
 			this.$("#drag").css("left");
 			
 			this.fireEvent("move");
+			e.preventDefault();
 		},
 		"end" : function(e){
 			this.unbind(mousemove);
