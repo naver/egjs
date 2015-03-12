@@ -8,17 +8,287 @@
 <script type="text/javascript" src="../src/Class.js"></script>
 <!--script type="text/javascript" src="collie.js"></script>
 <script type="text/javascript" src="klass.js"></script-->
+	<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.17.1.css">
 </head>
 <body>
-
-	<div>Class Test</div>
+	<div id="qunit"></div>
+  	<div id="qunit-fixture"></div>
+	<!--button onclick="doTestJindoClass()">Jindo Class</button>
+	<button onclick="doTestNaverClass()">Naver Class</button>
+	<button onclick="doTestJsFaceClass()">JsFace Class</button-->
 	<script type="text/javascript">
+	
+	// var JindoBase = jindo.$Class({
+	// 	$init : function() {
+	// 		this.a = 10;
+	// 		this.b = 20;
+	// 		this.c = 30;
+	// 	},
+
+	// 	sum : function() {
+	// 		return this.a + this.b;
+	// 	},
+
+	// 	mult : function() {
+	// 		return this.a * this.b;
+	// 	},
+
+	// 	div : function() {
+	// 		return this.b / this.a;
+	// 	}
+	// });
+
+	// var JindoDerive = jindo.$Class({
+	// 	$init : function() {
+	// 		this.a = 100;
+	// 		this.b = 200;
+	// 		this.c = 300;
+	// 		this.d = 400;
+	// 		this.f = 500;
+	// 	},
+
+	// 	/*sum : function() {
+	// 		return this.a + this.b;
+	// 	},*/
+
+	// 	mult : function() {
+	// 		return this.a * this.b;
+	// 	},
+
+	// 	div : function() {
+	// 		return this.b / this.a;
+	// 	}
+	// }).extend(JindoBase);
+
+	// var JindoChild = jindo.$Class({
+	// 	$init : function() {
+	// 		this.a = 1000;
+	// 		this.b = 2000;
+	// 		this.c = 3000;
+	// 		this.d = 4000;
+	// 		this.f = 5000;
+	// 	},
+
+	// 	/*sum : function() {
+	// 		return this.$super.sum();
+	// 	},
+
+	// 	mult : function() {
+	// 		return this.$super.mult();
+	// 	},*/
+
+	// 	div : function() {
+	// 		return this.$super.div();
+	// 	}
+	// }).extend(JindoDerive);
+
+
+	// function doTestJindoClass() {
+	// 	// var arr = [];
+
+
+	// 	// arr.push();
+	// 	// var c = new JindoChild();
+	// 	// console.log(c.sum());
+	// 	// console.log(c.mult());
+	// 	// console.log(c.div());
+	// 	var arr = [];
+	// 	for (var i = 0; i < 100000; i++) {
+	// 		arr.push(new JindoChild());
+	// 	}
+	// }
+
+
+	// var NaverBase = n.Class({
+	// 	constructor : function() {
+	// 		this.a = 10;
+	// 		this.b = 20;
+	// 		this.c = 30;
+	// 	},
+
+	// 	sum : function() {
+	// 		return this.a + this.b;
+	// 	},
+
+	// 	mult : function() {
+	// 		return this.a * this.b;
+	// 	},
+
+	// 	div : function() {
+	// 		return this.b / this.a;
+	// 	}
+	// });
+
+	// var NaverDerive = n.Class({
+	// 	constructor : function() {
+	// 		this.a = 100;
+	// 		this.b = 200;
+	// 		this.c = 300;
+	// 		this.d = 400;
+	// 		this.f = 500;
+	// 	},
+
+	// 	/*sum : function() {
+	// 		return this.a + this.b;
+	// 	},*/
+
+	// 	mult : function() {
+	// 		return this.a * this.b;
+	// 	},
+
+	// 	div : function() {
+	// 		return this.b / this.a;
+	// 	}
+	// }).extends(NaverBase);
+
+	// var NaverChild = n.Class({
+	// 	constructor : function() {
+	// 		this.a = 1000;
+	// 		this.b = 2000;
+	// 		this.c = 3000;
+	// 		this.d = 4000;
+	// 		this.f = 5000;
+	// 	},
+
+	// 	sum : function() {
+	// 		return NaverChild.super.sum.call(this);
+	// 	},
+
+	// 	mult : function() {
+	// 		return NaverChild.super.mult.call(this);
+	// 	},
+
+	// 	div : function() {
+	// 		return NaverChild.super.div.call(this);
+	// 	}
+	// }).extends(NaverDerive);
+
+
+	// function doTestNaverClass() {
+	// 	// var c = new NaverChild();
+	// 	// console.log(c.sum());
+	// 	// console.log(c.mult());
+	// 	// console.log(c.div());
+	// 	var arr = [];
+	// 	for (var i = 0; i < 100000; i++) {
+	// 		arr.push(new NaverChild());
+	// 	}
+	// }
+
+	// var JsFaceBase = Class({
+	// 	constructor : function() {
+	// 		this.a = 10;
+	// 		this.b = 20;
+	// 		this.c = 30;
+	// 	},
+
+	// 	sum : function() {
+	// 		return this.a + this.b;
+	// 	},
+
+	// 	mult : function() {
+	// 		return this.a * this.b;
+	// 	},
+
+	// 	div : function() {
+	// 		return this.b / this.a;
+	// 	}
+	// });
+
+	// var JsFaceDerive = Class(JsFaceBase, {
+	// 	constructor : function() {
+	// 		this.a = 100;
+	// 		this.b = 200;
+	// 		this.c = 300;
+	// 		this.d = 400;
+	// 		this.f = 500;
+	// 	},
+
+	// 	/*sum : function() {
+	// 		return this.a + this.b;
+	// 	},*/
+
+	// 	mult : function() {
+	// 		return this.a * this.b;
+	// 	},
+
+	// 	div : function() {
+	// 		return this.b / this.a;
+	// 	}
+	// });
+
+	// var JsFaceChild = Class(JsFaceDerive, {
+	// 	constructor : function() {
+	// 		this.a = 1000;
+	// 		this.b = 2000;
+	// 		this.c = 3000;
+	// 		this.d = 4000;
+	// 		this.f = 5000;
+	// 	},
+
+	// 	/*sum : function() {
+	// 		return JsFaceChild.$superp.sum.call(this);
+	// 	},
+
+	// 	mult : function() {
+	// 		return JsFaceChild.$superp.mult.call(this);
+	// 	},*/
+
+	// 	div : function() {
+	// 		return JsFaceChild.$superp.div.call(this);
+	// 	}
+	// });
+
+
+	// function doTestJsFaceClass() {
+	// 	// var c = new JsFaceChild();
+	// 	// console.log(c.sum());
+	// 	// console.log(c.mult());
+	// 	// console.log(c.div());
+
+	// 	var arr = [];
+	// 	for (var i = 0; i < 100000; i++) {
+	// 		arr.push(new JsFaceChild());
+	// 	}
+	// }
+
+	// function A() {
+	// }
+
+	// A.prototype.method1 = function() {
+	// 	console.log("method1 is called!");
+	// }
+
+	// function B() {
+
+	// }
+
+	// function C() {
+
+	// }
+
+	// C.prototype = A.prototype;
+	// /*
+	// C.method2 = function() {
+	// 	console.log("method2...");
+	// }
+	// B.prototype = C;
+	// */
+	// var c = new C();
+	// c.method2 = function() {
+	// 	console.log("method2");
+	// }
+	// B.prototype = c;
+
+	// var b = new B();
+
 	</script>
 
 	<!--script type="text/javascript" src="testKlass.js"></script>
 	<script type="text/javascript" src="testCollieClass.js"></script>
-	<script type="text/javascript" src="testJsFace.js"></script>
-	<script type="text/javascript" src="testJindoClass.js"></script-->
+	<script type="text/javascript" src="testJsFace.js"></script-->
+	<!--script type="text/javascript" src="testJindoClass.js"></script-->
+	<script src="http://code.jquery.com/qunit/qunit-1.17.1.js"></script>
 	<script type="text/javascript" src="testNClass.js"></script>
 	
 </body>
