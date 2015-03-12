@@ -14,7 +14,7 @@ var namespace = null;//namespace 지정
 				typeClass.prototype[i] = oDef[i];
 			}
 		}
-		
+
 		typeClass.prototype.constructor = typeClass;
 		return typeClass;
 	};
@@ -47,37 +47,4 @@ var namespace = null;//namespace 지정
 
 		return extendClass;
 	}
-
-	// function _extends(oSuperClass) {
-	// 	if (!oSuperClass) {
-	// 		return this;
-	// 	}
-
-	// 	var oTypeClass = this;
-	// 	var extendClass = function () {
-	// 		// Call a parent constructor
-	// 		oSuperClass.apply(this, arguments);
-				
-	// 		// Call a child constructor
-	// 		if (oTypeClass._constructor !== null) {
-	// 			oTypeClass._constructor.apply(this, arguments);
-	// 		}
-	// 	};
-		
-	// 	var ExtProto = function() {};
-
-	// 	ExtProto.prototype = oSuperClass.prototype;
-	// 	var oExtProto = new ExtProto();
-	// 	extendClass.super = oSuperClass.prototype;
-
-	// 	for (var i in oTypeClass.prototype) {
-	// 		if (oTypeClass.prototype.hasOwnProperty(i)/* && i !== "prototype"*/) {
-	// 			oExtProto[i] = oTypeClass.prototype[i];
-	// 		}
-	// 	}
-	// 	extendClass.prototype = oExtProto;
-	// 	extendClass.prototype.constructor = extendClass;
-
-	// 	return extendClass;
-	// }
 })(namespace || window);
