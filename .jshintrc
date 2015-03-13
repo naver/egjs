@@ -13,6 +13,7 @@
     "trailing": true,
     "undef": true,
     "unused": true,
+    "node": true,
     "globals" : {
         "jQuery" : true
     }
