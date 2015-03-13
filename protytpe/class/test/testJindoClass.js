@@ -42,8 +42,8 @@ var JindoDerive = jindo.$Class({
 }).extend(JindoBase);
 
 var JindoChild = jindo.$Class({
-	a : 10,
-	b : 20,
+	a : 1,
+	b : 2,
 	"$init" : function() {
 		console.log("jindo child created!");
 	},
