@@ -1,6 +1,5 @@
 module("extend Test", {
 	setup : function() {
-
 	},
 	teardown : function() {
 		eg.defaults = {};
@@ -20,7 +19,7 @@ test("determine the return value of a 'isHardwareAccelerable' function", functio
 	var controllValue = result;
 	// When
 	eg.defaults.isHardwareAccelerable = function(agent) {
-		return controllValue ? -1 : 1;
+		return !controllValue;
 	};
 	// Then
 	notEqual(result, eg.isHardwareAccelerable(), "change default value");
@@ -31,7 +30,7 @@ test("pass the return value of a 'isHardwareAccelerable' function", function() {
 	var result = eg.isHardwareAccelerable();
 	// When
 	eg.defaults.isHardwareAccelerable = function(agent) {
-		return 0;
+		return null;
 	};
 	// Then
 	equal(result, eg.isHardwareAccelerable(), "pass default value");
@@ -42,7 +41,7 @@ test("remove 'defaults' function", function() {
 	var result = eg.isHardwareAccelerable();
 	var controllValue = result;
 	eg.defaults.isHardwareAccelerable = function(agent) {
-		return controllValue ? -1 : 1;
+		return !controllValue;
 	};
 	// When
 	delete eg.defaults.isHardwareAccelerable;

@@ -5,11 +5,6 @@
 			var v = null;
 			if(typeof eg.defaults[method] === "function") {
 				v = eg.defaults[method](agent);
-				switch (v){
-					case -1 : return false;
-					case 1 : return true;
-					default : return null;
-				}
 			}
 			return v;
 		},
@@ -46,7 +41,7 @@
 				// chrome (less then 25) has a text blur bug.
 				// but samsung sbrowser fix it.
 				if(/chrome/.test(agent.browser) && agent.browserVersion < "25") {
-					result = false;
+					// result = false;
 				} else if(/android/.test(agent.os)) {
 					var ua = ua.match(/\(.*\)/);
 					if(ua instanceof Array && ua.length > 0){
