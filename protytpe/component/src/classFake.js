@@ -1,47 +1,42 @@
-var n = {};
-var namespace = null;//namespace 지정
-
+window.eg = window.eg || {};
 (function(ns) {
-    ns.$Class = function(oDef) {
-		var typeClass = function() {
-			// console.log(oDef.$init);
-			if (oDef.$init !== undefined) {
-				oDef.$init.apply(this, arguments);
+    ns.Class = function(oDef) {
+		var typeClass = function typeClass() {
+			if (typeof oDef.construct == "function") {	
+				oDef.construct.apply(this, arguments);
 			}
 		};
-
+		
 		typeClass.prototype = oDef;
-		// typeClass.prototype.constructor = typeClass;
+		typeClass.prototype.constructor = typeClass;
 		return typeClass;
 	};
 
 
-	ns.$Class.extend = function(oSuperClass, oDef) {
-		var extendClass = function () {
+	ns.Class.extend = function(oSuperClass, oDef) {
+		var extendClass = function extendClass() {
 			// Call a parent constructor
 			oSuperClass.apply(this, arguments);
 				
 			// Call a child constructor
-			if (oDef.$init !== undefined) {
-				oDef.$init.apply(this, arguments);
+			if (typeof oDef.construct == "function") {
+				oDef.construct.apply(this, arguments);
 			}
 		};
 
 		var ExtProto = function() {};
-
 		ExtProto.prototype = oSuperClass.prototype;
-		var oExtProto = new ExtProto();
-		extendClass.$super = oSuperClass.prototype;
+		extendClass.$super = oSuperClass.prototype; //'super' is supported not yet.
 
+		var oExtProto = new ExtProto();
 		for (var i in oDef) {
-			if (oDef.hasOwnProperty(i)/* && i !== "prototype"*/) {
+			if (oDef.hasOwnProperty(i)) {
 				oExtProto[i] = oDef[i];
 			}
 		}
+		oExtProto.constructor = extendClass;
 		extendClass.prototype = oExtProto;
-		// extendClass.prototype.constructor = extendClass;
 
 		return extendClass;
-	};
-
-})(namespace || window);
+	}
+})(eg);
