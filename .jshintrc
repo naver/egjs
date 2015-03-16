@@ -15,6 +15,12 @@
     "unused": true,
     "node": true,
     "globals" : {
-        "jQuery" : true
+        "jQuery" : true,
+        "eg" : true,
+        "window" : true,
+        "Hammer" : true,
+        "navigator" : true,
+        "requestAnimationFrame" : true,
+        "cancelAnimationFrame" : true
     }
 }
