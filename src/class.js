@@ -2,7 +2,7 @@ window.eg = window.eg || {};
 (function(ns) {
     ns.Class = function(oDef) {
 		var typeClass = function typeClass() {
-			if (typeof oDef.construct == "function") {	
+			if (typeof oDef.construct === "function") {	
 				oDef.construct.apply(this, arguments);
 			}
 		};
@@ -19,7 +19,7 @@ window.eg = window.eg || {};
 			oSuperClass.apply(this, arguments);
 				
 			// Call a child constructor
-			if (typeof oDef.construct == "function") {
+			if (typeof oDef.construct === "function") {
 				oDef.construct.apply(this, arguments);
 			}
 		};
@@ -38,5 +38,5 @@ window.eg = window.eg || {};
 		extendClass.prototype = oExtProto;
 
 		return extendClass;
-	}
+	};
 })(eg);
