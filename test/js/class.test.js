@@ -1,5 +1,5 @@
-QUnit.test( "Class instance create test", function( assert ) {
-  //assert.ok( 1 == "1", "Passed!" );
+test( "Class instance create test", function(  ) {
+  //Given
   var A = eg.Class({
   	construct : function() {
   		this.a = 1;
@@ -20,16 +20,22 @@ QUnit.test( "Class instance create test", function( assert ) {
   var b = new A();
   var c = new A();
 
+  //When
   b.set(4, 5, 6);
   c.set(7, 8, 9);
 
-  assert.strictEqual(a.sum(), 6, "Each instance of same Class has a each memory space");
-  assert.strictEqual(b.sum(), 15, "Each instance of same Class has a each memory space");
-  assert.strictEqual(c.sum(), 24, "Each instance of same Class has a each memory space");
+  var nSumA = a.sum();
+  var nSumB = b.sum();
+  var nSumC = c.sum();
+
+  //Then
+  strictEqual(nSumA, 6, "Each instance of same Class has a each memory space");
+  strictEqual(nSumB, 15, "Each instance of same Class has a each memory space");
+  strictEqual(nSumC, 24, "Each instance of same Class has a each memory space");
 });
 
-QUnit.test( "Class extend basic test", function( assert ) {
-  //assert.ok( 1 == "1", "Passed!" );
+test( "Class extend basic test", function(  ) {
+  //Given
   var A = eg.Class({
   	construct : function() {
   		this.a = 1;
@@ -60,13 +66,20 @@ QUnit.test( "Class extend basic test", function( assert ) {
   var a = new A();
   var b = new B();
 
-  assert.strictEqual(b.sum(), 15, "A Class constructor initialized values successfully");
-  assert.strictEqual(a.sum(), 6, "B Class constructor initialized values successfully");
-  assert.strictEqual(b.multi(), 120, "B Class has its own method.");
+  //When
+  var nSumOfB = b.sum();
+  var nSumOfA = a.sum();
+  var nMultiOfB = b.multi();
 
   b.set(1, 2, 3);
-  assert.strictEqual(b.multi(), 6, "Changed properties of B instance successfully");
-  assert.throws(
+  var nChangedMultiB = b.multi();
+
+  //Then
+  strictEqual(nSumOfB, 15, "A Class constructor initialized values successfully");
+  strictEqual(nSumOfA, 6, "B Class constructor initialized values successfully");
+  strictEqual(nMultiOfB, 120, "B Class has its own method.");  
+  strictEqual(b.multi(), 6, "Changed properties of B instance successfully");
+  throws(
   	function() {
   		a.multi();
   	},
@@ -78,8 +91,8 @@ QUnit.test( "Class extend basic test", function( assert ) {
   );
 });
 
-QUnit.test( " Multiple extend test ", function( assert ) {
-  //assert.ok( 1 == "1", "Passed!" );
+test( " Multiple extend test ", function(  ) {
+  //Given
   var A = eg.Class({
   	construct : function() {
   		this.a = 1;
@@ -121,15 +134,25 @@ QUnit.test( " Multiple extend test ", function( assert ) {
   });
 
   var c = new C();
-  assert.strictEqual( c.sum(), 7, "parent method call Passed" );
-  assert.strictEqual( c.diff(), 0, "grand parent method call Passed" );
-  assert.strictEqual( c.div(), 1.5, "Passed" );
+
+  //When
+  var nSumbC = c.sum();
+  var nDiffC = c.diff();
+  var nDivC = c.div();
   c.set(4, 5, 6);
-  assert.strictEqual( c.multi(), 120, "apply change of instance variable values.")
+  var nMultiC = c.multi();
+
+  //Then
+  strictEqual( nSumbC, 7, "parent method call Passed" );
+  strictEqual( nDiffC, 0, "grand parent method call Passed" );
+  strictEqual( nDivC, 1.5, "Passed" );
+  strictEqual( nMultiC, 120, "apply change of instance variable values.")
 });
 
 
-QUnit.test( " $super Class test ", function( assert ) {
+test( " $super Class test ", function(  ) {
+  //Given
+  //When
   var A = eg.Class({
   	construct : function() {
   		this.a = 1;
@@ -174,10 +197,14 @@ QUnit.test( " $super Class test ", function( assert ) {
   });
 
   var c = new C();
-  assert.strictEqual(c.sum(), 7, "$super Class function call");
+  var nSumC = c.sum();
+
+  //Then
+  strictEqual(nSumC, 7, "$super Class function call");
 });
 
-QUnit.test( "Member variable define type change ", function( assert ) {
+test( "Member variable define type change ", function(  ) {
+  //Given
   var A = eg.Class({
   	a : 1,
   	b : 2, 
@@ -194,15 +221,17 @@ QUnit.test( "Member variable define type change ", function( assert ) {
   	}
   });
 
+  //When
   var a = (new A()).sum();
   var b = (new B()).sum();
 
-  assert.strictEqual(a, 6, "Set member variable of A by property setting successfully");
-  assert.strictEqual(b, 12, "Set member variable of A by property setting successfully");
+  //Then
+  strictEqual(a, 6, "Set member variable of A by property setting successfully");
+  strictEqual(b, 12, "Set member variable of A by property setting successfully");
 });
 
-QUnit.test( "constructor parameter passing", function( assert ) {
-  //assert.ok( 1 == "1", "Passed!" );
+test( "constructor parameter passing", function(  ) {
+  //Given
   var A = eg.Class({
   	construct : function(a, b, c) {
   		this.a = a;
@@ -217,13 +246,16 @@ QUnit.test( "constructor parameter passing", function( assert ) {
   var B = eg.Class.extend(A, {
   });
 
+  //When
   var b = new B(10, 11, 12);
-  
-  assert.strictEqual( b.sum(), 33, "pass that B Class without a constructor passes parameter to A constructor" );
+  var nSumbB = b.sum();
+
+  //Then
+  strictEqual( nSumbB, 33, "pass that B Class without a constructor passes parameter to A constructor" );
 });
 
-QUnit.test( "undefined constructor", function( assert ) {
-  //assert.ok( 1 == "1", "Passed!" );
+test( "undefined constructor", function(  ) {
+  //Given
   var A = eg.Class({
   	a : 1,
   	b : 2, 
@@ -238,44 +270,50 @@ QUnit.test( "undefined constructor", function( assert ) {
   	b : 20
   });
 
+  //When
   var a = (new A()).sum();
   var b = (new B()).sum();
 
-  assert.strictEqual( a, 6, "Member value setting without constructor is success." );
-  assert.strictEqual( b, 33, "Member value setting without constructor is success." );
+  //Then
+  strictEqual( a, 6, "Member value setting without constructor is success." );
+  strictEqual( b, 33, "Member value setting without constructor is success." );
 });
 
-QUnit.test( "Order of constructor call and derived method call", function( assert ) {
-	/**
-	 * 모든 메시지가 순차적으로 출력되는지 확인
-	 */
+/**
+ * 모든 메시지가 순차적으로 출력되는지 확인
+ */
+test( "Order of constructor call and derived method call", function(  ) {
+   //Given
+   //When
+   //Then :TODO - change to GWT Style
 	var methodTimes = 0;
 	var constructTimes = 0;
 	var NaverBase = eg.Class({
 		bah: function () {
-			assert.strictEqual( ++methodTimes, 1 , "called Base method first" );
-	    }
+			strictEqual( ++methodTimes, 1 , "called Base method first" );
+    }
 	});
 
 	var NaverSub1 = eg.Class.extend(NaverBase, {
 		construct : function() {
-			assert.strictEqual(++constructTimes, 1, 'called Sub1 constructor first');
+			strictEqual(++constructTimes, 1, 'called Sub1 constructor first');
 		},
 		bah: function() {
-	      	NaverSub1.$super.bah.call(this);
-	      	assert.strictEqual(++methodTimes, 2, 'called Sub1 method second');
-	    }
+      NaverSub1.$super.bah.call(this);
+      strictEqual(++methodTimes, 2, 'called Sub1 method second');
+    }
 	});
 
 	var NaverSub2 = eg.Class.extend(NaverSub1, {
 	  construct : function() {
-	  	assert.strictEqual(++constructTimes, 2, 'called Sub2 constructor second');
+	  	strictEqual(++constructTimes, 2, 'called Sub2 constructor second');
 	  },
 	  bah : function() {
 	  	NaverSub2.$super.bah.call(this);
-	  	assert.strictEqual(++methodTimes, 3, 'called Sub2 method third');
+	  	strictEqual(++methodTimes, 3, 'called Sub2 method third');
 	  }
 	});
 
+  
 	(new NaverSub2()).bah();
 });
