@@ -33,12 +33,12 @@ window.eg = window.eg || {};
 				aArg = aArg.concat(Array.prototype.slice.call(arguments,2,nLen));
 			}
 
-			if (bHasHandlerList) {
-				var fHandler;
-				for (i = 0, fHandler; (fHandler = aHandlerList[i]); i++) {
-					fHandler.apply(this, aArg);
-				}
+			
+			var fHandler;
+			for (i = 0, fHandler; (fHandler = aHandlerList[i]); i++) {
+				fHandler.apply(this, aArg);
 			}
+			
 			
 			return !bCanceled;
 		},
