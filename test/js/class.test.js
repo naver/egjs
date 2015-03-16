@@ -149,59 +149,61 @@ test( " Multiple extend test ", function(  ) {
   strictEqual( nMultiC, 120, "apply change of instance variable values.")
 });
 
+/**
+ * TOOD: Make alive below codes when super is implemented.
+ */
+// test( " $super Class test ", function(  ) {
+//   //Given
+//   //When
+//   var A = eg.Class({
+//   	construct : function() {
+//   		this.a = 1;
+//   		this.b = 2;
+//   		this.c = 3;
+//   	},
+//   	set : function(a, b, c) {
+//   		this.a = a;
+//   		this.b = b;
+//   		this.c = c;
+//   	},
+//   	sum : function() {
+//   		return this.a + this.b + this.c;
+//   	},
+//   	diff : function() {
+//   		return this.c - this.b - this.a;
+//   	}
+//   });
 
-test( " $super Class test ", function(  ) {
-  //Given
-  //When
-  var A = eg.Class({
-  	construct : function() {
-  		this.a = 1;
-  		this.b = 2;
-  		this.c = 3;
-  	},
-  	set : function(a, b, c) {
-  		this.a = a;
-  		this.b = b;
-  		this.c = c;
-  	},
-  	sum : function() {
-  		return this.a + this.b + this.c;
-  	},
-  	diff : function() {
-  		return this.c - this.b - this.a;
-  	}
-  });
+//   var B = eg.Class.extend(A, {
+//   	construct : function() {
 
-  var B = eg.Class.extend(A, {
-  	construct : function() {
+//   	},
+//   	sum : function() {
+//   		return  B.$super.sum.call(this) + 1;
+//   	},
+//   	multi : function() {
+//   		return this.a * this.b * this.c;
+//   	}
+//   });
 
-  	},
-  	sum : function() {
-  		return  B.$super.sum.call(this) + 1;
-  	},
-  	multi : function() {
-  		return this.a * this.b * this.c;
-  	}
-  });
-
-  var C = eg.Class.extend(B, {
-  	construct : function() {
+//   var C = eg.Class.extend(B, {
+//   	construct : function() {
   		
-  	},
-  	sum : function() {
-  		return C.$super.sum.call(this);
-  	},
-  	div : function() {
-  		return this.c / this.b;
-  	}
-  });
+//   	},
+//   	sum : function() {
+//   		return C.$super.sum.call(this);
+//   	},
+//   	div : function() {
+//   		return this.c / this.b;
+//   	}
+//   });
 
-  var c = new C();
-  var nSumC = c.sum();
+//   var c = new C();
+//   var nSumC = c.sum();
 
-  //Then
-  strictEqual(nSumC, 7, "$super Class function call");
-});
+//   //Then
+//   strictEqual(nSumC, 7, "$super Class function call");
+// });
 
 test( "Member variable define type change ", function(  ) {
   //Given
@@ -284,36 +286,31 @@ test( "undefined constructor", function(  ) {
  */
 test( "Order of constructor call and derived method call", function(  ) {
    //Given
-   //When
    //Then :TODO - change to GWT Style
-	var methodTimes = 0;
+	//var methodTimes = 0;
+  var nSub1ConstructorSeq = 0;
+  var nSub2ConstructorSeq = 0;
+
 	var constructTimes = 0;
 	var NaverBase = eg.Class({
-		bah: function () {
-			strictEqual( ++methodTimes, 1 , "called Base method first" );
-    }
 	});
 
 	var NaverSub1 = eg.Class.extend(NaverBase, {
 		construct : function() {
-			strictEqual(++constructTimes, 1, 'called Sub1 constructor first');
-		},
-		bah: function() {
-      NaverSub1.$super.bah.call(this);
-      strictEqual(++methodTimes, 2, 'called Sub1 method second');
-    }
+      nSub1ConstructorSeq = ++constructTimes;
+		}
 	});
 
 	var NaverSub2 = eg.Class.extend(NaverSub1, {
 	  construct : function() {
-	  	strictEqual(++constructTimes, 2, 'called Sub2 constructor second');
-	  },
-	  bah : function() {
-	  	NaverSub2.$super.bah.call(this);
-	  	strictEqual(++methodTimes, 3, 'called Sub2 method third');
+	  	nSub2ConstructorSeq = ++constructTimes
 	  }
 	});
 
-  
-	(new NaverSub2()).bah();
+  //When
+	var oSub = new NaverSub2();
+
+  //Then
+  strictEqual(nSub1ConstructorSeq, 1, 'called Sub1 constructor first');
+  strictEqual(nSub2ConstructorSeq, 2, 'called Sub2 constructor second');
 });

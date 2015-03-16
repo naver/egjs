@@ -26,7 +26,7 @@ window.eg = window.eg || {};
 
 		var ExtProto = function() {};
 		ExtProto.prototype = oSuperClass.prototype;
-		extendClass.$super = oSuperClass.prototype; //'super' is supported not yet.
+		//extendClass.$super = oSuperClass.prototype; //'super' is supported not yet.
 
 		var oExtProto = new ExtProto();
 		for (var i in oDef) {
