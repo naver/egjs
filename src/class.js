@@ -1,23 +1,22 @@
-window.eg = window.eg || {};
+"use strict";
 (function(ns) {
     ns.Class = function(oDef) {
 		var typeClass = function typeClass() {
-			if (typeof oDef.construct === "function") {	
+			if (typeof oDef.construct === "function") {
 				oDef.construct.apply(this, arguments);
 			}
 		};
-		
+
 		typeClass.prototype = oDef;
 		typeClass.prototype.constructor = typeClass;
 		return typeClass;
 	};
 
-
 	ns.Class.extend = function(oSuperClass, oDef) {
 		var extendClass = function extendClass() {
 			// Call a parent constructor
 			oSuperClass.apply(this, arguments);
-				
+
 			// Call a child constructor
 			if (typeof oDef.construct === "function") {
 				oDef.construct.apply(this, arguments);
