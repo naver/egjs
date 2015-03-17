@@ -17,6 +17,8 @@
   ],
   "dependencies": {
     "jquery": "~1.11.2",
-    "qunit": "~1.17.1"
+    "qunit": "~1.17.1",
+    "hammerjs": "~2.0.4",
+    "jquery.easing": "~1.3.1"
   }
 }
