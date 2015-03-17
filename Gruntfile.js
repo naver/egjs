@@ -18,10 +18,10 @@ module.exports = function(grunt) {
         "--web-security": "no",
         coverage: {
           disposeCollector: true,
-          src: ["src/js/**/*.js"],
+          src: ["src/**/*.js"],
           instrumentedFiles: "temp/",
           htmlReport: "report",
-          coberturaReport: "report/",
+          coberturaReport: "report",
           linesThresholdPct: 0
         }
       },
