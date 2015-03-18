@@ -31,14 +31,21 @@ grunt test
 ![스크린샷 2015-03-18 오후 2.24.54.png](/files/36712)
 
 ## 사용방법
-- 빌드후 나온 `dist/lib` 폴더에 있는 라이브러리(jquery, jquery.easing.js, hammer.js)를 script의 src로 추가한다.
+- 빌드후 나온 `dist/lib` 폴더에 있는 라이브러리(jquery.js, jquery.easing.js, hammer.js)를 script의 src로 추가한다.
 - `dist` 디렉토리에 evergreen.js 나 evergreen.min.js을 script의 src로 추가한다.
 - 아래와 같이 eg라는 네임스페이스가 있는 컴포넌트를 사용할 수 있다.
 ```
+<script src="dist/lib/jquery.js"></script>
+<script src="dist/lib/jquery.easing.js"></script>
+<script src="dist/lib/hammer.js"></script>
+<script src="dist/evergreen.js"></script>
+
+<script>
 var Klass = eg.Class({
 	"construct" : function(){}
 });
 var Komponent = eg.Class.extend(eg.Component,{
 	"construct" : function(){}
 });
+</script>
 ```
