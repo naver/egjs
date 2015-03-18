@@ -15,6 +15,7 @@ grunt build
 ```
 - 빌드가 정상적으로 완료되면 `dist` 디렉토리에 evergreen.js 와 evergreen.min.js 가 생성된다.
 - evergreen.js와 의존성이 있는 라이브러리는 `dist/lib` 폴더로 생성된다.
+
 ![스크린샷 2015-03-18 오후 2.20.41.png](/files/36709)
 
 
