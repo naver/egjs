@@ -34,6 +34,7 @@ grunt test
 - 빌드후 나온 `dist/lib` 폴더에 있는 라이브러리(jquery.js, jquery.easing.js, hammer.js)를 script의 src로 추가한다.
 - `dist` 디렉토리에 evergreen.js 나 evergreen.min.js을 script의 src로 추가한다.
 - 아래와 같이 eg라는 네임스페이스가 있는 컴포넌트를 사용할 수 있다.
+
 ```
 <script src="dist/lib/jquery.js"></script>
 <script src="dist/lib/jquery.easing.js"></script>
