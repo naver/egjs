@@ -31,6 +31,7 @@
 			};
 		})();
 	global.eg = {
+		VERSION : "#__VERSION__#",
 		defaults : {},
 		isHardwareAccelerable : function() {
 			var check = checkDefaults("isHardwareAccelerable");
