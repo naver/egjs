@@ -2,7 +2,7 @@
 
 window.eg = window.eg || {};
 (function(ns) {
-	eg.Component = eg.Class({
+	ns.Component = ns.Class({
 		construct : function() {
 			this._htEventHandler = {};
 			// The reference count is not support yet.
