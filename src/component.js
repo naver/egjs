@@ -1,4 +1,6 @@
 "use strict";
+
+window.eg = window.eg || {};
 (function(ns) {
 	ns.Component = ns.Class({
 		construct : function() {
@@ -61,9 +63,16 @@
 			return this;
 		},
 		off : function(sEvent, fHandlerToDetach) {
+			// All event detach.
+			if (arguments.length === 0){
+				this._htEventHandler = {};
+				return this;
+			}
+
+			// All handler of specific event detach.
 			if (typeof fHandlerToDetach === "undefined") {
 				if (typeof sEvent === "string"){
-					delete this._htEventHandler[sEvent];
+					this._htEventHandler[sEvent] = null;
 					return this;
 				} else {
 					var oEvent = sEvent;
@@ -76,6 +85,7 @@
 				}
 			}
 
+			// The handler of specific event detach.
 			var aHandler = this._htEventHandler[sEvent];
 			if (aHandler) {
 				for (var k = 0, fHandler; (fHandler = aHandler[k]); k++) {

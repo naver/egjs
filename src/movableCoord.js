@@ -430,11 +430,7 @@
 		},
 
 		destruct : function() {
-			this.off("hold");
-			this.off("change");
-			this.off("release");
-			this.off("animation");
-			this.off("animationEnd");
+			this.off();
 			for(var p in this._hammers) {
 				this._hammers[p].destroy();
 				this._hammers[p] = null;
