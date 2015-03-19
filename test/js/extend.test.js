@@ -59,4 +59,15 @@ test("remove 'defaults' function", function() {
 	equal(result, eg.isHardwareAccelerable(), "pass default value");
 });
 
+test("translate function", function() {
+	// Given
+	// When
+	var x = "20px";
+	var y = "300px";
+	// Then
+	equal(eg.translate(x,y), "translate(20px,300px)", "When HardwareAcceleration was undefined");
+	equal(eg.translate(x,y, false), "translate(20px,300px)", "When HardwareAcceleration was false");
+	equal(eg.translate(x,y, true), "translate3d(20px,300px,0)", "When HardwareAcceleration was true");
+});
+
 //@todo multi agent test

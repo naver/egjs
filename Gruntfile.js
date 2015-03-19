@@ -14,7 +14,7 @@ module.exports = function(grunt) {
       " Licensed <%= _.pluck(pkg.licenses, 'type').join(", ") %> */\n"
     ].join(""),
     jshint: {
-      files: ["Gruntfile.js", "*.js", "src/**/*.js"],
+      files: ["Gruntfile.js", "*.js", "src/**/*.js" ],
       options: {
         jshintrc: true,
         reporter: require("jshint-stylish")
@@ -49,11 +49,8 @@ module.exports = function(grunt) {
         flatten : true,
         src : [
             "bower_components/jquery/dist/jquery.js",
-            "bower_components/jquery/dist/jquery.min.js",
-            "bower_components/hammerjs/hammer.js",
-            "bower_components/hammerjs/hammer.min.js",
+            "bower_components/hammer.js/hammer.js",
             "bower_components/jquery.easing/js/jquery.easing.js",
-            "bower_components/jquery.easing/js/jquery.easing.min.js"
           ],
         dest : "dist/lib"
       }

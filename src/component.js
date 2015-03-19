@@ -61,7 +61,6 @@
 			return this;
 		},
 		off : function(sEvent, fHandlerToDetach) {
-
 			if (typeof fHandlerToDetach === "undefined") {
 				if (typeof sEvent === "string"){
 					delete this._htEventHandler[sEvent];

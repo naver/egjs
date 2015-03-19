@@ -32,6 +32,7 @@
 		})();
 	global.eg = {
 		VERSION : "#__VERSION__#",
+		defaults : {},
 		__checkLibrary__ : function(condition, message) {
 			if(condition) {
 				throw {
@@ -43,7 +44,10 @@
 				};
 			}
 		},
-		defaults : {},
+		translate : function(x,y, isHA) {
+			isHA = isHA || false;
+			return "translate" + (isHA ? "3d(" : "(") + x + "," + y + (isHA ? ",0)" : ")");
+		},
 		isHardwareAccelerable : function() {
 			var check = checkDefaults("isHardwareAccelerable");
 			if( check != null ) {

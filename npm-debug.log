@@ -1,0 +1,84 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', 'hammer-simulator' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.32
+4 verbose readDependencies using package.json deps
+5 verbose cache add [ 'hammer-simulator', null ]
+6 verbose cache add name=undefined spec="hammer-simulator" args=["hammer-simulator",null]
+7 verbose parsed url { protocol: null,
+7 verbose parsed url   slashes: null,
+7 verbose parsed url   auth: null,
+7 verbose parsed url   host: null,
+7 verbose parsed url   port: null,
+7 verbose parsed url   hostname: null,
+7 verbose parsed url   hash: null,
+7 verbose parsed url   search: null,
+7 verbose parsed url   query: null,
+7 verbose parsed url   pathname: 'hammer-simulator',
+7 verbose parsed url   path: 'hammer-simulator',
+7 verbose parsed url   href: 'hammer-simulator' }
+8 silly lockFile c8f6c460-hammer-simulator hammer-simulator
+9 verbose lock hammer-simulator /Users/naver/.npm/c8f6c460-hammer-simulator.lock
+10 silly lockFile c8f6c460-hammer-simulator hammer-simulator
+11 silly lockFile c8f6c460-hammer-simulator hammer-simulator
+12 verbose addNamed [ 'hammer-simulator', '' ]
+13 verbose addNamed [ null, '*' ]
+14 silly lockFile d049373e-hammer-simulator hammer-simulator@
+15 verbose lock hammer-simulator@ /Users/naver/.npm/d049373e-hammer-simulator.lock
+16 silly addNameRange { name: 'hammer-simulator', range: '*', hasData: false }
+17 verbose request where is /hammer-simulator
+18 verbose request registry https://registry.npmjs.org/
+19 verbose request id d0bb7c7ff13647d1
+20 verbose url raw /hammer-simulator
+21 verbose url resolving [ 'https://registry.npmjs.org/', './hammer-simulator' ]
+22 verbose url resolved https://registry.npmjs.org/hammer-simulator
+23 verbose request where is https://registry.npmjs.org/hammer-simulator
+24 info trying registry request attempt 1 at 16:32:37
+25 http GET https://registry.npmjs.org/hammer-simulator
+26 http 404 https://registry.npmjs.org/hammer-simulator
+27 verbose headers { date: 'Thu, 19 Mar 2015 07:32:37 GMT',
+27 verbose headers   server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+27 verbose headers   'content-type': 'application/json',
+27 verbose headers   'cache-control': 'max-age=0',
+27 verbose headers   'content-length': '51',
+27 verbose headers   'accept-ranges': 'bytes',
+27 verbose headers   via: '1.1 varnish',
+27 verbose headers   age: '0',
+27 verbose headers   'x-served-by': 'cache-hkg6823-HKG',
+27 verbose headers   'x-cache': 'MISS',
+27 verbose headers   'x-cache-hits': '0',
+27 verbose headers   'x-timer': 'S1426750357.619236,VS0,VE232',
+27 verbose headers   'keep-alive': 'timeout=10, max=50',
+27 verbose headers   connection: 'Keep-Alive' }
+28 silly registry.get cb [ 404,
+28 silly registry.get   { date: 'Thu, 19 Mar 2015 07:32:37 GMT',
+28 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+28 silly registry.get     'content-type': 'application/json',
+28 silly registry.get     'cache-control': 'max-age=0',
+28 silly registry.get     'content-length': '51',
+28 silly registry.get     'accept-ranges': 'bytes',
+28 silly registry.get     via: '1.1 varnish',
+28 silly registry.get     age: '0',
+28 silly registry.get     'x-served-by': 'cache-hkg6823-HKG',
+28 silly registry.get     'x-cache': 'MISS',
+28 silly registry.get     'x-cache-hits': '0',
+28 silly registry.get     'x-timer': 'S1426750357.619236,VS0,VE232',
+28 silly registry.get     'keep-alive': 'timeout=10, max=50',
+28 silly registry.get     connection: 'Keep-Alive' } ]
+29 silly lockFile d049373e-hammer-simulator hammer-simulator@
+30 silly lockFile d049373e-hammer-simulator hammer-simulator@
+31 error 404 404 Not Found: hammer-simulator
+31 error 404
+31 error 404 'hammer-simulator' is not in the npm registry.
+31 error 404 You should bug the author to publish it
+31 error 404 It was specified as a dependency of 'EvergreenJs'
+31 error 404
+31 error 404 Note that you can also install from a
+31 error 404 tarball, folder, or http url, or git url.
+32 error System Darwin 14.1.0
+33 error command "node" "/usr/local/bin/npm" "install" "hammer-simulator"
+34 error cwd /Users/naver/workspace/EvergreenJs
+35 error node -v v0.10.32
+36 error npm -v 1.4.28
+37 error code E404
+38 verbose exit [ 1, true ]

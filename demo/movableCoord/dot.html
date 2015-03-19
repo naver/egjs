@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>MovableCoord - dot example</title>
-    <link rel="stylesheet" href="../asset/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
     <style>
     #area {
         position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;
@@ -42,14 +42,13 @@ var inst = new eg.MovableCoord( {
      margin : [ 0, 100, 100, 0 ],
      deceleration : 0.0024
  }).on({
-     "change" : function(e) {
+    "change" : function(e) {
         console.log(e);
-         $dot.css("left", e.pos[0]).css("top", e.pos[1]);
-     },
-     "animationEnd" : function(e) {
-         console.log(e);
-     }
-
+        $dot.css("transform", eg.translate(e.pos[0] + "px", e.pos[1] + "px"));
+    },
+    "animationEnd" : function(e) {
+        console.log(e);
+    }
  });
  inst.bind('#area', {
      direction : eg.DIRECTION_ALL,

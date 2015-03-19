@@ -114,10 +114,10 @@
 		// panstart event handler
 		_panstart : function() {
 			var pos = this._pos;
-			this._grab();
 			this.trigger("hold", {
 				pos : [ pos[0], pos[1] ]
 			});
+			this._grab();
 			this._grabOutside = this._isOutside(pos, this.options.min, this.options.max);
 		},
 
@@ -216,8 +216,8 @@
 			var normalPos = Math.sqrt(pos[0]*pos[0]+pos[1]*pos[1]),
 				duration = Math.sqrt(normalPos / this.options.deceleration * 2);
 
-			// when duration was under 10, duration is zero
-			return duration < 10 ? 0 : duration;
+			// when duration was under 100, duration is zero
+			return duration < 100 ? 0 : duration;
 		},
 
 		_move : function(pos, isBy, duration) {
@@ -295,7 +295,6 @@
 				circular = this.options.circular,
 				destPos = param.destPos,
 				isCircular = this._isCircular(circular, destPos, min, max);
-
 			this._isOutToOut(pos, destPos, min, max) && (destPos = pos);
 
 			duration = duration || Math.min( Infinity,
@@ -369,14 +368,14 @@
 			var key;
 			["bounce", "margin", "circular"].forEach(function(v) {
 				key = options[v];
-				if(key) {
+				if(key != null) {
 					if(Array.isArray(key) ) {
 						if( key.length === 2) {
 							options[v] = [ key[0], key[1], key[0], key[1] ];
 						} else {
 							options[v] = [ key[0], key[1], key[2], key[3] ];
 						}
-					} else if(/string|number/.test(typeof key) ) {
+					} else if(/string|number|boolean/.test(typeof key) ) {
 						options[v] = [ key, key, key, key ];
 					} else {
 						options[v] = null;
@@ -415,8 +414,8 @@
 				if (!circular[1]) { x = Math.min(max[0], x); }
 			}
 			if( y !== pos[1] ) {
-				if (!circular[0]) { x = Math.max(min[1], x); }
-				if (!circular[2]) { x = Math.min(max[1], x); }
+				if (!circular[0]) { y = Math.max(min[1], y); }
+				if (!circular[2]) { y = Math.min(max[1], y); }
 			}
 			this._pos = this._getCircularPos( [ x, y ] );
 			this._triggerChange(this._pos, false);
@@ -431,6 +430,11 @@
 		},
 
 		destruct : function() {
+			this.off("hold");
+			this.off("change");
+			this.off("release");
+			this.off("animation");
+			this.off("animationEnd");
 			for(var p in this._hammers) {
 				this._hammers[p].destroy();
 				this._hammers[p] = null;
