@@ -51,4 +51,5 @@ var Komponent = eg.Class.extend(eg.Component,{
 </script>
 ```
 ## Architecture
-![스크린샷 2015-03-19 오전 11.49.10.png](/files/36907)
+
+![스크린샷 2015-03-19 오후 3.45.28.png](/files/36952)
