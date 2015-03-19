@@ -43,11 +43,7 @@ var inst = new eg.MovableCoord( {
      deceleration : 0.0024
  }).on({
     "change" : function(e) {
-        console.log(e);
         $dot.css("transform", eg.translate(e.pos[0] + "px", e.pos[1] + "px"));
-    },
-    "animationEnd" : function(e) {
-        console.log(e);
     }
  });
  inst.bind('#area', {
