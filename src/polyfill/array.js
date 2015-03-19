@@ -50,3 +50,9 @@ if (!Array.prototype.forEach) {
   // 8. return undefined
   };
 }
+
+if (!Array.isArray) {
+  Array.isArray = function(arg) {
+    return Object.prototype.toString.call(arg) === "[object Array]";
+  };
+}

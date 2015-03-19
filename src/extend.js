@@ -32,10 +32,21 @@
 		})();
 	global.eg = {
 		VERSION : "#__VERSION__#",
+		__checkLibrary__ : function(condition, message) {
+			if(condition) {
+				throw {
+					message : message,
+					type : "[Evergreen]",
+					toString : function() {
+						return this.type + " " +this.message;
+					}
+				};
+			}
+		},
 		defaults : {},
 		isHardwareAccelerable : function() {
 			var check = checkDefaults("isHardwareAccelerable");
-			if(check !== null) {
+			if( check != null ) {
 				return check;
 			} else {
 				var result = false;
@@ -62,4 +73,14 @@
 			}
 		}
 	};
+
+	// Hammer constants
+	global.eg.DIRECTION_NONE = 1;
+	global.eg.DIRECTION_LEFT = 2;
+	global.eg.DIRECTION_RIGHT = 4;
+	global.eg.DIRECTION_UP = 8;
+	global.eg.DIRECTION_DOWN = 16;
+	global.eg.DIRECTION_HORIZONTAL = global.eg.DIRECTION_LEFT | global.eg.DIRECTION_RIGHT;
+	global.eg.DIRECTION_VERTICAL = global.eg.DIRECTION_UP | global.eg.DIRECTION_DOWN;
+	global.eg.DIRECTION_ALL = global.eg.DIRECTION_HORIZONTAL | global.eg.DIRECTION_VERTICAL;
 })(jQuery, window);

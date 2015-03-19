@@ -1,49 +1,49 @@
 "use strict";
+
 (function($, ns) {
+	// It is scheduled to be removed in case of build process.
+	ns.__checkLibrary__( !("Hammer" in window), "You must download Hammerjs. (http://hammerjs.github.io/)\n\ne.g. bower install hammerjs");
+	ns.__checkLibrary__( !("easeOutQuint" in $.easing), "You must download jQuery Easing Plugin(http://gsgd.co.uk/sandbox/jquery/easing/)\n\ne.g. bower install jquery.easing");
+
 	ns.MovableCoord = ns.Class.extend(ns.Component,{
-		construct : function(pos, options) {
+		construct : function(options) {
 			this.options = {
 				min : [0, 0],
 				max : [100, 100],
 				bounce : [10, 10, 10, 10],
 				margin : [0,0,0,0],
 				circular : [false, false, false, false],
+				easing : $.easing.easeOutQuint,
 				deceleration : 0.0006
 			};
-			this._extendOptions(options);
+			this._reviseOptions(options);
 			this._grabOutside = false;
 			this._animating = null;
 			this._raf = null;
 			this._hammers = {};
 			this._curHammer = null;
-			this._pos = pos || [0,0];
-
-
+			this._pos = [ this.options.min[0], this.options.min[1] ];
 			this._subOptions = {};
-
-			//@todo init event
-			// this.trigger("init");
 		},
-
 		bind : function(el, options) {
-			var key = ns.MovableCoord.KEY + Math.round(Math.random() * new Date().getTime()),
-				$el = $(el),
+			var $el = $(el),
+				keyValue = $el.data(ns.MovableCoord.KEY),
 				subOptions = {
-					direction : Hammer.DIRECTION_ALL,
+					direction : ns.DIRECTION_ALL,
 					scale : [ 1, 1 ],
-					easing : $.easing.easeOutQuint,
 					maximumSpeed : Infinity
 				};
 			$.extend(subOptions, options);
 
-			if($el.data(ns.MovableCoord.KEY)) {
-				this.unbind(el);
+			if(keyValue) {
+				this._hammers[keyValue].get("pan").set({ direction: subOptions.direction });
+			} else {
+				keyValue = Math.round(Math.random() * new Date().getTime());
+				this._hammers[keyValue] = this._createHammer($el.get(0), subOptions);
+				$el.data(ns.MovableCoord.KEY, keyValue);
 			}
-			this._hammers[key] = this._createHammer($el.get(0), subOptions);
-			$el.data(ns.MovableCoord.KEY, key);
 			return this;
 		},
-
 		_createHammer : function(el, subOptions) {
 			// create Hammer
 			var hammer = new Hammer.Manager(el, {
@@ -66,7 +66,6 @@
 			.on("panend", this._panend.bind(this));
 			return hammer;
 		},
-
 		unbind : function(el) {
 			var $el = $(el),
 				key = $el.data(ns.MovableCoord.KEY);
@@ -86,20 +85,18 @@
 			}
 		},
 		_getCircularPos : function(pos, min, max, circular) {
+			var val;
 			min = min || this.options.min;
 			max = max || this.options.max;
 			circular = circular || this.options.circular;
-			if (circular[0] && pos[1] < min[1]) { // up
-				pos[1] = (pos[1] - min[1]) % (max[1] - min[1] + 1) + max[1];
+
+			// right & left
+			if( val = ( (circular[1] && pos[0] > max[0]) && min[0] ) || ( (circular[3] && pos[0] < min[0]) && max[0] ) ) {
+			    pos[0] = (pos[0] - min[0]) % (max[0] - min[0] + 1) + val;
 			}
-			if (circular[1] && pos[0] > max[0]) { // right
-				pos[0] = (pos[0] - min[0]) % (max[0] - min[0] + 1) + min[0];
-			}
-			if (circular[2] && pos[1] > max[1]) { // down
-				pos[1] = (pos[1] - min[1]) % (max[1] - min[1] + 1) + min[1];
-			}
-			if (circular[3] && pos[0] < min[0]) { // left
-				pos[0] = (pos[0] - min[0]) % (max[0] - min[0] + 1) + max[0];
+			// up & down
+			if( val = ( (circular[0] && pos[1] < min[1]) && max[1] ) || ( (circular[2] && pos[1] > max[1]) && min[1] ) ) {
+			    pos[1] = (pos[1] - min[1]) % (max[1] - min[1] + 1) + val;
 			}
 			return pos;
 		},
@@ -115,15 +112,13 @@
 		},
 
 		// panstart event handler
-		_panstart : function(e) {
+		_panstart : function() {
 			var pos = this._pos;
 			this._grab();
 			this.trigger("hold", {
-				event : e,
 				pos : [ pos[0], pos[1] ]
 			});
 			this._grabOutside = this._isOutside(pos, this.options.min, this.options.max);
-			// this._movingPos = [pos[0], pos[1]];
 		},
 
 		// panmove event handler
@@ -136,9 +131,9 @@
 				max = this.options.max,
 				bounce = this.options.bounce,
 				margin = this.options.margin,
+				easing = this.options.easing,
 				direction = this._subOptions.direction,
 				scale = this._subOptions.scale,
-				easing = this._subOptions.easing,
 				out = [ margin[0] + bounce[0], margin[1] + bounce[1], margin[2] + bounce[2], margin[3] + bounce[3] ];
 
 			// not support offset properties in Hammerjs - start
@@ -151,13 +146,12 @@
 			}
 			// not support offset properties in Hammerjs - end
 
-			if(direction & Hammer.DIRECTION_HORIZONTAL) {
+			if(direction & ns.DIRECTION_HORIZONTAL) {
 				pos[0] += e.offsetX * scale[0];
 			}
-			if(direction & Hammer.DIRECTION_VERTICAL) {
+			if(direction & ns.DIRECTION_VERTICAL) {
 				pos[1] += e.offsetY * scale[1];
 			}
-			// pos[0] = movingPos[0], pos[1] = movingPos[1];
 			pos = this._getCircularPos(pos, min, max);
 
 			// from outside to inside
@@ -172,7 +166,7 @@
 				tn = min[1]-out[0], tx = max[1]+out[2], tv = pos[1];
 				pos[1] = tv>tx?tx:(tv<tn?tn:tv);
 			} else {	// when start pointer is holded inside
-				// to prevent smooth animation
+				// get a initialization slop value to prevent smooth animation.
 				var initSlop = easing(null, 0.0001 , 0, 1, 1) / 0.0001;
 				if (pos[1] < min[1]) { // up
 					tv = (min[1]-pos[1])/(out[0]*initSlop);
@@ -189,7 +183,6 @@
 					pos[0] = max[0]+easing(null, tv>1?1:tv , 0, 1, 1)*out[1];
 				}
 			}
-
 			this._triggerChange(pos, true);
 		},
 
@@ -201,12 +194,12 @@
 				vY = Math.abs(e.velocityY);
 
 			// console.log(e.velocityX, e.velocityY, e.deltaX, e.deltaY);
-			!(direction & Hammer.DIRECTION_HORIZONTAL) && (vX = 0);
-			!(direction & Hammer.DIRECTION_VERTICAL) && (vY = 0);
+			!(direction & ns.DIRECTION_HORIZONTAL) && (vX = 0);
+			!(direction & ns.DIRECTION_VERTICAL) && (vY = 0);
 			this._move(this._getNextOffsetPos( [
 				vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
 				vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
-			], this._subOptions.maximumSpeed ), true, Infinity);
+			], this._subOptions.maximumSpeed ), true);
 			// this._movingPos = null;
 		},
 
@@ -227,24 +220,27 @@
 			return duration < 10 ? 0 : duration;
 		},
 
-		_move : function(pos, bBy, maximumDuration) {
-			this[bBy ? "_animateBy" : "_animateTo"](pos, function() {
+		_move : function(pos, isBy, duration) {
+			this[isBy ? "_animateBy" : "_animateTo"](pos, function() {
 				var pos = this._pos,
 					min = this.options.min,
 					max = this.options.max;
-				this._animateTo( [ Math.min(max[0], Math.max(min[0], pos[0])), Math.min(max[1], Math.max(min[1], pos[1])) ] , function() {
+				this._animateTo( [
+					Math.min(max[0], Math.max(min[0], pos[0])),
+					Math.min(max[1], Math.max(min[1], pos[1]))
+				] , function() {
 					this.trigger("animationEnd");
-				}.bind(this), true, maximumDuration);
+				}.bind(this), true, duration);
 
-			}.bind(this), false, maximumDuration);
+			}.bind(this), false, duration);
 		},
 
-		_animateBy : function(offset, callback, isBounce, maximumDuration) {
+		_animateBy : function(offset, callback, isBounce, duration) {
 			var pos = this._pos;
 			return this._animateTo([
 				pos[0] + offset[0],
 				pos[1] + offset[1]
-			], callback, isBounce, maximumDuration);
+			], callback, isBounce, duration);
 		},
 
 		_getPointOfIntersection : function(depaPos, destPos) {
@@ -253,10 +249,10 @@
 				min = this.options.min,
 				max = this.options.max,
 				boxLT = [ min[0]-bounce[3], min[1]-bounce[0] ],
-				boxRB = [ max[0]+bounce[1], max[1]+bounce[2] ];
-
+				boxRB = [ max[0]+bounce[1], max[1]+bounce[2] ],
+				xd, yd;
 			destPos = [destPos[0], destPos[1]];
-			var xd = destPos[0]-depaPos[0], yd = destPos[1]-depaPos[1];
+			xd = destPos[0]-depaPos[0], yd = destPos[1]-depaPos[1];
 			if (!circular[3]) { destPos[0] = Math.max(boxLT[0], destPos[0]); } // left
 			if (!circular[1]) { destPos[0] = Math.min(boxRB[0], destPos[0]); } // right
 			destPos[1] = xd ? depaPos[1]+yd/xd*(destPos[0]-depaPos[0]) : destPos[1];
@@ -275,7 +271,7 @@
 				(circular[3] && destPos[0] < min[0]);
 		},
 
-		_animateTo : function(absPos, callback, isBounce, maximumDuration) {
+		_animateTo : function(absPos, callback, isBounce, duration) {
 			var pos = this._pos,
 				destPos = this._getPointOfIntersection(pos, absPos),
 				param = {
@@ -286,10 +282,10 @@
 			if (!isBounce) {
 				this.trigger("release", param);
 			}
-			this._afterReleaseProcess(param, callback, isBounce, maximumDuration);
+			this._afterReleaseProcess(param, callback, isBounce, duration);
 		},
-
-		_afterReleaseProcess : function(param, callback, isBounce, maximumDuration) {
+		// when user release a finger or poiner or mouse
+		_afterReleaseProcess : function(param, callback, isBounce, duration) {
 			/*
 			caution :: update option values because options was changed by "release" event
 			 */
@@ -302,9 +298,10 @@
 
 			this._isOutToOut(pos, destPos, min, max) && (destPos = pos);
 
-			var duration = Math.min( maximumDuration,
-				this._getDurationFromPos( [ Math.abs(destPos[0]-pos[0]), Math.abs(destPos[1]-pos[1]) ] ) ),
-				done = function() {
+			duration = duration || Math.min( Infinity,
+				this._getDurationFromPos( [ Math.abs(destPos[0]-pos[0]), Math.abs(destPos[1]-pos[1]) ] ) );
+
+			var	done = function() {
 					this._animating = null;
 					// 내부 좌표값 변경
 					pos[0] = Math.round(destPos[0]);
@@ -318,7 +315,6 @@
 			// prepare animation parameters
 			param = {
 				duration : duration,
-				easing : this._subOptions.easing,
 				depaPos : [ pos[0], pos[1] ],
 				destPos : destPos,
 				isBounce : isBounce,
@@ -327,7 +323,7 @@
 			};
 
 			var retTrigger = this.trigger("animation", param);
-			// bCircular 가 true 인데 이벤트 stop 했으면
+			// You can't stop the 'animation' event when 'circular' is true.
 			if (isCircular && !retTrigger) {
 				throw new Error("You can't stop the 'animation' event when 'circular' is true.");
 			}
@@ -341,16 +337,17 @@
 					self = this;
 				(function loop() {
 					self._raf=null;
-					if (self._frame(animating) >= 1) { return done(); } // 애니메이션 끝
+					if (self._frame(animating) >= 1) { return done(); } // animationEnd
 					self._raf = requestAnimationFrame(loop);
 				})();
 			}
 		},
 
+		// animation frame (0~1)
 		_frame : function(animating) {
 			var curTime = new Date() - animating.startTime,
 				per = Math.min(1, curTime / animating.duration),
-				easingPer = animating.easing(null, curTime, 0, 1, animating.duration),
+				easingPer = this.options.easing(null, curTime, 0, 1, animating.duration),
 				dist,
 				pos = [ animating.depaPos[0], animating.depaPos[1] ];
 
@@ -367,7 +364,8 @@
 			return per;
 		},
 
-		_extendOptions : function(options) {
+		// set up 'css' expression
+		_reviseOptions : function(options) {
 			var key;
 			["bounce", "margin", "circular"].forEach(function(v) {
 				key = options[v];
@@ -381,13 +379,14 @@
 					} else if(/string|number/.test(typeof key) ) {
 						options[v] = [ key, key, key, key ];
 					} else {
-						delete options[v];
+						options[v] = null;
 					}
 				}
 			});
 			$.extend(this.options, options);
 		},
 
+		// trigger 'change' event
 		_triggerChange : function(pos, holding) {
 			this.trigger("change", {
 				pos : [ pos[0], pos[1] ],
@@ -395,10 +394,46 @@
 			});
 		},
 
+		// get current position
+		get : function() {
+			return [ this._pos[0],this._pos[1] ];
+		},
+
+		// set to position
+		setTo : function(x, y) {
+			this._grab();
+			var pos = [ this._pos[0], this._pos[1] ],
+				circular = this.options.circular,
+				min = this.options.min,
+				max = this.options.max;
+			if( x === pos[0] && y === pos[1] ) {
+				return this;
+			}
+
+			if( x !== pos[0] ) {
+				if (!circular[3]) { x = Math.max(min[0], x); }
+				if (!circular[1]) { x = Math.min(max[0], x); }
+			}
+			if( y !== pos[1] ) {
+				if (!circular[0]) { x = Math.max(min[1], x); }
+				if (!circular[2]) { x = Math.min(max[1], x); }
+			}
+			this._pos = this._getCircularPos( [ x, y ] );
+			this._triggerChange(this._pos, false);
+			return this;
+		},
+		// set to position relatively
+		setBy : function(x, y) {
+			return this.setTo(
+				x != null ? this._pos[0] + x : this._pos[0],
+				y != null ? this._pos[1] + y : this._pos[1]
+			);
+		},
+
 		destruct : function() {
 			for(var p in this._hammers) {
 				this._hammers[p].destroy();
-				delete this._hammers[p];
+				this._hammers[p] = null;
 			}
 		}
 	});

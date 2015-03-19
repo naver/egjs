@@ -26,11 +26,21 @@ test("determine the return value of a 'isHardwareAccelerable' function", functio
 });
 
 test("pass the return value of a 'isHardwareAccelerable' function", function() {
+	var result;
 	// Given
-	var result = eg.isHardwareAccelerable();
+	result = eg.isHardwareAccelerable();
 	// When
 	eg.defaults.isHardwareAccelerable = function(agent) {
 		return null;
+	};
+	// Then
+	equal(result, eg.isHardwareAccelerable(), "pass default value");
+
+	// Given
+	result = eg.isHardwareAccelerable();
+	// When
+	eg.defaults.isHardwareAccelerable = function(agent) {
+		// undefined
 	};
 	// Then
 	equal(result, eg.isHardwareAccelerable(), "pass default value");

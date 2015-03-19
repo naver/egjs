@@ -11,15 +11,15 @@ module("movableCoord init Test", {
 test("check initialization status", function() {
 	// Given
 	// When
-	this.inst = new eg.MovableCoord( [200, 200] , {
-		min : [ 0, 0 ],
+	this.inst = new eg.MovableCoord( {
+		min : [ -100, 0 ],
 		max : [ 300, 400 ],
 		bounce : [ 100, 200, 50, 30 ],
 		margin : [ 0, 100 ],
 		circular : [ true, false ]
 	});
 	// Then
-	deepEqual(this.inst._pos, [200, 200], "set up an initialization position");
+	deepEqual(this.inst._pos, [-100, 0], "set up an initialization position");
 	deepEqual(this.inst.options.bounce, [100, 200, 50, 30], "bounce : check css expression");
 	deepEqual(this.inst.options.margin, [0, 100, 0, 100], "margin : check css expression");
 	deepEqual(this.inst.options.circular, [true, false, true, false], "circular : check css expression");
@@ -27,7 +27,7 @@ test("check initialization status", function() {
 
 module("movableCoord bind/unbind Test", {
 	setup : function() {
-		this.inst = new eg.MovableCoord( [200, 200] , {
+		this.inst = new eg.MovableCoord( {
 			min : [ 0, 0 ],
 			max : [ 300, 400 ],
 			bounce : 100,
@@ -49,7 +49,7 @@ test("bind", function() {
 
 	// When
 	this.inst.bind($el, {
-		direction : Hammer.DIRECTION_ALL
+		direction : eg.DIRECTION_ALL
 	});
 
 	// Then
@@ -63,7 +63,7 @@ test("unbind", function() {
 	// Given
 	var $el = jQuery("#area");
 	this.inst.bind($el, {
-		direction : Hammer.DIRECTION_ALL
+		direction : eg.DIRECTION_ALL
 	});
 	var before = $el.data(eg.MovableCoord.KEY);
 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
@@ -82,7 +82,7 @@ test("one element, double bind", function() {
 	// Given
 	var $el = jQuery("#area");
 	this.inst.bind($el, {
-		direction : Hammer.DIRECTION_ALL
+		direction : eg.DIRECTION_ALL
 	});
 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
 	var before = $el.data(eg.MovableCoord.KEY);
@@ -90,12 +90,13 @@ test("one element, double bind", function() {
 
 	// When
 	this.inst.bind($el, {
-		direction : Hammer.DIRECTION_HORIZONTAL
+		direction : eg.DIRECTION_HORIZONTAL
 	});
 
 	// Then
 	var key = $el.data(eg.MovableCoord.KEY);
-	notEqual(before, key, "key data value was changed" );
-	notDeepEqual(beforeHammerInstance, this.inst._hammers[key], "create new hammer instance" );
+	equal(before, key, "key data value is same" );
+	equal(this.inst._hammers[key].get("pan").options.direction, eg.DIRECTION_HORIZONTAL, "options was changed" );
+	deepEqual(beforeHammerInstance, this.inst._hammers[key], "recycle hammer instance" );
 	equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "hammer instance count is same" );
 })

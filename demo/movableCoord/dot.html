@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>MovableCoord - dot example</title>
+    <link rel="stylesheet" href="../asset/css/style.css">
+    <style>
+    #area {
+        position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;
+        box-sizing:content-box; z-index:9;
+    }
+
+    #dot {
+        position:absolute; background-color:#f00; width:9px; height:9px;
+        left:0; top:0; color:#000; margin:-4px; border-radius:100%;
+    }
+
+    #hmove {
+        position:relative; border:5px solid #888; background-color:yellowgreen;
+        width:300px; height:80px;
+    }
+
+    #vmove {
+        position:relative; border:5px solid #888; background-color:skyblue;
+        width:80px; height:400px; left:310px; top:-500px;
+    }
+    </style>
+    <script src="../../dist/lib/jquery.js"></script>
+    <script src="../../dist/lib/jquery.easing.js"></script>
+    <script src="../../dist/lib/hammer.js"></script>
+    <script src="../../dist/evergreen.js"></script>
+</head>
+<body>
+<div id="area"><div id="dot"></div></div>
+<div id="hmove"></div><div id="vmove"></div>
+<script>
+var $dot = jQuery("#dot");
+var inst = new eg.MovableCoord( {
+     min : [ 0, 0 ],
+     max : [ 300, 400 ],
+     bounce : [ 100, 100, 100, 100 ],
+     margin : [ 0, 100, 100, 0 ],
+     deceleration : 0.0024
+ }).on({
+     "change" : function(e) {
+        console.log(e);
+         $dot.css("left", e.pos[0]).css("top", e.pos[1]);
+     },
+     "animationEnd" : function(e) {
+         console.log(e);
+     }
+
+ });
+ inst.bind('#area', {
+     direction : eg.DIRECTION_ALL,
+     scale : [ 1, 1 ],
+     maximumSpeed : 50/*px/ms*/
+ }).
+ bind('#hmove', {
+     direction : eg.DIRECTION_HORIZONTAL,
+     scale : [ 1, 1 ],
+     maximumSpeed : 50/*px/ms*/
+ }).
+ bind('#vmove', {
+     direction : eg.DIRECTION_VERTICAL,
+     scale : [ 1, 1 ],
+     maximumSpeed : 50/*px/ms*/
+ });
+</script>
+</body>
+</html>

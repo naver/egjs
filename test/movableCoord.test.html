@@ -40,12 +40,10 @@
 	<div id="hmove"></div><div id="vmove"></div>
 	<!-- UI content End -->
  </div>
-<!-- <div id="area"><div id="dot"></div></div>
-<div id="hmove"></div><div id="vmove"></div>
- -->
 <!-- user script files start -->
 <script src="../bower_components/jquery.easing/js/jquery.easing.js"></script>
 <script src="../bower_components/hammerjs/hammer.js"></script>
+<script src="../src/polyfill/requestAnimationFrame.js"></script>
 <script src="../src/polyfill/array.js"></script>
 <script src="../src/polyfill/object.js"></script>
 <script src="../src/polyfill/function.js"></script>
@@ -53,41 +51,6 @@
 <script src="../src/class.js"></script>
 <script src="../src/component.js"></script>
 <script src="../src/movableCoord.js"></script>
-
-<!--script>
-// var $dot = jQuery("#dot");
-// var inst = new eg.MovableCoord([ 200, 200 ], {
-// 		min : [ 0, 0 ],
-// 		max : [ 300, 400 ],
-// 		bounce : [ 100, 100, 100, 100 ],
-// 		margin : [ 0, 100, 100, 0 ],
-// 		deceleration : 0.0024
-// 	}).on({
-
-// 		'change' : function(e) {
-// 			$dot.css("left", e.pos[0]).css("top", e.pos[1]);
-// 		},
-// 		"animationEnd" : function(e) {
-// 			console.log(e);
-// 		}
-
-// 	});
-// 	inst.bind('#area', {
-// 		direction : Hammer.DIRECTION_ALL,
-// 		scale : [ 1, 1 ],
-// 		maximumSpeed : 50/*px/ms*/
-// 	}).
-// 	bind('#hmove', {
-// 		direction : 1,
-// 		scale : [ 1, 1 ],
-// 		maximumSpeed : 50/*px/ms*/
-// 	}).
-// 	bind('#vmove', {
-// 		direction : 4,
-// 		scale : [ 1, 1 ],
-// 		maximumSpeed : 50/*px/ms*/
-// 	});
-</script-->
 
 <!-- test script files start -->
 <script src="js/movableCoord.test.js"></script>
