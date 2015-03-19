@@ -4,3 +4,4 @@ bower_components/
 report
 temp
 dist
+*.log
