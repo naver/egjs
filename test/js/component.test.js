@@ -92,7 +92,31 @@ test("같은 이벤트의 모든 핸들러 해제.",function(){
 	this.oClass.trigger("allOffTest");
 	//Then
 	strictEqual(allOffTestCount,0,"이벤트 이름만 넣으면 한번에 해당 이벤트의 모든 핸들러는 삭제되어야 한다");
-})
+});
+
+test("모든 이벤트 해제.",function(){
+	//Given
+	var allOffTestCount = 0;
+	this.oClass.on("allOffTest",function(oCustomEvent){
+		allOffTestCount++;
+	});
+	this.oClass.on("allOffTest",function(oCustomEvent){
+		allOffTestCount++;
+	});
+	this.oClass.on("allOffTest2",function(oCustomEvent){
+		allOffTestCount++;
+	});
+	this.oClass.on("allOffTest2",function(oCustomEvent){
+		allOffTestCount++;
+	});
+	//When
+	this.oClass.off();
+
+	this.oClass.trigger("allOffTest");
+	this.oClass.trigger("allOffTest2");
+	//Then
+	strictEqual(allOffTestCount,0,"off에 이벤트명이 없으면 컴포넌트의 모든 이벤트들을 해제된다.");
+});
 
 
 	
