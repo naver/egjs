@@ -2,6 +2,11 @@
 
 window.eg = window.eg || {};
 (function(ns) {
+	/**
+	 * Component
+	 * @class
+	 * @name eg.Component
+	 */
 	ns.Component = ns.Class({
 		construct : function() {
 			this._htEventHandler = {};

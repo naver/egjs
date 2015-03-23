@@ -72,15 +72,25 @@ module.exports = function(grunt) {
     watch : {
       source : {
         files : [ "src/**/*.js"],
-        tasks : [ "build" ],
+        tasks : [ "build", "jsdoc" ],
         options : {
           spawn : false
         }
       }
+    },
+    jsdoc : {
+        dist : {
+            src: ["src/**/*.js"],
+            options: {
+                destination: "doc",
+                template : "node_modules/jaguarjs-jsdoc",
+                configure : "jsdoc.json"
+            }
+        }
     }
   });
 
   grunt.registerTask("test", ["jshint", "qunit"]);
-  grunt.registerTask("build", ["jshint", "concat", "uglify", "copy:lib"]);
-  grunt.registerTask("default", ["test", "concat", "uglify", "copy:lib"]);
+  grunt.registerTask("build", ["jshint", "concat", "uglify", "copy:lib", "jsdoc"]);
+  grunt.registerTask("default", ["test", "concat", "uglify", "copy:lib", "jsdoc"]);
 };

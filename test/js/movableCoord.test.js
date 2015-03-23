@@ -3,7 +3,7 @@ module("movableCoord init Test", {
 		this.inst = null;
 	},
 	teardown : function() {
-		this.inst.destruct();
+		this.inst.destroy();
 		this.inst = null;
 	}
 });
@@ -66,7 +66,7 @@ module("movableCoord bind/unbind Test", {
 		});
 	},
 	teardown : function() {
-		this.inst.destruct();
+		this.inst.destroy();
 		this.inst = null;
 	}
 });
@@ -142,7 +142,7 @@ module("movableCoord public methods Test", {
 		});
 	},
 	teardown : function() {
-		this.inst.destruct();
+		this.inst.destroy();
 		this.inst = null;
 	}
 });
@@ -231,7 +231,7 @@ module("movableCoord event Test", {
 		});
 	},
 	teardown : function() {
-		this.inst.destruct();
+		this.inst.destroy();
 		this.inst = null;
 	}
 });

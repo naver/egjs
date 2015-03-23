@@ -1,0 +1,35 @@
+{
+    "tags": {
+        "allowUnknownTags" : true,
+        "dictionaries": ["jsdoc","closure"]
+    },
+    "plugins": ["plugins/markdown"],
+    "templates": {
+        "cleverLinks": true,
+        "monospaceLinks": true,
+        "default": {
+            "outputSourceFiles" : true
+        },
+        "applicationName": "EvergreenJs",
+        "disqus": "",
+        "googleAnalytics": "",
+        "openGraph": {
+            "title": "",
+            "type": "website",
+            "image": "",
+            "site_name": "",
+            "url": ""
+        },
+        "meta": {
+            "title": "EvergreenJs - API",
+            "description": "",
+            "keyword": ""
+        },
+        "linenums": false
+    },
+    "markdown": {
+        "parser": "gfm",
+        "hardwrap": true,
+        "tags": ["examples"]
+    }
+}
