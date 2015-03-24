@@ -14,7 +14,7 @@ module.exports = function(grunt) {
       " Licensed <%= _.pluck(pkg.licenses, 'type').join(", ") %> */\n"
     ].join(""),
     jshint: {
-      files: ["Gruntfile.js", "*.js", "src/**/*.js"],
+      files: ["Gruntfile.js", "*.js", "src/**/*.js" ],
       options: {
         jshintrc: true,
         reporter: require("jshint-stylish")
@@ -49,11 +49,8 @@ module.exports = function(grunt) {
         flatten : true,
         src : [
             "bower_components/jquery/dist/jquery.js",
-            "bower_components/jquery/dist/jquery.min.js",
-            "bower_components/hammerjs/hammer.js",
-            "bower_components/hammerjs/hammer.min.js",
+            "bower_components/hammer.js/hammer.js",
             "bower_components/jquery.easing/js/jquery.easing.js",
-            "bower_components/jquery.easing/js/jquery.easing.min.js"
           ],
         dest : "dist/lib"
       }
@@ -71,10 +68,29 @@ module.exports = function(grunt) {
         }
       },
       all: ["test/**/*.html"]
+    },
+    watch : {
+      source : {
+        files : [ "src/**/*.js"],
+        tasks : [ "build", "jsdoc" ],
+        options : {
+          spawn : false
+        }
+      }
+    },
+    jsdoc : {
+        dist : {
+            src: ["src/**/*.js"],
+            options: {
+                destination: "doc",
+                template : "node_modules/jaguarjs-jsdoc",
+                configure : "jsdoc.json"
+            }
+        }
     }
   });
 
   grunt.registerTask("test", ["jshint", "qunit"]);
-  grunt.registerTask("build", ["jshint", "concat", "uglify", "copy:lib"]);
-  grunt.registerTask("default", ["test", "concat", "uglify", "copy:lib"]);
+  grunt.registerTask("build", ["jshint", "concat", "uglify", "copy:lib", "jsdoc"]);
+  grunt.registerTask("default", ["test", "concat", "uglify", "copy:lib", "jsdoc"]);
 };

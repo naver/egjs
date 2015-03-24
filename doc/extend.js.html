@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>EvergreenJs - API</title>
+    
+    
+    
+    
+    
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"EvergreenJs","disqus":"","googleAnalytics":"","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"EvergreenJs - API","description":"","keyword":""},"linenums":false};
+    </script>
+    
+
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName"><a href="index.html">EvergreenJs</a></h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+    
+        <li class="item" data-name="eg">
+            <span class="title">
+                <a href="eg.html">eg</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="eg.DIRECTION_ALL"><a href="eg.html#DIRECTION_ALL">DIRECTION_ALL</a></li>
+            
+                <li data-name="eg.DIRECTION_DOWN"><a href="eg.html#DIRECTION_DOWN">DIRECTION_DOWN</a></li>
+            
+                <li data-name="eg.DIRECTION_HORIZONTAL"><a href="eg.html#DIRECTION_HORIZONTAL">DIRECTION_HORIZONTAL</a></li>
+            
+                <li data-name="eg.DIRECTION_LEFT"><a href="eg.html#DIRECTION_LEFT">DIRECTION_LEFT</a></li>
+            
+                <li data-name="eg.DIRECTION_NONE"><a href="eg.html#DIRECTION_NONE">DIRECTION_NONE</a></li>
+            
+                <li data-name="eg.DIRECTION_RIGHT"><a href="eg.html#DIRECTION_RIGHT">DIRECTION_RIGHT</a></li>
+            
+                <li data-name="eg.DIRECTION_UP"><a href="eg.html#DIRECTION_UP">DIRECTION_UP</a></li>
+            
+                <li data-name="eg.DIRECTION_VERTICAL"><a href="eg.html#DIRECTION_VERTICAL">DIRECTION_VERTICAL</a></li>
+            
+                <li data-name="eg.VERSION"><a href="eg.html#VERSION">VERSION</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="eg#isHardwareAccelerable"><a href="eg.html#isHardwareAccelerable">isHardwareAccelerable</a></li>
+            
+                <li data-name="eg#translate"><a href="eg.html#translate">translate</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="eg.Class">
+            <span class="title">
+                <a href="eg.Class.html">eg.Class</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="eg.Component">
+            <span class="title">
+                <a href="eg.Component.html">eg.Component</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="eg.MovableCoord">
+            <span class="title">
+                <a href="eg.MovableCoord.html">eg.MovableCoord</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="eg.MovableCoord#bind"><a href="eg.MovableCoord.html#bind">bind</a></li>
+            
+                <li data-name="eg.MovableCoord#destroy"><a href="eg.MovableCoord.html#destroy">destroy</a></li>
+            
+                <li data-name="eg.MovableCoord#get"><a href="eg.MovableCoord.html#get">get</a></li>
+            
+                <li data-name="eg.MovableCoord#setBy"><a href="eg.MovableCoord.html#setBy">setBy</a></li>
+            
+                <li data-name="eg.MovableCoord#setTo"><a href="eg.MovableCoord.html#setTo">setTo</a></li>
+            
+                <li data-name="eg.MovableCoord#unbind"><a href="eg.MovableCoord.html#unbind">unbind</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+    </ul>
+</div>
+    <div class="main">
+        <h1 class="page-title" data-filename="extend.js.html">Source: extend.js</h1>
+        
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source "><code>"use strict";
+(function($, global) {
+	/**
+	 * @namespace eg
+	 */
+	var ua = navigator.userAgent,
+		checkDefaults = function(method) {
+			var v = null;
+			if(typeof eg.defaults[method] === "function") {
+				v = eg.defaults[method](agent);
+			}
+			return v;
+		},
+		agent = (function() {
+			var osMatch = /(iPhone|iPad) OS ([\w.]+)/.exec(ua) ||
+					/(Android) ([\w.]+)/.exec(ua) ||
+					[],
+				browserMatch = /(Chrome|CriOS)[ \/]([\w.]+)/.exec(ua) ||
+					[];
+			if(osMatch.length >= 2) {
+				osMatch[1] = /iPhone|iPad/.test(osMatch[1]) ? "ios" : osMatch[1].toLowerCase() ;
+				osMatch[2] = osMatch[2].replace(/\_/g,".").replace(/\s/g, "");
+			}
+			if(browserMatch.length >= 2) {
+				if(/Chrome|CriOS/.test(browserMatch[1])) {
+					browserMatch[1] = /SAMSUNG/.test(ua) ? "sbrowser" : "chrome";
+				}
+			}
+			return {
+				os: osMatch[1] || "",
+				osVersion: osMatch[2] || "0",
+				browser : browserMatch[1] || "default",
+				browserVersion : browserMatch[2] || osMatch[2],
+			};
+		})();
+	global.eg = {
+		/**
+		 * @name eg.VERSION
+		 * @description version infomation
+	       */
+		VERSION : "#__VERSION__#",
+		defaults : {},
+		// __checkLibrary__ : function(condition, message) {
+		// 	if(condition) {
+		// 		throw {
+		// 			message : message,
+		// 			type : "[Evergreen]",
+		// 			toString : function() {
+		// 				return this.type + " " +this.message;
+		// 			}
+		// 		};
+		// 	}
+		// },
+		/**
+		 * get a translate string.
+		 *
+		 * @method eg#translate
+		 * @param {String} x
+		 * @param {String} y
+		 * @param {Boolean} [isHA]
+		 * @return {String}
+		 * @example
+eg.translate('10px', '200%');  // translate(10px,200%)
+eg.translate('10px', '200%', true);  // translate3d(10px,200%,0)
+		 */
+		translate : function(x,y, isHA) {
+			isHA = isHA || false;
+			return "translate" + (isHA ? "3d(" : "(") + x + "," + y + (isHA ? ",0)" : ")");
+		},
+		/**
+		 * if your device could use a hardware acceleration, this method returns "true"
+		 *
+		 * @method eg#isHardwareAccelerable
+		 * @param {Function} [interrupt function]
+		 * @return {Boolean}
+		 * @example
+eg.isHardwareAccelerable();  // if your device could use a hardware acceleration, this method returns "true".
+		 */
+		isHardwareAccelerable : function() {
+			var check = checkDefaults("isHardwareAccelerable");
+			if( check != null ) {
+				return check;
+			} else {
+				var result = false;
+				// chrome (less then 25) has a text blur bug.
+				// but samsung sbrowser fix it.
+				if(/chrome/.test(agent.browser) && agent.browserVersion &lt; "25") {
+					// result = false;
+				} else if(/android/.test(agent.os)) {
+					var ua = ua.match(/\(.*\)/);
+					if(ua instanceof Array && ua.length > 0){
+						ua=ua[0];
+					}
+					// android 4.1+ blacklist
+					// EK-GN120 : Galaxy Camera, SM-G386F : Galaxy Core LTE
+					result = (agent.osVersion >= "4.1.0" && !/EK-GN120|SM-G386F/.test(ua)) ||
+						// SHW-M420 : Galaxy Nexus , SHW-M200 : NexusS , GT-S7562 : Galaxy S duos
+						(agent.osVersion >= "4.0.3" &&
+							/SHW-|SHV-|GT-|SCH-|SGH-|SPH-|LG-F160|LG-F100|LG-F180|LG-F200|EK-|IM-A|LG-F240|LG-F260/.test(ua) &&
+							!/SHW-M420|SHW-M200|GT-S7562/.test(ua));
+				} else if(/ios/.test(agent.os)) {
+					result = true;
+				}
+				return result;
+			}
+		}
+	};
+
+	/**
+	 * @name eg.DIRECTION_NONE
+	 * @constant
+    	 * @type {Number}
+       */
+	global.eg.DIRECTION_NONE = 1;
+	/**
+	 * @name eg.DIRECTION_LEFT
+	 * @constant
+    	 * @type {Number}
+       */
+	global.eg.DIRECTION_LEFT = 2;
+	/**
+	 * @name eg.DIRECTION_RIGHT
+	 * @constant
+    	 * @type {Number}
+       */
+	global.eg.DIRECTION_RIGHT = 4;
+	/**
+	 * @name eg.DIRECTION_UP
+	 * @constant
+    	 * @type {Number}
+       */
+	global.eg.DIRECTION_UP = 8;
+	/**
+	 * @name eg.DIRECTION_DOWN
+	 * @constant
+    	 * @type {Number}
+       */
+	global.eg.DIRECTION_DOWN = 16;
+	/**
+	 * @name eg.DIRECTION_HORIZONTAL
+	 * @constant
+    	 * @type {Number}
+       */
+	global.eg.DIRECTION_HORIZONTAL = global.eg.DIRECTION_LEFT | global.eg.DIRECTION_RIGHT;
+	/**
+	 * @name eg.DIRECTION_VERTICAL
+	 * @constant
+    	 * @type {Number}
+       */
+	global.eg.DIRECTION_VERTICAL = global.eg.DIRECTION_UP | global.eg.DIRECTION_DOWN;
+	/**
+	 * @name eg.DIRECTION_ALL
+	 * @constant
+    	 * @type {Number}
+       */
+	global.eg.DIRECTION_ALL = global.eg.DIRECTION_HORIZONTAL | global.eg.DIRECTION_VERTICAL;
+})(jQuery, window);</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Mon Mar 23 2015 15:34:39 GMT+0900 (KST)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

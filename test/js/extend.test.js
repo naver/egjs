@@ -26,11 +26,21 @@ test("determine the return value of a 'isHardwareAccelerable' function", functio
 });
 
 test("pass the return value of a 'isHardwareAccelerable' function", function() {
+	var result;
 	// Given
-	var result = eg.isHardwareAccelerable();
+	result = eg.isHardwareAccelerable();
 	// When
 	eg.defaults.isHardwareAccelerable = function(agent) {
 		return null;
+	};
+	// Then
+	equal(result, eg.isHardwareAccelerable(), "pass default value");
+
+	// Given
+	result = eg.isHardwareAccelerable();
+	// When
+	eg.defaults.isHardwareAccelerable = function(agent) {
+		// undefined
 	};
 	// Then
 	equal(result, eg.isHardwareAccelerable(), "pass default value");
@@ -47,6 +57,17 @@ test("remove 'defaults' function", function() {
 	delete eg.defaults.isHardwareAccelerable;
 	// Then
 	equal(result, eg.isHardwareAccelerable(), "pass default value");
+});
+
+test("translate function", function() {
+	// Given
+	// When
+	var x = "20px";
+	var y = "300px";
+	// Then
+	equal(eg.translate(x,y), "translate(20px,300px)", "When HardwareAcceleration was undefined");
+	equal(eg.translate(x,y, false), "translate(20px,300px)", "When HardwareAcceleration was false");
+	equal(eg.translate(x,y, true), "translate3d(20px,300px,0)", "When HardwareAcceleration was true");
 });
 
 //@todo multi agent test

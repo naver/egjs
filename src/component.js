@@ -2,6 +2,11 @@
 
 window.eg = window.eg || {};
 (function(ns) {
+	/**
+	 * Component
+	 * @class
+	 * @name eg.Component
+	 */
 	ns.Component = ns.Class({
 		construct : function() {
 			this._htEventHandler = {};
@@ -12,13 +17,13 @@ window.eg = window.eg || {};
 			oEvent = oEvent || {};
 			var aHandlerList = this._htEventHandler[sEvent] || [],
 				bHasHandlerList = aHandlerList.length > 0;
-				
+
 			if (!bHasHandlerList) {
 				return true;
 			}
 			// If detach method call in handler in first time then handeler list calls.
-			aHandlerList = aHandlerList.concat(); 
-			
+			aHandlerList = aHandlerList.concat();
+
 			oEvent.eventType = sEvent;
 
 			var bCanceled = false;
@@ -27,19 +32,19 @@ window.eg = window.eg || {};
 			};
 
 			var aArg = [oEvent], i, nLen;
-			
+
 
 			if((nLen = arguments.length)>2){
 				aArg = aArg.concat(Array.prototype.slice.call(arguments,2,nLen));
 			}
 
-			
+
 			var fHandler;
 			for (i = 0, fHandler; (fHandler = aHandlerList[i]); i++) {
 				fHandler.apply(this, aArg);
 			}
-			
-			
+
+
 			return !bCanceled;
 		},
 
@@ -51,15 +56,15 @@ window.eg = window.eg || {};
 				}
 				return this;
 			}
-			
+
 			var aHandler = this._htEventHandler[sEvent];
-			
+
 			if (typeof aHandler === "undefined"){
 				aHandler = this._htEventHandler[sEvent] = [];
 			}
-			
+
 			aHandler.push(fHandlerToAttach);
-			
+
 			return this;
 		},
 		off : function(sEvent, fHandlerToDetach) {
@@ -68,7 +73,7 @@ window.eg = window.eg || {};
 				this._htEventHandler = {};
 				return this;
 			}
-			
+
 			// All handler of specific event detach.
 			if (typeof fHandlerToDetach === "undefined") {
 				if (typeof sEvent === "string"){
@@ -76,7 +81,7 @@ window.eg = window.eg || {};
 					return this;
 				} else {
 					var oEvent = sEvent;
-					for (var i in oEvent){ 
+					for (var i in oEvent){
 						if(oEvent.hasOwnProperty(i)) {
 							this.off(i, oEvent[i]);
 						}

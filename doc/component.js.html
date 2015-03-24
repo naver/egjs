@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>EvergreenJs - API</title>
+    
+    
+    
+    
+    
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"EvergreenJs","disqus":"","googleAnalytics":"","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"EvergreenJs - API","description":"","keyword":""},"linenums":false};
+    </script>
+    
+
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName"><a href="index.html">EvergreenJs</a></h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+    
+        <li class="item" data-name="eg">
+            <span class="title">
+                <a href="eg.html">eg</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="eg.DIRECTION_ALL"><a href="eg.html#DIRECTION_ALL">DIRECTION_ALL</a></li>
+            
+                <li data-name="eg.DIRECTION_DOWN"><a href="eg.html#DIRECTION_DOWN">DIRECTION_DOWN</a></li>
+            
+                <li data-name="eg.DIRECTION_HORIZONTAL"><a href="eg.html#DIRECTION_HORIZONTAL">DIRECTION_HORIZONTAL</a></li>
+            
+                <li data-name="eg.DIRECTION_LEFT"><a href="eg.html#DIRECTION_LEFT">DIRECTION_LEFT</a></li>
+            
+                <li data-name="eg.DIRECTION_NONE"><a href="eg.html#DIRECTION_NONE">DIRECTION_NONE</a></li>
+            
+                <li data-name="eg.DIRECTION_RIGHT"><a href="eg.html#DIRECTION_RIGHT">DIRECTION_RIGHT</a></li>
+            
+                <li data-name="eg.DIRECTION_UP"><a href="eg.html#DIRECTION_UP">DIRECTION_UP</a></li>
+            
+                <li data-name="eg.DIRECTION_VERTICAL"><a href="eg.html#DIRECTION_VERTICAL">DIRECTION_VERTICAL</a></li>
+            
+                <li data-name="eg.VERSION"><a href="eg.html#VERSION">VERSION</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="eg#isHardwareAccelerable"><a href="eg.html#isHardwareAccelerable">isHardwareAccelerable</a></li>
+            
+                <li data-name="eg#translate"><a href="eg.html#translate">translate</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="eg.Class">
+            <span class="title">
+                <a href="eg.Class.html">eg.Class</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="eg.Component">
+            <span class="title">
+                <a href="eg.Component.html">eg.Component</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="eg.MovableCoord">
+            <span class="title">
+                <a href="eg.MovableCoord.html">eg.MovableCoord</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="eg.MovableCoord#bind"><a href="eg.MovableCoord.html#bind">bind</a></li>
+            
+                <li data-name="eg.MovableCoord#destroy"><a href="eg.MovableCoord.html#destroy">destroy</a></li>
+            
+                <li data-name="eg.MovableCoord#get"><a href="eg.MovableCoord.html#get">get</a></li>
+            
+                <li data-name="eg.MovableCoord#setBy"><a href="eg.MovableCoord.html#setBy">setBy</a></li>
+            
+                <li data-name="eg.MovableCoord#setTo"><a href="eg.MovableCoord.html#setTo">setTo</a></li>
+            
+                <li data-name="eg.MovableCoord#unbind"><a href="eg.MovableCoord.html#unbind">unbind</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+    </ul>
+</div>
+    <div class="main">
+        <h1 class="page-title" data-filename="component.js.html">Source: component.js</h1>
+        
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source "><code>"use strict";
+
+window.eg = window.eg || {};
+(function(ns) {
+	/**
+	 * Component
+	 * @class
+	 * @name eg.Component
+	 */
+	ns.Component = ns.Class({
+		construct : function() {
+			this._htEventHandler = {};
+			// The reference count is not support yet.
+			// this.constructor.$count = (this.constructor.$count || 0) + 1;
+		},
+		trigger : function(sEvent, oEvent) {
+			oEvent = oEvent || {};
+			var aHandlerList = this._htEventHandler[sEvent] || [],
+				bHasHandlerList = aHandlerList.length > 0;
+
+			if (!bHasHandlerList) {
+				return true;
+			}
+			// If detach method call in handler in first time then handeler list calls.
+			aHandlerList = aHandlerList.concat();
+
+			oEvent.eventType = sEvent;
+
+			var bCanceled = false;
+			oEvent.stop = function(){
+				bCanceled = true;
+			};
+
+			var aArg = [oEvent], i, nLen;
+
+
+			if((nLen = arguments.length)>2){
+				aArg = aArg.concat(Array.prototype.slice.call(arguments,2,nLen));
+			}
+
+
+			var fHandler;
+			for (i = 0, fHandler; (fHandler = aHandlerList[i]); i++) {
+				fHandler.apply(this, aArg);
+			}
+
+
+			return !bCanceled;
+		},
+
+		on : function(sEvent, fHandlerToAttach) {
+			if (typeof fHandlerToAttach === "undefined") {
+				var oEvent = sEvent;
+				for(var i in oEvent){
+					this.on(i, oEvent[i]);
+				}
+				return this;
+			}
+
+			var aHandler = this._htEventHandler[sEvent];
+
+			if (typeof aHandler === "undefined"){
+				aHandler = this._htEventHandler[sEvent] = [];
+			}
+
+			aHandler.push(fHandlerToAttach);
+
+			return this;
+		},
+		off : function(sEvent, fHandlerToDetach) {
+			// All event detach.
+			if (arguments.length === 0){
+				this._htEventHandler = {};
+				return this;
+			}
+
+			// All handler of specific event detach.
+			if (typeof fHandlerToDetach === "undefined") {
+				if (typeof sEvent === "string"){
+					this._htEventHandler[sEvent] = null;
+					return this;
+				} else {
+					var oEvent = sEvent;
+					for (var i in oEvent){
+						if(oEvent.hasOwnProperty(i)) {
+							this.off(i, oEvent[i]);
+						}
+					}
+					return this;
+				}
+			}
+
+			// The handler of specific event detach.
+			var aHandler = this._htEventHandler[sEvent];
+			if (aHandler) {
+				for (var k = 0, fHandler; (fHandler = aHandler[k]); k++) {
+					if (fHandler === fHandlerToDetach) {
+						aHandler = aHandler.splice(k, 1);
+						break;
+					}
+				}
+			}
+
+			return this;
+		}
+	});
+})(eg);
+
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Mon Mar 23 2015 15:34:39 GMT+0900 (KST)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

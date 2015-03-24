@@ -1,6 +1,11 @@
 "use strict";
 (function(ns) {
-    ns.Class = function(oDef) {
+	/**
+	 * Class
+	 * @class
+	 * @name eg.Class
+	 */
+    	ns.Class = function(oDef) {
 		var typeClass = function typeClass() {
 			if (typeof oDef.construct === "function") {
 				oDef.construct.apply(this, arguments);
