@@ -351,6 +351,15 @@ module("extend Agent Test", {
 				"browser" : "safari",
 				"browserVersion" : "8.0.3",
 				"isHardwareAccelerable" : true
+			},
+			{
+				// Phantomjs (default value)
+				"ua" : "Mozilla/5.0 (Macintosh; Intel Mac OS X) AppleWebKit/534.34 (KHTML, like Gecko) PhantomJS/1.9.8 Safari/534.34",
+				"os" : "",
+				"osVersion" : "0",
+				"browser" : "default",
+				"browserVersion" : "0",
+				"isHardwareAccelerable" : false
 			}
 		]
 	},

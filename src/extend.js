@@ -65,7 +65,7 @@
 					}
 				}
 				if(browserMatch.length === 0) {
-					if(osMatch[1] !== "android") {
+					if(osMatch[1] && osMatch[1] !== "android" ) {
 						browserMatch = /(Safari)\/([\w.]+)/.exec(ua) || [];
 						browserMatch[1] = browserMatch[1].toLowerCase();
 						if(browserMatch[1] === "safari") {
@@ -82,7 +82,7 @@
 					os: osMatch[1] || "",
 					osVersion: osMatch[2] || "0",
 					browser : browserMatch[1] || "default",
-					browserVersion : browserMatch[2] || osMatch[2] || ""
+					browserVersion : browserMatch[2] || osMatch[2] || "0"
 				};
 			})();
 			this.agent = agent;

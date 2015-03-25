@@ -273,9 +273,9 @@ asyncTest("slow movement test (no-velocity)", function() {
 	// When
 	Simulator.gestures.pan(el, {
 		pos: [0, 0],
-            deltaX: 100,
-            deltaY: 100,
-            duration: 5000,
+            deltaX: 10,
+            deltaY: 10,
+            duration: 3000,
             easing: "linear"
 	}, function() {
 		// Then
