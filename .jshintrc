@@ -18,6 +18,7 @@
         "jQuery" : true,
         "eg" : true,
         "window" : true,
+        "document" : true,
         "Hammer" : true,
         "navigator" : true,
         "requestAnimationFrame" : true,
