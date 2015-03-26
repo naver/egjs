@@ -389,10 +389,11 @@ eg.defaults.isHardwareAccelerable = function(agent) {
 (function(ns) {
 	/**
 	 * Class
+	 * The Class() object uses the eg to implement the application using object-oriented programming.
 	 * @class
 	 * @name eg.Class
 	 */
-    	ns.Class = function(oDef) {
+    ns.Class = function(oDef) {
 		var typeClass = function typeClass() {
 			if (typeof oDef.construct === "function") {
 				oDef.construct.apply(this, arguments);
@@ -403,6 +404,14 @@ eg.defaults.isHardwareAccelerable = function(agent) {
 		typeClass.prototype.constructor = typeClass;
 		return typeClass;
 	};
+	/**
+	 * The extend() method extends a specific class.
+	 * @static
+	 * @method eg.Class.extend
+	 * @param {Class} oSuperClass
+	 * @param {Object} oDef
+	 * @return {Class}
+	 */
 
 	ns.Class.extend = function(oSuperClass, oDef) {
 		var extendClass = function extendClass() {
@@ -1025,7 +1034,7 @@ window.eg = window.eg || {};
 		 * @method eg.MovableCoord#setTo
 		 * @param {Number} x
 		 * @param {Number} y
-		 * @return {Array}
+		 * @return {Instance}
 		 */
 		setTo : function(x, y) {
 			this._grab();
