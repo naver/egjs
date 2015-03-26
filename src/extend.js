@@ -44,9 +44,8 @@
 						/(Windows) ([\w|\.]+)/.exec(ua) ||
 						/(Mac OS X) ([\w.]+)/.exec(ua) ||
 						[],
-					browserMatch = /(Chrome|CriOS)[ \/]([\w.]+)/.exec(ua) ||
+					browserMatch = /(Chrome|CriOS|Firefox)[\s\/]([\w.]+)/.exec(ua) ||
 						/(MSIE|Trident)[\/\s]([\d.]+)/.exec(ua) ||
-						/(Firefox)\/([\w.]+)/.exec(ua) ||
 						[],
 					nativeVersion, m;
 
@@ -67,7 +66,6 @@
 
 				// browser
 				if(browserMatch.length >= 3) {
-					// console.error(browserMatch[0], "---",  browserMatch[1], "---",  browserMatch[2]  );
 					if(/Chrome|CriOS/.test(ua)) {
 						browserMatch[1] = /SAMSUNG/.test(ua) ? "sbrowser" : "chrome";
 					} else if(/MSIE|Trident/.test(ua)) {
@@ -91,7 +89,6 @@
 					browserMatch = /(Safari)\/([\w.]+)/.exec(ua) || [];
 					browserMatch[1] = browserMatch[1].toLowerCase();
 					if(/safari/.test(browserMatch[1]) ) {
-						// console.warn(browserMatch[0], "---",  browserMatch[1], "---",  browserMatch[2] , /Apple/.test(ua), ua);
 						browserMatch[2] = /Apple/.test(ua) ? ua.match(/Version\/([\d.]+)/)[1] : null;
 					}
 				}
