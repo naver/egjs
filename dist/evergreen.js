@@ -159,6 +159,8 @@ window.cancelAnimationFrame = caf;
 			return v;
 		};
 
+
+
 	global.eg = {
 		/**
 		 * @name eg.VERSION
@@ -166,21 +168,20 @@ window.cancelAnimationFrame = caf;
 	       */
 		VERSION : "0.0.1",
 		defaults : {},
-		_init : function(useragent) {
+		_init : function(useragent, dm) {
 			ua = useragent || navigator.userAgent;
-
+			dm = dm || document.documentMode || -1;
 			/**
 			 * Agent
 			 * @method eg#agent
 			 * @return {Object} agent
 			 * @return {String} agent.os os infomation
 			 * @return {String} agent.os.name os name (android, ios, window, mac)
-			 * @return {String} agent.os.name os version
+			 * @return {String} agent.os.version os version
 			 * @return {String} agent.browser browser information
 			 * @return {String} agent.browser.name browser name (default, safari, chrome, sbrowser, ie, firefox)
 			 * @return {String} agent.browser.version browser version
-			 * @return {String} agent.browser browser type
-			 * @return {String} agent.browserVersion browser version
+			 * @return {String} agent.browser.nativeVersion browser version (in case of ie)
 			 */
 			agent = (function() {
 				var osMatch = /(iPhone |iPad )?OS ([\d|_]+)/.exec(ua) ||
@@ -193,55 +194,64 @@ window.cancelAnimationFrame = caf;
 					browserMatch = /(Chrome|CriOS)[ \/]([\w.]+)/.exec(ua) ||
 						/(MSIE|Trident)[\/\s]([\d.]+)/.exec(ua) ||
 						/(Firefox)\/([\w.]+)/.exec(ua) ||
-						[];
+						[],
+					nativeVersion, m;
+
+				// os
 				if(osMatch.length >= 3) {
 					if(/iPhone|iPad/.test(ua)) {
 						osMatch[1] = "ios";
 					} else if(/Win/.test(ua)) {
 						osMatch[1] = "window";
+						osMatch[2] = osMatch[2] === "2000" ? "5.0" : osMatch[2]; // for window 2000
 					} else if(/Mac/.test(ua)) {
 						osMatch[1] = "mac";
 					} else {
 						osMatch[1] = osMatch[1].toLowerCase();
 					}
-					// in case of window 2000
-					if( /Win/.test(ua) && osMatch[2] === "2000" ) {
-						osMatch[2] = "5.0";
-					}
 					osMatch[2] = osMatch[2].replace(/\_/g,".").replace(/\s/g, "");
 				}
+
+				// browser
 				if(browserMatch.length >= 3) {
 					// console.error(browserMatch[0], "---",  browserMatch[1], "---",  browserMatch[2]  );
 					if(/Chrome|CriOS/.test(ua)) {
 						browserMatch[1] = /SAMSUNG/.test(ua) ? "sbrowser" : "chrome";
 					} else if(/MSIE|Trident/.test(ua)) {
 						browserMatch[1] = "ie";
+						// nativeVersion
+						if(dm > 0) {
+							if(m = /(Trident)[\/\s]([\d.]+)/.exec(ua)) {
+								if(m[2] > 3) {
+									nativeVersion = parseFloat(m[2],10) + 4;
+								}
+							} else {
+								nativeVersion = dm;
+							}
+						} else {
+							nativeVersion = browserMatch[2];
+						}
 					} else {
 						browserMatch[1] = browserMatch[1].toLowerCase();
 					}
-				}
-				if(browserMatch.length === 0) {
-					if(osMatch[1] && osMatch[1] !== "android" ) {
-						browserMatch = /(Safari)\/([\w.]+)/.exec(ua) || [];
-						browserMatch[1] = browserMatch[1].toLowerCase();
-						if(/safari/.test(browserMatch[1]) ) {
-							// console.warn(browserMatch[0], "---",  browserMatch[1], "---",  browserMatch[2] , /Apple/.test(ua), ua);
-							if(/Apple/.test(ua)) {
-								browserMatch[2] = ua.match(/Version\/([\d.]+)/)[1];
-							} else {
-								browserMatch[2] = null;
-							}
-						}
+				} else if(browserMatch.length === 0 && osMatch[1] && osMatch[1] !== "android") {
+					browserMatch = /(Safari)\/([\w.]+)/.exec(ua) || [];
+					browserMatch[1] = browserMatch[1].toLowerCase();
+					if(/safari/.test(browserMatch[1]) ) {
+						// console.warn(browserMatch[0], "---",  browserMatch[1], "---",  browserMatch[2] , /Apple/.test(ua), ua);
+						browserMatch[2] = /Apple/.test(ua) ? ua.match(/Version\/([\d.]+)/)[1] : null;
 					}
 				}
+
 				return {
 					os: {
 						name : osMatch[1] || "",
-						version: osMatch[2] || "0"
+						version: osMatch[2] || "-1"
 					},
 					browser : {
 						name : browserMatch[1] || "default",
-						version : browserMatch[2] || osMatch[2] || "0"
+						version : browserMatch[2] || osMatch[2] || "-1",
+						nativeVersion : (nativeVersion + "") || "-1"
 					}
 				};
 			})();
@@ -278,12 +288,11 @@ eg.translate('10px', '200%', true);  // translate3d(10px,200%,0)
 		 * if your device could use a hardware acceleration, this method returns "true"
 		 *
 		 * @method eg#isHardwareAccelerable
-		 * @param {Function} [interrupt function]
 		 * @return {Boolean}
 		 * @example
 eg.isHardwareAccelerable();  // if your device could use a hardware acceleration, this method returns "true".
 
-// you can control return value
+// also, you can control return value
 eg.defaults.isHardwareAccelerable = function(agent) {
 	if(agent.os.name === "ios") {
 		// if os is 'ios', return value is 'false'
@@ -310,16 +319,12 @@ eg.defaults.isHardwareAccelerable = function(agent) {
 				// chrome (less then 25) has a text blur bug.
 				// but samsung sbrowser fix it.
 				if(/chrome/.test(browser)) {
-					if(browserVersion >= "25") {
-						result = true;
-					}
+					result = browserVersion >= "25";
 				} else if(/ie|firefox|safari/.test(browser)) {
 					result = true;
 				} else if(/android/.test(agent.os.name)) {
-					var useragent = ua.match(/\(.*\)/);
-					if(useragent instanceof Array && useragent.length > 0){
-						useragent=useragent[0];
-					}
+					var useragent = (ua.match(/\(.*\)/) || [null])[0];
+
 					// android 4.1+ blacklist
 					// EK-GN120 : Galaxy Camera, SM-G386F : Galaxy Core LTE
 					result = (osVersion >= "4.1.0" && !/EK-GN120|SM-G386F/.test(useragent)) ||

@@ -483,11 +483,11 @@ module("extend Agent Test", {
 				"ua" : "Mozilla/5.0 (Macintosh; Intel Mac OS X) AppleWebKit/534.34 (KHTML, like Gecko) PhantomJS/1.9.8 Safari/534.34",
 				"os" : {
 					"name" : "",
-					"version" : "0"
+					"version" : "-1"
 				},
 				"browser" : {
 					"name" : "default",
-					"version" : "0"
+					"version" : "-1"
 				},
 				"isHardwareAccelerable" : false
 			},
@@ -543,8 +543,6 @@ module("extend Agent Test", {
 				},
 				"isHardwareAccelerable" : true
 			},
-
-
 			{
 				// Window 2000 && ie6
 				"ua" : "Mozilla/4.0 (compatible; MSIE 6.0; Windows 2000)",
@@ -567,9 +565,11 @@ module("extend Agent Test", {
 				},
 				"browser" : {
 					"name" : "ie",
-					"version" : "7.0"
+					"version" : "7.0",
+					"nativeVersion" : "8"
 				},
-				"isHardwareAccelerable" : true
+				"_documentMode" : 8,
+				"isHardwareAccelerable" : true,
 			},
 			{
 				// Window 2000 && IE8에서 호환모드
@@ -580,8 +580,10 @@ module("extend Agent Test", {
 				},
 				"browser" : {
 					"name" : "ie",
-					"version" : "7.0"
+					"version" : "7.0",
+					"nativeVersion" : "8"
 				},
+				"_documentMode" : 9,
 				"isHardwareAccelerable" : true
 			},
 			{
@@ -593,12 +595,14 @@ module("extend Agent Test", {
 				},
 				"browser" : {
 					"name" : "ie",
-					"version" : "7.0"
+					"version" : "7.0",
+					"nativeVersion" : "9"
 				},
+				"_documentMode" : 7,
 				"isHardwareAccelerable" : true
 			},
 			{
-				// IE11, IE11 호환성
+				// IE11
 				"ua" : "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; Touch; .NET4.0E; .NET4.0C; Tablet PC 2.0; rv:11.0) like Gecko",
 				"os" : {
 					"name" : "window",
@@ -606,8 +610,25 @@ module("extend Agent Test", {
 				},
 				"browser" : {
 					"name" : "ie",
-					"version" : "7.0"
+					"version" : "7.0",
+					"nativeVersion" : "11"
 				},
+				"_documentMode" : 11,
+				"isHardwareAccelerable" : true
+			},
+			{
+				// IE11 호환성
+				"ua" : "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; Touch; .NET4.0E; .NET4.0C; Tablet PC 2.0; rv:11.0) like Gecko",
+				"os" : {
+					"name" : "window",
+					"version" : "6.3"
+				},
+				"browser" : {
+					"name" : "ie",
+					"version" : "7.0",
+					"nativeVersion" : "11"
+				},
+				"_documentMode" : 7,
 				"isHardwareAccelerable" : true
 			},
 			{
@@ -640,6 +661,19 @@ test("agent Test", function() {
 		equal(v.os.version, eg.agent.os.version, "check os Version");
 		equal(v.browser.name, eg.agent.browser.name, "check browser name");
 		equal(v.browser.version, eg.agent.browser.version, "check browser Version");
+	});
+});
+
+test("agent nativeVersion Test", function() {
+	// Given
+	// When
+	ua.forEach(function(v) {
+		if(v._documentMode) {
+			eg._init(v.ua, v._documentMode);
+
+			//Then
+			equal(v.browser.nativeVersion, eg.agent.browser.nativeVersion, "check browser native Version: " + v.ua);
+		}
 	});
 });
 
