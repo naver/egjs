@@ -2,10 +2,11 @@
 (function(ns) {
 	/**
 	 * Class
+	 * The Class() object uses the eg to implement the application using object-oriented programming.
 	 * @class
 	 * @name eg.Class
 	 */
-    	ns.Class = function(oDef) {
+    ns.Class = function(oDef) {
 		var typeClass = function typeClass() {
 			if (typeof oDef.construct === "function") {
 				oDef.construct.apply(this, arguments);
@@ -16,6 +17,14 @@
 		typeClass.prototype.constructor = typeClass;
 		return typeClass;
 	};
+	/**
+	 * The extend() method extends a specific class.
+	 * @static
+	 * @method eg.Class.extend
+	 * @param {Class} oSuperClass
+	 * @param {Object} oDef
+	 * @return {Class}
+	 */
 
 	ns.Class.extend = function(oSuperClass, oDef) {
 		var extendClass = function extendClass() {
