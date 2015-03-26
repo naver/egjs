@@ -25,8 +25,8 @@ test("객체로 등록한 경우",function(){
 		"test3" : noop
 	});
 	//Then
-	strictEqual(returnVal._htEventHandler.test2.length,1,"test2에 정상적으로 동록해야 한다.");
-	strictEqual(returnVal._htEventHandler.test3.length,1,"test3에 정상적으로 동록해야 한다.");
+	strictEqual(returnVal.eventHandler.test2.length,1,"test2에 정상적으로 동록해야 한다.");
+	strictEqual(returnVal.eventHandler.test3.length,1,"test3에 정상적으로 동록해야 한다.");
 	strictEqual(returnVal, this.oClass, "객체타입으로도 설정할 수 있고 해당 객체 인스턴스를 리턴한다.");
 });
 
@@ -42,7 +42,7 @@ test("기본 기능",function(){
 	this.oClass.on("customEvent", noop);
 	//When
 	var oClass = this.oClass.off("customEvent", noop);
-	var nHandlerLength = this.oClass._htEventHandler["customEvent"].length;
+	var nHandlerLength = this.oClass.eventHandler["customEvent"].length;
 	//Then
 	strictEqual(oClass , this.oClass, "커스텀이벤트 핸들러를 해제하면 해당 객체 인스턴스를 리턴한다.");
 	strictEqual(nHandlerLength ,0, "등록된 핸들러 배열의 길이가 줄어들어야 한다.");
@@ -54,7 +54,7 @@ test("존재하지 않은 커스텀이벤트 핸들러를 해제",function(){
 	//When
 	var oClass = this.oClass.off("noevent", noop);
 	//Then
-	strictEqual(oClass._htEventHandler.test1.length,1,"기존에 있는 테스트는 해제가 안된다.");
+	strictEqual(oClass.eventHandler.test1.length,1,"기존에 있는 테스트는 해제가 안된다.");
 	strictEqual( oClass, this.oClass, "존재하지 않는 커스텀이벤트 핸들러를 해제하면 해당 객체 인스턴스를 리턴한다.");
 });
 
@@ -200,4 +200,26 @@ test("여러개 핸들러를 등록한 경우",function(){
 	var result = this.oClass.trigger("test");
 	//Then
 	ok( result === false, "하나의 커스텀이벤트에 여러개의 핸들러를 수행시키면 하나의 핸들러라도 stop() 메소드가 수행되면 false를 리턴한다.");
+});
+
+
+
+module("hasOn 메서드", {
+	setup : function(){
+		this.oClass = new TestClass();
+	}
+});
+
+test("이벤트가 있는/없는 경우",function(){
+	//Given
+	this.oClass.on("test", noop);
+	//When
+	var result = this.oClass.hasOn("test");
+	//Then
+	ok( result, "이벤트가 있는 경우.");
+
+	//When
+	var result2 = this.oClass.hasOn("test2");
+	//Then
+	ok( !result2, "이벤트가 없는 경우.");
 });
