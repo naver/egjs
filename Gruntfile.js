@@ -57,6 +57,7 @@ module.exports = function(grunt) {
     },
     qunit : {
       options : {
+        timeout : 10000,
         "--web-security": "no",
         coverage: {
           disposeCollector: true,

@@ -80,6 +80,8 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="eg#agent"><a href="eg.html#agent">agent</a></li>
+            
                 <li data-name="eg#isHardwareAccelerable"><a href="eg.html#isHardwareAccelerable">isHardwareAccelerable</a></li>
             
                 <li data-name="eg#translate"><a href="eg.html#translate">translate</a></li>
@@ -624,6 +626,167 @@
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="agent">
+            
+            agent<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="extend.js.html">extend.js</a>, <a href="extend.js.html#line25">line 25</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Agent</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            <td class="name"><code>agent</code></td>
+            <td class="type">
+            
+                        Object
+                        
+                    
+            </td>
+            <td class="description last">
+                
+
+
+<table class="params">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            <td class="name"><code>os</code></td>
+            <td class="type">
+            
+                        String
+                        
+                    
+            </td>
+            <td class="description last">os type (android, ios, window, mac)</td>
+        </tr>
+    
+        <tr>
+            <td class="name"><code>osVersion</code></td>
+            <td class="type">
+            
+                        String
+                        
+                    
+            </td>
+            <td class="description last">os version</td>
+        </tr>
+    
+        <tr>
+            <td class="name"><code>browser</code></td>
+            <td class="type">
+            
+                        String
+                        
+                    
+            </td>
+            <td class="description last">browser type (default, safari, chrome, ie, firefox)</td>
+        </tr>
+    
+        <tr>
+            <td class="name"><code>browserVersion</code></td>
+            <td class="type">
+            
+                        String
+                        
+                    
+            </td>
+            <td class="description last">browser version</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="isHardwareAccelerable">
             
             isHardwareAccelerable<span class="signature">(<span class="optional">interrupt function</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Boolean}</span>
@@ -631,7 +794,7 @@
     
         
         <div class="tag-source">
-            <a href="extend.js.html">extend.js</a>, <a href="extend.js.html#line70">line 70</a>
+            <a href="extend.js.html">extend.js</a>, <a href="extend.js.html#line117">line 117</a>
         </div>
         
     </div>
@@ -750,7 +913,20 @@
         
 
     
-    <pre class="prettyprint"><code><p>eg.isHardwareAccelerable();  // if your device could use a hardware acceleration, this method returns &quot;true&quot;.</p></code></pre>
+    <pre class="prettyprint"><code><p>eg.isHardwareAccelerable();  // if your device could use a hardware acceleration, this method returns &quot;true&quot;.</p>
+<p>// you can control return value
+eg.defaults.isHardwareAccelerable = function(agent) {
+    if(agent.os === &quot;ios&quot;) {
+        // if os is 'ios', return value is 'false'
+        return false;
+    } else if(agent.browser === &quot;chrome&quot; ) {
+        // if browser is 'chrome', return value is 'true'
+        return true;
+    } else {
+        // defer to a return value of the isHardwareAccelerable method.
+        return null;     // or return;
+    }
+}</p></code></pre>
     
 
     
@@ -767,7 +943,7 @@
     
         
         <div class="tag-source">
-            <a href="extend.js.html">extend.js</a>, <a href="extend.js.html#line54">line 54</a>
+            <a href="extend.js.html">extend.js</a>, <a href="extend.js.html#line101">line 101</a>
         </div>
         
     </div>
@@ -966,7 +1142,7 @@ eg.translate('10px', '200%', true);  // translate3d(10px,200%,0)</p></code></pre
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Mon Mar 23 2015 15:34:39 GMT+0900 (KST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Thu Mar 26 2015 11:03:36 GMT+0900 (KST)
         </footer>
     </div>
 </div>

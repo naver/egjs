@@ -43,8 +43,11 @@
 <!-- user script files start -->
 <script src="../bower_components/jquery.easing/js/jquery.easing.js"></script>
 <script src="../bower_components/hammer.js/hammer.js"></script>
-<!--script src="../bower_components/hammer-touchemulator/touch-emulator.js"></script>
-<script> TouchEmulator(); </script-->
+<script src="lib/hammerjs-simulator.js"></script>
+<script>
+    Simulator.setType('touch');
+    Simulator.events.touch.fakeSupport();
+</script>
 <script src="../src/polyfill/requestAnimationFrame.js"></script>
 <script src="../src/polyfill/array.js"></script>
 <script src="../src/polyfill/object.js"></script>
@@ -56,11 +59,6 @@
 
 <!-- test script files start -->
 <script src="js/movableCoord.test.js"></script>
-<script src="lib/hammerjs-simulator.js"></script>
-<script>
-    Simulator.setType('touch');
-    Simulator.events.touch.fakeSupport();
-</script>
 <!-- test script files end -->
 </body>
 </html>

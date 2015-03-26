@@ -3,5 +3,4 @@ bower_components/
 .DS_Store
 report
 temp
-dist
 *.log
