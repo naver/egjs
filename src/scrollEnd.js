@@ -51,7 +51,6 @@
     }
 
     function _runInterval(){
-    console.trace();
         _nObserver = setInterval(function() {
             _observe();
         },100);
