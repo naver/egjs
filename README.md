@@ -35,7 +35,7 @@ grunt test
 - `dist` 디렉토리에 evergreen.js 나 evergreen.min.js을 script의 src로 추가한다.
 - 아래와 같이 eg라는 네임스페이스가 있는 컴포넌트를 사용할 수 있다.
 
-```
+```js
 <script src="dist/lib/jquery.js"></script>
 <script src="dist/lib/jquery.easing.js"></script>
 <script src="dist/lib/hammer.js"></script>
