@@ -1,13 +1,11 @@
-"use strict";
 (function($){
+    "use strict";
 
-    var _isTouchEnded, _isMoved, _nPreTop, _nPreLeft, _nObserver, _$;
+    var isTouchEnded, isMoved, preTop, preLeft, observerInterval;
 
     $.event.special.scrollend = {
         setup: function() {
             _attachEvent();
-            _$ = this;
-
             return false;
         },
         teardown: function() {
@@ -17,27 +15,26 @@
     };
 
     function _attachEvent(){
-        $(window).on("touchstart" , _touchStart);
-        $(window).on("touchmove" , _touchMove);
-        $(window).on("touchend" , _touchEnd);
+        $(document).on({
+            "touchstart" : _touchStart,
+            "touchmove" : _touchMove,
+            "touchend" : _touchEnd,
+            "touchcancel" : _touchEnd
+        });
         $(window).on("scroll" , _scroll);
-        $(window).on("touchcancel" , _touchEnd);
     }
 
     function _touchStart(){
-        _isTouchEnded = false;
-        _isMoved = false;
-
-        _nPreTop = null;
-        _nPreLeft = null;
+        isTouchEnded = isMoved = false;
+        preTop = preLeft = null;
     }
 
     function _touchMove(){
-        _isMoved = true;
+        isMoved = true;
     }
 
     function _touchEnd(){
-        _isTouchEnded = true;
+        isTouchEnded = true;
     }
 
     function _scroll(){
@@ -46,45 +43,41 @@
 
     function _startObserver(){
         _stopObserver();
-        _runInterval();
+        observerInterval = setInterval(_observe,100);
 
-    }
-
-    function _runInterval(){
-        _nObserver = setInterval(function() {
-            _observe();
-        },100);
     }
 
     function _stopObserver(){
-        clearInterval(_nObserver);
-        _nObserver = 0;
+        clearInterval(observerInterval);
+        observerInterval = 0;
     }
 
     function _observe(){
-        if(!_isTouchEnded && !_isMoved && (_nPreTop !== window.pageYOffset || _nPreLeft !== window.pageXOffset) ) {
-            _nPreTop = window.pageYOffset;
-            _nPreLeft = window.pageXOffset;
+        if(!isTouchEnded && !isMoved && (preTop !== window.pageYOffset || preLeft !== window.pageXOffset) ) {
+            preTop = window.pageYOffset;
+            preLeft = window.pageXOffset;
         } else {
             _stopObserver();
             _fireEventScrollEnd();
-            _isMoved = false;
+            isMoved = false;
         }
 
     }
 
     function _fireEventScrollEnd(){
-        $(_$).trigger("scrollend" , {
-            nTop : window.pageYOffset,
-            nLeft : window.pageXOffset
+        $(window).trigger("scrollend" , {
+            top : window.pageYOffset,
+            left : window.pageXOffset
         });
     }
 
     function _removeEvent(){
-        $(window).off("touchstart" , _touchStart);
-        $(window).off("touchmove" , _touchMove);
-        $(window).off("touchend" , _touchEnd);
+        $(document).off({
+            "touchstart" : _touchStart,
+            "touchmove" : _touchMove,
+            "touchend" : _touchEnd,
+            "touchcancel" : _touchEnd
+        });
         $(window).off("scroll" , _scroll);
-        $(window).off("touchcancel" , _touchEnd);
     }
 })(jQuery);
