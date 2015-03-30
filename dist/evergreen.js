@@ -389,7 +389,7 @@ eg.defaults.isHardwareAccelerable = function(agent) {
 (function(ns) {
 	/**
 	 * Class
-	 * The Class() object uses the eg to implement the application using object-oriented programming.
+	 * The Class() object is used to implement the application using object-oriented programming.
 	 * @class
 	 * @name eg.Class
 	 */
