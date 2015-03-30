@@ -1,4 +1,4 @@
-/*! EvergreenJs - v0.0.1 - 2015-03-26
+/*! EvergreenJs - v0.0.1 - 2015-03-30
 * Copyright (c) 2015 ; Licensed LGPL v2 */
 "use strict";
 // Production steps of ECMA-262, Edition 5, 15.4.4.18
@@ -487,7 +487,7 @@ window.eg = window.eg || {};
 
 
 			var handler;
-			for (i = 0, handler; (handler = handlerList[i]); i++) {
+			for (i = 0; handler = handlerList[i]; i++) {
 				handler.apply(this, arg);
 			}
 
@@ -512,8 +512,8 @@ window.eg = window.eg || {};
 		 */
 		on : function(eventName, handlerToAttach) {
 			if (typeof handlerToAttach === "undefined") {
-				var eventHash = eventName;
-				for(var i in eventHash){
+				var eventHash = eventName, i;
+				for(i in eventHash){
 					this.on(i, eventHash[i]);
 				}
 				return this;
@@ -530,8 +530,8 @@ window.eg = window.eg || {};
 			return this;
 		},
 		/**
-		 * detach an event handler function.
-		 * @method eg.Component#on
+		 * Detach an event handler function.
+		 * @method eg.Component#off
 		 * @param {eventName} eventName
 		 * @param {Function} handlerToDetach
 		 * @return {Instance} 
@@ -562,7 +562,7 @@ window.eg = window.eg || {};
 			// The handler of specific event detach.
 			var handlerList = this.eventHandler[eventName];
 			if (handlerList) {
-				for (var k = 0, handlerFunction; (handlerFunction = handlerList[k]); k++) {
+				for (var k = 0, handlerFunction; handlerFunction = handlerList[k]; k++) {
 					if (handlerFunction === handlerToDetach) {
 						handlerList = handlerList.splice(k, 1);
 						break;
