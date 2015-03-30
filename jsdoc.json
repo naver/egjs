@@ -11,7 +11,7 @@
             "outputSourceFiles" : true
         },
         "applicationName": "EvergreenJs",
-        "disqus": "",
+        "disqus": "evergreenjs",
         "googleAnalytics": "",
         "openGraph": {
             "title": "",
