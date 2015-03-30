@@ -456,7 +456,7 @@
 		 * @method eg.MovableCoord#setTo
 		 * @param {Number} x
 		 * @param {Number} y
-		 * @return {Array}
+		 * @return {Instance}
 		 */
 		setTo : function(x, y) {
 			this._grab();

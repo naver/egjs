@@ -1,4 +1,4 @@
-/*! EvergreenJs - v0.0.1 - 2015-03-26
+/*! EvergreenJs - v0.0.1 - 2015-03-30
 * Copyright (c) 2015 ; Licensed LGPL v2 */
 "use strict";
 // Production steps of ECMA-262, Edition 5, 15.4.4.18
@@ -389,10 +389,11 @@ eg.defaults.isHardwareAccelerable = function(agent) {
 (function(ns) {
 	/**
 	 * Class
+	 * The Class() object is used to implement the application using object-oriented programming.
 	 * @class
 	 * @name eg.Class
 	 */
-    	ns.Class = function(oDef) {
+    ns.Class = function(oDef) {
 		var typeClass = function typeClass() {
 			if (typeof oDef.construct === "function") {
 				oDef.construct.apply(this, arguments);
@@ -403,6 +404,14 @@ eg.defaults.isHardwareAccelerable = function(agent) {
 		typeClass.prototype.constructor = typeClass;
 		return typeClass;
 	};
+	/**
+	 * The extend() method extends a specific class.
+	 * @static
+	 * @method eg.Class.extend
+	 * @param {Class} oSuperClass
+	 * @param {Object} oDef
+	 * @return {Class}
+	 */
 
 	ns.Class.extend = function(oSuperClass, oDef) {
 		var extendClass = function extendClass() {
@@ -478,7 +487,7 @@ window.eg = window.eg || {};
 
 
 			var handler;
-			for (i = 0, handler; (handler = handlerList[i]); i++) {
+			for (i = 0; handler = handlerList[i]; i++) {
 				handler.apply(this, arg);
 			}
 
@@ -503,8 +512,8 @@ window.eg = window.eg || {};
 		 */
 		on : function(eventName, handlerToAttach) {
 			if (typeof handlerToAttach === "undefined") {
-				var eventHash = eventName;
-				for(var i in eventHash){
+				var eventHash = eventName, i;
+				for(i in eventHash){
 					this.on(i, eventHash[i]);
 				}
 				return this;
@@ -521,8 +530,8 @@ window.eg = window.eg || {};
 			return this;
 		},
 		/**
-		 * detach an event handler function.
-		 * @method eg.Component#on
+		 * Detach an event handler function.
+		 * @method eg.Component#off
 		 * @param {eventName} eventName
 		 * @param {Function} handlerToDetach
 		 * @return {Instance} 
@@ -553,7 +562,7 @@ window.eg = window.eg || {};
 			// The handler of specific event detach.
 			var handlerList = this.eventHandler[eventName];
 			if (handlerList) {
-				for (var k = 0, handlerFunction; (handlerFunction = handlerList[k]); k++) {
+				for (var k = 0, handlerFunction; handlerFunction = handlerList[k]; k++) {
 					if (handlerFunction === handlerToDetach) {
 						handlerList = handlerList.splice(k, 1);
 						break;
@@ -1025,7 +1034,7 @@ window.eg = window.eg || {};
 		 * @method eg.MovableCoord#setTo
 		 * @param {Number} x
 		 * @param {Number} y
-		 * @return {Array}
+		 * @return {Instance}
 		 */
 		setTo : function(x, y) {
 			this._grab();
