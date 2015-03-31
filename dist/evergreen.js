@@ -1,4 +1,4 @@
-/*! EvergreenJs - v0.0.1 - 2015-03-30
+/*! EvergreenJs - v0.0.1 - 2015-03-31
 * Copyright (c) 2015 ; Licensed LGPL v2 */
 "use strict";
 // Production steps of ECMA-262, Edition 5, 15.4.4.18
@@ -172,7 +172,7 @@ window.cancelAnimationFrame = caf;
 			ua = useragent || navigator.userAgent;
 			dm = dm || document.documentMode || -1;
 			/**
-			 * Agent
+			 * Get Agent Information
 			 * @method eg#agent
 			 * @return {Object} agent
 			 * @return {String} agent.os os infomation
@@ -182,6 +182,19 @@ window.cancelAnimationFrame = caf;
 			 * @return {String} agent.browser.name browser name (default, safari, chrome, sbrowser, ie, firefox)
 			 * @return {String} agent.browser.version browser version
 			 * @return {String} agent.browser.nativeVersion browser version (in case of ie)
+		 	 * @example
+// {
+//     os : {
+//          name : "ios",
+//          version : "8.2"
+//     },
+//     browser : {
+//          name : "safari",
+//          version : "8.2"
+//          nativeVersion : "-1"
+//     }
+// }
+eg.agent;
 			 */
 			agent = (function() {
 				var osMatch = /(iPhone |iPad )?OS ([\d|_]+)/.exec(ua) ||
@@ -266,7 +279,7 @@ window.cancelAnimationFrame = caf;
 		// 	}
 		// },
 		/**
-		 * get a translate string.
+		 * Get a translate string.
 		 *
 		 * @method eg#translate
 		 * @param {String} x
@@ -274,23 +287,23 @@ window.cancelAnimationFrame = caf;
 		 * @param {Boolean} [isHA]
 		 * @return {String}
 		 * @example
-eg.translate('10px', '200%');  // translate(10px,200%)
-eg.translate('10px', '200%', true);  // translate3d(10px,200%,0)
+eg.translate('10px', '200%');  // translate(10px,200%);
+eg.translate('10px', '200%', true);  // translate3d(10px,200%,0);
 		 */
 		translate : function(x,y, isHA) {
 			isHA = isHA || false;
 			return "translate" + (isHA ? "3d(" : "(") + x + "," + y + (isHA ? ",0)" : ")");
 		},
 		/**
-		 * if your device could use a hardware acceleration, this method returns "true"
+		 * If your device could use a hardware acceleration, this method returns "true"
 		 *
-		 * @method eg#isHardwareAccelerable
+		 * @method eg#isHWAccelerable
 		 * @return {Boolean}
 		 * @example
-eg.isHardwareAccelerable();  // if your device could use a hardware acceleration, this method returns "true".
+eg.isHWAccelerable();  // if your device could use a hardware acceleration, this method returns "true".
 
 // also, you can control return value
-eg.defaults.isHardwareAccelerable = function(agent) {
+eg.defaults.isHWAccelerable = function(agent) {
 	if(agent.os.name === "ios") {
 		// if os is 'ios', return value is 'false'
 		return false;
@@ -298,13 +311,13 @@ eg.defaults.isHardwareAccelerable = function(agent) {
 		// if browser is 'chrome', return value is 'true'
 		return true;
 	} else {
-		// defer to a return value of the isHardwareAccelerable method.
+		// defer to a return value of the isHWAccelerable method.
 		return null; 	// or return;
 	}
 }
 		 */
-		isHardwareAccelerable : function() {
-			var check = checkDefaults("isHardwareAccelerable");
+		isHWAccelerable : function() {
+			var check = checkDefaults("isHWAccelerable");
 			if( check != null ) {
 				return check;
 			} else {
@@ -329,6 +342,53 @@ eg.defaults.isHardwareAccelerable = function(agent) {
 						(osVersion >= "4.0.3" &&
 							/SHW-|SHV-|GT-|SCH-|SGH-|SPH-|LG-F160|LG-F100|LG-F180|LG-F200|EK-|IM-A|LG-F240|LG-F260/.test(useragent) &&
 							!/SHW-M420|SHW-M200|GT-S7562/.test(useragent));
+				}
+				return result;
+			}
+		},
+		/**
+		 * If your device could use a css transtion, this method returns "true"
+		 *
+		 * @method eg#isTransitional
+		 * @return {Boolean}
+		 * @example
+eg.isTransitional();  // if your device could use a css transtion, this method returns "true".
+
+// also, you can control return value
+eg.defaults.isTransitional = function(agent) {
+	if(agent.os.name === "ios") {
+		// if os is 'ios', return value is 'false'
+		return false;
+	} else if(agent.browser.name === "chrome" ) {
+		// if browser is 'chrome', return value is 'true'
+		return true;
+	} else {
+		// defer to a return value of the isTransitional method.
+		return null; 	// or return;
+	}
+}
+		 */
+		isTransitional : function() {
+			var check = checkDefaults("isTransitional");
+			if( check != null ) {
+				return check;
+			} else {
+				var result = false,
+					browser = agent.browser.name;
+				if(/chrome|firefox/.test(browser)) {
+					result = true;
+				} else {
+					switch(agent.os.name) {
+						case "ios" :
+							result = /safari/.test(browser) && parseInt(agent.os.version,10) < 6;
+							break;
+						case "window" :
+							result = /safari/.test(browser) || (/ie/.test(browser) && parseInt(agent.browser.nativeVersion,10) >= 10);
+							break;
+						default :
+							result = /chrome|firefox|safari/.test(browser);
+							break;
+					}
 				}
 				return result;
 			}

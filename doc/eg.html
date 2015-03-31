@@ -26,7 +26,7 @@
     
     
     <script>
-    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"EvergreenJs","disqus":"","googleAnalytics":"","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"EvergreenJs - API","description":"","keyword":""},"linenums":false};
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"EvergreenJs","disqus":"evergreenjs","googleAnalytics":"","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"EvergreenJs - API","description":"","keyword":""},"linenums":false};
     </script>
     
 
@@ -82,7 +82,9 @@
             
                 <li data-name="eg#agent"><a href="eg.html#agent">agent</a></li>
             
-                <li data-name="eg#isHardwareAccelerable"><a href="eg.html#isHardwareAccelerable">isHardwareAccelerable</a></li>
+                <li data-name="eg#isHWAccelerable"><a href="eg.html#isHWAccelerable">isHWAccelerable</a></li>
+            
+                <li data-name="eg#isTransitional"><a href="eg.html#isTransitional">isTransitional</a></li>
             
                 <li data-name="eg#translate"><a href="eg.html#translate">translate</a></li>
             
@@ -666,7 +668,7 @@
     
     
     <div class="description">
-        <p>Agent</p>
+        <p>Get Agent Information</p>
     </div>
     
 
@@ -870,20 +872,39 @@
     
     
     
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>// {
+//     os : {
+//          name : &quot;ios&quot;,
+//          version : &quot;8.2&quot;
+//     },
+//     browser : {
+//          name : &quot;safari&quot;,
+//          version : &quot;8.2&quot;
+//          nativeVersion : &quot;-1&quot;
+//     }
+// }
+eg.agent;</p></code></pre>
+    
+
+    
 </dd>
 
         
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="isHardwareAccelerable">
+        <h4 class="name" id="isHWAccelerable">
             
-            isHardwareAccelerable<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Boolean}</span>
+            isHWAccelerable<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Boolean}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="extend.js.html">extend.js</a>, <a href="extend.js.html#line137">line 137</a>
+            <a href="extend.js.html">extend.js</a>, <a href="extend.js.html#line150">line 150</a>
         </div>
         
     </div>
@@ -894,7 +915,7 @@
     
     
     <div class="description">
-        <p>if your device could use a hardware acceleration, this method returns &quot;true&quot;</p>
+        <p>If your device could use a hardware acceleration, this method returns &quot;true&quot;</p>
     </div>
     
 
@@ -950,9 +971,9 @@
         
 
     
-    <pre class="prettyprint"><code><p>eg.isHardwareAccelerable();  // if your device could use a hardware acceleration, this method returns &quot;true&quot;.</p>
+    <pre class="prettyprint"><code><p>eg.isHWAccelerable();  // if your device could use a hardware acceleration, this method returns &quot;true&quot;.</p>
 <p>// also, you can control return value
-eg.defaults.isHardwareAccelerable = function(agent) {
+eg.defaults.isHWAccelerable = function(agent) {
     if(agent.os.name === &quot;ios&quot;) {
         // if os is 'ios', return value is 'false'
         return false;
@@ -960,7 +981,104 @@ eg.defaults.isHardwareAccelerable = function(agent) {
         // if browser is 'chrome', return value is 'true'
         return true;
     } else {
-        // defer to a return value of the isHardwareAccelerable method.
+        // defer to a return value of the isHWAccelerable method.
+        return null;     // or return;
+    }
+}</p></code></pre>
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="isTransitional">
+            
+            isTransitional<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Boolean}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="extend.js.html">extend.js</a>, <a href="extend.js.html#line202">line 202</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>If your device could use a css transtion, this method returns &quot;true&quot;</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>eg.isTransitional();  // if your device could use a css transtion, this method returns &quot;true&quot;.</p>
+<p>// also, you can control return value
+eg.defaults.isTransitional = function(agent) {
+    if(agent.os.name === &quot;ios&quot;) {
+        // if os is 'ios', return value is 'false'
+        return false;
+    } else if(agent.browser.name === &quot;chrome&quot; ) {
+        // if browser is 'chrome', return value is 'true'
+        return true;
+    } else {
+        // defer to a return value of the isTransitional method.
         return null;     // or return;
     }
 }</p></code></pre>
@@ -980,7 +1098,7 @@ eg.defaults.isHardwareAccelerable = function(agent) {
     
         
         <div class="tag-source">
-            <a href="extend.js.html">extend.js</a>, <a href="extend.js.html#line121">line 121</a>
+            <a href="extend.js.html">extend.js</a>, <a href="extend.js.html#line134">line 134</a>
         </div>
         
     </div>
@@ -991,7 +1109,7 @@ eg.defaults.isHardwareAccelerable = function(agent) {
     
     
     <div class="description">
-        <p>get a translate string.</p>
+        <p>Get a translate string.</p>
     </div>
     
 
@@ -1155,8 +1273,8 @@ eg.defaults.isHardwareAccelerable = function(agent) {
         
 
     
-    <pre class="prettyprint"><code><p>eg.translate('10px', '200%');  // translate(10px,200%)
-eg.translate('10px', '200%', true);  // translate3d(10px,200%,0)</p></code></pre>
+    <pre class="prettyprint"><code><p>eg.translate('10px', '200%');  // translate(10px,200%);
+eg.translate('10px', '200%', true);  // translate3d(10px,200%,0);</p></code></pre>
     
 
     
@@ -1177,9 +1295,15 @@ eg.translate('10px', '200%', true);  // translate3d(10px,200%,0)</p></code></pre
 
 
         
+        <!-- disqus code -->
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        <!-- // disqus code -->
+        
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Mon Mar 30 2015 11:59:29 GMT+0900 (KST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Tue Mar 31 2015 13:55:02 GMT+0900 (KST)
         </footer>
     </div>
 </div>

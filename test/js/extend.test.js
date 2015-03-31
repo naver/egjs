@@ -13,50 +13,50 @@ test("check namespace", function() {
 	ok("eg" in window, "namespace is window.eg");
 });
 
-test("determine the return value of a 'isHardwareAccelerable' function", function() {
+test("determine the return value of a 'isHWAccelerable' function", function() {
 	// Given
-	var result = eg.isHardwareAccelerable();
+	var result = eg.isHWAccelerable();
 	var controllValue = result;
 	// When
-	eg.defaults.isHardwareAccelerable = function(agent) {
+	eg.defaults.isHWAccelerable = function(agent) {
 		return !controllValue;
 	};
 	// Then
-	notEqual(result, eg.isHardwareAccelerable(), "change default value");
+	notEqual(result, eg.isHWAccelerable(), "change default value");
 });
 
-test("pass the return value of a 'isHardwareAccelerable' function", function() {
+test("pass the return value of a 'isHWAccelerable' function", function() {
 	var result;
 	// Given
-	result = eg.isHardwareAccelerable();
+	result = eg.isHWAccelerable();
 	// When
-	eg.defaults.isHardwareAccelerable = function(agent) {
+	eg.defaults.isHWAccelerable = function(agent) {
 		return null;
 	};
 	// Then
-	equal(result, eg.isHardwareAccelerable(), "pass default value");
+	equal(result, eg.isHWAccelerable(), "pass default value");
 
 	// Given
-	result = eg.isHardwareAccelerable();
+	result = eg.isHWAccelerable();
 	// When
-	eg.defaults.isHardwareAccelerable = function(agent) {
+	eg.defaults.isHWAccelerable = function(agent) {
 		// undefined
 	};
 	// Then
-	equal(result, eg.isHardwareAccelerable(), "pass default value");
+	equal(result, eg.isHWAccelerable(), "pass default value");
 });
 
 test("remove 'defaults' function", function() {
 	// Given
-	var result = eg.isHardwareAccelerable();
+	var result = eg.isHWAccelerable();
 	var controllValue = result;
-	eg.defaults.isHardwareAccelerable = function(agent) {
+	eg.defaults.isHWAccelerable = function(agent) {
 		return !controllValue;
 	};
 	// When
-	delete eg.defaults.isHardwareAccelerable;
+	delete eg.defaults.isHWAccelerable;
 	// Then
-	equal(result, eg.isHardwareAccelerable(), "pass default value");
+	equal(result, eg.isHWAccelerable(), "pass default value");
 });
 
 test("translate function", function() {
@@ -84,7 +84,8 @@ module("extend Agent Test", {
 					"name" : "safari",
 					"version" : "4.0"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : true
 			},
 			{
 				// iPhone 4.3.3
@@ -97,7 +98,8 @@ module("extend Agent Test", {
 					"name" : "safari",
 					"version" : "5.0.2"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : true
 			},
 			{
 				// iPad 4.2.1
@@ -110,7 +112,8 @@ module("extend Agent Test", {
 					"name" : "safari",
 					"version" : "5.0.2"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : true
 			},
 			{
 				// iPad 4.3.3
@@ -123,7 +126,8 @@ module("extend Agent Test", {
 					"name" : "safari",
 					"version" : "5.0.2"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : true
 			},
 			{
 				// iPhone 5.0.1
@@ -136,7 +140,8 @@ module("extend Agent Test", {
 					"name" : "safari",
 					"version" : "5.1"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : true
 			},
 			{
 				// iPhone 6.0
@@ -149,7 +154,8 @@ module("extend Agent Test", {
 					"name" : "safari",
 					"version" : "6.0"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : false
 			},
 			{
 				// iPhone 6.1.2
@@ -162,7 +168,8 @@ module("extend Agent Test", {
 					"name" : "safari",
 					"version" : "6.0"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : false
 			},
 			{
 				// iPhone 7.0
@@ -175,7 +182,8 @@ module("extend Agent Test", {
 					"name" : "safari",
 					"version" : "6.0"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : false
 			},
 			{
 				// GalaxyS:2.1
@@ -188,7 +196,8 @@ module("extend Agent Test", {
 					"name" : "default",
 					"version" : "2.1"
 				},
-				"isHardwareAccelerable" : false
+				"isHWAccelerable" : false,
+				"isTransitional" : false
 			},
 			{
 				// GalaxyS:2.2
@@ -201,7 +210,8 @@ module("extend Agent Test", {
 					"name" : "default",
 					"version" : "2.2"
 				},
-				"isHardwareAccelerable" : false
+				"isHWAccelerable" : false,
+				"isTransitional" : false
 			},
 			{
 				// GalaxyS:2.3.4
@@ -214,7 +224,8 @@ module("extend Agent Test", {
 					"name" : "default",
 					"version" : "2.3.4"
 				},
-				"isHardwareAccelerable" : false
+				"isHWAccelerable" : false,
+				"isTransitional" : false
 			},
 			{
 				// GalaxyS2:2.3.3
@@ -227,7 +238,8 @@ module("extend Agent Test", {
 					"name" : "default",
 					"version" : "2.3.3"
 				},
-				"isHardwareAccelerable" : false
+				"isHWAccelerable" : false,
+				"isTransitional" : false
 			},
 			{
 				// GalaxyNote:2.3.6
@@ -240,7 +252,8 @@ module("extend Agent Test", {
 					"name" : "default",
 					"version" : "2.3.6"
 				},
-				"isHardwareAccelerable" : false
+				"isHWAccelerable" : false,
+				"isTransitional" : false
 			},
 			{
 				// GalaxyTab2:3.1
@@ -253,7 +266,8 @@ module("extend Agent Test", {
 					"name" : "default",
 					"version" : "3.1"
 				},
-				"isHardwareAccelerable" : false
+				"isHWAccelerable" : false,
+				"isTransitional" : false
 			},
 			{
 				// GalaxyNexus:4.0.1
@@ -266,7 +280,8 @@ module("extend Agent Test", {
 					"name" : "default",
 					"version" : "4.0.1"
 				},
-				"isHardwareAccelerable" : false
+				"isHWAccelerable" : false,
+				"isTransitional" : false
 			},
 			{
 				// GalaxyS3:4.0.4
@@ -279,7 +294,8 @@ module("extend Agent Test", {
 					"name" : "default",
 					"version" : "4.0.4"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : false
 			},
 			{
 				// GalaxyS2:chrome
@@ -292,7 +308,8 @@ module("extend Agent Test", {
 					"name" : "chrome",
 					"version" : "16.0.912.77",
 				},
-				"isHardwareAccelerable" : false
+				"isHWAccelerable" : false,
+				"isTransitional" : true
 			},
 			{
 				// GalaxyS4:4.2.2
@@ -305,7 +322,8 @@ module("extend Agent Test", {
 					"name" : "sbrowser",
 					"version" : "18.0.1025.308",
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : false
 			},
 			{
 				// GalaxyS4:chrome
@@ -318,7 +336,8 @@ module("extend Agent Test", {
 					"name" : "chrome",
 					"version" : "18.0.1025.166",
 				},
-				"isHardwareAccelerable" : false
+				"isHWAccelerable" : false,
+				"isTransitional" : true
 			},
 			{
 				// GalaxyNexus:4.2.2
@@ -331,7 +350,8 @@ module("extend Agent Test", {
 					"name" : "default",
 					"version" : "4.2.2"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : false
 			},
 			{
 				// GalaxyNexus:chrome
@@ -344,7 +364,8 @@ module("extend Agent Test", {
 					"name" : "chrome",
 					"version" : "18.0.1364.169"
 				},
-				"isHardwareAccelerable" : false
+				"isHWAccelerable" : false,
+				"isTransitional" : true
 			},
 			{
 				// GalaxyNexus:chrome
@@ -357,7 +378,8 @@ module("extend Agent Test", {
 					"name" : "chrome",
 					"version" : "25.0.1364.169"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : true
 			},
 			{
 				// GalaxyNote2:chrome
@@ -370,7 +392,8 @@ module("extend Agent Test", {
 					"name" : "chrome",
 					"version" : "31.0.1650.59"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : true
 			},
 			{
 				// Xiaomi_2013061_TD:browser
@@ -383,7 +406,8 @@ module("extend Agent Test", {
 					"name" : "default",
 					"version" : "4.2.1"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : false
 			},
 
 
@@ -398,7 +422,8 @@ module("extend Agent Test", {
 					"name" : "ie",
 					"version" : "7.0"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : false
 			},
 			{
 				// Windows 7 && IE
@@ -411,7 +436,8 @@ module("extend Agent Test", {
 					"name" : "ie",
 					"version" : "8.0"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : false
 			},
 			{
 				// Windows 7 && IE
@@ -424,7 +450,8 @@ module("extend Agent Test", {
 					"name" : "ie",
 					"version" : "7.0"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : false
 			},
 			{
 				// Windows 7 && Chrome
@@ -437,7 +464,8 @@ module("extend Agent Test", {
 					"name" : "chrome",
 					"version" : "41.0.2272.101"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : true
 			},
 			{
 				// Windows 7 && Firefox
@@ -450,7 +478,8 @@ module("extend Agent Test", {
 					"name" : "firefox",
 					"version" : "36.0"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : true
 			},
 			{
 				// Mac && Chrome
@@ -463,7 +492,8 @@ module("extend Agent Test", {
 					"name" : "chrome",
 					"version" : "41.0.2272.101"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : true
 			},
 			{
 				// Mac && Safari
@@ -476,7 +506,8 @@ module("extend Agent Test", {
 					"name" : "safari",
 					"version" : "8.0.3"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : true
 			},
 			{
 				// Phantomjs (default value)
@@ -489,7 +520,8 @@ module("extend Agent Test", {
 					"name" : "default",
 					"version" : "-1"
 				},
-				"isHardwareAccelerable" : false
+				"isHWAccelerable" : false,
+				"isTransitional" : false
 			},
 			{
 				// Window XP && ie6
@@ -502,7 +534,8 @@ module("extend Agent Test", {
 					"name" : "ie",
 					"version" : "6.0"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : false
 			},
 			{
 				// Window && ie6
@@ -515,7 +548,8 @@ module("extend Agent Test", {
 					"name" : "ie",
 					"version" : "6.0"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : false
 			},
 			{
 				// Window XP && ie7
@@ -528,7 +562,8 @@ module("extend Agent Test", {
 					"name" : "ie",
 					"version" : "7.0"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : false
 			},
 			{
 				// Window Vista && ie6.2
@@ -541,7 +576,8 @@ module("extend Agent Test", {
 					"name" : "ie",
 					"version" : "6.2"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : false
 			},
 			{
 				// Window 2000 && ie6
@@ -554,7 +590,8 @@ module("extend Agent Test", {
 					"name" : "ie",
 					"version" : "6.0"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : false
 			},
 			{
 				// Window 2000 && IE8에서 IE7모드
@@ -569,7 +606,8 @@ module("extend Agent Test", {
 					"nativeVersion" : "8"
 				},
 				"_documentMode" : 8,
-				"isHardwareAccelerable" : true,
+				"isHWAccelerable" : true,
+				"isTransitional" : false
 			},
 			{
 				// Window 2000 && IE8에서 호환모드
@@ -584,7 +622,8 @@ module("extend Agent Test", {
 					"nativeVersion" : "8"
 				},
 				"_documentMode" : 9,
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : false
 			},
 			{
 				// Window7, IE9에서 호환 모드
@@ -599,7 +638,8 @@ module("extend Agent Test", {
 					"nativeVersion" : "9"
 				},
 				"_documentMode" : 7,
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : false
 			},
 			{
 				// IE11
@@ -614,7 +654,8 @@ module("extend Agent Test", {
 					"nativeVersion" : "11"
 				},
 				"_documentMode" : 11,
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : true
 			},
 			{
 				// IE11 호환성
@@ -629,7 +670,8 @@ module("extend Agent Test", {
 					"nativeVersion" : "11"
 				},
 				"_documentMode" : 7,
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : true
 			},
 			{
 				// Window 8 && ie10
@@ -640,9 +682,11 @@ module("extend Agent Test", {
 				},
 				"browser" : {
 					"name" : "ie",
-					"version" : "10.0"
+					"version" : "10.0",
+					"nativeVersion" : "10"
 				},
-				"isHardwareAccelerable" : true
+				"isHWAccelerable" : true,
+				"isTransitional" : true
 			},
 
 		]
@@ -657,10 +701,10 @@ test("agent Test", function() {
 	ua.forEach(function(v) {
 		eg._init(v.ua);
 		//Then
-		equal(v.os.name, eg.agent.os.name, "check os name : " + v.ua);
-		equal(v.os.version, eg.agent.os.version, "check os Version");
-		equal(v.browser.name, eg.agent.browser.name, "check browser name");
-		equal(v.browser.version, eg.agent.browser.version, "check browser Version");
+		equal(eg.agent.os.name, v.os.name, "check os name : " + v.ua);
+		equal(eg.agent.os.version, v.os.version, "check os Version");
+		equal(eg.agent.browser.name, v.browser.name, "check browser name");
+		equal(eg.agent.browser.version, v.browser.version, "check browser Version");
 	});
 });
 
@@ -672,17 +716,28 @@ test("agent nativeVersion Test", function() {
 			eg._init(v.ua, v._documentMode);
 
 			//Then
-			equal(v.browser.nativeVersion, eg.agent.browser.nativeVersion, "check browser native Version: " + v.ua);
+			equal(eg.agent.browser.nativeVersion, v.browser.nativeVersion, "check browser native Version: " + v.ua + " , " + eg.agent.browser.nativeVersion + " , " + v.browser.nativeVersion);
 		}
 	});
 });
 
-test("isHardwareAccelerable Test", function() {
+test("isHWAccelerable Test", function() {
 	// Given
 	// When
 	ua.forEach(function(v) {
 		eg._init(v.ua);
 		//Then
-		equal(v.isHardwareAccelerable, eg.isHardwareAccelerable(), "check return value : " + v.ua);
+		equal( eg.isHWAccelerable(), v.isHWAccelerable, "check return value : " + v.ua);
+	});
+});
+
+
+test("isTransitional Test", function() {
+	// Given
+	// When
+	ua.forEach(function(v) {
+		eg._init(v.ua, v._documentMode);
+		//Then
+		equal(eg.isTransitional(), v.isTransitional, "check return value : " + v.ua);
 	});
 });

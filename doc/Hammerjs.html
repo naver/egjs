@@ -107,10 +107,6 @@
             </ul>
             <ul class="methods itemMembers">
             
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="eg.Class.extend"><a href="eg.Class.html#extend">extend</a></li>
-            
             </ul>
             <ul class="events itemMembers">
             
@@ -129,16 +125,6 @@
             
             </ul>
             <ul class="methods itemMembers">
-            
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="eg.Component#hasOn"><a href="eg.Component.html#hasOn">hasOn</a></li>
-            
-                <li data-name="eg.Component#off"><a href="eg.Component.html#off">off</a></li>
-            
-                <li data-name="eg.Component#on"><a href="eg.Component.html#on">on</a></li>
-            
-                <li data-name="eg.Component#trigger"><a href="eg.Component.html#trigger">trigger</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -167,19 +153,30 @@
             
                 <li data-name="eg.MovableCoord#get"><a href="eg.MovableCoord.html#get">get</a></li>
             
-                <li data-name="eg.MovableCoord#hasOn"><a href="eg.MovableCoord.html#hasOn">hasOn</a></li>
-            
-                <li data-name="eg.MovableCoord#off"><a href="eg.MovableCoord.html#off">off</a></li>
-            
-                <li data-name="eg.MovableCoord#on"><a href="eg.MovableCoord.html#on">on</a></li>
-            
                 <li data-name="eg.MovableCoord#setBy"><a href="eg.MovableCoord.html#setBy">setBy</a></li>
             
                 <li data-name="eg.MovableCoord#setTo"><a href="eg.MovableCoord.html#setTo">setTo</a></li>
             
-                <li data-name="eg.MovableCoord#trigger"><a href="eg.MovableCoord.html#trigger">trigger</a></li>
-            
                 <li data-name="eg.MovableCoord#unbind"><a href="eg.MovableCoord.html#unbind">unbind</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Hammerjs">
+            <span class="title">
+                <a href="Hammerjs.html">Hammerjs</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
             
             </ul>
             <ul class="events itemMembers">
@@ -190,156 +187,118 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="component.js.html">Source: component.js</h1>
+        <h1 class="page-title" data-filename="Hammerjs.html">Class: Hammerjs</h1>
         
 
 
+
+<section>
     
-    <section>
-        <article>
-            <pre class="prettyprint source "><code>"use strict";
+<header>
+    <h2>
+    Hammerjs
+    </h2>
+    
+</header>  
 
-window.eg = window.eg || {};
-(function(ns) {
-	/**
-	 * Component
-	 * @class
-	 * @name eg.Component
-	 */
-	ns.Component = ns.Class({
-		construct : function() {
-			this.eventHandler = {};
-			// The reference count is not support yet.
-			// this.constructor.$count = (this.constructor.$count || 0) + 1;
-		},
-		/**
-		 * The event fire with custom event.
-		 * @method eg.Component#trigger
-		 * @param {String} eventName
-		 * @param {Object} customEvent
-		 * @return {Boolean} 
-		 */
-		trigger : function(eventName, customEvent) {
-			customEvent = customEvent || {};
-			var handlerList = this.eventHandler[eventName] || [],
-				hasHandlerList = handlerList.length > 0;
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="Hammerjs">
+            
+            new Hammerjs<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="class.js.html">class.js</a>, <a href="class.js.html#line49">line 49</a>
+        </div>
+        
+    </div>
 
-			if (!hasHandlerList) {
-				return true;
-			}
-			// If detach method call in handler in first time then handeler list calls.
-			handlerList = handlerList.concat();
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Class</p>
+    </div>
+    
 
-			customEvent.eventType = eventName;
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-			var isCanceled = false;
-			customEvent.stop = function(){
-				isCanceled = true;
-			};
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
-			var arg = [customEvent], i, len;
+    
+    
 
+    
 
-			if((len = arguments.length)>2){
-				arg = arg.concat(Array.prototype.slice.call(arguments,2,len));
-			}
+    
+    
+    
+    
+    
+    
+    
+</dd>
 
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</article>
 
-			var handler;
-			for (i = 0; handler = handlerList[i]; i++) {
-				handler.apply(this, arg);
-			}
-
-
-			return !isCanceled;
-		},
-		/**
-		 * Checks whether the event has been assigned to the Component.
-		 * @method eg.Component#hasOn
-		 * @param {String} eventName
-		 * @return {Boolean} 
-		 */
-		hasOn : function(eventName){
-			return !!this.eventHandler[eventName];
-		},
-		/**
-		 * Attach an event handler function.
-		 * @method eg.Component#on
-		 * @param {eventName} eventName
-		 * @param {Function} handlerToAttach
-		 * @return {Instance} 
-		 */
-		on : function(eventName, handlerToAttach) {
-			if (typeof handlerToAttach === "undefined") {
-				var eventHash = eventName, i;
-				for(i in eventHash){
-					this.on(i, eventHash[i]);
-				}
-				return this;
-			}
-
-			var handlerList = this.eventHandler[eventName];
-
-			if (typeof handlerList === "undefined"){
-				handlerList = this.eventHandler[eventName] = [];
-			}
-
-			handlerList.push(handlerToAttach);
-
-			return this;
-		},
-		/**
-		 * Detach an event handler function.
-		 * @method eg.Component#off
-		 * @param {eventName} eventName
-		 * @param {Function} handlerToDetach
-		 * @return {Instance} 
-		 */
-		off : function(eventName, handlerToDetach) {
-			// All event detach.
-			if (arguments.length === 0){
-				this.eventHandler = {};
-				return this;
-			}
-
-			// All handler of specific event detach.
-			if (typeof handlerToDetach === "undefined") {
-				if (typeof eventName === "string"){
-					this.eventHandler[eventName] = null;
-					return this;
-				} else {
-					var eventHash = eventName;
-					for (var i in eventHash){
-						if(eventHash.hasOwnProperty(i)) {
-							this.off(i, eventHash[i]);
-						}
-					}
-					return this;
-				}
-			}
-
-			// The handler of specific event detach.
-			var handlerList = this.eventHandler[eventName];
-			if (handlerList) {
-				for (var k = 0, handlerFunction; handlerFunction = handlerList[k]; k++) {
-					if (handlerFunction === handlerToDetach) {
-						handlerList = handlerList.splice(k, 1);
-						break;
-					}
-				}
-			}
-
-			return this;
-		}
-	});
-})(eg);
-
-
-
-</code></pre>
-        </article>
-    </section>
-
+</section>  
 
 
 
@@ -354,7 +313,7 @@ window.eg = window.eg || {};
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Tue Mar 31 2015 13:55:02 GMT+0900 (KST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Tue Mar 31 2015 13:34:11 GMT+0900 (KST)
         </footer>
     </div>
 </div>
