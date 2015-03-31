@@ -449,10 +449,11 @@ eg.defaults.isTransitional = function(agent) {
 (function(ns) {
 	/**
 	 * Class
+	 * The Class() object is used to implement the application using object-oriented programming.
 	 * @class
 	 * @name eg.Class
 	 */
-    	ns.Class = function(oDef) {
+    ns.Class = function(oDef) {
 		var typeClass = function typeClass() {
 			if (typeof oDef.construct === "function") {
 				oDef.construct.apply(this, arguments);
@@ -463,6 +464,14 @@ eg.defaults.isTransitional = function(agent) {
 		typeClass.prototype.constructor = typeClass;
 		return typeClass;
 	};
+	/**
+	 * The extend() method extends a specific class.
+	 * @static
+	 * @method eg.Class.extend
+	 * @param {Class} oSuperClass
+	 * @param {Object} oDef
+	 * @return {Class}
+	 */
 
 	ns.Class.extend = function(oSuperClass, oDef) {
 		var extendClass = function extendClass() {
@@ -500,81 +509,110 @@ window.eg = window.eg || {};
 	 */
 	ns.Component = ns.Class({
 		construct : function() {
-			this._htEventHandler = {};
+			this.eventHandler = {};
 			// The reference count is not support yet.
 			// this.constructor.$count = (this.constructor.$count || 0) + 1;
 		},
-		trigger : function(sEvent, oEvent) {
-			oEvent = oEvent || {};
-			var aHandlerList = this._htEventHandler[sEvent] || [],
-				bHasHandlerList = aHandlerList.length > 0;
+		/**
+		 * The event fire with custom event.
+		 * @method eg.Component#trigger
+		 * @param {String} eventName
+		 * @param {Object} customEvent
+		 * @return {Boolean} 
+		 */
+		trigger : function(eventName, customEvent) {
+			customEvent = customEvent || {};
+			var handlerList = this.eventHandler[eventName] || [],
+				hasHandlerList = handlerList.length > 0;
 
-			if (!bHasHandlerList) {
+			if (!hasHandlerList) {
 				return true;
 			}
 			// If detach method call in handler in first time then handeler list calls.
-			aHandlerList = aHandlerList.concat();
+			handlerList = handlerList.concat();
 
-			oEvent.eventType = sEvent;
+			customEvent.eventType = eventName;
 
-			var bCanceled = false;
-			oEvent.stop = function(){
-				bCanceled = true;
+			var isCanceled = false;
+			customEvent.stop = function(){
+				isCanceled = true;
 			};
 
-			var aArg = [oEvent], i, nLen;
+			var arg = [customEvent], i, len;
 
 
-			if((nLen = arguments.length)>2){
-				aArg = aArg.concat(Array.prototype.slice.call(arguments,2,nLen));
+			if((len = arguments.length)>2){
+				arg = arg.concat(Array.prototype.slice.call(arguments,2,len));
 			}
 
 
-			var fHandler;
-			for (i = 0, fHandler; (fHandler = aHandlerList[i]); i++) {
-				fHandler.apply(this, aArg);
+			var handler;
+			for (i = 0; handler = handlerList[i]; i++) {
+				handler.apply(this, arg);
 			}
 
 
-			return !bCanceled;
+			return !isCanceled;
 		},
-
-		on : function(sEvent, fHandlerToAttach) {
-			if (typeof fHandlerToAttach === "undefined") {
-				var oEvent = sEvent;
-				for(var i in oEvent){
-					this.on(i, oEvent[i]);
+		/**
+		 * Checks whether the event has been assigned to the Component.
+		 * @method eg.Component#hasOn
+		 * @param {String} eventName
+		 * @return {Boolean} 
+		 */
+		hasOn : function(eventName){
+			return !!this.eventHandler[eventName];
+		},
+		/**
+		 * Attach an event handler function.
+		 * @method eg.Component#on
+		 * @param {eventName} eventName
+		 * @param {Function} handlerToAttach
+		 * @return {Instance} 
+		 */
+		on : function(eventName, handlerToAttach) {
+			if (typeof handlerToAttach === "undefined") {
+				var eventHash = eventName, i;
+				for(i in eventHash){
+					this.on(i, eventHash[i]);
 				}
 				return this;
 			}
 
-			var aHandler = this._htEventHandler[sEvent];
+			var handlerList = this.eventHandler[eventName];
 
-			if (typeof aHandler === "undefined"){
-				aHandler = this._htEventHandler[sEvent] = [];
+			if (typeof handlerList === "undefined"){
+				handlerList = this.eventHandler[eventName] = [];
 			}
 
-			aHandler.push(fHandlerToAttach);
+			handlerList.push(handlerToAttach);
 
 			return this;
 		},
-		off : function(sEvent, fHandlerToDetach) {
+		/**
+		 * Detach an event handler function.
+		 * @method eg.Component#off
+		 * @param {eventName} eventName
+		 * @param {Function} handlerToDetach
+		 * @return {Instance} 
+		 */
+		off : function(eventName, handlerToDetach) {
 			// All event detach.
 			if (arguments.length === 0){
-				this._htEventHandler = {};
+				this.eventHandler = {};
 				return this;
 			}
 
 			// All handler of specific event detach.
-			if (typeof fHandlerToDetach === "undefined") {
-				if (typeof sEvent === "string"){
-					this._htEventHandler[sEvent] = null;
+			if (typeof handlerToDetach === "undefined") {
+				if (typeof eventName === "string"){
+					this.eventHandler[eventName] = null;
 					return this;
 				} else {
-					var oEvent = sEvent;
-					for (var i in oEvent){
-						if(oEvent.hasOwnProperty(i)) {
-							this.off(i, oEvent[i]);
+					var eventHash = eventName;
+					for (var i in eventHash){
+						if(eventHash.hasOwnProperty(i)) {
+							this.off(i, eventHash[i]);
 						}
 					}
 					return this;
@@ -582,11 +620,11 @@ window.eg = window.eg || {};
 			}
 
 			// The handler of specific event detach.
-			var aHandler = this._htEventHandler[sEvent];
-			if (aHandler) {
-				for (var k = 0, fHandler; (fHandler = aHandler[k]); k++) {
-					if (fHandler === fHandlerToDetach) {
-						aHandler = aHandler.splice(k, 1);
+			var handlerList = this.eventHandler[eventName];
+			if (handlerList) {
+				for (var k = 0, handlerFunction; handlerFunction = handlerList[k]; k++) {
+					if (handlerFunction === handlerToDetach) {
+						handlerList = handlerList.splice(k, 1);
 						break;
 					}
 				}
@@ -1056,7 +1094,7 @@ window.eg = window.eg || {};
 		 * @method eg.MovableCoord#setTo
 		 * @param {Number} x
 		 * @param {Number} y
-		 * @return {Array}
+		 * @return {Instance}
 		 */
 		setTo : function(x, y) {
 			this._grab();
