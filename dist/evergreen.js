@@ -1,4 +1,4 @@
-/*! EvergreenJs - v0.0.1 - 2015-03-31
+/*! EvergreenJs - v0.0.1 - 2015-04-02
 * Copyright (c) 2015 ; Licensed LGPL v2 */
 "use strict";
 // Production steps of ECMA-262, Edition 5, 15.4.4.18
@@ -246,7 +246,7 @@ eg.agent;
 						browserMatch[1] = browserMatch[1].toLowerCase();
 					}
 				} else if(browserMatch.length === 0 && osMatch[1] && osMatch[1] !== "android") {
-					browserMatch = /(Safari)\/([\w.]+)/.exec(ua) || [];
+					browserMatch = /(Safari)\/([\w.]+)/.exec(ua) || ["","inapp"];
 					browserMatch[1] = browserMatch[1].toLowerCase();
 					if(/safari/.test(browserMatch[1]) ) {
 						browserMatch[2] = /Apple/.test(ua) ? ua.match(/Version\/([\d.]+)/)[1] : null;
@@ -296,6 +296,7 @@ eg.translate('10px', '200%', true);  // translate3d(10px,200%,0);
 		},
 		/**
 		 * If your device could use a hardware acceleration, this method returns "true"
+		 * This method is return cached value.
 		 *
 		 * @method eg#isHWAccelerable
 		 * @return {Boolean}
@@ -317,23 +318,21 @@ eg.defaults.isHWAccelerable = function(agent) {
 }
 		 */
 		isHWAccelerable : function() {
-			var check = checkDefaults("isHWAccelerable");
-			if( check != null ) {
-				return check;
-			} else {
-				var result = false,
-					osVersion = agent.os.version,
+			var result = checkDefaults("isHWAccelerable");
+			if( result === null ) {
+				var osVersion = agent.os.version,
 					browser = agent.browser.name,
-					browserVersion = agent.browser.version;
+					browserVersion = agent.browser.version,
+					useragent;
 
 				// chrome (less then 25) has a text blur bug.
 				// but samsung sbrowser fix it.
 				if(/chrome/.test(browser)) {
 					result = browserVersion >= "25";
-				} else if(/ie|firefox|safari/.test(browser)) {
+				} else if(/ie|firefox|safari|inapp/.test(browser)) {
 					result = true;
 				} else if(/android/.test(agent.os.name)) {
-					var useragent = (ua.match(/\(.*\)/) || [null])[0];
+					useragent = (ua.match(/\(.*\)/) || [null])[0];
 
 					// android 4.1+ blacklist
 					// EK-GN120 : Galaxy Camera, SM-G386F : Galaxy Core LTE
@@ -343,11 +342,16 @@ eg.defaults.isHWAccelerable = function(agent) {
 							/SHW-|SHV-|GT-|SCH-|SGH-|SPH-|LG-F160|LG-F100|LG-F180|LG-F200|EK-|IM-A|LG-F240|LG-F260/.test(useragent) &&
 							!/SHW-M420|SHW-M200|GT-S7562/.test(useragent));
 				}
-				return result;
 			}
+			result = !!result;
+			this.isHWAccelerable = function(){
+				return result;
+			};
+			return this.isHWAccelerable();
 		},
 		/**
 		 * If your device could use a css transtion, this method returns "true"
+		 * This method is return cached value.
 		 *
 		 * @method eg#isTransitional
 		 * @return {Boolean}
@@ -369,18 +373,16 @@ eg.defaults.isTransitional = function(agent) {
 }
 		 */
 		isTransitional : function() {
-			var check = checkDefaults("isTransitional");
-			if( check != null ) {
-				return check;
-			} else {
-				var result = false,
-					browser = agent.browser.name;
+			var result = checkDefaults("isTransitional");
+			if( result === null ) {
+				var browser = agent.browser.name;
+
 				if(/chrome|firefox/.test(browser)) {
 					result = true;
 				} else {
 					switch(agent.os.name) {
 						case "ios" :
-							result = /safari/.test(browser) && parseInt(agent.os.version,10) < 6;
+							result = /safari|inapp/.test(browser) && parseInt(agent.os.version,10) < 6;
 							break;
 						case "window" :
 							result = /safari/.test(browser) || (/ie/.test(browser) && parseInt(agent.browser.nativeVersion,10) >= 10);
@@ -390,8 +392,13 @@ eg.defaults.isTransitional = function(agent) {
 							break;
 					}
 				}
-				return result;
 			}
+
+			result = !!result;
+			this.isTransitional = function(){
+				return result;
+			};
+			return this.isTransitional();
 		}
 	};
 
