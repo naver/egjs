@@ -1,7 +1,5 @@
-"use strict";
-
-window.eg = window.eg || {};
 (function(ns) {
+	"use strict";
 	/**
 	 * Component
 	 * @class
@@ -18,7 +16,7 @@ window.eg = window.eg || {};
 		 * @method eg.Component#trigger
 		 * @param {String} eventName
 		 * @param {Object} customEvent
-		 * @return {Boolean} 
+		 * @return {Boolean}
 		 */
 		trigger : function(eventName, customEvent) {
 			customEvent = customEvent || {};
@@ -58,7 +56,7 @@ window.eg = window.eg || {};
 		 * Checks whether the event has been assigned to the Component.
 		 * @method eg.Component#hasOn
 		 * @param {String} eventName
-		 * @return {Boolean} 
+		 * @return {Boolean}
 		 */
 		hasOn : function(eventName){
 			return !!this.eventHandler[eventName];
@@ -68,7 +66,7 @@ window.eg = window.eg || {};
 		 * @method eg.Component#on
 		 * @param {eventName} eventName
 		 * @param {Function} handlerToAttach
-		 * @return {Instance} 
+		 * @return {Instance}
 		 */
 		on : function(eventName, handlerToAttach) {
 			if (typeof handlerToAttach === "undefined") {
@@ -94,7 +92,7 @@ window.eg = window.eg || {};
 		 * @method eg.Component#off
 		 * @param {eventName} eventName
 		 * @param {Function} handlerToDetach
-		 * @return {Instance} 
+		 * @return {Instance}
 		 */
 		off : function(eventName, handlerToDetach) {
 			// All event detach.
