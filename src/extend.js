@@ -149,6 +149,7 @@ eg.translate('10px', '200%', true);  // translate3d(10px,200%,0);
 		},
 		/**
 		 * If your device could use a hardware acceleration, this method returns "true"
+		 * This method is return cached value.
 		 *
 		 * @method eg#isHWAccelerable
 		 * @return {Boolean}
@@ -196,12 +197,14 @@ eg.defaults.isHWAccelerable = function(agent) {
 				}
 			}
 			result = !!result;
-			return (this.isHWAccelerable = function(){
+			this.isHWAccelerable = function(){
 				return result;
-			})();
+			};
+			return this.isHWAccelerable();
 		},
 		/**
 		 * If your device could use a css transtion, this method returns "true"
+		 * This method is return cached value.
 		 *
 		 * @method eg#isTransitional
 		 * @return {Boolean}
@@ -245,9 +248,10 @@ eg.defaults.isTransitional = function(agent) {
 			}
 
 			result = !!result;
-			return (this.isTransitional = function(){
+			this.isTransitional = function(){
 				return result;
-			})();
+			};
+			return this.isTransitional();
 		}
 	};
 
