@@ -127,9 +127,10 @@
 
 			/**
 			 * When target elements appear or disappear based on the wrapper.
-			 * @event change
-			 * @param {Array} visible visible elements
-			 * @param {Array} invisible invisible elements
+			 * @name eg.Visible#change
+			 * @event
+			 * @param {Array} visible visible elements (the element type is `HTMLElement`)
+			 * @param {Array} invisible invisible elements (the element type is `HTMLElement`)
 			 */
 			this.trigger("change", {
 				visible : visibles,

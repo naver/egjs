@@ -4,35 +4,39 @@
 	// ns.__checkLibrary__( !("Hammer" in window), "You must download Hammerjs. (http://hammerjs.github.io/)\n\ne.g. bower install hammerjs");
 	// ns.__checkLibrary__( !("easeOutQuint" in $.easing), "You must download jQuery Easing Plugin(http://gsgd.co.uk/sandbox/jquery/easing/)\n\ne.g. bower install jquery.easing");
 	/**
-	 * MovableCoord
+	 * The MovableCoord can control coordinate by user's action.
 	 * @class
 	 * @name eg.MovableCoord
 	 * @extends eg.Component
 	 *
-	 * @param {Object} [options]
-	 * @param {Array} options.min
-	 * @param {Number} options.min.0 minimum x position
-	 * @param {Number} options.min.1 minimum y position
+	 * @param {Object} options
+	 * @param {Array} options.min the minimum coordinate
+	 * @param {Number} [options.min.0=0] the minimum x-coordinate
+	 * @param {Number} [options.min.1=0] the minimum y-coordinate
 	 *
-	 * @param {Array} options.max
-	 * @param {Number} options.max.0 maximum x position
-	 * @param {Number} options.max.1 maximum y position
-	 *
-	 * @param {String} options.bounce
-	 * @param {Array} options.bounce
-	 * @param {Boolean} options.bounce.0 maximum y position
-	 * @param {Boolean} options.bounce.1 maximum y position
+	 * @param {Array} options.max the maximum coordinate
+	 * @param {Number} [options.max.0=100] the maximum x-coordinate
+	 * @param {Number} [options.max.1=100] the maximum y-coordinate
 	 *
 	 * @param {Array} options.bounce
-	 * @param {Boolean} options.bounce.0 bounce top range
-	 * @param {Boolean} options.bounce.1 bounce right range
-	 * @param {Boolean} options.bounce.2 bounce bottom range
-	 * @param {Boolean} options.bounce.3 bounce left range
+	 * @param {Boolean} [options.bounce.0=10] bounce top range
+	 * @param {Boolean} [options.bounce.1=10] bounce right range
+	 * @param {Boolean} [options.bounce.2=10] bounce bottom range
+	 * @param {Boolean} [options.bounce.3=10] bounce left range
 	 *
-	 * @param {Array|String} options.margin
-	 * @param {Array|String} options.circular
-	 * @param {Function} options.easing a easing function of the jQuery Easing Plugin
-	 * @param {Number} options.deceleration
+	 * @param {Array} options.margin
+	 * @param {Boolean} [options.margin.0=0] margin top range
+	 * @param {Boolean} [options.margin.1=0] margin right range
+	 * @param {Boolean} [options.margin.2=0] margin bottom range
+	 * @param {Boolean} [options.margin.3=0] margin left range
+	 * @param {Array} options.circular
+	 * @param {Boolean} [options.circular.0=false] circular top range
+	 * @param {Boolean} [options.circular.1=false] circular right range
+	 * @param {Boolean} [options.circular.2=false] circular bottom range
+	 * @param {Boolean} [options.circular.3=false] circular left range
+	 *
+	 * @param {Function} [options.easing a easing=easing.easeOutQuint] function of the jQuery Easing Plugin
+	 * @param {Number} [options.deceleration=0.0006] deceleration this value can be altered to change the momentum animation duration. higher numbers make the animation shorter.
 	 * @see Hammerjs {@link http://hammerjs.github.io}
 	 * @see jQuery Easing Plugin {@link http://gsgd.co.uk/sandbox/jquery/easing}
 	 */
@@ -58,14 +62,15 @@
 			this._animationEnd = this._animationEnd.bind(this);	// for caching
 		},
 		/**
+		 * Connects an element with a movableCoord
 		 * @method eg.MovableCoord#bind
 		 * @param {HTMLElement|String|jQuery} element
-		 * @param {Object} [options]
-		 * @param {Number} options.direction
+		 * @param {Object} options
+		 * @param {Number} [options.direction=eg.DIRECTION_ALL]
 		 * @param {Array} options.scale
-		 * @param {Number} options.scale.0 x scale
-		 * @param {Number} options.scale.1 y scale
-		 * @param {Number} options.maximumSpeed
+		 * @param {Number} [options.scale.0=1] x-scale
+		 * @param {Number} [options.scale.1=1] y-scale
+		 * @param {Number} [options.maximumSpeed=Infinity]
 		 * @return {Boolean}
 		 */
 		bind : function(el, options) {
@@ -110,6 +115,7 @@
 			return hammer;
 		},
 		/**
+		 * Disconnects an element with a movableCoord
 		 * @method eg.MovableCoord#unbind
 		 * @param {HTMLElement|String|jQuery} element
 		 * @return {Boolean}
@@ -123,6 +129,7 @@
 				$el.data(ns.MovableCoord.KEY, null);
 			}
 		},
+
 		_grab : function() {
 			if(this._animating) {
 				this._pos = this._getCircularPos(this._pos);
@@ -132,6 +139,7 @@
 				this._raf = null;
 			}
 		},
+
 		_getCircularPos : function(pos, min, max, circular) {
 			var val;
 			min = min || this.options.min;
@@ -148,6 +156,7 @@
 			}
 			return pos;
 		},
+
 		// determine outside
 		_isOutside : function(pos, min, max) {
 			return pos[0] < min[0] || pos[1] < min[1] || pos[0] > max[0] || pos[1] > max[1];
@@ -163,6 +172,15 @@
 		_panstart : function() {
 			var pos = this._pos;
 			this._grab();
+			/**
+			 * When an area was pressed
+			 * @name eg.MovableCoord#hold
+			 * @event
+			 * @param {Array} pos coordinate
+			 * @param {Array} pos.0 x-coordinate
+			 * @param {Array} pos.1 y-coordinate
+			 *
+			 */
 			this.trigger("hold", {
 				pos : [ pos[0], pos[1] ]
 			});
@@ -254,6 +272,11 @@
 		},
 
 		_animationEnd : function() {
+			/**
+			 * When animation was ended.
+			 * @name eg.MovableCoord#animationEnd
+			 * @event
+			 */
 			var pos = this._pos,
 				min = this.options.min,
 				max = this.options.max;
@@ -329,6 +352,7 @@
 			}
 			this._afterReleaseProcess(param, callback, isBounce, duration);
 		},
+
 		// when user release a finger or poiner or mouse
 		_afterReleaseProcess : function(param, callback, isBounce, duration) {
 			/*
@@ -347,7 +371,6 @@
 
 			var	done = function() {
 					this._animating = null;
-					// 내부 좌표값 변경
 					pos[0] = Math.round(destPos[0]);
 					pos[1] = Math.round(destPos[1]);
 					pos = this._getCircularPos(pos, min, max, circular);
@@ -366,6 +389,24 @@
 				done : done
 			};
 
+			/**
+			 * When animation was started.
+			 * @name eg.MovableCoord#animation
+			 * @event
+			 *
+			 * @param {Object} param
+			 * @param {Number} param.duration
+			 * @param {Array} param.depaPos departure coordinate
+			 * @param {Number} param.depaPos.0 departure x-coordinate
+			 * @param {Number} param.depaPos.1 departure y-coordinate
+			 * @param {Array} param.destPos destination coordinate
+			 * @param {Number} param.destPos.0 destination x-coordinate
+			 * @param {Number} param.destPos.1 destination y-coordinate
+			 * @param {Boolean} param.isBounce
+			 * @param {Boolean} param.isCircular
+			 * @param {Function} param.done
+			 *
+			 */
 			var retTrigger = this.trigger("animation", param);
 			// You can't stop the 'animation' event when 'circular' is true.
 			if (isCircular && !retTrigger) {
@@ -432,6 +473,18 @@
 
 		// trigger 'change' event
 		_triggerChange : function(pos, holding) {
+			/**
+			 * When coordinate was changed
+			 * @name eg.MovableCoord#change
+			 * @event
+			 *
+			 * @param {Object} param
+			 * @param {Array} param.pos departure coordinate
+			 * @param {Number} param.pos.0 departure x-coordinate
+			 * @param {Number} param.pos.1 departure y-coordinate
+			 * @param {Boolean} param.holding
+			 *
+			 */
 			this.trigger("change", {
 				pos : [ pos[0], pos[1] ],
 				holding : holding
@@ -440,7 +493,7 @@
 
 
 		/**
-		 * get current position
+		 * Get current positions
 		 * @method eg.MovableCoord#get
 		 * @return {Array} pos
 		 * @return {Number} pos.0 x position
@@ -451,13 +504,16 @@
 		},
 
 		/**
-		 * set to position
+		 * Set to position
+		 *
+		 * If a duration was greater than zero, 'change' event was triggered for duration.
 		 * @method eg.MovableCoord#setTo
-		 * @param {Number} x
-		 * @param {Number} y
+		 * @param {Number} x x-coordinate
+		 * @param {Number} y y-coordinate
+		 * @param {Number} [duration=0]
 		 * @return {Instance}
 		 */
-		setTo : function(x, y) {
+		setTo : function(x, y, duration) {
 			this._grab();
 			var pos = [ this._pos[0], this._pos[1] ],
 				circular = this.options.circular,
@@ -475,26 +531,34 @@
 				if (!circular[0]) { y = Math.max(min[1], y); }
 				if (!circular[2]) { y = Math.min(max[1], y); }
 			}
-			this._pos = this._getCircularPos( [ x, y ] );
-			this._triggerChange(this._pos, false);
+			if(duration) {
+				this._animateTo( [ x, y ], this._animationEnd, false, duration);
+			} else {
+				this._pos = this._getCircularPos( [ x, y ] );
+				this._triggerChange(this._pos, false);
+			}
 			return this;
 		},
 		/**
-		 * set to position relatively
+		 * Set to relative position
+		 *
+		 * If a duration was greater than zero, 'change' event was triggered for duration
 		 * @method eg.MovableCoord#setBy
-		 * @param {Number} x
-		 * @param {Number} y
+		 * @param {Number} x x-coordinate
+		 * @param {Number} y y-coordinate
+		 * @param {Number} [duration=0]
 		 * @return {Array}
 		 */
-		setBy : function(x, y) {
+		setBy : function(x, y, duration) {
 			return this.setTo(
 				x != null ? this._pos[0] + x : this._pos[0],
-				y != null ? this._pos[1] + y : this._pos[1]
+				y != null ? this._pos[1] + y : this._pos[1],
+				duration
 			);
 		},
 
 		/**
-		 * release resources and off custom events
+		 * Release resources and off custom events
 		 * @method eg.MovableCoord#destroy
 		 */
 		destroy : function() {
