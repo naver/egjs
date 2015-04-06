@@ -22,6 +22,7 @@
 			$.extend(this.options, options);
 
 			this._wrapper = $(this.options.wrapper);
+			// wrapper is only one!
 			this._wrapper = this._wrapper.length > 0 ? this._wrapper[0] : document;
 			this._targets = [];
 			this._timer = null;
@@ -65,10 +66,7 @@
 		 */
 		check : function(delay) {
 			if (typeof delay === "undefined") { delay = -1; }
-			if (this._timer) {
-				clearTimeout(this._timer);
-				this._timer = null;
-			}
+			clearTimeout(this._timer);
 			if (delay < 0) {
 				this._check();
 			} else {
@@ -117,9 +115,9 @@
 		            );
 				if(before !== after) {
 					if(after) {
-						visibles.push(target);
+						visibles.unshift(target);
 					} else {
-						invisibles.push(target);
+						invisibles.unshift(target);
 					}
 				}
 			}
@@ -139,6 +137,7 @@
 		},
 
 		destroy : function() {
+			this.off();
 			this._targets = [];
 			this._wrapper = null;
 			this._timer = null;
