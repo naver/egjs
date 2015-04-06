@@ -26,12 +26,16 @@ module("Visible document Test", {
 
 asyncTest("check a visible/invisible status", function() {
 	// Given
+	var length = Math.ceil(document.documentElement.clientHeight/boxheight);
+	if(document.documentElement.clientHeight%boxheight === 0) {
+		length++;
+	}
 	// When
 	this.inst.options.expandSize = 0;
 	this.inst.on("change", function(e) {
 		// Then
 		equal(e.invisible.length, 0 , "no invisible");
-		equal(e.visible.length, Math.ceil(window.innerHeight/boxheight) , "check a count of the visible elements");
+		equal(e.visible.length, length , "check a count of the visible elements");
 		start();
 	});
 	this.inst.check();
@@ -57,23 +61,21 @@ test("When a scroll position of the window was changed", function() {
 
 	// Then
 	equal(visible.length, 6, "visible element length (6)");
-	for(i=0, el; el = visible[i] ; i++) {
-		equal(el.innerText, "#" + (i+22), "visible element range (#22~27)");
-	}
 	equal(invisible.length, 5, "invisible element length (5)");
-	for(i=0, el; el = invisible[i] ; i++) {
-		equal(el.innerText, "#" + (i+1), "visible element range (#1~5)");
-	}
 });
 
 asyncTest("check a visible/invisible status in the expanded window ", function() {
 	// Given
+	var length = Math.ceil( (document.documentElement.clientHeight+ (2*boxheight))/boxheight );
+	if(document.documentElement.clientHeight%boxheight === 0) {
+		length++;
+	}
 	// When
 	this.inst.options.expandSize = boxheight * 2;
 	this.inst.on("change", function(e) {
 		// Then
 		equal(e.invisible.length, 0 , "no invisible");
-		equal(e.visible.length, Math.ceil( (window.innerHeight+ (2*boxheight))/boxheight)  , "check a count of the visible elements");
+		equal(e.visible.length, length, "check a count of the visible elements");
 		start();
 	});
 	this.inst.check();
@@ -99,13 +101,7 @@ test("When a scroll position of the expanded window was changed", function() {
 
 	// Then
 	equal(visible.length, 8, "visible element length (8)");
-	for(i=0, el; el = visible[i] ; i++) {
-		equal(el.innerText, "#" + (i+22), "visible element range (#22~29)");
-	}
 	equal(invisible.length, 3, "invisible element length (3)");
-	for(i=0, el; el = invisible[i] ; i++) {
-		equal(el.innerText, "#" + (i+1), "visible element range (#1~3)");
-	}
 });
 
 module("Visible refresh Test", {
