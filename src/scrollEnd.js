@@ -18,11 +18,12 @@
         var osInfo = eg.agent.os;
         var browserInfo = eg.agent.browser;
 
-        if(osInfo.os == "android"){
+        if(osInfo.name == "android"){
             if(browserInfo.name != "sbrowser" && browserInfo.name == "chrome") {
+
                 nRet = 3;
             } else {
-                if(osInfo.version >= "3") {
+                if(parseInt(osInfo.version, 10) >= 3) {
                     nRet = 2;
                 } else {
                     nRet = 1;
@@ -70,6 +71,9 @@
 
     function _touchEnd(){
         isTouched = false;
+        if(isMoved) {
+            _startObserver();
+        }
     }
 
     function _scroll(){
