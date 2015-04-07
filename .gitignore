@@ -5,3 +5,5 @@ sample/
 report
 temp
 *.log
+doc
+dist

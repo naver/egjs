@@ -1,5 +1,5 @@
-"use strict";
 (function(ns) {
+	"use strict";
 	/**
 	 * Class
 	 * The Class() object is used to implement the application using object-oriented programming.
