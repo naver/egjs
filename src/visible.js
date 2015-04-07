@@ -101,12 +101,11 @@
 			area.bottom += expandSize;
 			area.right += expandSize;
 
-			for(var i= this._targets.length-1, target, targetArea, after, before; i>=0 ; i--) {
-				target=this._targets[i];
+			for(var i= this._targets.length-1, target, targetArea, after, before; target=this._targets[i] ; i--) {
 				targetArea=target.getBoundingClientRect();
 
 				if (!$(target).hasClass(this.options.targetClass)) {
-					delete target.__VISIBLE__;
+					target.__VISIBLE__ = null;
 					this._targets.splice(i, 1);
 					continue;
 				}
@@ -115,13 +114,7 @@
 		                targetArea.bottom < area.top || area.bottom < targetArea.top ||
 		                targetArea.right < area.left || area.right < targetArea.left
 		            );
-				if(before !== after) {
-					if(after) {
-						visibles.unshift(target);
-					} else {
-						invisibles.unshift(target);
-					}
-				}
+				(before !== after) && (after ? visibles : invisibles).unshift(target);
 			}
 
 
@@ -141,8 +134,7 @@
 		destroy : function() {
 			this.off();
 			this._targets = [];
-			this._wrapper = null;
-			this._timer = null;
+			this._wrapper = this._timer = null;
 		}
 	});
 })(jQuery, eg);
