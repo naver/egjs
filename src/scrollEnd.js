@@ -1,32 +1,67 @@
 (function($){
     "use strict";
 
-    var isTouchEnded, isMoved, preTop, preLeft, observerInterval;
+    var isTouched, isMoved, preTop = 0, preLeft = 0, observerInterval, scrollEndTimer, rotateFlag = false, deviceType = _getDeviceType();
 
     $.event.special.scrollend = {
         setup: function() {
             _attachEvent();
-            return false;
         },
         teardown: function() {
             _removeEvent();
-            return false;
         }
     };
 
+
+    function _getDeviceType(){
+        var nRet = 0;
+        var osInfo = eg.agent.os;
+        var browserInfo = eg.agent.browser;
+
+        if(osInfo.os == "android"){
+            if(browserInfo.name != "sbrowser" && browserInfo.name == "chrome") {
+                nRet = 3;
+            } else {
+                if(osInfo.version >= "3") {
+                    nRet = 2;
+                } else {
+                    nRet = 1;
+                }
+            }
+        }else if(osInfo.name == "window"){
+             if(parseInt(osInfo.version ,10) >= 8) {
+                 nRet = 2;
+             }
+        }else if(osInfo.name == "ios" && parseInt(osInfo.version ,10) >= 8) {
+            nRet = 2;
+        }
+
+        return nRet;
+    }
+
     function _attachEvent(){
-        $(document).on({
-            "touchstart" : _touchStart,
-            "touchmove" : _touchMove,
-            "touchend" : _touchEnd,
-            "touchcancel" : _touchEnd
-        });
+
         $(window).on("scroll" , _scroll);
+
+        if(deviceType == 1){
+            $(document).on({
+                "touchstart" : _touchStart,
+                "touchmove" : _touchMove,
+                "touchend" : _touchEnd
+            });
+        }
+
+        if(deviceType == 3) {
+            $(window).on("orientationchange" , function(){
+                rotateFlag = true;
+            });
+        }
     }
 
     function _touchStart(){
-        isTouchEnded = isMoved = false;
-        preTop = preLeft = null;
+        isTouched = true;
+        isMoved = false;
+        preTop = preLeft = 0;
     }
 
     function _touchMove(){
@@ -34,11 +69,25 @@
     }
 
     function _touchEnd(){
-        isTouchEnded = true;
+        isTouched = false;
     }
 
     function _scroll(){
-        _startObserver();
+        switch(deviceType) {
+            case 0 :
+                _triggerScrollEnd();
+                break;
+            case 1 : _startObserver(); break;
+            case 2 : _triggerScrollEndAlways();
+                  break;
+            case 3 :
+                if(rotateFlag){
+                    rotateFlag = false;
+                }else{
+                    _triggerScrollEnd();
+                }
+                break;
+        }
     }
 
     function _startObserver(){
@@ -53,30 +102,42 @@
     }
 
     function _observe(){
-        if(!isTouchEnded && !isMoved && (preTop !== window.pageYOffset || preLeft !== window.pageXOffset) ) {
+        if(isTouched || (preTop !== window.pageYOffset || preLeft !== window.pageXOffset) ) {
             preTop = window.pageYOffset;
             preLeft = window.pageXOffset;
         } else {
             _stopObserver();
-            _fireEventScrollEnd();
-            isMoved = false;
+            _triggerScrollEnd();
         }
 
     }
 
-    function _fireEventScrollEnd(){
-        $(window).trigger("scrollend" , {
-            top : window.pageYOffset,
-            left : window.pageXOffset
-        });
+    function _triggerScrollEnd(){
+        var offsetY = window.pageYOffset, offsetX = window.pageXOffset;
+
+        if(preTop !== offsetY || preLeft !== offsetX){
+            $(window).trigger("scrollend" , {
+                top : offsetY,
+                left : offsetX
+            });
+            preTop = offsetY;
+            preLeft = offsetX;
+        }
+    }
+
+    function _triggerScrollEndAlways() {
+        clearTimeout(scrollEndTimer);
+        scrollEndTimer = 0;
+        scrollEndTimer = setTimeout(function() {
+            _triggerScrollEnd();
+        },500);
     }
 
     function _removeEvent(){
         $(document).off({
             "touchstart" : _touchStart,
             "touchmove" : _touchMove,
-            "touchend" : _touchEnd,
-            "touchcancel" : _touchEnd
+            "touchend" : _touchEnd
         });
         $(window).off("scroll" , _scroll);
     }
