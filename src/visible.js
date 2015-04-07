@@ -8,7 +8,7 @@
 	 *
 	 * @param {Object} options
 	 * @param {String} [options.targetClass="check_visible"] a classname of tagets
-	 * @param {HTMLElement|String|jQuery} [options.wrapper=document] parent element that to check targets
+	 * @param {HTMLElement|String|jQuery} [options.wrapper=document] parent element that to check targets (wrapper is only one.)
 	 * @param {Number} [options.expandSize=0] expand size of the wrapper.
 	 * e.g. If a wrapper size is 100 x 100 and 'expandSize' option is 20, visible range is 120 x 120
 	 */
@@ -22,7 +22,6 @@
 			$.extend(this.options, options);
 
 			this._wrapper = $(this.options.wrapper);
-			// wrapper is only one!
 			this._wrapper = this._wrapper.length > 0 ? this._wrapper[0] : document;
 			this._targets = [];
 			this._timer = null;
@@ -47,15 +46,18 @@
 		 * if targets was added or removed, you must call 'refresh' method.
 		 */
 		refresh : function() {
-			if (this._supportElementsByClassName) {
-				this._targets = this._wrapper.getElementsByClassName(this.options.targetClass);
-				this.refresh = function() {};
-			} else {
-				this._targets = $(this._wrapper).find("." + this.options.targetClass).each(function() {
-					return this;
-				});
-			}
-			return this;
+		    if (this._supportElementsByClassName) {
+		        this._targets = this._wrapper.getElementsByClassName(this.options.targetClass);
+		        this.refresh = function() {return this};
+		    } else {
+		        this.refresh = function() {
+		            this._targets = $(this._wrapper).find("." + this.options.targetClass).each(function() {
+		                return this;
+		            });
+		            return this;
+		        }
+		    }
+		    return this.refresh();
 		},
 
 		/**
