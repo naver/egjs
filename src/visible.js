@@ -48,14 +48,14 @@
 		refresh : function() {
 		    if (this._supportElementsByClassName) {
 		        this._targets = this._wrapper.getElementsByClassName(this.options.targetClass);
-		        this.refresh = function() {return this};
+		        this.refresh = function() {return this; };
 		    } else {
 		        this.refresh = function() {
 		            this._targets = $(this._wrapper).find("." + this.options.targetClass).each(function() {
 		                return this;
 		            });
 		            return this;
-		        }
+		        };
 		    }
 		    return this.refresh();
 		},
