@@ -3,10 +3,25 @@ function __rotate($, ns, doc, global){
     "use strict";
 // debug
 
+    /**
+     * @namespace jQuery.extention
+     */
+    /**
+     * Support rotate event
+     * @name jQuery.extention#rotate
+     * @event
+     * @param {Event} e event
+     * @param {Boolean} e.isVertical vertical
+     * @example
+     * $(window).on("rotate",function(e){
+     *      e.isVertical;
+     * });
+     *
+     */
     var beforeScreenWidth = -1,
         beforeVertical = null,
         rotateTimer = null,
-        isMobile = ns.agent.os.name === "android" || ns.agent.os.name === "ios";
+        isMobile = /android|ios/.test(ns.agent.os.name);
 
     /*
      * This orientationChange method is return event name for bind orientationChange event.
