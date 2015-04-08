@@ -1,122 +1,121 @@
-(function($){
+(function($, ns){
     "use strict";
 
-    var isTouched, isMoved, preTop = 0, preLeft = 0, observerInterval, scrollEndTimer, rotateFlag = false, deviceType = _getDeviceType();
+    var isTouched, isMoved, preTop = 0, preLeft = 0, observerInterval, scrollEndTimer, rotateFlag = false, deviceType = getDeviceType();
 
     $.event.special.scrollend = {
         setup: function() {
-            _attachEvent();
+            attachEvent();
         },
         teardown: function() {
-            _removeEvent();
+            removeEvent();
         }
     };
 
 
-    function _getDeviceType(){
-        var nRet = 0;
-        var osInfo = eg.agent.os;
-        var browserInfo = eg.agent.browser;
+    function getDeviceType(){
+        var retValue = 0;
+        var osInfo = ns.agent.os;
+        var browserInfo = ns.agent.browser;
 
-        if(osInfo.name == "android"){
-            if(browserInfo.name != "sbrowser" && browserInfo.name == "chrome") {
-
-                nRet = 3;
+        if(osInfo.name === "android"){
+            if(browserInfo.name !== "sbrowser" && browserInfo.name === "chrome") {
+                retValue = 3;
             } else {
                 if(parseInt(osInfo.version, 10) >= 3) {
-                    nRet = 2;
+                    retValue = 2;
                 } else {
-                    nRet = 1;
+                    retValue = 1;
                 }
             }
-        }else if(osInfo.name == "window"){
+        }else if(osInfo.name === "window"){
              if(parseInt(osInfo.version ,10) >= 8) {
-                 nRet = 2;
+                 retValue = 2;
              }
-        }else if(osInfo.name == "ios" && parseInt(osInfo.version ,10) >= 8) {
-            nRet = 2;
+        }else if(osInfo.name === "ios" && parseInt(osInfo.version ,10) >= 8) {
+            retValue = 2;
         }
 
-        return nRet;
+        return retValue;
     }
 
-    function _attachEvent(){
+    function attachEvent(){
 
-        $(window).on("scroll" , _scroll);
+        $(window).on("scroll" , scroll);
 
-        if(deviceType == 1){
+        if(deviceType === 1){
             $(document).on({
-                "touchstart" : _touchStart,
-                "touchmove" : _touchMove,
-                "touchend" : _touchEnd
+                "touchstart" : touchStart,
+                "touchmove" : touchMove,
+                "touchend" : touchEnd
             });
         }
 
-        if(deviceType == 3) {
+        if(deviceType === 3) {
             $(window).on("orientationchange" , function(){
                 rotateFlag = true;
             });
         }
     }
 
-    function _touchStart(){
+    function touchStart(){
         isTouched = true;
         isMoved = false;
         preTop = preLeft = 0;
     }
 
-    function _touchMove(){
+    function touchMove(){
         isMoved = true;
     }
 
-    function _touchEnd(){
+    function touchEnd(){
         isTouched = false;
         if(isMoved) {
-            _startObserver();
+            startObserver();
         }
     }
 
-    function _scroll(){
+    function scroll(){
         switch(deviceType) {
             case 0 :
-                _triggerScrollEnd();
+                triggerScrollEnd();
                 break;
-            case 1 : _startObserver(); break;
-            case 2 : _triggerScrollEndAlways();
+            case 1 : startObserver(); break;
+            case 2 : triggerScrollEndAlways();
                   break;
             case 3 :
                 if(rotateFlag){
                     rotateFlag = false;
                 }else{
-                    _triggerScrollEnd();
+                    triggerScrollEnd();
                 }
                 break;
         }
     }
 
-    function _startObserver(){
-        _stopObserver();
-        observerInterval = setInterval(_observe,100);
+    function startObserver(){
+        stopObserver();
+        observerInterval = setInterval(observe,100);
 
     }
 
-    function _stopObserver(){
+    function stopObserver(){
         clearInterval(observerInterval);
         observerInterval = 0;
     }
 
-    function _observe(){
+    function observe(){
         if(isTouched || (preTop !== window.pageYOffset || preLeft !== window.pageXOffset) ) {
             preTop = window.pageYOffset;
             preLeft = window.pageXOffset;
         } else {
-            _stopObserver();
-            _triggerScrollEnd();
+            stopObserver();
+            triggerScrollEnd();
         }
 
     }
 
-    function _triggerScrollEnd(){
+    function triggerScrollEnd(){
         var offsetY = window.pageYOffset, offsetX = window.pageXOffset;
 
         if(preTop !== offsetY || preLeft !== offsetX){
@@ -129,20 +128,20 @@
         }
     }
 
-    function _triggerScrollEndAlways() {
+    function triggerScrollEndAlways() {
         clearTimeout(scrollEndTimer);
         scrollEndTimer = 0;
         scrollEndTimer = setTimeout(function() {
-            _triggerScrollEnd();
+            triggerScrollEnd();
         },500);
     }
 
-    function _removeEvent(){
+    function removeEvent(){
         $(document).off({
-            "touchstart" : _touchStart,
-            "touchmove" : _touchMove,
-            "touchend" : _touchEnd
+            "touchstart" : touchStart,
+            "touchmove" : touchMove,
+            "touchend" : touchEnd
         });
-        $(window).off("scroll" , _scroll);
+        $(window).off("scroll" , scroll);
     }
-})(jQuery);
+})(jQuery, eg);
