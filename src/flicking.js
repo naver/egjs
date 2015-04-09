@@ -2,23 +2,23 @@
 	"use strict";
 
 	/**
-	 * Flicking make flickable UI
+	 * To build flickable UI
 	 * @class
 	 * @name eg.Flicking
 	 * @extends eg.Component
 	 *
-	 * @param {HTMLElement|String|jQuery} wrapper element
+	 * @param {HTMLElement|String|jQuery} element wrapper element
 	 * @param {Object} options
-	 * @param {Function} [options.effect a effect=easing.linear] function of the jQuery Easing Plugin
-	 * @param {Boolean} [options.hwCompositing=eg.isHWAccelerable] force to use HW compositing
+	 * @param {Function} [options.effect=easing.linear] Function of the jQuery Easing Plugin
+	 * @param {Boolean} [options.hwCompositing=eg.isHWAccelerable()] Force to use HW compositing
 	 * @param {Number} [options.zIndex=1000] z-index value of the wrapper element
-	 * @param {Number} [options.deceleration=0.0006] deceleration this value can be altered to change the momentum animation duration. higher numbers make the animation shorter.
-	 * @param {Boolean} [options.circular=false]
-	 * @param {Number} [options.previewPadding=0]
-	 * @param {Number} [options.threshold=40]
-	 * @param {Number} [options.duration=40]
-	 * @param {Function} [options.panelEffect a panelEffect=easing.easeInCubic] function of the jQuery Easing Plugin
-	 * @param {Number} [options.defaultIndex=0]
+	 * @param {Number} [options.deceleration=0.0006] Deceleration this value can be altered to change the momentum animation duration. higher numbers make the animation shorter.
+	 * @param {Boolean} [options.circular=false] To make panels rotate infinitely
+	 * @param {Number} [options.previewPadding=0] Padding value to display previous and next panels
+	 * @param {Number} [options.threshold=40] Threshold pixels to move panels in prev/next direction
+	 * @param {Number} [options.duration=100] Duration time of panel change animation in milliseconds
+	 * @param {Function} [options.panelEffect=easing.easeInCubic] Function of the jQuery Easing Plugin
+	 * @param {Number} [options.defaultIndex=0] Default panel index to show in first time
 	 *
 	 * @see jQuery Easing Plugin {@link http://gsgd.co.uk/sandbox/jquery/easing}
 	 */
@@ -267,13 +267,13 @@
 			 * @event
 			 *
 			 * @param {Object} param
-			 * @param {String} param.eventType name of event
-			 * @param {Number} param.index current panel physical index
-			 * @param {Number} param.no current panel logical position
-			 * @param {Boolean} param.direction direction of the panel move (true:right, false:left)
-			 * @param {Array} param.pos departure coordinate
-			 * @param {Number} param.pos.0 departure x-coordinate
-			 * @param {Number} param.pos.1 departure y-coordinate
+			 * @param {String} param.eventType Name of event
+			 * @param {Number} param.index Current panel physical index
+			 * @param {Number} param.no Current panel logical position
+			 * @param {Boolean} param.direction Direction of the panel move (true:right, false:left)
+			 * @param {Array} param.pos Departure coordinate
+			 * @param {Number} param.pos.0 Departure x-coordinate
+			 * @param {Number} param.pos.1 Departure y-coordinate
 			 */
 			this._triggerEvent("touchStart", { pos : e.pos });
 		},
@@ -291,13 +291,13 @@
 			 * @event
 			 *
 			 * @param {Object} param
-			 * @param {String} param.eventType name of event
-			 * @param {Number} param.index current panel physical index
-			 * @param {Number} param.no current panel logical position
-			 * @param {Boolean} param.direction direction of the panel move (true:right, false:left)
-			 * @param {Array} param.pos departure coordinate
-			 * @param {Number} param.pos.0 departure x-coordinate
-			 * @param {Number} param.pos.1 departure y-coordinate
+			 * @param {String} param.eventType Name of event
+			 * @param {Number} param.index Current panel physical index
+			 * @param {Number} param.no Current panel logical position
+			 * @param {Boolean} param.direction Direction of the panel move (true:right, false:left)
+			 * @param {Array} param.pos Departure coordinate
+			 * @param {Number} param.pos.0 Departure x-coordinate
+			 * @param {Number} param.pos.1 Departure y-coordinate
 			 */
 			e.holding && this._triggerEvent("touchMove", { pos : e.pos });
 		},
@@ -327,16 +327,16 @@
 			 * @event
 			 *
 			 * @param {Object} param
-			 * @param {String} param.eventType name of event
-			 * @param {Number} param.index current panel physical index
-			 * @param {Number} param.no current panel logical position
-			 * @param {Boolean} param.direction direction of the panel move (true:right, false:left)
-			 * @param {Array} param.depaPos departure coordinate
-			 * @param {Number} param.depaPos.0 departure x-coordinate
-			 * @param {Number} param.depaPos.1 departure y-coordinate
-			 * @param {Array} param.destPos destination coordinate
-			 * @param {Number} param.destPos.0 destination x-coordinate
-			 * @param {Number} param.destPos.1 destination y-coordinate
+			 * @param {String} param.eventType Name of event
+			 * @param {Number} param.index Current panel physical index
+			 * @param {Number} param.no Current panel logical position
+			 * @param {Boolean} param.direction Direction of the panel move (true:right, false:left)
+			 * @param {Array} param.depaPos Departure coordinate
+			 * @param {Number} param.depaPos.0 Departure x-coordinate
+			 * @param {Number} param.depaPos.1 Departure y-coordinate
+			 * @param {Array} param.destPos Destination coordinate
+			 * @param {Number} param.destPos.0 Destination x-coordinate
+			 * @param {Number} param.destPos.1 Destination y-coordinate
 			 */
 			this._triggerEvent("touchEnd", { depaPos : e.depaPos, destPos : e.destPos });
 		},
@@ -357,16 +357,16 @@
 				 * @event
 				 *
 				 * @param {Object} param
-				 * @param {String} param.eventType name of event
-				 * @param {Number} param.index current panel physical index
-				 * @param {Number} param.no current panel logical position
-				 * @param {Boolean} param.direction direction of the panel move (true:right, false:left)
-				 * @param {Array} param.depaPos departure coordinate
-				 * @param {Number} param.depaPos.0 departure x-coordinate
-				 * @param {Number} param.depaPos.1 departure y-coordinate
-				 * @param {Array} param.destPos destination coordinate
-				 * @param {Number} param.destPos.0 destination x-coordinate
-				 * @param {Number} param.destPos.1 destination y-coordinate
+				 * @param {String} param.eventType Name of event
+				 * @param {Number} param.index Current panel physical index
+				 * @param {Number} param.no Current panel logical position
+				 * @param {Boolean} param.direction Direction of the panel move (true:right, false:left)
+				 * @param {Array} param.depaPos Departure coordinate
+				 * @param {Number} param.depaPos.0 Departure x-coordinate
+				 * @param {Number} param.depaPos.1 Departure y-coordinate
+				 * @param {Array} param.destPos Destination coordinate
+				 * @param {Number} param.destPos.0 Destination x-coordinate
+				 * @param {Number} param.destPos.1 Destination y-coordinate
 				 */
 				this._triggerEvent("beforeChange", { depaPos : e.depaPos, destPos : e.destPos });
 
@@ -397,16 +397,16 @@
 				 * @event
 				 *
 				 * @param {Object} param
-				 * @param {String} param.eventType name of event
-				 * @param {Number} param.index current panel physical index
-				 * @param {Number} param.no current panel logical position
-				 * @param {Boolean} param.direction direction of the panel move (true:right, false:left)
-				 * @param {Array} param.depaPos departure coordinate
-				 * @param {Number} param.depaPos.0 departure x-coordinate
-				 * @param {Number} param.depaPos.1 departure y-coordinate
-				 * @param {Array} param.destPos destination coordinate
-				 * @param {Number} param.destPos.0 destination x-coordinate
-				 * @param {Number} param.destPos.1 destination y-coordinate
+				 * @param {String} param.eventType Name of event
+				 * @param {Number} param.index Current panel physical index
+				 * @param {Number} param.no current Panel logical position
+				 * @param {Boolean} param.direction Direction of the panel move (true:right, false:left)
+				 * @param {Array} param.depaPos Departure coordinate
+				 * @param {Number} param.depaPos.0 Departure x-coordinate
+				 * @param {Number} param.depaPos.1 Departure y-coordinate
+				 * @param {Array} param.destPos Destination coordinate
+				 * @param {Number} param.destPos.0 Destination x-coordinate
+				 * @param {Number} param.destPos.1 Destination y-coordinate
 				 */
 				this._triggerEvent("beforeRestore", { depaPos : e.depaPos, destPos : e.destPos });
 			}
@@ -434,9 +434,9 @@
 			 * @event
 			 *
 			 * @param {Object} param
-			 * @param {String} param.eventType name of event
-			 * @param {Number} param.index current panel index
-			 * @param {Boolean} param.direction direction of the panel move (true:right, false:left)
+			 * @param {String} param.eventType Name of event
+			 * @param {Number} param.index Current panel index
+			 * @param {Boolean} param.direction Direction of the panel move (true:right, false:left)
 			 */
 			/**
 			 * After panel restores it's current position
@@ -444,9 +444,9 @@
 			 * @event
 			 *
 			 * @param {Object} param
-			 * @param {String} param.eventType name of event
-			 * @param {Number} param.index current panel index
-			 * @param {Boolean} param.direction direction of the panel move (true:right, false:left)
+			 * @param {String} param.eventType Name of event
+			 * @param {Number} param.index Current panel index
+			 * @param {Boolean} param.direction Direction of the panel move (true:right, false:left)
 			 */
 			this._triggerEvent(this._conf.panel.changed ? "afterChange" : "restore");
 		},
@@ -477,7 +477,7 @@
 		 */
 		_setTranslate : function(element, x, y) {
 			var property = "translate",
-				coord = [ x||0, y||0 ];
+				coord = [ x || 0, y || 0 ];
 
 			if(this.options.hwCompositing) {
 				property += "3d";
@@ -561,7 +561,7 @@
 				this._conf.touch.direction = direction;
 				this._setPanelNo(true);
 				this._conf.panel.index = index;
-				this._movableCoord.setBy(this._conf.panel.width * (direction || this.options.circular ? 1 : -1), 0, duration);
+				this._movableCoord.setBy(this._conf.panel.width * ( direction || this.options.circular ? 1 : -1 ), 0, duration);
 				this._arrangePanels(true);
 			}
 		},
@@ -569,8 +569,8 @@
 		/**
 		 * Get current panel position
 		 * @method eg.Flicking#getIndex
-		 * @param {Number} physical - true : physical, false : logical
-		 * @return {Number}
+		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical)
+		 * @return {Number} Number Current index number
 		 */
 		getIndex : function(physical) {
 			return this._conf.panel[ physical ? "index" : "no" ];
@@ -579,16 +579,16 @@
 		/**
 		 * Get current panel element
 		 * @method eg.Flicking#getElement
-		 * @return {jQuery}
+		 * @return {jQuery} jQuery Current element
 		 */
 		getElement : function() {
-			return $(this._container.children()[this._conf.panel.index]);
+			return $(this._container.children()[ this._conf.panel.index ]);
 		},
 
 		/**
 		 * Get next panel element
 		 * @method eg.Flicking#getNextElement
-		 * @return {jQuery}
+		 * @return {jQuery} jQuery Next element
 		 */
 		getNextElement : function() {
 			return this._getElement(true, true);
@@ -597,8 +597,8 @@
 		/**
 		 * Get next panel index
 		 * @method eg.Flicking#getNextIndex
-		 * @param {Number} physical - true : physical, false : logical
-		 * @return {Number}
+		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical)
+		 * @return {Number} Number Next element index value
 		 */
 		getNextIndex : function(physical) {
 			return this._getElement(true, false, physical);
@@ -607,7 +607,7 @@
 		/**
 		 * Get whole panel elements
 		 * @method eg.Flicking#getAllElements
-		 * @return {jQuery}
+		 * @return {jQuery} jQuery All panel elements
 		 */
 		getAllElements : function() {
 			return this._container.children();
@@ -616,7 +616,7 @@
 		/**
 		 * Get previous panel element
 		 * @method eg.Flicking#getPrevElement
-		 * @return {jQuery}
+		 * @return {jQuery} jQuery Previous element
 		 */
 		getPrevElement : function() {
 			return this._getElement(false, true);
@@ -625,8 +625,8 @@
 		/**
 		 * Get previous panel index
 		 * @method eg.Flicking#getPrevIndex
-		 * @param {Number} physical - true : physical, false : logical
-		 * @return {Number}
+		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical)
+		 * @return {Number} number Previous element index value
 		 */
 		getPrevIndex : function(physical) {
 			return this._getElement(false, false, physical);
@@ -635,8 +635,8 @@
 		/**
 		 * Get total panel count
 		 * @method eg.Flicking#getElementsCount
-		 * @param {Number} physical - true : physical, false : logical
-		 * @return {Number}
+		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical)
+		 * @return {Number} Number Count of all elements
 		 */
 		getElementsCount : function(physical) {
 			return this._conf.panel[ physical ? "count" : "origCount" ];
@@ -654,29 +654,31 @@
 		/**
 		 * Move to next panel
 		 * @method eg.Flicking#next
-		 * @param {Number} duration
+		 * @param {Number} [duration=0] Duration of animation in milliseconds
 		 */
 		next : function(duration) {
-			this._movePanel(true, duration);
+			this._movePanel(true, duration || 0);
 		},
 
 		/**
 		 * Move to previous panel
 		 * @method eg.Flicking#prev
-		 * @param {Number} duration
+		 * @param {Number} [duration=0] Duration of animation in milliseconds
 		 */
 		prev : function(duration) {
-			this._movePanel(false, duration);
+			this._movePanel(false, duration || 0);
 		},
 
 		/**
 		 * Move to indicated panel
 		 * @method eg.Flicking#moveTo
-		 * @param {Number} no - logical panel index
-		 * @param {Number} duration
+		 * @param {Number} no logical panel index
+		 * @param {Number} [duration=0] Duration of animation in milliseconds
 		 */
 		moveTo : function(no, duration) {
 			var indexToMove = no, movableCount;
+
+			duration = duration || 0;
 
 			if(this.options.circular) {
 				if(typeof no !== "number" || no >= this._conf.panel.origCount || no === this._conf.panel.no) {

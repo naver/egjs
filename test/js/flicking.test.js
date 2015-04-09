@@ -240,7 +240,7 @@ test("Method: getPrevIndex()", function() {
 	// When
 	// Then
 	deepEqual(typeof index, "number", "Returned number?");
-	deepEqual(index, this.inst._conf.panel.count - 1, "Previous index of first, should be "+ this.inst._conf.panel.count - 1);
+	deepEqual(index, this.inst._conf.panel.count - 1, "Previous index of first, should be "+ (this.inst._conf.panel.count - 1));
 
 	// When
 	this.inst.moveTo(2);  // move to second
