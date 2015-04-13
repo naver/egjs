@@ -2,7 +2,6 @@ var bFireEvent = false;
 module("scrollEnd Test", {
 	setup : function() {
         $(window).on("scrollend", function(){
-        console.log(333);
             bFireEvent = true;
         });
 	},
