@@ -33,12 +33,8 @@
                     retValue = TOUCHBASE;
                 }
             }
-        }else if(osInfo.name === "window"){
-             if(parseInt(osInfo.version ,10) >= 8) {
+        }else if((osInfo.name === "window" || osInfo.name === "ios") && parseInt(osInfo.version ,10) >= 8){
                  retValue = TIMERBASE;
-             }
-        }else if(osInfo.name === "ios" && parseInt(osInfo.version ,10) >= 8) {
-            retValue = TIMERBASE;
         }
 
         return retValue;
@@ -84,9 +80,12 @@
             case SCROLLBASE :
                 triggerScrollEnd();
                 break;
-            case TOUCHBASE : startObserver(); break;
-            case TIMERBASE : triggerScrollEndAlways();
-                  break;
+            case TOUCHBASE :
+                startObserver();
+                break;
+            case TIMERBASE :
+                triggerScrollEndAlways();
+                break;
             case CHROME :
                 if(rotateFlag){
                     rotateFlag = false;
