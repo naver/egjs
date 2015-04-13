@@ -30,7 +30,7 @@ module.exports = function(grunt) {
         }
       },
       build: {
-        src: ["src/polyfill/**/*.js", "src/extend.js", "src/class.js", "src/component.js", "src/*.js" ],
+        src: ["src/polyfill/**/*.js","src/customEvent/*.js", "src/extend.js", "src/class.js", "src/component.js", "src/*.js" ],
         dest: "dist/<%=pkg.outputname%>.js"
       },
     },
