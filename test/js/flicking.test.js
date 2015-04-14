@@ -49,7 +49,7 @@ test("Option: preview", function() {
 	// Given
 	this.inst = new eg.Flicking($("#mflick3"), {
 		circular : true,
-		previewPadding : 50
+		previewPadding : [ 50, 70 ]
 	});
 
 	var right = parseInt(this.inst._wrapper.css("padding-right"),10),
@@ -59,7 +59,7 @@ test("Option: preview", function() {
 
 	// When
 	// Then
-	ok((right === left) && left === this.inst.options.previewPadding, "Preview padding value applied correctly?");
+	ok(left === this.inst.options.previewPadding[0] && right === this.inst.options.previewPadding[1], "Preview padding value applied correctly?");
 	equal(wrapperWidth, panelWidth, "Each panel's width should be same as wrapper element's width");
 });
 
@@ -83,16 +83,16 @@ asyncTest("Option: threshold #1 - when moved more than threshold pixels", functi
 	// When
 	Simulator.gestures.pan(el, {
 		pos: [0, 0],
-            deltaX: -100,
-            deltaY: 100,
-            duration: 500,
-            easing: "linear"
+		deltaX: -100,
+		deltaY: 100,
+		duration: 500,
+		easing: "linear"
 	}, function() {
 		// Then
 		setTimeout(function() {
 			deepEqual(panelNo + 1, changedPanelNo, "Moved to next panel?");
 			start();
-		},1000);
+		},700);
     });
 });
 
@@ -115,10 +115,10 @@ asyncTest("Option: threshold #2 - when moved less than threshold pixels", functi
 	// When
 	Simulator.gestures.pan(el, {
 		pos: [0, 0],
-            deltaX: -70,
-            deltaY: 100,
-            duration: 500,
-            easing: "linear"
+		deltaX: -70,
+		deltaY: 100,
+		duration: 500,
+		easing: "linear"
 	}, function() {
 		// Then
 		setTimeout(function() {
@@ -165,12 +165,13 @@ test("Method: getElement()", function() {
 		circular : true
 	});
 
-	var element = this.inst.getElement();
+	var element = this.inst.getElement(),
+		value = (this.inst._getBasePositionIndex() * 100) +"%";
 
 	// When
 	// Then
 	ok(element.length, "The element was invoked correctly?");
-	deepEqual(parseInt(element.css("left"),10), this.inst._conf.panel.width, "Invoked element is placed in right position?");
+	deepEqual(element[0].style.transform.match(new RegExp(value)) + "", value, "Invoked element is placed in right position?");
 
 });
 
@@ -309,10 +310,10 @@ asyncTest("Method: isPlaying()", function() {
 	// When
 	Simulator.gestures.pan(el, {
 		pos: [0, 0],
-            deltaX: -100,
-            deltaY: 100,
-            duration: 1000,
-            easing: "linear"
+		deltaX: -100,
+		deltaY: 100,
+		duration: 1000,
+		easing: "linear"
 	}, function() {
 		var isPlaying = that.inst.isPlaying();
 
@@ -334,10 +335,12 @@ test("Method: next()", function() {
 
 	// When
 	this.inst.next();
-	var element = this.inst.getElement();
+	var element = this.inst.getElement(),
+		value = (this.inst._getBasePositionIndex() * 100) +"%";
 
+	// When
 	// Then
-	deepEqual(parseInt(element.css("left"),10), this.inst._conf.panel.width, "Moved to next panel correctly?");
+	deepEqual(element[0].style.transform.match(new RegExp(value)) + "", value, "Moved to next panel correctly?");
 	deepEqual(element[0], nextElement[0], "The next element is what expected?");
 });
 
@@ -351,11 +354,12 @@ test("Method: prev()", function() {
 
 	// When
 	this.inst.prev();
-	var element = this.inst.getElement();
+	var element = this.inst.getElement(),
+		value = (this.inst._getBasePositionIndex() * 100) +"%";
 
 	// Then
-	deepEqual(parseInt(element.css("left"),10), this.inst._conf.panel.width, "Moved to previous panel correctly?");
-	deepEqual(element[0], prevElement[0], "The previous element is what expected?");
+	deepEqual(element[0].style.transform.match(new RegExp(value)) + "", value, "Moved to previous panel correctly?");
+	deepEqual(element.html(), prevElement.html(), "The previous element is what expected?");
 });
 
 test("Method: moveTo()", function() {
@@ -363,21 +367,21 @@ test("Method: moveTo()", function() {
 	this.inst = new eg.Flicking($("#mflick1"));
 
 	var count = this.inst._conf.panel.count,
-		panelWidth = this.inst._conf.panel.width;
+		panelWidth = this.inst._conf.panel.width,
+		value = (count - 1) * 100;
 
 	// When
 	this.inst.moveTo(count - 1);  // move to last
 
-	// Then
-	var left = parseInt(this.inst._container.children().last().css("left"),10);
-	deepEqual(left, panelWidth * (count - 1), "Moved to last panel?");
+   	// Then
+   	equal(this.inst.getElement()[0].style.transform.match(new RegExp(value)) + "", value, "Moved to last panel?");
 
 	// When
 	this.inst.moveTo(0);  // move to first
 
 	// Then
-	var left = parseInt(this.inst._container.children().first().css("left"),10);
-	deepEqual(left, 0, "Moved to first panel?");
+	ok(this.inst.getElement()[0].style.transform.match(/0%/), "Moved to first panel?");
+
 	this.inst._movableCoord.destroy();
 
 	// Given
@@ -390,11 +394,13 @@ test("Method: moveTo()", function() {
 
 	// When
 	var index = count - 1;
+	value = (this.inst._getBasePositionIndex() * 100) +"%";
+
 	this.inst.moveTo(index);  // move to last
 
 	// Then
 	equal(count - 1, this.inst._conf.panel.no, "Panel number indicate last panel number?");
-	deepEqual(parseInt(this.inst.getElement().css("left"),10), this.inst._conf.panel.index * this.inst._conf.panel.width, "Invoked element is placed in right position?");
+	deepEqual(this.inst.getElement()[0].style.transform.match(new RegExp(value)) + "", value, "Invoked element is placed in right position?");
 
 });
 
@@ -422,4 +428,174 @@ test("Method: resize()", function() {
 	// Then
 	deepEqual(this.inst._conf.panel.width, element.width(), "The panel width should be same as current wrapper element");
 	notDeepEqual(coordMax, this.inst._movableCoord.options.max, "Should be updated MovableCoord's 'max' options value");
+});
+
+asyncTest("Custom events #1 - When changes panel normally", function() {
+	// Given
+	var el = $("#mflick1").get(0),
+		eventOrder = ["touchStart", "touchMove", "touchEnd", "beforeChange", "change", "afterChange"],
+		eventFired = [],
+		handler = function(e) {
+			var type = e.eventType;
+
+			if(eventFired.indexOf(type) == -1) {
+				eventFired.push(type);
+			}
+		};
+
+	this.inst = new eg.Flicking(el).on({
+		touchStart : handler,
+		touchMove : handler,
+		touchEnd : handler,
+		change : handler,
+		beforeChange : handler,
+		beforeRestore : handler,
+		restore : handler,
+		afterChange : handler
+	});
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [0, 0],
+		deltaX: -70,
+		deltaY: 100,
+		duration: 500,
+		easing: "linear"
+	}, function() {
+		// Then
+		setTimeout(function() {
+			deepEqual(eventOrder, eventFired, "Custom events are fired in correct order");
+			start();
+		},1000);
+    });
+});
+
+asyncTest("Custom events #2 - When restore", function() {
+	// Given
+	var el = $("#mflick1").get(0),
+		eventOrder = ["touchStart", "touchMove", "touchEnd", "beforeRestore", "change", "restore"],
+		eventFired = [],
+		handler = function(e) {
+			var type = e.eventType;
+
+			if(eventFired.indexOf(type) == -1) {
+				eventFired.push(type);
+			}
+		};
+
+	this.inst = new eg.Flicking(el, { threshold : 100 }).on({
+		touchStart : handler,
+		touchMove : handler,
+		touchEnd : handler,
+		change : handler,
+		beforeChange : handler,
+		beforeRestore : handler,
+		restore : handler,
+		afterChange : handler
+	});
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [0, 0],
+		deltaX: -70,
+		deltaY: 100,
+		duration: 500,
+		easing: "linear"
+	}, function() {
+		// Then
+		setTimeout(function() {
+			deepEqual(eventOrder, eventFired, "Custom events are fired in correct order");
+			start();
+		},1000);
+    });
+});
+
+asyncTest("Custom events #3 - Stopping event", function() {
+	// Given
+	var el = $("#mflick1").get(0),
+		eventOrder = ["touchStart", "touchMove", "touchEnd", "beforeChange"],
+		eventFired = [],
+		handler = function(e) {
+			var type = e.eventType;
+
+			if(eventFired.indexOf(type) == -1) {
+				eventFired.push(type);
+			}
+
+			// event should stop firing after this event
+			if(type == "beforeChange") {
+				e.stop();
+			}
+		};
+
+	this.inst = new eg.Flicking(el).on({
+		touchStart : handler,
+		touchMove : handler,
+		touchEnd : handler,
+		change : handler,
+		beforeChange : handler,
+		beforeRestore : handler,
+		restore : handler,
+		afterChange : handler
+	});
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [0, 0],
+		deltaX: -70,
+		deltaY: 100,
+		duration: 500,
+		easing: "linear"
+	}, function() {
+		// Then
+		setTimeout(function() {
+			deepEqual(eventOrder, eventFired, "Custom events are fired in correct order");
+			start();
+		},1000);
+    });
+});
+
+asyncTest("Custom events #4 - Stopping event", function() {
+	// Given
+	var el = $("#mflick1").get(0),
+		eventOrder = ["touchStart", "touchMove", "touchEnd", "beforeRestore"],
+		eventFired = [],
+		handler = function(e) {
+			var type = e.eventType;
+
+			if(eventFired.indexOf(type) == -1) {
+				eventFired.push(type);
+			}
+
+			// event should stop firing after this event
+			if(type == "beforeRestore") {
+				e.stop();
+			}
+		};
+
+	this.inst = new eg.Flicking(el, { threshold : 100 }).on({
+		touchStart : handler,
+		touchMove : handler,
+		touchEnd : handler,
+		change : handler,
+		beforeChange : handler,
+		beforeRestore : handler,
+		restore : handler,
+		afterChange : handler
+	});
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [0, 0],
+		deltaX: -70,
+		deltaY: 100,
+		duration: 500,
+		easing: "linear"
+	}, function() {
+		// Then
+		setTimeout(function() {
+			deepEqual(eventOrder, eventFired, "Custom events are fired in correct order");
+			start();
+		},1000);
+    });
 });
