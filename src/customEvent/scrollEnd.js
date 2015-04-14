@@ -1,5 +1,17 @@
 (function($, ns, global, doc){
     "use strict";
+    /**
+     * Support scrollEnd event in jQuery
+     * @ko jQuery custom scrollEnd 이벤트 지원
+     * @name jQuery.extention#scrollEnd
+     * @event
+     * @param {Event} e event
+     * @param {Boolean} e.isVertical vertical
+     * @example
+     * $(document).on("scrollEnd",function(e){
+     * });
+     *
+     */
 
     var isTouched, isMoved, preTop = 0, preLeft = 0, observerInterval, scrollEndTimer, rotateFlag = false,
     CHROME = 3,
