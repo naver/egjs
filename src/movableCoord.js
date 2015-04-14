@@ -117,7 +117,7 @@
 			return hammer;
 		},
 		/**
-		 * Deattach a element to an use for the movableCoord.
+		 * Dettach a element to an use for the movableCoord.
 		 * @ko movableCoord을 사용하기 위한 엘리먼트를 해제한다.
 		 * @method eg.MovableCoord#unbind
 		 * @param {HTMLElement|String|jQuery} element
