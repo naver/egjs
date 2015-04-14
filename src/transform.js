@@ -2,178 +2,196 @@
 
 var __transform = (function($, global) {
 	"use strict";
-
-	var TYPE = {
-		NONE : 0,
-		UNIT : 1,
-		MULTI_2D : 2,
-		MULTI_3D : 3,
-		MATRIX_2D : 4,
-		MATRIX_3D : 5
-	};
-
-	function parse(transform) {
-		var transform = property.match(/\w+\([^)]+\)/g);
-		var result = [];
-
-		for(var i=0, v, m, type; v=transform[i]; i++) {
-
+	var CSSMatrix = window.WebKitCSSMatrix || window.MSCSSMatrix || window.OCSSMatrix || window.MozCSSMatrix || window.CSSMatrix;
+	function parse(element, transform) {
+		var result = {},
+			m;
+		if(transform === "none") {
+			return result;
 		}
-	}
-
-	function parseType(type) {
-		var result = TYPE.NONE;
-		if(/matrix/.test(type)) {
-			result = /3d/.test(type) ? TYPE.MATRIX_3D :  TYPE.MATRIX_2D;
-		} else if(/perspective|[XYZ]/.test(type) ) {
-			result = TYPE.UNIT;
+		if(/matrix/.test(transform)) {
+			result = transform;
 		} else {
-			result = /3d/.test(type) ? TYPE.MULTI_3D :  TYPE.MULTI_2D;
+			var $el = $(element);
+			var needToCurStyle = /\-=|\+=/.test(transform);
+			var needToConvert = /%/.test(transform);
+			var width = needToConvert ? $el.width() : 0;
+			var height = needToConvert ? $el.height() : 0;
+			var styleTransform = needToCurStyle ? $el.css("transform") : "none";
+			var properties = [];
+			m = transform.match(/\w+\([^)]+\)/g);
+			for(var i=0, v; v=m[i]; i++) {
+				properties.push(interpolation(parseProperty(v), width, height, styleTransform));
+			}
+			result = data2String(properties);
+			// result = parseTransform(properties);
 		}
+		console.log(result);
 		return result;
 	}
 
-	function parseProperty(property) {
-		var m = property.match(/\b(\w+?)\(/),
-			name, result = "";
-		if(m && m.length > 1) {
-			name = m[1];
-			// console.log(name, parseType(name));
-			switch(parseType(name)) {
-				case TYPE.UNIT :
-				case TYPE.MULTI_2D :
-				case TYPE.MULTI_3D :
-					m = property.match(/\(\s*([^,\)]+)((,)?\s*[^,\)]+\s*)+/);
-					// var a = [];
-					// for(var i=0, l = m.length; i<l ; i++) {
-					// 	a.push[m[i]];
-					// }
-					// console.log(a);
+	function rateFn(start, end) {
+		if (/matrix/.test(start + end)) {
+			var is3d = /3d/.test(start + end);
+			start = toMatrix(start);
+			end = toMatrix(end);
+			if (is3d || start[0] !== end[0]) {
+				start = toMatrix3d(start);
+				end = toMatrix3d(end);
+			}
+			// console.log(start, end);
+			return function(pos) {
+				if(pos === 1) {
+					return data2String([end]);
+				} else {
+					var result = [];
+					for(var i=0, s,e, l = start[1].length; i< l; i++) {
+						s = parseFloat(start[1][i],10);
+						e = parseFloat(end[1][i],10);
+						result.push(s + ( e- s) * pos);
+					}
+					return data2String([ [ start[0], result ] ]);
+				}
+			}
+		} else {
 
-					// m && m.length >1 && (result = [ type, m[1].trim() ]);
-				break;
-				case TYPE.MATRIX_2D :  break;
-				case TYPE.MATRIX_3D :  break;
+		}
+	}
+
+	function data2String(properties) {
+		var result = [];
+		for(var i=0, p, name, unit; p = properties[i]; i++) {
+			name = p[0];
+			unit = /translate/.test(name) ? "px" : (/rotate/.test(name) ? "deg" : "");
+			result.push(name + "(" + p[1].join(unit + ",") + unit + ")");
+		}
+		return result.join(" ");
+	}
+
+	// Object {translateZ: 0, translateX: 20, translateY: 15, rotateX: 0, perspective: 10}
+	function parseTransform(parsedProperties) {
+		var result = {};
+		for(var i=0, p, name, val; p = parsedProperties[i]; i++) {
+			val = p[1];
+			switch(name = p[0]) {
+				case "translate3d":
+				case "scale3d":
+				case "rotate3d":
+					name = name.replace(/3d$/, "");
+					result[name + "Z"] = val[2];
+				case "translate":
+				case "scale":
+				case "rotate":
+					result[name + "X"] = val[0];
+					if (typeof val[1] === "undefined") {
+						(name === "scale") && (result[name + "Y"] = val[0]);
+					} else {
+						result[name + "Y"] = val[1];
+					}
+					break;
+				default:
+					result[name] = +val.join("");
+					break;
 			}
 		}
 		return result;
-	};
+	}
+
+	function interpolation(parsedProperty, width, height, styleTransform) {
+		var name =parsedProperty[0];
+		var options = [];
+		// var transform = "";
+
+		// prepare %
+		if(/translate/.test(name)) {
+			var m = name.match(/translate([XYZ])/);
+			if(m && m.length > 1) {
+				switch(m[1]) {
+					case "X" : options.push({ size : width}); break;
+					case "Y" : options.push({ size : height}); break;
+					case "Z" : options.push({ size : 0}); break;
+				}
+			} else { // translate of traslate3d
+				options = [ { size : width}, {size: height} ];
+				/3d/.test(name) && options.push({size : 0});
+			}
+		}
+		// prepare relative position
+		if(styleTransform !== "none") {
+
+		}
+
+		parsedProperty[1].forEach(function(v,i,a) {
+			a[i] = unifyUnit(v, options[i]);
+		});
+		return parsedProperty;
+	}
+
+	//  [ "translate3d" , [ "10", "20", "3px"] ]
+	function parseProperty(property) {
+		var m = property.match(/(\b\w+?)\((\s*[^\)]+)/),
+			name, value, result = ["",""];
+		if(m && m.length > 2) {
+			name = m[1];
+			value = m[2].split(",");
+			value.forEach(function(v,i,a) {
+				a[i] = v.trim();
+			});
+			result = [ name.trim(), value ];
+		}
+		return result;
+	}
+
+	// unify unit (%, relative value)
+	function unifyUnit(text, option) {
+		var useInitVal = 0,
+			val = text.replace(/px|deg/, ""),
+			opt = {
+				baseVal : 0,
+				size : 0
+			};
+		$.extend(opt, option);
+		useInitVal = /\+=/.test(val) ? 1 : ( /\-=/.test(val) ? -1 : useInitVal);
+
+		(useInitVal !== 0) && (val = val.substring(2));
+		/%$/.test(val) && (val = parseFloat(val,10) / 100 * opt.size);
+
+		val = parseFloat(val,10);
+		val = useInitVal > 0 ? opt.baseVal + val : ( useInitVal < 0 ? opt.baseVal - val : val);
+		return val;
+	}
 
 
-			// if(/translate|(3d)\(/.test(v)) {
-			// 	m=v.match( /\b(translate(3d)?)\(\s*([^,]+)\s*,\s*([^,\)]+)\s*(,\s*([^,\)]+)\s*)?\)/ );
-			// 	console.log(m);
-			// }
-			// if(/translate[XYZ]\(/.test(v)) {
-			// 	m=v.match(/\b(translate([XY]))\(\s*([^\)]+)/ );
-			// 	console.info(m);
-			// }
-			// if(/rotate[XYZ]/.test) {
-
-			// }
-			// if(/scale[XYZ]/.test) {
-
-			// }
+	function toMatrix3d(property) {
+		var name = property[0];
+		var val = property[1];
+		if("matrix3d" === name) { return property; }
+		// matrix(a, b, c, d, tx, ty) is a shorthand for matrix3d(a, b, 0, 0, c, d, 0, 0, 0, 0, 1, 0, tx, ty, 0, 1)
+		return [
+			name+"3d", [ val[0], val[1], "0", "0", val[2], val[3], "0","0","0","0","1","0",val[4],val[5],"0","1" ]
+		];
+	}
 
 
+	function toMatrix(transform) {
+		if (CSSMatrix) {
 
-			// v = v.replace( /\b(translate(3d)?)\(\s*([^,]+)\s*,\s*([^,\)]+)\s*(,\s*([^,\)]+)\s*)?\)/g, function(_1_, prop, is3d, x, y, _2_, z) {
-			// 	console.log(arguments);
-			// 	return prop + "(" + x +"," + y + "," + z + ")";
-			// })
-			// .replace(/\b(translate([XY]))\(\s*([^\)]+)/g, function(_1_, prop, type, val) {
-			// 	console.log(arguments);
-			// 	return key + '(' + val;
-			// });
-			// console.warn("after", type);
+		} else {
+			// @@ todo matrix 지원 안되는 경우 처리
+		}
+		return parseProperty(new CSSMatrix(transform).toString());
+	}
 
 	$.fx.step.transform = function(fx) {
-		var elem = fx.elem,
-			start = fx.start,
-			end = fx.end,
-			pos = fx.pos;
-		console.log(elem, "s-",start, "e-",end);
-		parseTransform(end);
+		var elem = fx.elem;
+		fx.$el = fx.$el || $(elem);
+		fx._rateFn = fx._rateFn || rateFn(parse(elem, fx.start), parse(elem, fx.end));
+		fx.$el.css("transform", fx._rateFn(fx.pos));
 	};
 	return {
 		parse : parse,
-		parseType : parseType,
 		parseProperty : parseProperty,
-		TYPE : TYPE
+		unifyUnit : unifyUnit,
+		rateFn : rateFn
 	};
 })(jQuery, window);
-
-
-	// /**
-	// 	Effect 컴퍼넌트의 기능을 사용 할 수 없는 시작값과 종료값을 가진 Effect 객체를 동작 할 수 있게 만들어 주는 함수
-
-	// 	var my = jindo.m.Effect.linear();
-
-	// 	my.start = 'scale3d(2, 1.5, 1) translate(100px, 30px) rotate(10deg)';
-	// 	my.end = 'translateX(300px)';
-
-	// 	var func = ..._getTransformFunction(my);
-	// 	func(0.5); // 'scaleX(2) scaleY(1.5) scaleZ(1) translateX(200px) translateY(30px) rotate(10deg)'
-	// **/
-	// _getTransformFunction : function(sDepa, sDest, fEffect, elBox) {
-
-	// 	var sKey;
-
-	// 	var oDepa, oDest;
-
-	// 	// matrix transform 이 바뀌는거면
-	// 	if (/matrix/.test(sDepa + sDest)) {
-
-	// 		// 둘다 matric 객체로 변환
-	// 		oDepa = this._getMatrixObj(sDepa, elBox);
-	// 		oDest = this._getMatrixObj(sDest, elBox);
-
-	// 		// 종류가 다르면 범용적으로 맞출 수 있는 matrix3d 로 변환
-	// 		if (oDepa.key !== oDest.key) {
-	// 			oDepa = this._convertMatrix3d(oDepa);
-	// 			oDest = this._convertMatrix3d(oDest);
-	// 		}
-
-	// 		fEffect = fEffect(oDepa.val, oDest.val);
-
-	// 		return function(nRate) {
-	// 			return nRate === 1 ? sDest : oDepa.key + '(' + fEffect(nRate).replace(/ /g, ',') + ')';
-	// 		};
-
-	// 	}
-
-	// 	// 시작값과 종료값을 각각 파싱
-	// 	oDepa = this._parseTransformText(sDepa);
-	// 	oDest = this._parseTransformText(sDest);
-
-	// 	var oProp = {};
-
-	// 	// 시작값에 있는 내용으로 속성들 셋팅
-	// 	for (sKey in oDepa) if (oDepa.hasOwnProperty(sKey)) {
-	// 		// 시작값, 종료값 셋팅 (만약 종료값이 지정되어 있지 않으면 1 또는 0 셋팅)
-	// 		oProp[sKey] = fEffect(oDepa[sKey], oDest[sKey] || (/^scale/.test(sKey) ? 1 : 0));
-	// 	}
-
-	// 	// 종료값에 있는 내용으로 속성들 셋팅
-	// 	for (sKey in oDest) if (oDest.hasOwnProperty(sKey) && !(sKey in oDepa)) { // 이미 셋팅되어 있지 않는 경우에만
-	// 		// 시작값, 종료값 셋팅 (만약 시작값이 지정되어 있지 않으면 1 또는 0 셋팅)
-	// 		oProp[sKey] = fEffect(oDepa[sKey] || (/^scale/.test(sKey) ? 1 : 0), oDest[sKey]);
-	// 	}
-
-	// 	var fpFunc = function(nRate) {
-	// 		var aRet = [];
-	// 		for (var sKey in oProp) if (oProp.hasOwnProperty(sKey)) {
-	// 			aRet.push(sKey + '(' + oProp[sKey](nRate)+ ')');
-	// 		}
-	// 		/*
-	// 		aRet = aRet.sort(function(a, b) {
-	// 			return a === b ? 0 : (a > b ? -1 : 1);
-	// 		});
-	// 		*/
-
-	// 		return aRet.join(' ');
-	// 	};
-
-	// 	return fpFunc;
-
-	// }
