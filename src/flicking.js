@@ -753,18 +753,10 @@
 		 */
 		resize : function() {
 			var width = this._conf.panel.width = this._wrapper.width(),
-				panels = this._container.children(),
 				maxCoord = [ width * (this._conf.panel.count - 1), 0 ];
 
 			// resize panel and parent elements
-			panels.each(function(i) {
-				$(this).css({
-					width : width,
-					left : width * i
-				});
-			});
-
-			this._container.width(maxCoord[0]);
+			this._container.width(maxCoord[0]).children().css("width", width);
 
 			// adjust the position of current panel
 			this._movableCoord.setTo(width * this._conf.panel.index, 0).options.max = maxCoord;
