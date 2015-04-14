@@ -53,6 +53,16 @@ module.exports = function(grunt) {
             "bower_components/jquery.easing/js/jquery.easing.js",
           ],
         dest : "dist/lib"
+      },
+      doc : {
+        files: [
+          {expand : true, flatten : true, src: ["assets/jsdoc-plugin/jsdoc/ko.js"], dest: "node_modules/grunt-jsdoc/node_modules/jsdoc/plugins"},
+          {expand : true, flatten : true, src: ["assets/jsdoc-plugin/template/container.tmpl"], dest: "node_modules/jaguarjs-jsdoc/tmpl"},
+          {expand : true, flatten : true, src: ["assets/jsdoc-plugin/template/members.tmpl"], dest: "node_modules/jaguarjs-jsdoc/tmpl"},
+          {expand : true, flatten : true, src: ["assets/jsdoc-plugin/template/method.tmpl"], dest: "node_modules/jaguarjs-jsdoc/tmpl"},
+          {expand : true, flatten : true, src: ["assets/jsdoc-plugin/template/main.js"], dest: "node_modules/jaguarjs-jsdoc/static/scripts"},
+          {expand : true, flatten : true, src: ["assets/jsdoc-plugin/template/jaguar.css"], dest: "node_modules/jaguarjs-jsdoc/static/styles"}
+        ]
       }
     },
     qunit : {
@@ -90,7 +100,8 @@ module.exports = function(grunt) {
         }
     }
   });
-
+  
+  grunt.registerTask("docBuild", ["copy:doc"]);
   grunt.registerTask("test", ["jshint", "qunit"]);
   grunt.registerTask("build", ["jshint", "concat", "uglify", "copy:lib", "jsdoc"]);
   grunt.registerTask("default", ["test", "concat", "uglify", "copy:lib", "jsdoc"]);

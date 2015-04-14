@@ -1,6 +1,16 @@
-"use strict";
-// From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
 if(!Object.keys) {
+	/**
+     * @namespace eg.polyfill
+     */
+    /**
+     * Object keys polyfill
+     * @ko Object keys 폴리필
+     * @name eg.polyfill.Object.keys
+     * @method
+     * @return {Array} keys
+     * @see  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
+     *
+     */
 	Object.keys = (function() {
 		var hasOwnProperty = Object.prototype.hasOwnProperty,
 			hasDontEnumBug = !({ toString: null }).propertyIsEnumerable("toString"),

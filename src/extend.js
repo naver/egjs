@@ -18,7 +18,8 @@
 		/**
 		 * @name eg.VERSION
 		 * @description version infomation
-	       */
+		 * @ko 버전 정보
+	     */
 		VERSION : "#__VERSION__#",
 		defaults : {},
 		_init : function(useragent, dm) {
@@ -26,6 +27,7 @@
 			dm = dm || document.documentMode || -1;
 			/**
 			 * Get Agent Information
+			 * @ko Agent 정보를 반환한다.
 			 * @method eg#agent
 			 * @return {Object} agent
 			 * @return {String} agent.os os infomation
@@ -133,7 +135,7 @@ eg.agent;
 		// },
 		/**
 		 * Get a translate string.
-		 *
+		 * @ko translate 문자를 반환한다.
 		 * @method eg#translate
 		 * @param {String} x
 		 * @param {String} y
@@ -150,7 +152,7 @@ eg.translate('10px', '200%', true);  // translate3d(10px,200%,0);
 		/**
 		 * If your device could use a hardware acceleration, this method returns "true"
 		 * This method is return cached value.
-		 *
+		 * @ko 해당 기기에서 하드웨어 가속을 할 수 있다면 true을 반환하며, 값은 캐싱된다.
 		 * @method eg#isHWAccelerable
 		 * @return {Boolean}
 		 * @example
@@ -205,7 +207,7 @@ eg.defaults.isHWAccelerable = function(agent) {
 		/**
 		 * If your device could use a css transtion, this method returns "true"
 		 * This method is return cached value.
-		 *
+		 * @ko 해당 기기에서 css transtion을 할 수 있다면 true을 반환하며, 값은 캐싱된다.
 		 * @method eg#isTransitional
 		 * @return {Boolean}
 		 * @example

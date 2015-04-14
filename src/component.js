@@ -13,10 +13,17 @@
 		},
 		/**
 		 * The event fire with custom event.
+		 * @ko 커스텀 이벤트를 실행합니다.
 		 * @method eg.Component#trigger
 		 * @param {String} eventName
 		 * @param {Object} customEvent
 		 * @return {Boolean}
+		 * @example
+		 	var Some = eg.Class.extend(eg.Component,{
+				"some" : function(){
+					this.tigger("hi");// fire hi event.
+				}
+		 	});
 		 */
 		trigger : function(eventName, customEvent) {
 			customEvent = customEvent || {};
@@ -54,19 +61,33 @@
 		},
 		/**
 		 * Checks whether the event has been assigned to the Component.
+		 * @ko 컴포넌트에 등록된 이벤트를 확인합니다.
 		 * @method eg.Component#hasOn
 		 * @param {String} eventName
 		 * @return {Boolean}
+	 	 * @example
+		 	var Some = eg.Class.extend(eg.Component,{
+				"some" : function(){
+					this.hasOn("hi");// check hi event.
+				}
+		 	});
 		 */
 		hasOn : function(eventName){
 			return !!this.eventHandler[eventName];
 		},
 		/**
 		 * Attach an event handler function.
+		 * @ko 이벤트를 등록합니다.
 		 * @method eg.Component#on
 		 * @param {eventName} eventName
 		 * @param {Function} handlerToAttach
 		 * @return {Instance}
+	 	 * @example
+		 	var Some = eg.Class.extend(eg.Component,{
+		 		"hi" : function(){},
+				"some" : function(){
+					this.on("hi",this.hi); //attach event
+				}
 		 */
 		on : function(eventName, handlerToAttach) {
 			if (typeof handlerToAttach === "undefined") {
@@ -89,10 +110,17 @@
 		},
 		/**
 		 * Detach an event handler function.
+		 * @ko 이벤트를 해제합니다.
 		 * @method eg.Component#off
 		 * @param {eventName} eventName
 		 * @param {Function} handlerToDetach
 		 * @return {Instance}
+	 	 * @example
+		 	var Some = eg.Class.extend(eg.Component,{
+		 		"hi" : function(){},
+				"some" : function(){
+					this.off("hi",this.hi); //detach event
+				}
 		 */
 		off : function(eventName, handlerToDetach) {
 			// All event detach.
