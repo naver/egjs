@@ -92,8 +92,9 @@
 					if (!$(target).hasClass(this.options.targetClass)) {
 						target.__VISIBLE__ = null;
 						this._targets.splice(i, 1);
+						return false;
 					}		
-					return false;
+					return true;
 				}
 			}
 			return this._reviseElements(target,i);
