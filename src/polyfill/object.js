@@ -1,11 +1,11 @@
 if(!Object.keys) {
 	/**
-     * @namespace eg.polyfill
+     * @namespace Object
      */
     /**
      * Object keys polyfill
      * @ko Object keys 폴리필
-     * @name eg.polyfill.Object.keys
+     * @name Object.keys
      * @method
      * @return {Array} keys
      * @see  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys

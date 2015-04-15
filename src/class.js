@@ -3,7 +3,7 @@
 	/**
 	 * Class
 	 * The Class() object is used to implement the application using object-oriented programming.
-	 * @ko Class는 어플리케이션을 객체지향 프로그래밍으로 구현하는데 사용합니다.
+	 * @ko Class는 어플리케이션을 객체지향 프로그래밍 방식으로 구현하는데 사용합니다.
 	 * @class
 	 * @name eg.Class
 	 */
@@ -20,7 +20,7 @@
 	};
 	/**
 	 * The extend() method extends a specific class.
-	 * @ko extend는 class을 상속할 때 사용합니다.
+	 * @ko extend는 Class를 상속할 때 사용합니다.
 	 * @static
 	 * @method eg.Class.extend
 	 * @param {Class} oSuperClass

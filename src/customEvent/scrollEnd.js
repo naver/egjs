@@ -5,10 +5,12 @@
      * @ko jQuery custom scrollEnd 이벤트 지원
      * @name jQuery.extention#scrollEnd
      * @event
-     * @param {Event} e event
-     * @param {Boolean} e.isVertical vertical
+     * @param {Number} e.top top position
+     * @param {Number} e.left left position
      * @example
-     * $(document).on("scrollEnd",function(e){
+     * $(window).on("scrollend",function(e){
+     *      e.top;
+     *      e.left;
      * });
      *
      */
