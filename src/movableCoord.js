@@ -5,6 +5,7 @@
 	// ns.__checkLibrary__( !("easeOutQuint" in $.easing), "You must download jQuery Easing Plugin(http://gsgd.co.uk/sandbox/jquery/easing/)\n\ne.g. bower install jquery.easing");
 	/**
 	 * The MovableCoord can control coordinate by user's action.
+	 * @ko MovableCoord는 사용자 행동으로 좌표를 제어할 수 있다.
 	 * @class
 	 * @name eg.MovableCoord
 	 * @extends eg.Component
@@ -62,7 +63,8 @@
 			this._animationEnd = this._animationEnd.bind(this);	// for caching
 		},
 		/**
-		 * Connects an element with a movableCoord
+		 * Attach a element to an use for the movableCoord.
+		 * @ko movableCoord을 사용하기 위한 엘리먼트를 등록한다.
 		 * @method eg.MovableCoord#bind
 		 * @param {HTMLElement|String|jQuery} element
 		 * @param {Object} options
@@ -115,7 +117,8 @@
 			return hammer;
 		},
 		/**
-		 * Disconnects an element with a movableCoord
+		 * Dettach a element to an use for the movableCoord.
+		 * @ko movableCoord을 사용하기 위한 엘리먼트를 해제한다.
 		 * @method eg.MovableCoord#unbind
 		 * @param {HTMLElement|String|jQuery} element
 		 * @return {Boolean}
@@ -274,6 +277,7 @@
 		_animationEnd : function() {
 			/**
 			 * When animation was ended.
+			 * @ko 에니메이션이 끝났을 때 발생한다.
 			 * @name eg.MovableCoord#animationEnd
 			 * @event
 			 */
@@ -391,6 +395,7 @@
 
 			/**
 			 * When animation was started.
+			 * @ko 에니메이션이 시작했을 때 발생한다.
 			 * @name eg.MovableCoord#animation
 			 * @event
 			 *
@@ -475,6 +480,7 @@
 		_triggerChange : function(pos, holding) {
 			/**
 			 * When coordinate was changed
+			 * @ko 좌표가 변경됐을 때 발생한다.
 			 * @name eg.MovableCoord#change
 			 * @event
 			 *
@@ -494,6 +500,7 @@
 
 		/**
 		 * Get current positions
+		 * @ko 현재 위치를 반환한다.
 		 * @method eg.MovableCoord#get
 		 * @return {Array} pos
 		 * @return {Number} pos.0 x position
@@ -507,6 +514,7 @@
 		 * Set to position
 		 *
 		 * If a duration was greater than zero, 'change' event was triggered for duration.
+		 * @ko 위치를 설정한다. 만약, duration이 0보다 크다면 'change' 이벤트가 발생한다.
 		 * @method eg.MovableCoord#setTo
 		 * @param {Number} x x-coordinate
 		 * @param {Number} y y-coordinate
@@ -543,6 +551,7 @@
 		 * Set to relative position
 		 *
 		 * If a duration was greater than zero, 'change' event was triggered for duration
+		 * @ko 현재를 기준으로 위치를 설정한다. 만약, duration이 0보다 크다면 'change' 이벤트가 발생한다.
 		 * @method eg.MovableCoord#setBy
 		 * @param {Number} x x-coordinate
 		 * @param {Number} y y-coordinate
@@ -559,6 +568,7 @@
 
 		/**
 		 * Release resources and off custom events
+		 * @ko 모든 커스텀 이벤트와 자원을 해제한다.
 		 * @method eg.MovableCoord#destroy
 		 */
 		destroy : function() {

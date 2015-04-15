@@ -1,5 +1,19 @@
 (function($, ns, global, doc){
     "use strict";
+    /**
+     * Support scrollEnd event in jQuery
+     * @ko jQuery custom scrollEnd 이벤트 지원
+     * @name jQuery.extention#scrollEnd
+     * @event
+     * @param {Number} e.top top position
+     * @param {Number} e.left left position
+     * @example
+     * $(window).on("scrollend",function(e){
+     *      e.top;
+     *      e.left;
+     * });
+     *
+     */
 
     var isTouched, isMoved, preTop = 0, preLeft = 0, observerInterval, scrollEndTimer, rotateFlag = false,
     CHROME = 3,

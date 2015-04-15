@@ -1,5 +1,19 @@
 // Production steps of ECMA-262, Edition 5, 15.4.4.18
 // Reference: http://es5.github.io/#x15.4.4.18
+    /**
+     * @namespace Array
+     */
+    /**
+     * Array forEach polyfill
+     * @ko Array forEach 폴리필
+     * @name Array#forEach
+     * @method
+     * @param {Function} callback
+     * @param {This} thisArg
+     * @see  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
+     *
+     */
+
 if (!Array.prototype.forEach) {
   Array.prototype.forEach = function(callback, thisArg) {
     var T, k;
@@ -50,7 +64,16 @@ if (!Array.prototype.forEach) {
   // 8. return undefined
   };
 }
-
+    /**
+     * Array isArray polyfill
+     * @ko Array.isArray 폴리필
+     * @name Array.isArray
+     * @method
+     * @param {Variable} arg
+     * @return {Boolean} result
+     * @see  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
+     *
+     */
 if (!Array.isArray) {
   Array.isArray = function(arg) {
     return Object.prototype.toString.call(arg) === "[object Array]";

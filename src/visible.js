@@ -1,7 +1,9 @@
 (function($, ns) {
 	"use strict";
+	
 	/**
-	 * Check if elements are within the some element or document, regardless of the scroll position
+	 * It check element is visible within the specific element or viewport, regardless of the scroll position
+	 * @ko scroll위치와 상관없이 특정 엘리먼트나 viewport 안에 엘리먼트가 보이는지 확인한다.
 	 * @class
 	 * @name eg.Visible
 	 * @extends eg.Component
@@ -39,6 +41,7 @@
 		},
 		/**
 		 * Update targets
+		 * @ko target들을 갱신한다.
 		 * @method eg.Visible#refresh
 		 * @return {Instance}
 		 *
@@ -62,6 +65,7 @@
 
 		/**
 		 * Checks if the target elements has been changed.
+		 * @ko target들이 변경했는지 확인한다.
 		 * @method eg.Visible#check
 		 * @param {Number} [deply=-1] delay time (ms)
 		 * @return {Instance}
@@ -109,17 +113,20 @@
 					this._targets.splice(i, 1);
 					continue;
 				}
+
 				before = !!target.__VISIBLE__;
 				target.__VISIBLE__ = after = !(
 		                targetArea.bottom < area.top || area.bottom < targetArea.top ||
 		                targetArea.right < area.left || area.right < targetArea.left
 		            );
-				(before !== after) && (after ? visibles : invisibles).unshift(target);
+				(before !== after) && (after ? visibles : invisibles).unshift(target);	
+				
 			}
 
 
 			/**
-			 * When target elements appear or disappear based on the wrapper.
+			 * When target elements appear or disappear based on the base area.
+			 * @ko 기준 영역을 기준으로 보이는 엘리먼트와 사라진 엘리먼트가 변경된 경우 발생하는 이벤트
 			 * @name eg.Visible#change
 			 * @event
 			 * @param {Array} visible visible elements (the element type is `HTMLElement`)

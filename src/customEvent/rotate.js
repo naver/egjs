@@ -7,7 +7,8 @@ function __rotate($, ns, doc, global){
      * @namespace jQuery.extention
      */
     /**
-     * Support rotate event
+     * Support rotate event in jQuery
+     * @ko jQuery custom rotate 이벤트 지원
      * @name jQuery.extention#rotate
      * @event
      * @param {Event} e event

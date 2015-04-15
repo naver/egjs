@@ -1,5 +1,17 @@
-"use strict";
+	/**
+     * @namespace Function
+     */
 if (!Function.prototype.bind) {
+    /**
+     * Function bind polyfill
+     * @ko Function bind 폴리필
+     * @name Function#bind
+     * @method
+     * @param {Variable} arg
+     * @return {Function} bound function
+     * @see  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
+     *
+     */
 	Function.prototype.bind = function(oThis) {
 		if (typeof this !== "function") {
 			// closest thing possible to the ECMAScript 5
