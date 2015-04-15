@@ -3,6 +3,7 @@
 
 	/**
 	 * To build flickable UI
+	 * @ko 플리킹 UI를 구성한다.
 	 * @class
 	 * @name eg.Flicking
 	 * @extends eg.Component
@@ -55,22 +56,23 @@
 
 			// config value
 			this._conf = {
-				triggerEvent : true,  // boolean of event stop on custom event
+				customEvent : {},  		// boolean of event stop on custom event
 				panel : {
-					index : 0,  // current physical dom index
-					no : 0,  // current logical panel index
-					width : 0,
-					count : 0,  // total physical panel count
-					origCount : 0,  // total count of given original panels
+					list : [],			// panel list
+					index : 0,  		// current physical dom index
+					no : 0,  			// current logical panel index
+					width : 0,			// panel width
+					count : 0,  		// total physical panel count
+					origCount : 0,  	// total count of given original panels
+					reached : false,	// if panel reached first/last panel
+					changed : false,	// if panel changed
+					animating : false,	// current animating status boolean
 					recycleCount : this.options.previewPadding[0] + this.options.previewPadding[1] > 0 ? 5 : 3,  // panel count for recycle use
-					reached : false,
-					changed : false,  // if panel changed
-					animating : false
 				},
 				touch : {
-					holdPos : [ 0, 0 ],  // hold x,y coordinate
-					destPos : [ 0, 0 ],  // destination x,y coordinate
-					distance : 0,  // touch distance pixel of start to end touch
+					holdPos : [ 0, 0 ],	// hold x,y coordinate
+					destPos : [ 0, 0 ],	// destination x,y coordinate
+					distance : 0,		// touch distance pixel of start to end touch
 					direction : ns.DIRECTION_RIGHT  // touch direction
 				}
 			};
@@ -84,7 +86,7 @@
 		 * Build and set panel nodes to make flicking structure
 		 */
 		_build : function() {
-			var children = this._wrapper.children(),
+			var children = this._conf.panel.list = this._wrapper.children(),
 				previewPadding = this.options.previewPadding,
 				prefix = this.options.prefix,
 				panelWidth, panelCount;
@@ -113,8 +115,7 @@
 
 
 			if(this._addClonePanels()) {
-				children = this._container.children();
-				panelCount = this._conf.panel.count = children.length;
+				panelCount = this._conf.panel.count = (this._conf.panel.list = this._container.children()).length;
 			}
 
 			// create MovableCoord instance
@@ -143,7 +144,7 @@
 			var df = $(document.createDocumentFragment()),
 				panelCount = this._conf.panel.origCount,
 				nodeCountToClone = this._conf.panel.recycleCount - panelCount,
-				children = this._container.children(),
+				list = this._conf.panel.list,
 				dfChildren;
 
 			// if panels are given less than required when circular option is set, then clone node to apply circular mode
@@ -151,7 +152,7 @@
 				if(panelCount < this._conf.panel.recycleCount) {
 
 					while((dfChildren = df.children()).length < nodeCountToClone) {
-						df.append(children.clone());
+						df.append(list.clone());
 					}
 
 					dfChildren.length && this._container.append(dfChildren);
@@ -164,34 +165,40 @@
 		},
 
 		/**
+		 * Move panel's position within array
+		 * @param {Number} from
+		 * @param {To} to
+		 */
+		_movePanelPosition : function(from, to) {
+			var list = this._conf.panel.list;
+			list.splice(to, 0, list.splice(from, 1)[0]);
+		},
+
+		/**
 		 * Set default panel to show
 		 * @param {Number} index
 		 */
 		_setDefaultPanel : function(index) {
-			var panelCount = this._conf.panel.count,
-				coord = [ 0, 0 ],
-				children, i, pos;
+			var lastIndex = this._conf.panel.count - 1,
+				coord = [ 0, 0 ], i, pos;
 
 			if(this.options.circular) {
-				children = this._container.children();
-
 				// if default index is given, then move correspond panel to the first position
-				if(index > 0 && index < panelCount) {
-					for(i=1; i <= index; i++) {
-						this._container.append(children[i-1]);
+				if(index > 0 && index <= lastIndex) {
+					for(i=0; i < index; i++) {
+						this._movePanelPosition(0, lastIndex);
 					}
-					children = this._container.children();
 				}
 
 				// set first panel's position according physical node length
 				for(i=1, pos = this._getBasePositionIndex(); pos >= i; i++) {
-					this._container.prepend(children[panelCount - i]);
+					this._movePanelPosition(lastIndex, 0);
 				}
 
 				this._conf.panel.no = index;
 			} else {
 				// if defaultIndex option is given, then move to that index panel
-				if(index > 0 && index < panelCount) {
+				if(index > 0 && index <= lastIndex) {
 					this._conf.panel.index = index;
 					coord = [ this._conf.panel.width * index, 0];
 
@@ -216,7 +223,7 @@
 						this._conf.touch.direction = ns[ no > 0 ? "DIRECTION_RIGHT" : "DIRECTION_LEFT" ];
 					}
 
-					this._arrangePanelNodes(this._conf.touch.direction, no);
+					this._arrangePanelPosition(this._conf.touch.direction, no);
 				}
 
 				// set index for base element's position
@@ -225,8 +232,8 @@
 			}
 
 			// set each panel's position
-			this._container.children().each(function(i) {
-				$(this).css("transform", ns.translate( (100 * i) +"%", "0px", hwCompositing ));
+			this._conf.panel.list.each(function(i, v) {
+				$(v).css("transform", ns.translate( (100 * i) +"%", "0px", hwCompositing ));
 			});
 		},
 
@@ -235,13 +242,13 @@
 		 * @param {Boolean} diretion
 		 * @param {Number} times
 		 */
-		_arrangePanelNodes : function(direction, times) {
-			var children = this._container.children();
+		_arrangePanelPosition : function(direction, times) {
+			var list = this._conf.panel.list,
+				lastIndex = list.length - 1,
+				right = direction === ns.DIRECTION_RIGHT;
 
 			for(var i=0, len=Math.abs(times || 1); i < len; i++) {
-				direction === ns.DIRECTION_RIGHT ?
-					this._container.append(children[i]) :
-					this._container.prepend(children[ this._conf.panel.count - (i+1) ]);
+				this._movePanelPosition.apply(this, right ? [ i, lastIndex ] : [ lastIndex, 0 ] );
 			}
 		},
 
@@ -271,10 +278,10 @@
 		_holdHandler : function(e) {
 			this._conf.touch.holdPos = e.pos;
 			this._conf.panel.changed = false;
-			this._conf.triggerEvent = true;
 
 			/**
 			 * When touch starts
+			 * @ko 터치가 시작될 때 발생하는 이벤트
 			 * @name eg.Flicking#touchStart
 			 * @event
 			 *
@@ -295,10 +302,9 @@
 		 */
 		_changeHandler : function(e) {
 			var pos = e.pos, x = -pos[0], y = 0;
-			this._setTranslate(this._container, x, y);
-
 			/**
 			 * When touch moves
+			 * @ko 터치한 상태에서 이동될 때 발생하는 이벤트
 			 * @name eg.Flicking#touchMove
 			 * @event
 			 *
@@ -313,6 +319,7 @@
 			 */
 			/**
 			 * Occurs during the change
+			 * @ko 터치하지 않은 상태에서 패널이 이동될 때 발생하는 이벤트
 			 * @name eg.Flicking#change
 			 * @event
 			 *
@@ -325,7 +332,9 @@
 			 * @param {Number} param.pos.0 Departure x-coordinate
 			 * @param {Number} param.pos.1 Departure y-coordinate
 			 */
-			this._triggerEvent(e.holding ? "touchMove" : "change", { pos : e.pos });
+			if(this._triggerEvent(e.holding ? "touchMove" : "flick", { pos : e.pos })) {
+				this._setTranslate(this._container, x, y);
+			}
 		},
 
 		/**
@@ -349,6 +358,7 @@
 
 			/**
 			 * When touch ends
+			 * @ko 터치가 종료될 때 발생되는 이벤트
 			 * @name eg.Flicking#touchEnd
 			 * @event
 			 *
@@ -379,7 +389,8 @@
 			if(this._isMovable()) {
 				/**
 				 * Before panel changes
-				 * @name eg.Flicking#beforeChange
+				 * @ko 플리킹이 시작되기 전에 발생하는 이벤트
+				 * @name eg.Flicking#flickStart
 				 * @event
 				 *
 				 * @param {Object} param
@@ -394,7 +405,7 @@
 				 * @param {Number} param.destPos.0 Destination x-coordinate
 				 * @param {Number} param.destPos.1 Destination y-coordinate
 				 */
-				this._triggerEvent("beforeChange", { depaPos : e.depaPos, destPos : e.destPos });
+				this._triggerEvent("flickStart", { depaPos : e.depaPos, destPos : e.destPos });
 
 				first = this._conf.panel.index === 0 && this._conf.touch.direction === ns.DIRECTION_LEFT;
 				last = this._conf.panel.index === this._conf.panel.count-1 && this._conf.touch.direction === ns.DIRECTION_RIGHT;
@@ -416,9 +427,9 @@
 				this._setPanelNo(true);
 				this._conf.panel.changed = true;
 			} else {
-
 				/**
 				 * Before panel restores it's last position
+				 * @ko 플리킹 임계치에 도달하지 못하고 사용자의 액션이 끝났을 경우, 원래 패널로 복원되기 전에 발생하는 이벤트
 				 * @name eg.Flicking#beforeRestore
 				 * @event
 				 *
@@ -434,7 +445,7 @@
 				 * @param {Number} param.destPos.0 Destination x-coordinate
 				 * @param {Number} param.destPos.1 Destination y-coordinate
 				 */
-				this._triggerEvent("beforeRestore", { depaPos : e.depaPos, destPos : e.destPos });
+				this._conf.customEvent.restore = this._triggerEvent("beforeRestore", { depaPos : e.depaPos, destPos : e.destPos });
 			}
 		},
 
@@ -456,7 +467,8 @@
 
 			/**
 			 * After panel changes
-			 * @name eg.Flicking#afterChange
+			 * @ko 플리킹으로 패널이 이동된 후 발생하는 이벤트
+			 * @name eg.Flicking#flickEnd
 			 * @event
 			 *
 			 * @param {Object} param
@@ -466,6 +478,7 @@
 			 */
 			/**
 			 * After panel restores it's last position
+			 * @ko 플리킹 임계치에 도달하지 못하고 사용자의 액션이 끝났을 경우, 원래 인덱스로 복원된 후 발생하는 이벤트
 			 * @name eg.Flicking#restore
 			 * @event
 			 *
@@ -474,7 +487,11 @@
 			 * @param {Number} param.index Current panel index
 			 * @param {Boolean} param.direction Direction of the panel move
 			 */
-			this._triggerEvent(this._conf.panel.changed ? "afterChange" : "restore");
+			if(this._conf.panel.changed) {
+				this._triggerEvent("flickEnd");
+			} else if(this._conf.customEvent.restore) {
+				this._triggerEvent("restore");
+			}
 		},
 
 		/**
@@ -502,12 +519,13 @@
 		 * @param {Number} y coordinate
 		 */
 		_setTranslate : function(element, x, y) {
-			var xUnit, yUnit, rx = /(?:[a-z]+|%)$/;
+			var rx = /(?:[a-z]+|%)$/;
 
-			xUnit = (String(x).match(rx) || "px") +"";
-			yUnit = (String(y).match(rx) || "px") +"";
-
-			$(element).css("transform", ns.translate( (x || 0) + xUnit, (y || 0) + yUnit, this.options.hwCompositing ));
+			$(element).css("transform", ns.translate(
+				(x || 0) + (String(x).match(rx) || "px") +"",
+				(y || 0) + (String(y).match(rx) || "px") +"",
+				this.options.hwCompositing
+			));
 		},
 
 		/**
@@ -521,21 +539,15 @@
 		 * Trigger custom events
 		 * @param {String} name - event name
 		 * @param {Object} param - additional event value
-		 * @return {Object} param event value object
+		 * @return {Boolean}
 		 */
 		_triggerEvent : function(name, param) {
-			if(!this._conf.triggerEvent) {
-				return;
-			}
-
-			this._conf.triggerEvent = this.trigger(name, param = $.extend({
+			return this.trigger(name, param = $.extend({
 				eventType : name,
 				index : this._conf.panel.index,
 				no : this._conf.panel.no,
 				direction : this._conf.touch.direction
 			}, param ));
-
-			return param;
 		},
 
 		/**
@@ -545,14 +557,14 @@
 		 * @param {Number} physical - true : physical, false : logical
 		 * @return {jQuery|Number}
 		 */
-		 //this._getElement(true, false, physical);
 		_getElement : function(direction, element, physical) {
 			var circular = this.options.circular,
+				pos = this._conf.panel.index,
 				result = null, total, index;
 
 			if(physical) {
 				total = this._conf.panel.count;
-				index = this._conf.panel.index;
+				index = pos;
 			} else {
 				total = this._conf.panel.origCount;
 				index = this._conf.panel.no;
@@ -573,7 +585,7 @@
 			}
 
 			if(this._conf.panel[ physical ? "index" : "no" ] !== index) {
-				result = element ? this.getElement()[ direction === ns.DIRECTION_RIGHT ? "next" : "prev" ]() : index;
+				result = element ? $(this._conf.panel.list[ direction === ns.DIRECTION_RIGHT ? pos + 1 : pos - 1 ]): index;
 			}
 
 			return result;
@@ -598,6 +610,7 @@
 
 		/**
 		 * Get current panel position
+		 * @ko 현재 패널의 인덱스 값을 반환한다.
 		 * @method eg.Flicking#getIndex
 		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical)
 		 * @return {Number} Number Current index number
@@ -608,15 +621,17 @@
 
 		/**
 		 * Get current panel element
+		 * @ko 현재 패널 요소의 레퍼런스를 반환한다.
 		 * @method eg.Flicking#getElement
 		 * @return {jQuery} jQuery Current element
 		 */
 		getElement : function() {
-			return $(this._container.children()[ this._conf.panel.index ]);
+			return $(this._conf.panel.list[this._conf.panel.index]);
 		},
 
 		/**
 		 * Get next panel element
+		 * @ko 다음 패널 요소의 레퍼런스를 반환한다.
 		 * @method eg.Flicking#getNextElement
 		 * @return {jQuery} jQuery Next element
 		 */
@@ -626,6 +641,7 @@
 
 		/**
 		 * Get next panel index
+		 * @ko 다음 패널의 인덱스 값을 반환한다.
 		 * @method eg.Flicking#getNextIndex
 		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical)
 		 * @return {Number} Number Next element index value
@@ -636,15 +652,17 @@
 
 		/**
 		 * Get whole panel elements
+		 * @ko 패널을 구성하는 모든 요소들의 레퍼런스를 반환한다.
 		 * @method eg.Flicking#getAllElements
 		 * @return {jQuery} jQuery All panel elements
 		 */
 		getAllElements : function() {
-			return this._container.children();
+			return this._conf.panel.list;
 		},
 
 		/**
 		 * Get previous panel element
+		 * @ko 이전 패널 요소의 레퍼런스를 반환한다.
 		 * @method ns.Flicking#getPrevElement
 		 * @return {jQuery} jQuery Previous element
 		 */
@@ -654,6 +672,7 @@
 
 		/**
 		 * Get previous panel index
+		 * @ko 이전 패널의 인덱스 값을 반환한다.
 		 * @method eg.Flicking#getPrevIndex
 		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical)
 		 * @return {Number} number Previous element index value
@@ -664,16 +683,18 @@
 
 		/**
 		 * Get total panel count
-		 * @method eg.Flicking#getElementsCount
+		 * @ko 전체 패널의 개수를 반환한다.
+		 * @method eg.Flicking#getTotalCount
 		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical)
 		 * @return {Number} Number Count of all elements
 		 */
-		getElementsCount : function(physical) {
+		getTotalCount : function(physical) {
 			return this._conf.panel[ physical ? "count" : "origCount" ];
 		},
 
 		/**
 		 * Return either panel is animating or not
+		 * @ko 현재 애니메이션중인지 여부를 리턴한다.
 		 * @method eg.Flicking#isPlaying
 		 * @return {Boolean}
 		 */
@@ -683,6 +704,7 @@
 
 		/**
 		 * Move to next panel
+		 * @ko 다음 패널로 이동한다.
 		 * @method eg.Flicking#next
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds
 		 */
@@ -692,7 +714,8 @@
 
 		/**
 		 * Move to previous panel
-		 * @method ns.Flicking#prev
+		 * @ko 이전 패널로 이동한다.
+		 * @method eg.Flicking#prev
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds
 		 */
 		prev : function(duration) {
@@ -701,6 +724,7 @@
 
 		/**
 		 * Move to indicated panel
+		 * @ko 지정한 패널로 이동한다.
 		 * @method eg.Flicking#moveTo
 		 * @param {Number} no logical panel index
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds
@@ -749,6 +773,7 @@
 
 		/**
 		 * Update panel size according current viewport
+		 * @ko 패널 사이즈 정보를 갱신한다.
 		 * @method eg.Flicking#resize
 		 */
 		resize : function() {
@@ -756,7 +781,8 @@
 				maxCoord = [ width * (this._conf.panel.count - 1), 0 ];
 
 			// resize panel and parent elements
-			this._container.width(maxCoord[0]).children().css("width", width);
+			this._container.width(maxCoord[0]);
+			this._conf.panel.list.css("width", width);
 
 			// adjust the position of current panel
 			this._movableCoord.setTo(width * this._conf.panel.index, 0).options.max = maxCoord;

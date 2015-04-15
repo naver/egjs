@@ -34,7 +34,7 @@ test("Option: circular", function() {
 	this.inst.moveTo(this.inst._conf.panel.origCount - 1);
 
 	// Then
-	ok(this.inst.getElement().next().length, "Is circular?");
+	ok(this.inst.getNextElement(), "Is circular?");
 	this.inst._movableCoord.destroy();
 
 	// Given
@@ -73,7 +73,7 @@ asyncTest("Option: threshold #1 - when moved more than threshold pixels", functi
 		circular : true,
 		threshold : 80
 	}).on({
-		afterChange : function(e) {
+		flickEnd : function(e) {
 			changedPanelNo = e.no;
 		}
 	})
@@ -105,7 +105,7 @@ asyncTest("Option: threshold #2 - when moved less than threshold pixels", functi
 		circular : true,
 		threshold : 80
 	}).on({
-		afterChange : function(e) {
+		flickEnd : function(e) {
 			changedPanelNo = e.no;
 		}
 	})
@@ -156,7 +156,7 @@ test("Method: getIndex()", function() {
 	// Then
 	equal(defaultIndex, this.inst.getIndex(), "Get current logical panel number");
 	notEqual(this.inst.getIndex(true), this.inst.getIndex(), "Physical and logical panel number are different");
-	deepEqual(this.inst._container.children()[this.inst.getIndex(true)], this.inst.getElement()[0], "Get current panel using physical panel number");
+	deepEqual(this.inst._conf.panel.list[this.inst.getIndex(true)], this.inst.getElement()[0], "Get current panel using physical panel number");
 });
 
 test("Method: getElement()", function() {
@@ -181,12 +181,13 @@ test("Method: getNextElement()", function() {
 		circular : true
 	});
 
-	var element = this.inst.getNextElement();
+	var element = this.inst.getNextElement(),
+		rx = /\(-?(\d+)/;
 
 	// When
 	// Then
-	ok(element.length, "The element was invoked correctly?");
-	deepEqual(this.inst.getElement().next(), element, "Invoked element is placed next to the current element?");
+	ok(element, "The element was invoked correctly?");
+	ok(this.inst.getElement()[0].style.transform.match(rx)[1] < element[0].style.transform.match(rx)[1], "Invoked element is placed next to the current element?");
 });
 
 test("Method: getNextIndex()", function() {
@@ -222,12 +223,13 @@ test("Method: getPrevElement()", function() {
 		circular : true
 	});
 
-	var element = this.inst.getPrevElement();
+	var element = this.inst.getPrevElement(),
+		rx = /\(-?(\d+)/;
 
 	// When
 	// Then
-	ok(element.length, "The element was invoked correctly?");
-	deepEqual(this.inst.getElement().prev(), element, "Invoked element is placed previous to the current element?");
+	ok(element, "The element was invoked correctly?");
+	ok(this.inst.getElement()[0].style.transform.match(rx)[1] > element[0].style.transform.match(rx)[1], "Invoked element is placed previous to the current element?");
 });
 
 test("Method: getPrevIndex()", function() {
@@ -268,14 +270,14 @@ test("Method: getAllElements()", function() {
 
 	// When
 	// Then
-	deepEqual(elements, this.inst._container.children(), "Returned all panel elements?");
+	deepEqual(elements.length, this.inst._container.children().length, "Returned all panel elements?");
 });
 
-test("Method: getElementCount()", function() {
+test("Method: getTotalCount()", function() {
 	// Given
 	this.inst = new eg.Flicking($("#mflick1"));
 
-	var counts = this.inst.getElementsCount();
+	var counts = this.inst.getTotalCount();
 
 	// When
 	// Then
@@ -287,13 +289,13 @@ test("Method: getElementCount()", function() {
 		circular : true
 	});
 
-	counts = this.inst.getElementsCount();
+	counts = this.inst.getTotalCount();
 
 	// Then
 	ok(counts < this.inst._container.children().length, "When circular options is set, the elements count is less than physical elements count");
 
 	// When
-	counts = this.inst.getElementsCount(true);
+	counts = this.inst.getTotalCount(true);
 	deepEqual(counts, this.inst._container.children().length, "Returned physical elements total count?");
 });
 
@@ -433,7 +435,7 @@ test("Method: resize()", function() {
 asyncTest("Custom events #1 - When changes panel normally", function() {
 	// Given
 	var el = $("#mflick1").get(0),
-		eventOrder = ["touchStart", "touchMove", "touchEnd", "beforeChange", "change", "afterChange"],
+		eventOrder = ["touchStart", "touchMove", "touchEnd", "flickStart", "flick", "flickEnd"],
 		eventFired = [],
 		handler = function(e) {
 			var type = e.eventType;
@@ -447,11 +449,11 @@ asyncTest("Custom events #1 - When changes panel normally", function() {
 		touchStart : handler,
 		touchMove : handler,
 		touchEnd : handler,
-		change : handler,
-		beforeChange : handler,
+		flickStart : handler,
+		flick : handler,
+		flickEnd : handler,
 		beforeRestore : handler,
-		restore : handler,
-		afterChange : handler
+		restore : handler
 	});
 
 	// When
@@ -470,10 +472,9 @@ asyncTest("Custom events #1 - When changes panel normally", function() {
     });
 });
 
-asyncTest("Custom events #2 - When restore", function() {
+asyncTest("Custom events #2 - When stop event on beforeRestore", function() {
 	// Given
 	var el = $("#mflick1").get(0),
-		eventOrder = ["touchStart", "touchMove", "touchEnd", "beforeRestore", "change", "restore"],
 		eventFired = [],
 		handler = function(e) {
 			var type = e.eventType;
@@ -481,17 +482,22 @@ asyncTest("Custom events #2 - When restore", function() {
 			if(eventFired.indexOf(type) == -1) {
 				eventFired.push(type);
 			}
-		};
+		},
+		called = false;
 
 	this.inst = new eg.Flicking(el, { threshold : 100 }).on({
 		touchStart : handler,
 		touchMove : handler,
 		touchEnd : handler,
-		change : handler,
-		beforeChange : handler,
-		beforeRestore : handler,
-		restore : handler,
-		afterChange : handler
+		flickStart : handler,
+		flick : handler,
+		flickEnd : handler,
+		beforeRestore : function(e) {
+			e.stop();
+		},
+		restore : function(e) {
+			called = true;
+		}
 	});
 
 	// When
@@ -504,16 +510,15 @@ asyncTest("Custom events #2 - When restore", function() {
 	}, function() {
 		// Then
 		setTimeout(function() {
-			deepEqual(eventOrder, eventFired, "Custom events are fired in correct order");
+			ok(!called, "restore event should not be triggered");
 			start();
 		},1000);
     });
 });
 
-asyncTest("Custom events #3 - Stopping event", function() {
+asyncTest("Custom events #3 - When stop on touchMove event", function() {
 	// Given
 	var el = $("#mflick1").get(0),
-		eventOrder = ["touchStart", "touchMove", "touchEnd", "beforeChange"],
 		eventFired = [],
 		handler = function(e) {
 			var type = e.eventType;
@@ -521,44 +526,43 @@ asyncTest("Custom events #3 - Stopping event", function() {
 			if(eventFired.indexOf(type) == -1) {
 				eventFired.push(type);
 			}
-
-			// event should stop firing after this event
-			if(type == "beforeChange") {
+		},
+		rx = /\(-?(\d+)/,
+		called = false,
+		inst = this.inst = new eg.Flicking(el).on({
+			touchStart : handler,
+			touchMove : function(e) {
 				e.stop();
-			}
-		};
-
-	this.inst = new eg.Flicking(el).on({
-		touchStart : handler,
-		touchMove : handler,
-		touchEnd : handler,
-		change : handler,
-		beforeChange : handler,
-		beforeRestore : handler,
-		restore : handler,
-		afterChange : handler
-	});
+				called = !!inst._container[0].style.transform;
+			},
+			touchEnd : handler,
+			flickStart : handler,
+			flick : handler,
+			flickEnd : handler,
+			beforeRestore : handler,
+			restore : handler
+		});
 
 	// When
 	Simulator.gestures.pan(el, {
 		pos: [0, 0],
 		deltaX: -70,
 		deltaY: 100,
-		duration: 500,
-		easing: "linear"
+		duration: 1000,
+		easing: "linear",
+		touches : 1
 	}, function() {
 		// Then
 		setTimeout(function() {
-			deepEqual(eventOrder, eventFired, "Custom events are fired in correct order");
+			ok(!called, "The panel should not be moved during touch move");
 			start();
-		},1000);
+		},500);
     });
 });
 
-asyncTest("Custom events #4 - Stopping event", function() {
+asyncTest("Custom events #5 - When stop on change event", function() {
 	// Given
 	var el = $("#mflick1").get(0),
-		eventOrder = ["touchStart", "touchMove", "touchEnd", "beforeRestore"],
 		eventFired = [],
 		handler = function(e) {
 			var type = e.eventType;
@@ -566,23 +570,22 @@ asyncTest("Custom events #4 - Stopping event", function() {
 			if(eventFired.indexOf(type) == -1) {
 				eventFired.push(type);
 			}
-
-			// event should stop firing after this event
-			if(type == "beforeRestore") {
+		},
+		rx = /\(-?(\d+)/,
+		translate = "",
+		inst = this.inst = new eg.Flicking(el).on({
+			touchStart : handler,
+			touchMove : handler,
+			touchEnd : handler,
+			flickStart : handler,
+			flick : function(e) {
 				e.stop();
-			}
-		};
-
-	this.inst = new eg.Flicking(el, { threshold : 100 }).on({
-		touchStart : handler,
-		touchMove : handler,
-		touchEnd : handler,
-		change : handler,
-		beforeChange : handler,
-		beforeRestore : handler,
-		restore : handler,
-		afterChange : handler
-	});
+				translate = inst._container[0].style.transform.match(rx)[1];
+			},
+			flickEnd : handler,
+			beforeRestore : handler,
+			restore : handler
+		});
 
 	// When
 	Simulator.gestures.pan(el, {
@@ -590,12 +593,13 @@ asyncTest("Custom events #4 - Stopping event", function() {
 		deltaX: -70,
 		deltaY: 100,
 		duration: 500,
-		easing: "linear"
+		easing: "linear",
+		touches : 1
 	}, function() {
 		// Then
 		setTimeout(function() {
-			deepEqual(eventOrder, eventFired, "Custom events are fired in correct order");
+			notEqual(translate, inst._container[0].style.transform.match(rx)[1], "The panel should not be moved during change");
 			start();
-		},1000);
+		},800);
     });
 });
