@@ -57,10 +57,11 @@ eg.agent;
 						/(Windows NT) ([\d|\.]+)/.exec(ua) ||
 						/(Windows Phone) ([\d|\.]+)/.exec(ua) ||
 						/(Windows) ([\w|\.]+)/.exec(ua) ||
-						/(Mac OS X) ([\w.]+)/.exec(ua) ||
+						/(Mac OS X)( ([\w.]+))?/.exec(ua) ||
 						[],
 					browserMatch = /(Chrome|CriOS|Firefox)[\s\/]([\w.]+)/.exec(ua) ||
 						/(MSIE|Trident)[\/\s]([\d.]+)/.exec(ua) ||
+						/(PhantomJS)\/([\d.]+)/.exec(ua) ||
 						[],
 					nativeVersion, m;
 
@@ -76,7 +77,7 @@ eg.agent;
 					} else {
 						osMatch[1] = osMatch[1].toLowerCase();
 					}
-					osMatch[2] = osMatch[2].replace(/\_/g,".").replace(/\s/g, "");
+					osMatch[2] = (osMatch[2] || "").replace(/\_/g,".").replace(/\s/g, "");
 				}
 
 				// browser

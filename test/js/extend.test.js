@@ -516,12 +516,12 @@ var ua = [
 		// Phantomjs (default value)
 		"ua" : "Mozilla/5.0 (Macintosh; Intel Mac OS X) AppleWebKit/534.34 (KHTML, like Gecko) PhantomJS/1.9.8 Safari/534.34",
 		"os" : {
-			"name" : "",
+			"name" : "mac",
 			"version" : "-1"
 		},
 		"browser" : {
-			"name" : "default",
-			"version" : "-1"
+			"name" : "phantomjs",
+			"version" : "1.9.8"
 		},
 		"isHWAccelerable" : false,
 		"isTransitional" : false
@@ -705,8 +705,21 @@ var ua = [
 		},
 		"isHWAccelerable" : true,
 		"isTransitional" : false
+	},
+	{
+		// Phantomjs Window (default value)
+		"ua" : "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) PhantomJS/1.9.8 Safari/534.34",
+		"os" : {
+			"name" : "window",
+			"version" : "6.1"
+		},
+		"browser" : {
+			"name" : "phantomjs",
+			"version" : "1.9.8"
+		},
+		"isHWAccelerable" : false,
+		"isTransitional" : false
 	}
-
 ];
 
 module("extend Agent Test", {
@@ -735,9 +748,10 @@ test("agent Test", function() {
 
 test("agent nativeVersion Test", function() {
 	// Given
+	ok(true, "start Test");
 	// When
 	ua.forEach(function(v) {
-		if(v._documentMode) {
+		if(v._documentMode ) {
 			eg._init(v.ua, v._documentMode);
 
 			//Then
