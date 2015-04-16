@@ -1,9 +1,8 @@
-(function($, ns) {
+ï»¿(function($, ns) {
 	"use strict";
-
 	/**
 	 * To build flickable UI
-	 * @ko ÇÃ¸®Å· UI¸¦ ±¸¼ºÇÑ´Ù.
+	 * @ko í”Œë¦¬í‚¹ UIë¥¼ êµ¬ì„±í•œë‹¤.
 	 * @class
 	 * @name eg.Flicking
 	 * @extends eg.Component
@@ -302,7 +301,7 @@
 
 			/**
 			 * When touch starts
-			 * @ko ÅÍÄ¡°¡ ½ÃÀÛµÉ ¶§ ¹ß»ıÇÏ´Â ÀÌº¥Æ®
+			 * @ko í„°ì¹˜ê°€ ì‹œì‘ë  ë•Œ ë°œìƒí•˜ëŠ” ì´ë²¤íŠ¸
 			 * @name eg.Flicking#touchStart
 			 * @event
 			 *
@@ -325,7 +324,7 @@
 			var pos = e.pos, x = -pos[0], y = 0;
 			/**
 			 * When touch moves
-			 * @ko ÅÍÄ¡ÇÑ »óÅÂ¿¡¼­ ÀÌµ¿µÉ ¶§ ¹ß»ıÇÏ´Â ÀÌº¥Æ®
+			 * @ko í„°ì¹˜í•œ ìƒíƒœì—ì„œ ì´ë™ë  ë•Œ ë°œìƒí•˜ëŠ” ì´ë²¤íŠ¸
 			 * @name eg.Flicking#touchMove
 			 * @event
 			 *
@@ -340,7 +339,7 @@
 			 */
 			/**
 			 * Occurs during the change
-			 * @ko ÅÍÄ¡ÇÏÁö ¾ÊÀº »óÅÂ¿¡¼­ ÆĞ³ÎÀÌ ÀÌµ¿µÉ ¶§ ¹ß»ıÇÏ´Â ÀÌº¥Æ®
+			 * @ko í„°ì¹˜í•˜ì§€ ì•Šì€ ìƒíƒœì—ì„œ íŒ¨ë„ì´ ì´ë™ë  ë•Œ ë°œìƒí•˜ëŠ” ì´ë²¤íŠ¸
 			 * @name eg.Flicking#change
 			 * @event
 			 *
@@ -380,7 +379,7 @@
 
 			/**
 			 * When touch ends
-			 * @ko ÅÍÄ¡°¡ Á¾·áµÉ ¶§ ¹ß»ıµÇ´Â ÀÌº¥Æ®
+			 * @ko í„°ì¹˜ê°€ ì¢…ë£Œë  ë•Œ ë°œìƒë˜ëŠ” ì´ë²¤íŠ¸
 			 * @name eg.Flicking#touchEnd
 			 * @event
 			 *
@@ -414,7 +413,7 @@
 			if(this._isMovable()) {
 				/**
 				 * Before panel changes
-				 * @ko ÇÃ¸®Å·ÀÌ ½ÃÀÛµÇ±â Àü¿¡ ¹ß»ıÇÏ´Â ÀÌº¥Æ®
+				 * @ko í”Œë¦¬í‚¹ì´ ì‹œì‘ë˜ê¸° ì „ì— ë°œìƒí•˜ëŠ” ì´ë²¤íŠ¸
 				 * @name eg.Flicking#flickStart
 				 * @event
 				 *
@@ -454,7 +453,7 @@
 			} else {
 				/**
 				 * Before panel restores it's last position
-				 * @ko ÇÃ¸®Å· ÀÓ°èÄ¡¿¡ µµ´ŞÇÏÁö ¸øÇÏ°í »ç¿ëÀÚÀÇ ¾×¼ÇÀÌ ³¡³µÀ» °æ¿ì, ¿ø·¡ ÆĞ³Î·Î º¹¿øµÇ±â Àü¿¡ ¹ß»ıÇÏ´Â ÀÌº¥Æ®
+				 * @ko í”Œë¦¬í‚¹ ì„ê³„ì¹˜ì— ë„ë‹¬í•˜ì§€ ëª»í•˜ê³  ì‚¬ìš©ìì˜ ì•¡ì…˜ì´ ëë‚¬ì„ ê²½ìš°, ì›ë˜ íŒ¨ë„ë¡œ ë³µì›ë˜ê¸° ì „ì— ë°œìƒí•˜ëŠ” ì´ë²¤íŠ¸
 				 * @name eg.Flicking#beforeRestore
 				 * @event
 				 *
@@ -498,7 +497,7 @@
 
 			/**
 			 * After panel changes
-			 * @ko ÇÃ¸®Å·À¸·Î ÆĞ³ÎÀÌ ÀÌµ¿µÈ ÈÄ ¹ß»ıÇÏ´Â ÀÌº¥Æ®
+			 * @ko í”Œë¦¬í‚¹ìœ¼ë¡œ íŒ¨ë„ì´ ì´ë™ëœ í›„ ë°œìƒí•˜ëŠ” ì´ë²¤íŠ¸
 			 * @name eg.Flicking#flickEnd
 			 * @event
 			 *
@@ -509,7 +508,7 @@
 			 */
 			/**
 			 * After panel restores it's last position
-			 * @ko ÇÃ¸®Å· ÀÓ°èÄ¡¿¡ µµ´ŞÇÏÁö ¸øÇÏ°í »ç¿ëÀÚÀÇ ¾×¼ÇÀÌ ³¡³µÀ» °æ¿ì, ¿ø·¡ ÀÎµ¦½º·Î º¹¿øµÈ ÈÄ ¹ß»ıÇÏ´Â ÀÌº¥Æ®
+			 * @ko í”Œë¦¬í‚¹ ì„ê³„ì¹˜ì— ë„ë‹¬í•˜ì§€ ëª»í•˜ê³  ì‚¬ìš©ìì˜ ì•¡ì…˜ì´ ëë‚¬ì„ ê²½ìš°, ì›ë˜ ì¸ë±ìŠ¤ë¡œ ë³µì›ëœ í›„ ë°œìƒí•˜ëŠ” ì´ë²¤íŠ¸
 			 * @name eg.Flicking#restore
 			 * @event
 			 *
@@ -655,7 +654,7 @@
 
 		/**
 		 * Get current panel position
-		 * @ko ÇöÀç ÆĞ³ÎÀÇ ÀÎµ¦½º °ªÀ» ¹İÈ¯ÇÑ´Ù.
+		 * @ko í˜„ì¬ íŒ¨ë„ì˜ ì¸ë±ìŠ¤ ê°’ì„ ë°˜í™˜í•œë‹¤.
 		 * @method eg.Flicking#getIndex
 		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical)
 		 * @return {Number} Number Current index number
@@ -666,7 +665,7 @@
 
 		/**
 		 * Get current panel element
-		 * @ko ÇöÀç ÆĞ³Î ¿ä¼ÒÀÇ ·¹ÆÛ·±½º¸¦ ¹İÈ¯ÇÑ´Ù.
+		 * @ko í˜„ì¬ íŒ¨ë„ ìš”ì†Œì˜ ë ˆí¼ëŸ°ìŠ¤ë¥¼ ë°˜í™˜í•œë‹¤.
 		 * @method eg.Flicking#getElement
 		 * @return {jQuery} jQuery Current element
 		 */
@@ -677,7 +676,7 @@
 
 		/**
 		 * Get next panel element
-		 * @ko ´ÙÀ½ ÆĞ³Î ¿ä¼ÒÀÇ ·¹ÆÛ·±½º¸¦ ¹İÈ¯ÇÑ´Ù.
+		 * @ko ë‹¤ìŒ íŒ¨ë„ ìš”ì†Œì˜ ë ˆí¼ëŸ°ìŠ¤ë¥¼ ë°˜í™˜í•œë‹¤.
 		 * @method eg.Flicking#getNextElement
 		 * @return {jQuery} jQuery Next element
 		 */
@@ -687,7 +686,7 @@
 
 		/**
 		 * Get next panel index
-		 * @ko ´ÙÀ½ ÆĞ³ÎÀÇ ÀÎµ¦½º °ªÀ» ¹İÈ¯ÇÑ´Ù.
+		 * @ko ë‹¤ìŒ íŒ¨ë„ì˜ ì¸ë±ìŠ¤ ê°’ì„ ë°˜í™˜í•œë‹¤.
 		 * @method eg.Flicking#getNextIndex
 		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical)
 		 * @return {Number} Number Next element index value
@@ -698,7 +697,7 @@
 
 		/**
 		 * Get whole panel elements
-		 * @ko ÆĞ³ÎÀ» ±¸¼ºÇÏ´Â ¸ğµç ¿ä¼ÒµéÀÇ ·¹ÆÛ·±½º¸¦ ¹İÈ¯ÇÑ´Ù.
+		 * @ko íŒ¨ë„ì„ êµ¬ì„±í•˜ëŠ” ëª¨ë“  ìš”ì†Œë“¤ì˜ ë ˆí¼ëŸ°ìŠ¤ë¥¼ ë°˜í™˜í•œë‹¤.
 		 * @method eg.Flicking#getAllElements
 		 * @return {jQuery} jQuery All panel elements
 		 */
@@ -708,7 +707,7 @@
 
 		/**
 		 * Get previous panel element
-		 * @ko ÀÌÀü ÆĞ³Î ¿ä¼ÒÀÇ ·¹ÆÛ·±½º¸¦ ¹İÈ¯ÇÑ´Ù.
+		 * @ko ì´ì „ íŒ¨ë„ ìš”ì†Œì˜ ë ˆí¼ëŸ°ìŠ¤ë¥¼ ë°˜í™˜í•œë‹¤.
 		 * @method ns.Flicking#getPrevElement
 		 * @return {jQuery} jQuery Previous element
 		 */
@@ -718,7 +717,7 @@
 
 		/**
 		 * Get previous panel index
-		 * @ko ÀÌÀü ÆĞ³ÎÀÇ ÀÎµ¦½º °ªÀ» ¹İÈ¯ÇÑ´Ù.
+		 * @ko ì´ì „ íŒ¨ë„ì˜ ì¸ë±ìŠ¤ ê°’ì„ ë°˜í™˜í•œë‹¤.
 		 * @method eg.Flicking#getPrevIndex
 		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical)
 		 * @return {Number} number Previous element index value
@@ -729,7 +728,7 @@
 
 		/**
 		 * Get total panel count
-		 * @ko ÀüÃ¼ ÆĞ³ÎÀÇ °³¼ö¸¦ ¹İÈ¯ÇÑ´Ù.
+		 * @ko ì „ì²´ íŒ¨ë„ì˜ ê°œìˆ˜ë¥¼ ë°˜í™˜í•œë‹¤.
 		 * @method eg.Flicking#getTotalCount
 		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical)
 		 * @return {Number} Number Count of all elements
@@ -740,7 +739,7 @@
 
 		/**
 		 * Return either panel is animating or not
-		 * @ko ÇöÀç ¾Ö´Ï¸ŞÀÌ¼ÇÁßÀÎÁö ¿©ºÎ¸¦ ¸®ÅÏÇÑ´Ù.
+		 * @ko í˜„ì¬ ì• ë‹ˆë©”ì´ì…˜ì¤‘ì¸ì§€ ì—¬ë¶€ë¥¼ ë¦¬í„´í•œë‹¤.
 		 * @method eg.Flicking#isPlaying
 		 * @return {Boolean}
 		 */
@@ -750,7 +749,7 @@
 
 		/**
 		 * Move to next panel
-		 * @ko ´ÙÀ½ ÆĞ³Î·Î ÀÌµ¿ÇÑ´Ù.
+		 * @ko ë‹¤ìŒ íŒ¨ë„ë¡œ ì´ë™í•œë‹¤.
 		 * @method eg.Flicking#next
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds
 		 */
@@ -760,7 +759,7 @@
 
 		/**
 		 * Move to previous panel
-		 * @ko ÀÌÀü ÆĞ³Î·Î ÀÌµ¿ÇÑ´Ù.
+		 * @ko ì´ì „ íŒ¨ë„ë¡œ ì´ë™í•œë‹¤.
 		 * @method eg.Flicking#prev
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds
 		 */
@@ -770,7 +769,7 @@
 
 		/**
 		 * Move to indicated panel
-		 * @ko ÁöÁ¤ÇÑ ÆĞ³Î·Î ÀÌµ¿ÇÑ´Ù.
+		 * @ko ì§€ì •í•œ íŒ¨ë„ë¡œ ì´ë™í•œë‹¤.
 		 * @method eg.Flicking#moveTo
 		 * @param {Number} no logical panel index
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds
@@ -821,7 +820,7 @@
 
 		/**
 		 * Update panel size according current viewport
-		 * @ko ÆĞ³Î »çÀÌÁî Á¤º¸¸¦ °»½ÅÇÑ´Ù.
+		 * @ko íŒ¨ë„ ì‚¬ì´ì¦ˆ ì •ë³´ë¥¼ ê°±ì‹ í•œë‹¤.
 		 * @method eg.Flicking#resize
 		 */
 		resize : function() {

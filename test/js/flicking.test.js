@@ -1,4 +1,4 @@
-module("Flicking component test", {
+﻿module("Flicking component test", {
 	setup : function() {
 		this.inst = null;
 	},
@@ -8,6 +8,7 @@ module("Flicking component test", {
 });
 
 var transform = navigator.userAgent.indexOf("PhantomJS") > 0 ? "webkitTransform" : "transform";
+
 
 test("Check for the initialization", function() {
 	// Given
