@@ -3,6 +3,7 @@ var __transform = (function($, global) {
 	var CSSMatrix = global.WebKitCSSMatrix || global.MSCSSMatrix || global.OCSSMatrix || global.MozCSSMatrix || global.CSSMatrix,
 		RADIAN = 180 / Math.PI;
 
+	// @return String
 	function parse(transform, width, height, styleTransform) {
 		if(/matrix|none/.test(transform)) {
 			return transform;
@@ -23,6 +24,7 @@ var __transform = (function($, global) {
 		return result;
 	}
 
+	// @return function
 	function rateFn(element, startTf, endTf) {
 		console.info("parsing...: " , startTf, "->", endTf);
 		var $el = $(element),
@@ -180,62 +182,75 @@ var __transform = (function($, global) {
 	function toMatrix(transform) {
 		if(transform === "none") {
 			return ["matrix" , [ "1", "0","0","1","0","0"] ];
+		} else if(/matrix/.test(transform)) {
+			return parseStyle(transform);
 		}
 		return CSSMatrix ? parseStyle(new CSSMatrix(transform).toString()) : transform;
 	}
 
+	// need to current infomation
 	function unMatrix(matrix) {
 		if(matrix === "none") {
 			return null;
 		}
 		var m = matrix[1],
-			sx, sy, sz,
-			rx, ry, rz;
+			m0 = parseFloat(m[0]),
+			m1 = parseFloat(m[1]),
+			m2 = parseFloat(m[2]),
+			m3 = parseFloat(m[3]),
+			// rx, ry, rz,
+			sx, sy, sz;
 		if(/matrix3d/.test(matrix[0])) {
-			sx = Math.sqrt(m[0]*m[0] + m[1]*m[1] + m[2]*m[2]);
+			sx = Math.sqrt(m0*m0 + m1*m1 + m2*m2);
+
+
 			sy = Math.sqrt(m[4]*m[4] + m[5]*m[5] + m[6]*m[6]);
 			sz = Math.sqrt(m[8]*m[8] + m[9]*m[9] + m[10]*m[10]);
-			rx = Math.atan2(-m[9]/sz, m[10]/sz) / RADIAN;
-			ry = Math.asin(m[8]/sz) / RADIAN;
-			rz = Math.atan2(-m[4]/sy, m[0]/sx) / RADIAN;
-			if (m[4] === 1 || m[4] === -1) {
-				rx = 0;
-				ry = m[4] * -Math.PI/2;
-				rz = m[4] * Math.atan2(m[6]/sy, m[5]/sy) / RADIAN;
-			}
+			// rx = Math.atan2(-m[9]/sz, m[10]/sz) / RADIAN;
+			// ry = Math.asin(m[8]/sz) / RADIAN;
+			// rz = Math.atan2(-m[4]/sy, m[0]/sx) / RADIAN;
+			// if (m[4] === 1 || m[4] === -1) {
+			// 	rx = 0;
+			// 	ry = m[4] * -Math.PI/2;
+			// 	rz = m[4] * Math.atan2(m[6]/sy, m[5]/sy) / RADIAN;
+			// }
+			// @todo 3d일 경우, rotate 반환값 찾기???
 			return {
-				translateX: m[12]/sx,
-				translateY: m[13]/sx,
-				translateZ: m[14]/sx,
-				rotate : rx,
+				translateX: parseFloat( m[12] ),
+				translateY: parseFloat( m[13] ),
+				translateZ: parseFloat( m[14] ),
+				// rotateX : rx,
 				// rotateY : ry,
 				// rotateZ : rz,
-				scaleX : sx,
-				scaleY : sy,
-				scaleZ : sz
+				rotate : parseFloat((Math.atan2(m1, m0) * RADIAN).toFixed(10)),
+				scaleX : parseFloat(sx.toFixed(10)),
+				scaleY : parseFloat(sy.toFixed(10)),
+				scaleZ : parseFloat(sz.toFixed(10)),
 			};
 		} else {
-			var transformNormalize = function(a) {
-				var k = Math.sqrt(a[0] * a[0] + a[1] * a[1]);
-				a[0] /= k;
-				a[1] /= k;
-				return k;
-			}, transformCombine = function(a, b, k) {
-				a[0] += k * b[0];
-				a[1] += k * b[1];
-				return a;
-			};
-			rx = [ parseFloat(m[0]), parseFloat(m[1]) ];
-			ry = [ parseFloat(m[2]), parseFloat(m[3]) ];
-			sx = transformNormalize(rx);
-			sz = rx[0] * ry[0] * rx[1] * ry[1];
-			sy = transformNormalize(transformCombine(ry, rx, -sz));
+			sx = Math.sqrt( m0 * m0 + m1 * m1 );
+			m0 /= sx;
+			m1 /= sx;
+			sz = m0 * m2 + m1 * m3;
+			m2 -= m0 * sz;
+			m3 -= m1 * sz;
+			// step (5)
+			sy = Math.sqrt( m2 * m2 + m3 * m3 );
+			m2 /= sy;
+			m3 /= sy;
+			sz /= sy;
+			// step (6)
+			if ( m0 * m3 < m1 * m2 ) {
+				m0 = -m0;
+				m1 = -m1;
+				sx = -sx;
+			}
 			return {
-				rotate : Math.atan2(m[1], m[0]) * RADIAN,
-				scaleX : sx,
-				scaleY : sy,
-				translateX : m[4],
-				translateY : m[5]
+				rotate : parseFloat((Math.atan2(m1, m0) * RADIAN).toFixed(10)),
+				scaleX : parseFloat(sx.toFixed(10)),
+				scaleY : parseFloat(sy.toFixed(10)),
+				translateX : parseFloat(m[4]),
+				translateY : parseFloat(m[5])
 			};
 		}
 	}
@@ -255,9 +270,11 @@ var __transform = (function($, global) {
 		rateFn : rateFn,
 		toMatrix : toMatrix,
 		unMatrix : unMatrix,
-		toMatrix3d : toMatrix3d
+		toMatrix3d : toMatrix3d,
+		divideTransform : divideTransform,
+		interpolation : interpolation
 	};
-	// @testcode parse,parseStyle,computeValue,rateFn,toMatrix,unMatrix,toMatrix3d
+	// @testcode parse,parseStyle,computeValue,rateFn,toMatrix,unMatrix,toMatrix3d,divideTransform,interpolation
 })(jQuery, window);
 
 __transform;
