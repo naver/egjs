@@ -1,6 +1,6 @@
 var __transform = (function($, global) {
 	"use strict";
-	var CSSMatrix = window.WebKitCSSMatrix || window.MSCSSMatrix || window.OCSSMatrix || window.MozCSSMatrix || window.CSSMatrix,
+	var CSSMatrix = global.WebKitCSSMatrix || global.MSCSSMatrix || global.OCSSMatrix || global.MozCSSMatrix || global.CSSMatrix,
 		RADIAN = 180 / Math.PI;
 
 	function parse(transform, width, height, styleTransform) {
@@ -11,7 +11,7 @@ var __transform = (function($, global) {
 			m = transform.match(/\w+\([^)]+\)/g),
 			result;
 		for(var i=0, v; v=m[i]; i++) {
-			properties.push(interpolation(parseProperty(v), width, height, styleTransform));
+			properties.push(interpolation(parseStyle(v), width, height, styleTransform));
 		}
 		result = divideTransform(properties);
 		for(var p in styleTransform) {
@@ -56,13 +56,12 @@ var __transform = (function($, global) {
 	}
 
 	function data2String(property) {
+		var name, unit,html = [];
 		if(Array.isArray(property)) {
-			var name, unit;
 			name = property[0];
 			unit = /translate/.test(name) ? "px" : (/rotate/.test(name) ? "deg" : "");
 			return name + "(" + property[1].join(unit + ",") + unit + ")";
 		} else {
-			var html = [];
 			for(name in property) {
 				unit = /translate/.test(name) ? "px" : (/rotate/.test(name) ? "deg" : "");
 				html.push(name + "(" +  property[name] + unit + ")");
@@ -101,7 +100,7 @@ var __transform = (function($, global) {
 	}
 
 	//  [ "translate3d" , [ "10", "20", "3px"] ]
-	function parseProperty(property) {
+	function parseStyle(property) {
 		var m = property.match(/(\b\w+?)\((\s*[^\)]+)/),
 			name, value, result = ["",""];
 		if(m && m.length > 2) {
@@ -161,12 +160,9 @@ var __transform = (function($, global) {
 			};
 		$.extend(opt, option);
 		useInitVal = /\+=/.test(val) ? 1 : ( /\-=/.test(val) ? -1 : useInitVal);
-
 		(useInitVal !== 0) && (val = val.substring(2));
-		val = parseFloat(val);
+		val = /%$/.test(val) ? parseFloat(val) / 100 * opt.size : parseFloat(val);
 		opt.baseVal = parseFloat(opt.baseVal);
-		/%$/.test(val) && (val = val / 100 * opt.size);
-
 		val = useInitVal > 0 ? opt.baseVal + val : ( useInitVal < 0 ? opt.baseVal - val : val);
 		return val;
 	}
@@ -185,7 +181,7 @@ var __transform = (function($, global) {
 		if(transform === "none") {
 			return ["matrix" , [ "1", "0","0","1","0","0"] ];
 		}
-		return CSSMatrix ? parseProperty(new CSSMatrix(transform).toString()) : transform;
+		return CSSMatrix ? parseStyle(new CSSMatrix(transform).toString()) : transform;
 	}
 
 	function unMatrix(matrix) {
@@ -196,16 +192,16 @@ var __transform = (function($, global) {
 			sx, sy, sz,
 			rx, ry, rz;
 		if(/matrix3d/.test(matrix[0])) {
-			sx = Math.sqrt(m[0]*m[0] + m[1]*m[1] + m[2]*m[2]),
-			sy = Math.sqrt(m[4]*m[4] + m[5]*m[5] + m[6]*m[6]),
-			sz = Math.sqrt(m[8]*m[8] + m[9]*m[9] + m[10]*m[10]),
-			rx = Math.atan2(-m[9]/sz, m[10]/sz) / RADIAN,
-			ry = Math.asin(m[8]/sz) / RADIAN,
-			rz = Math.atan2(-m[4]/sy, m[0]/sx) / RADIAN
+			sx = Math.sqrt(m[0]*m[0] + m[1]*m[1] + m[2]*m[2]);
+			sy = Math.sqrt(m[4]*m[4] + m[5]*m[5] + m[6]*m[6]);
+			sz = Math.sqrt(m[8]*m[8] + m[9]*m[9] + m[10]*m[10]);
+			rx = Math.atan2(-m[9]/sz, m[10]/sz) / RADIAN;
+			ry = Math.asin(m[8]/sz) / RADIAN;
+			rz = Math.atan2(-m[4]/sy, m[0]/sx) / RADIAN;
 			if (m[4] === 1 || m[4] === -1) {
-				rx = 0
-				ry = m[4] * -Math.PI/2
-				rz = m[4] * Math.atan2(m[6]/sy, m[5]/sy) / RADIAN
+				rx = 0;
+				ry = m[4] * -Math.PI/2;
+				rz = m[4] * Math.atan2(m[6]/sy, m[5]/sy) / RADIAN;
 			}
 			return {
 				translateX: m[12]/sx,
@@ -229,10 +225,10 @@ var __transform = (function($, global) {
 				a[1] += k * b[1];
 				return a;
 			};
-			rx = [ parseFloat(m[0]), parseFloat(m[1]) ],
-			ry = [ parseFloat(m[2]), parseFloat(m[3]) ],
-			sx = transformNormalize(rx),
-			sz = rx[0] * ry[0] * rx[1] * ry[1],
+			rx = [ parseFloat(m[0]), parseFloat(m[1]) ];
+			ry = [ parseFloat(m[2]), parseFloat(m[3]) ];
+			sx = transformNormalize(rx);
+			sz = rx[0] * ry[0] * rx[1] * ry[1];
 			sy = transformNormalize(transformCombine(ry, rx, -sz));
 			return {
 				rotate : Math.atan2(m[1], m[0]) * RADIAN,
@@ -242,7 +238,6 @@ var __transform = (function($, global) {
 				translateY : m[5]
 			};
 		}
-		return result;
 	}
 
 	$.fx.step.transform = function(fx) {
@@ -255,12 +250,15 @@ var __transform = (function($, global) {
 
 	return {
 		parse : parse,
-		parseProperty : parseProperty,
+		parseStyle : parseStyle,
 		computeValue : computeValue,
 		rateFn : rateFn,
-		unMatrix : unMatrix
+		toMatrix : toMatrix,
+		unMatrix : unMatrix,
+		toMatrix3d : toMatrix3d
 	};
+	// @testcode parse,parseStyle,computeValue,rateFn,toMatrix,unMatrix,toMatrix3d
 })(jQuery, window);
 
-
+__transform;
 // https://gist.github.com/fwextensions/2052247
