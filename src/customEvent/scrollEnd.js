@@ -1,4 +1,5 @@
 (function($, ns, global, doc){
+//function __scrollEnd($, ns, global, doc){
     "use strict";
     /**
      * Support scrollEnd event in jQuery
@@ -31,6 +32,19 @@
         }
     };
 
+    /**
+     * Below iOS7 : Scroll event's occurs once when the scroll is stopped
+     * Since iOS8 : Scroll event's occurs every time scroll
+     * android : Scroll event's occurs every time scroll
+     * Below android 2.x : Touch event-based processing
+     * android & chrome : Scroll event occurs when the rotation
+     * @ko
+     * iOS : iOS 7.x 이하에서는 스크롤이 멈췄을때 scroll 이벤트 한번 발생
+     *       iOS 8.x 이상에서는 scroll 이벤트가 android 와 동일하게 스크롤시 매번 발생
+     * android : 스크롤시 scroll 이벤트는 매번 발생
+     *           android 2.x 이하에서는 터치 이벤트 기반으로 처리
+     * android & chrome : 회전시 scroll 이벤트가 발생되어 이를 처리하기 위함.
+     */
 
     function getDeviceType(){
         var retValue = SCROLLBASE;
@@ -133,23 +147,17 @@
     }
 
     function triggerScrollEnd(){
-        var offsetY = global.pageYOffset, offsetX = global.pageXOffset;
-
-        if(preTop !== offsetY || preLeft !== offsetX){
-            $(global).trigger("scrollend" , {
-                top : offsetY,
-                left : offsetX
-            });
-            preTop = offsetY;
-            preLeft = offsetX;
-        }
+        $(global).trigger("scrollend" , {
+            top : global.pageYOffset,
+            left : global.pageXOffset
+        });
     }
 
     function triggerScrollEndAlways() {
         clearTimeout(scrollEndTimer);
         scrollEndTimer = setTimeout(function() {
             triggerScrollEnd();
-        },500);
+        },350);
     }
 
     function removeEvent(){
@@ -160,4 +168,18 @@
         });
         $(global).off("scroll" , scroll);
     }
+
+    // @qunit getDeviceType, CHROME, TIMERBASE, TOUCHBASE, SCROLLBASE
+//    return {
+//        getDeviceType : getDeviceType,
+//        CHROME : CHROME,
+//        TIMERBASE : TIMERBASE,
+//        TOUCHBASE : TOUCHBASE,
+//        SCROLLBASE : SCROLLBASE
+//    };
+}
+
+//if(!eg.debug){
+//    __scrollEnd(jQuery, eg, window, document);
+//}
 })(jQuery, eg, window, document);
