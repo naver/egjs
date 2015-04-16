@@ -46,17 +46,16 @@
 				defaultIndex : 0			// initial panel index to be shown
 			}, options);
 
-			var previewPadding = this.options.previewPadding;
+			var padding = this.options.previewPadding;
 
-			if(typeof previewPadding === "number") {
-				this.options.previewPadding = [ previewPadding, previewPadding ];
-			} else if(previewPadding.constructor !== Array) {
-				this.options.previewPadding = [ 0, 0 ];
+			if(typeof padding === "number") {
+				padding = this.options.previewPadding = [ padding, padding ];
+			} else if(padding.constructor !== Array) {
+				padding = this.options.previewPadding = [ 0, 0 ];
 			}
 
 			// config value
 			this._conf = {
-				customEvent : {},  		// boolean of event stop on custom event
 				panel : {
 					list : [],			// panel list
 					index : 0,  		// current physical dom index
@@ -67,14 +66,15 @@
 					reached : false,	// if panel reached first/last panel
 					changed : false,	// if panel changed
 					animating : false,	// current animating status boolean
-					recycleCount : this.options.previewPadding[0] + this.options.previewPadding[1] > 0 ? 5 : 3,  // panel count for recycle use
+					recycleCount : padding[0] + padding[1] > 0 ? 5 : 3,  // panel count for recycle use
 				},
 				touch : {
 					holdPos : [ 0, 0 ],	// hold x,y coordinate
 					destPos : [ 0, 0 ],	// destination x,y coordinate
 					distance : 0,		// touch distance pixel of start to end touch
 					direction : ns.DIRECTION_RIGHT  // touch direction
-				}
+				},
+				customEvent : {}		// for custom event return value
 			};
 
 			this._build();
@@ -86,36 +86,31 @@
 		 * Build and set panel nodes to make flicking structure
 		 */
 		_build : function() {
-			var children = this._conf.panel.list = this._wrapper.children(),
-				previewPadding = this.options.previewPadding,
+			var panel = this._conf.panel,
+			 	children = panel.list = this._wrapper.children(),
+				padding = this.options.previewPadding,
 				prefix = this.options.prefix,
-				panelWidth, panelCount;
-
-			if(typeof previewPadding === "number") {
-				previewPadding = [ previewPadding, previewPadding ];
-			}
-
-			panelWidth = this._conf.panel.width = this._wrapper.width() - (previewPadding[0] + previewPadding[1]),
-			panelCount = this._conf.panel.count = this._conf.panel.origCount = children.length;
+				panelWidth = panel.width = this._wrapper.width() - (padding[0] + padding[1]),
+				panelCount = panel.count = panel.origCount = children.length;
 
 			this._wrapper.css({
-				padding : "0 "+ previewPadding[1] +"px 0 "+ previewPadding[0] +"px",
+				padding : "0 "+ padding[1] +"px 0 "+ padding[0] +"px",
 				overflow : "hidden"
 			});
 
 			this._container = children.addClass(prefix +"-panel").css({
-					position : "absolute",
-					width : panelWidth,
-					float :"left",
-					top : 0,
-					left : 0
-				})
-				.wrapAll("<div class='"+ prefix +"-container' style='position:relative;width:"+ (panelWidth * panelCount) +"px;height:100%' />")
-				.parent();
+				position : "absolute",
+				width : panelWidth,
+				float :"left",
+				top : 0,
+				left : 0
+			})
+			.wrapAll("<div class='"+ prefix +"-container' style='position:relative;width:"+ (panelWidth * panelCount) +"px;height:100%' />")
+			.parent();
 
 
 			if(this._addClonePanels()) {
-				panelCount = this._conf.panel.count = (this._conf.panel.list = this._container.children()).length;
+				panelCount = panel.count = ( panel.list = this._container.children() ).length;
 			}
 
 			// create MovableCoord instance
@@ -142,14 +137,15 @@
 		 */
 		_addClonePanels : function() {
 			var df = $(document.createDocumentFragment()),
-				panelCount = this._conf.panel.origCount,
-				nodeCountToClone = this._conf.panel.recycleCount - panelCount,
-				list = this._conf.panel.list,
+				panel = this._conf.panel,
+				panelCount = panel.origCount,
+				nodeCountToClone = panel.recycleCount - panelCount,
+				list = panel.list,
 				dfChildren;
 
 			// if panels are given less than required when circular option is set, then clone node to apply circular mode
 			if(this.options.circular) {
-				if(panelCount < this._conf.panel.recycleCount) {
+				if(panelCount < panel.recycleCount) {
 
 					while((dfChildren = df.children()).length < nodeCountToClone) {
 						df.append(list.clone());
@@ -179,7 +175,8 @@
 		 * @param {Number} index
 		 */
 		_setDefaultPanel : function(index) {
-			var lastIndex = this._conf.panel.count - 1,
+			var panel = this._conf.panel,
+				lastIndex = panel.count - 1,
 				coord = [ 0, 0 ], i, pos;
 
 			if(this.options.circular) {
@@ -195,14 +192,14 @@
 					this._movePanelPosition(lastIndex, 0);
 				}
 
-				this._conf.panel.no = index;
+				panel.no = index;
 			} else {
 				// if defaultIndex option is given, then move to that index panel
 				if(index > 0 && index <= lastIndex) {
-					this._conf.panel.index = index;
-					coord = [ this._conf.panel.width * index, 0];
+					panel.index = index;
+					coord = [ panel.width * index, 0];
 
-					this._setTranslate(this._container, -coord[0], coord[1]);
+					this._setTranslate(-coord[0], coord[1]);
 					this._movableCoord.setTo(coord[0], coord[1]);
 				}
 			}
@@ -210,30 +207,32 @@
 
 		/**
 		 * Arrange panels' position
-		 * @param {Boolean} doRecycle
+		 * @param {Boolean} recycle
 		 * @param {Number} no - number of panels to arrange
 		 */
-		_arrangePanels : function(doRecycle, no) {
-			var hwCompositing = this.options.hwCompositing;
+		_arrangePanels : function(recycle, no) {
+			var panel = this._conf.panel,
+				touch = this._conf.touch,
+				hwCompositing = this.options.hwCompositing;
 
 			if(this.options.circular) {
 				// move elements according direction
-				if(doRecycle) {
+				if(recycle) {
 					if(typeof no !== "undefined") {
-						this._conf.touch.direction = ns[ no > 0 ? "DIRECTION_RIGHT" : "DIRECTION_LEFT" ];
+						touch.direction = ns[ no > 0 ? "DIRECTION_RIGHT" : "DIRECTION_LEFT" ];
 					}
 
-					this._arrangePanelPosition(this._conf.touch.direction, no);
+					this._arrangePanelPosition(touch.direction, no);
 				}
 
 				// set index for base element's position
-				this._conf.panel.index = this._getBasePositionIndex();
-				this._movableCoord.setTo(this._conf.panel.width * this._conf.panel.index, 0);
+				panel.index = this._getBasePositionIndex();
+				this._movableCoord.setTo(panel.width * panel.index, 0);
 			}
 
 			// set each panel's position
-			this._conf.panel.list.each(function(i, v) {
-				$(v).css("transform", ns.translate( (100 * i) +"%", "0px", hwCompositing ));
+			panel.list.each(function(i) {
+				$(this).css("transform", ns.translate( (100 * i) +"%", 0, hwCompositing ));
 			});
 		},
 
@@ -256,7 +255,8 @@
 		 * Get the base position index of the panel
 		 */
 		_getBasePositionIndex : function() {
-			return this._conf.panel.index = Math.floor(this._conf.panel.count / 2 - 0.1);
+			var panel = this._conf.panel;
+			return panel.index = Math.floor(panel.count / 2 - 0.1);
 		},
 
 		/**
@@ -333,7 +333,7 @@
 			 * @param {Number} param.pos.1 Departure y-coordinate
 			 */
 			if(this._triggerEvent(e.holding ? "touchMove" : "flick", { pos : e.pos })) {
-				this._setTranslate(this._container, x, y);
+				this._setTranslate(x, y);
 			}
 		},
 
@@ -341,15 +341,16 @@
 		 * 'release' event handler
 		 */
 		_releaseHandler : function(e) {
-			var pos = e.destPos,
-				holdPos = this._conf.touch.holdPos[0],
+			var touch = this._conf.touch,
+				pos = e.destPos,
+				holdPos = touch.holdPos[0],
 				panelWidth = this._conf.panel.width;
 
-			this._conf.touch.distance = e.depaPos[0] - this._conf.touch.holdPos[0];
-			this._conf.touch.direction = ns[ this._conf.touch.holdPos[0] < e.depaPos[0] ? "DIRECTION_RIGHT" : "DIRECTION_LEFT" ];
+			touch.distance = e.depaPos[0] - touch.holdPos[0];
+			touch.direction = ns[ touch.holdPos[0] < e.depaPos[0] ? "DIRECTION_RIGHT" : "DIRECTION_LEFT" ];
 
 			pos[0] = Math.max(holdPos - panelWidth, Math.min(holdPos + panelWidth, pos[0]));
-			this._conf.touch.destPos[0] = pos[0] = Math.round(pos[0] / panelWidth) * panelWidth;
+			touch.destPos[0] = pos[0] = Math.round(pos[0] / panelWidth) * panelWidth;
 
 			// when reach to the last panel
 			/*if(pos[0] >= this._movableCoord.options.max[0]) {
@@ -381,9 +382,12 @@
 		 * 'animation' event handler
 		 */
 		_animationHandler : function(e) {
-			var first = false, last = false;
+			var panel = this._conf.panel,
+				direction = this._conf.touch.direction,
+				first = false,
+				last = false;
 
-			this._conf.panel.animating = true;
+			panel.animating = true;
 			e.duration = this.options.duration;
 
 			if(this._isMovable()) {
@@ -407,25 +411,25 @@
 				 */
 				this._triggerEvent("flickStart", { depaPos : e.depaPos, destPos : e.destPos });
 
-				first = this._conf.panel.index === 0 && this._conf.touch.direction === ns.DIRECTION_LEFT;
-				last = this._conf.panel.index === this._conf.panel.count-1 && this._conf.touch.direction === ns.DIRECTION_RIGHT;
+				first = panel.index === 0 && direction === ns.DIRECTION_LEFT;
+				last = panel.index === panel.count-1 && direction === ns.DIRECTION_RIGHT;
 
 				// when reach first or last panel do nothing
 				if(first || last) {
-					this._conf.panel.reached = first ? "first" : "last";
+					panel.reached = first ? "first" : "last";
 
 					if(!this.options.circular) {
-						return this._conf.panel.changed = false;
+						return panel.changed = false;
 					}
 				} else {
-					this._conf.panel.reached = false;
+					panel.reached = false;
 				}
 
-				this._conf.panel.index += this._conf.touch.direction === ns.DIRECTION_RIGHT ? 1 : -1;
-				e.destPos[0] = this._conf.panel.width * this._conf.panel.index;
+				panel.index += direction === ns.DIRECTION_RIGHT ? 1 : -1;
+				e.destPos[0] = panel.width * panel.index;
 
 				this._setPanelNo(true);
-				this._conf.panel.changed = true;
+				panel.changed = true;
 			} else {
 				/**
 				 * Before panel restores it's last position
@@ -445,7 +449,11 @@
 				 * @param {Number} param.destPos.0 Destination x-coordinate
 				 * @param {Number} param.destPos.1 Destination y-coordinate
 				 */
-				this._conf.customEvent.restore = this._triggerEvent("beforeRestore", { depaPos : e.depaPos, destPos : e.destPos });
+				if(!(this._conf.customEvent.restore = this._triggerEvent("beforeRestore", {
+					depaPos : e.depaPos, destPos : e.destPos
+				}))) {
+					e.stop();
+				}
 			}
 		},
 
@@ -454,16 +462,18 @@
 		 */
 		_animationEndHandler : function() {
 			// adjust panel coordination
-			var x = -this._conf.panel.width * this._conf.panel.index, y = 0;
+			var panel = this._conf.panel,
+				x = -panel.width * panel.index,
+				y = 0;
 
-			this._setTranslate(this._container, x, y);
+			this._setTranslate(x, y);
 
-			if(this.options.circular && this._conf.panel.changed) {
+			if(this.options.circular && panel.changed) {
 				this._arrangePanels(true);
 				this._setPanelNo();
 			}
 
-			this._conf.panel.animating = false;
+			panel.animating = false;
 
 			/**
 			 * After panel changes
@@ -487,7 +497,7 @@
 			 * @param {Number} param.index Current panel index
 			 * @param {Boolean} param.direction Direction of the panel move
 			 */
-			if(this._conf.panel.changed) {
+			if(panel.changed) {
 				this._triggerEvent("flickEnd");
 			} else if(this._conf.customEvent.restore) {
 				this._triggerEvent("restore");
@@ -499,33 +509,43 @@
 		 * @param {Boolean} move - set to increment or decrement
 		 */
 		_setPanelNo : function(move) {
+			var panel = this._conf.panel,
+				count = panel.origCount - 1;
+
 			if(move) {
-				this._conf.panel.no += this._conf.touch.direction === ns.DIRECTION_RIGHT ? 1 : -1;
+				panel.no += this._conf.touch.direction === ns.DIRECTION_RIGHT ? 1 : -1;
 			}
 
-			var count = this._conf.panel.origCount - 1;
-
-			if(this._conf.panel.no > count) {
-				this._conf.panel.no = 0;
-			} else if(this._conf.panel.no < 0) {
-				this._conf.panel.no = count;
+			if(panel.no > count) {
+				panel.no = 0;
+			} else if(panel.no < 0) {
+				panel.no = count;
 			}
 		},
 
 		/**
 		 * Set translate property value
-		 * @param {jQuery|HTMLElement} element
 		 * @param {Number} x coordinate
 		 * @param {Number} y coordinate
 		 */
-		_setTranslate : function(element, x, y) {
-			var rx = /(?:[a-z]+|%)$/;
-
-			$(element).css("transform", ns.translate(
-				(x || 0) + (String(x).match(rx) || "px") +"",
-				(y || 0) + (String(y).match(rx) || "px") +"",
+		_setTranslate : function(x, y) {
+			this._container.css("transform", ns.translate(
+				this._getUnitValue(x),
+				this._getUnitValue(y),
 				this.options.hwCompositing
 			));
+		},
+
+		/**
+		 * Return unit formatted value
+		 * @param {Number|String} val
+		 * @return {String} val Value formatted with unit
+		 */
+		_getUnitValue : function(val) {
+			var rx = /(?:[a-z]{2,}|%)$/,
+				unit = "px";
+
+			return ( parseInt(val,10) || 0 ) + ( String(val).match(rx) || unit );
 		},
 
 		/**
@@ -542,10 +562,12 @@
 		 * @return {Boolean}
 		 */
 		_triggerEvent : function(name, param) {
+			var panel = this._conf.panel;
+
 			return this.trigger(name, param = $.extend({
 				eventType : name,
-				index : this._conf.panel.index,
-				no : this._conf.panel.no,
+				index : panel.index,
+				no : panel.no,
 				direction : this._conf.touch.direction
 			}, param ));
 		},
@@ -558,16 +580,17 @@
 		 * @return {jQuery|Number}
 		 */
 		_getElement : function(direction, element, physical) {
-			var circular = this.options.circular,
-				pos = this._conf.panel.index,
+			var panel = this._conf.panel,
+				circular = this.options.circular,
+				pos = panel.index,
 				result = null, total, index;
 
 			if(physical) {
-				total = this._conf.panel.count;
+				total = panel.count;
 				index = pos;
 			} else {
-				total = this._conf.panel.origCount;
-				index = this._conf.panel.no;
+				total = panel.origCount;
+				index = panel.no;
 			}
 
 			if(direction === ns.DIRECTION_RIGHT) {
@@ -584,8 +607,8 @@
 				}
 			}
 
-			if(this._conf.panel[ physical ? "index" : "no" ] !== index) {
-				result = element ? $(this._conf.panel.list[ direction === ns.DIRECTION_RIGHT ? pos + 1 : pos - 1 ]): index;
+			if(panel[ physical ? "index" : "no" ] !== index) {
+				result = element ? $(panel.list[ direction === ns.DIRECTION_RIGHT ? pos + 1 : pos - 1 ]): index;
 			}
 
 			return result;
@@ -597,13 +620,14 @@
 		 * @param {Number} duration
 		 */
 		_movePanel : function(direction, duration) {
-			var index = this[ direction === ns.DIRECTION_RIGHT ? "getNextIndex" : "getPrevIndex" ]();
+			var panel = this._conf.panel,
+				index = this[ direction === ns.DIRECTION_RIGHT ? "getNextIndex" : "getPrevIndex" ]();
 
 			if(index != null) {
 				this._conf.touch.direction = direction;
 				this._setPanelNo(true);
-				this._conf.panel.index = index;
-				this._movableCoord.setBy(this._conf.panel.width * ( (direction === ns.DIRECTION_RIGHT || this.options.circular) ? 1 : -1 ), 0, duration);
+				panel.index = index;
+				this._movableCoord.setBy(panel.width * ( (direction === ns.DIRECTION_RIGHT || this.options.circular) ? 1 : -1 ), 0, duration);
 				this._arrangePanels(true);
 			}
 		},
@@ -626,7 +650,8 @@
 		 * @return {jQuery} jQuery Current element
 		 */
 		getElement : function() {
-			return $(this._conf.panel.list[this._conf.panel.index]);
+			var panel = this._conf.panel;
+			return $(panel.list[panel.index]);
 		},
 
 		/**
@@ -730,24 +755,26 @@
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds
 		 */
 		moveTo : function(no, duration) {
-			var indexToMove = no, movableCount;
+			var panel = this._conf.panel,
+				indexToMove = no,
+				movableCount;
 
 			duration = duration || this.options.duration;
 
 			if(this.options.circular) {
-				if(typeof no !== "number" || no >= this._conf.panel.origCount || no === this._conf.panel.no) {
+				if(typeof no !== "number" || no >= panel.origCount || no === panel.no) {
 					return;
 				}
 
 				// real panel count which can be moved on each(left/right) sides
-				movableCount = Math.round((this._conf.panel.count - this._getBasePositionIndex()) / 2);
+				movableCount = Math.round((panel.count - this._getBasePositionIndex()) / 2);
 
-				if(this._conf.panel.no === this._conf.panel.origCount-1) {
-					indexToMove = this._conf.panel.no > no && no === 0 ? 1 : -(this._conf.panel.no - no);
-				} else if(no > this._conf.panel.no) {
-					indexToMove = no - this._conf.panel.no;
+				if(panel.no === panel.origCount-1) {
+					indexToMove = panel.no > no && no === 0 ? 1 : -(panel.no - no);
+				} else if(no > panel.no) {
+					indexToMove = no - panel.no;
 				} else {
-					indexToMove = -(this._conf.panel.no - no);
+					indexToMove = -(panel.no - no);
 				}
 
 				if(indexToMove > movableCount) {
@@ -755,19 +782,19 @@
 
 					if(no === 0) {
 						indexToMove = Math.abs(indexToMove);
-					} else if(no === this._conf.panel.origCount-1) {
+					} else if(no === panel.origCount-1) {
 						indexToMove++;
 					} else if(indexToMove < 0) {
 						indexToMove--;
 					}
 				}
 
-				this._conf.panel.no = no;
+				panel.no = no;
 				this._arrangePanels(true, indexToMove);
 
 			} else {
-				this._conf.panel.index = no;
-				this._movableCoord.setTo(this._conf.panel.width * indexToMove, 0, duration);
+				panel.index = no;
+				this._movableCoord.setTo(panel.width * indexToMove, 0, duration);
 			}
 		},
 
@@ -777,15 +804,16 @@
 		 * @method eg.Flicking#resize
 		 */
 		resize : function() {
-			var width = this._conf.panel.width = this._wrapper.width(),
-				maxCoord = [ width * (this._conf.panel.count - 1), 0 ];
+			var panel = this._conf.panel,
+				width = panel.width = this._wrapper.width(),
+				maxCoord = [ width * (panel.count - 1), 0 ];
 
 			// resize panel and parent elements
 			this._container.width(maxCoord[0]);
-			this._conf.panel.list.css("width", width);
+			panel.list.css("width", width);
 
 			// adjust the position of current panel
-			this._movableCoord.setTo(width * this._conf.panel.index, 0).options.max = maxCoord;
+			this._movableCoord.setTo(width * panel.index, 0).options.max = maxCoord;
 		}
 	});
 })(jQuery, eg);

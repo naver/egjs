@@ -67,19 +67,20 @@ test("Option: preview", function() {
 asyncTest("Option: threshold #1 - when moved more than threshold pixels", function() {
 	// Given
 	var el = $("#mflick2").get(0),
-		changedPanelNo, panelNo;
+		changedPanelNo = 0, panelNo;
 
 	this.inst = new eg.Flicking(el, {
 		circular : true,
 		threshold : 80
 	}).on({
-		flickEnd : function(e) {
+		"flick" : function(e) {
+			alert(1);
 			changedPanelNo = e.no;
 		}
 	})
 
 	panelNo = this.inst._conf.panel.no;
-
+console.log(el.childNodes);
 	// When
 	Simulator.gestures.pan(el, {
 		pos: [0, 0],
@@ -95,7 +96,7 @@ asyncTest("Option: threshold #1 - when moved more than threshold pixels", functi
 		},700);
     });
 });
-
+/*
 asyncTest("Option: threshold #2 - when moved less than threshold pixels", function() {
 	// Given
 	var el = $("#mflick2").get(0),
@@ -603,3 +604,4 @@ asyncTest("Custom events #5 - When stop on change event", function() {
 		},800);
     });
 });
+*/
