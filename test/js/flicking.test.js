@@ -7,6 +7,8 @@ module("Flicking component test", {
 	}
 });
 
+var transform = navigator.userAgent.indexOf("PhantomJS") > 0 ? "webkitTransform" : "transform";
+
 test("Check for the initialization", function() {
 	// Given
 	this.inst = new eg.Flicking($("#mflick1"));
@@ -63,24 +65,22 @@ test("Option: preview", function() {
 	equal(wrapperWidth, panelWidth, "Each panel's width should be same as wrapper element's width");
 });
 
-
 asyncTest("Option: threshold #1 - when moved more than threshold pixels", function() {
 	// Given
-	var el = $("#mflick2").get(0),
+	var el = $("#mflick2")[0],
 		changedPanelNo = 0, panelNo;
 
-	this.inst = new eg.Flicking(el, {
+	var inst =this.inst = new eg.Flicking(el, {
 		circular : true,
 		threshold : 80
 	}).on({
-		"flick" : function(e) {
-			alert(1);
+		flickEnd : function(e) {
 			changedPanelNo = e.no;
 		}
 	})
 
 	panelNo = this.inst._conf.panel.no;
-console.log(el.childNodes);
+
 	// When
 	Simulator.gestures.pan(el, {
 		pos: [0, 0],
@@ -93,10 +93,10 @@ console.log(el.childNodes);
 		setTimeout(function() {
 			deepEqual(panelNo + 1, changedPanelNo, "Moved to next panel?");
 			start();
-		},700);
+		},1000);
     });
 });
-/*
+
 asyncTest("Option: threshold #2 - when moved less than threshold pixels", function() {
 	// Given
 	var el = $("#mflick2").get(0),
@@ -172,8 +172,7 @@ test("Method: getElement()", function() {
 	// When
 	// Then
 	ok(element.length, "The element was invoked correctly?");
-	deepEqual(element[0].style.transform.match(new RegExp(value)) + "", value, "Invoked element is placed in right position?");
-
+	deepEqual(element[0].style[transform].match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
 });
 
 test("Method: getNextElement()", function() {
@@ -183,12 +182,14 @@ test("Method: getNextElement()", function() {
 	});
 
 	var element = this.inst.getNextElement(),
-		rx = /\(-?(\d+)/;
+		rx = /\(-?(\d+)/,
+		currentTransform = (this.inst.getElement()[0].style[transform].match(rx) || [,])[1],
+		nextTransform = (element[0].style[transform].match(rx) || [,])[1];
 
 	// When
 	// Then
 	ok(element, "The element was invoked correctly?");
-	ok(this.inst.getElement()[0].style.transform.match(rx)[1] < element[0].style.transform.match(rx)[1], "Invoked element is placed next to the current element?");
+	ok(currentTransform < nextTransform, "Invoked element is placed next to the current element?");
 });
 
 test("Method: getNextIndex()", function() {
@@ -225,12 +226,14 @@ test("Method: getPrevElement()", function() {
 	});
 
 	var element = this.inst.getPrevElement(),
-		rx = /\(-?(\d+)/;
+		rx = /\(-?(\d+)/,
+		currentTransform = (this.inst.getElement()[0].style[transform].match(rx) || [,])[1],
+		prevTransform = (element[0].style[transform].match(rx) || [,])[1];
 
 	// When
 	// Then
 	ok(element, "The element was invoked correctly?");
-	ok(this.inst.getElement()[0].style.transform.match(rx)[1] > element[0].style.transform.match(rx)[1], "Invoked element is placed previous to the current element?");
+	ok(currentTransform > prevTransform, "Invoked element is placed previous to the current element?");
 });
 
 test("Method: getPrevIndex()", function() {
@@ -343,7 +346,7 @@ test("Method: next()", function() {
 
 	// When
 	// Then
-	deepEqual(element[0].style.transform.match(new RegExp(value)) + "", value, "Moved to next panel correctly?");
+	deepEqual(element[0].style[transform].match(RegExp(value)) + "", value, "Moved to next panel correctly?");
 	deepEqual(element[0], nextElement[0], "The next element is what expected?");
 });
 
@@ -361,7 +364,7 @@ test("Method: prev()", function() {
 		value = (this.inst._getBasePositionIndex() * 100) +"%";
 
 	// Then
-	deepEqual(element[0].style.transform.match(new RegExp(value)) + "", value, "Moved to previous panel correctly?");
+	deepEqual(element[0].style[transform].match(RegExp(value)) + "", value, "Moved to previous panel correctly?");
 	deepEqual(element.html(), prevElement.html(), "The previous element is what expected?");
 });
 
@@ -377,13 +380,13 @@ test("Method: moveTo()", function() {
 	this.inst.moveTo(count - 1);  // move to last
 
    	// Then
-   	equal(this.inst.getElement()[0].style.transform.match(new RegExp(value)) + "", value, "Moved to last panel?");
+   	equal(this.inst.getElement()[0].style[transform].match(RegExp(value)) + "", value, "Moved to last panel?");
 
 	// When
 	this.inst.moveTo(0);  // move to first
 
 	// Then
-	ok(this.inst.getElement()[0].style.transform.match(/0%/), "Moved to first panel?");
+	ok(this.inst.getElement()[0].style[transform].match(/0%/), "Moved to first panel?");
 
 	this.inst._movableCoord.destroy();
 
@@ -403,7 +406,7 @@ test("Method: moveTo()", function() {
 
 	// Then
 	equal(count - 1, this.inst._conf.panel.no, "Panel number indicate last panel number?");
-	deepEqual(this.inst.getElement()[0].style.transform.match(new RegExp(value)) + "", value, "Invoked element is placed in right position?");
+	deepEqual(this.inst.getElement()[0].style[transform].match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
 
 });
 
@@ -486,7 +489,7 @@ asyncTest("Custom events #2 - When stop event on beforeRestore", function() {
 		},
 		called = false;
 
-	this.inst = new eg.Flicking(el, { threshold : 100 }).on({
+	var inst = this.inst = new eg.Flicking(el, { threshold : 100 }).on({
 		touchStart : handler,
 		touchMove : handler,
 		touchEnd : handler,
@@ -534,7 +537,7 @@ asyncTest("Custom events #3 - When stop on touchMove event", function() {
 			touchStart : handler,
 			touchMove : function(e) {
 				e.stop();
-				called = !!inst._container[0].style.transform;
+				called = !!inst._container[0].style[transform];
 			},
 			touchEnd : handler,
 			flickStart : handler,
@@ -581,7 +584,7 @@ asyncTest("Custom events #5 - When stop on change event", function() {
 			flickStart : handler,
 			flick : function(e) {
 				e.stop();
-				translate = inst._container[0].style.transform.match(rx)[1];
+				translate = (inst._container[0].style[transform].match(rx) || [,])[1];
 			},
 			flickEnd : handler,
 			beforeRestore : handler,
@@ -599,9 +602,8 @@ asyncTest("Custom events #5 - When stop on change event", function() {
 	}, function() {
 		// Then
 		setTimeout(function() {
-			notEqual(translate, inst._container[0].style.transform.match(rx)[1], "The panel should not be moved during change");
+			notEqual(translate, (inst._container[0].style[transform].match(rx)||[,])[1], "The panel should not be moved during change");
 			start();
 		},800);
     });
 });
-*/

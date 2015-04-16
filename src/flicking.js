@@ -66,7 +66,7 @@
 					reached : false,	// if panel reached first/last panel
 					changed : false,	// if panel changed
 					animating : false,	// current animating status boolean
-					recycleCount : padding[0] + padding[1] > 0 ? 5 : 3,  // panel count for recycle use
+					minCount : padding[0] + padding[1] > 0 ? 5 : 3,  // minimum panel count
 				},
 				touch : {
 					holdPos : [ 0, 0 ],	// hold x,y coordinate
@@ -139,13 +139,13 @@
 			var df = $(document.createDocumentFragment()),
 				panel = this._conf.panel,
 				panelCount = panel.origCount,
-				nodeCountToClone = panel.recycleCount - panelCount,
+				nodeCountToClone = panel.minCount - panelCount,
 				list = panel.list,
 				dfChildren;
 
 			// if panels are given less than required when circular option is set, then clone node to apply circular mode
 			if(this.options.circular) {
-				if(panelCount < panel.recycleCount) {
+				if(panelCount < panel.minCount) {
 
 					while((dfChildren = df.children()).length < nodeCountToClone) {
 						df.append(list.clone());
@@ -341,7 +341,7 @@
 		 * 'release' event handler
 		 */
 		_releaseHandler : function(e) {
-			var touch = this._conf.touch,
+				var touch = this._conf.touch,
 				pos = e.destPos,
 				holdPos = touch.holdPos[0],
 				panelWidth = this._conf.panel.width;
@@ -460,7 +460,7 @@
 		/**
 		 * 'animationEnd' event handler
 		 */
-		_animationEndHandler : function() {
+		_animationEndHandler : function(e) {
 			// adjust panel coordination
 			var panel = this._conf.panel,
 				x = -panel.width * panel.index,
