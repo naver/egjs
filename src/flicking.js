@@ -15,13 +15,35 @@
 	 * @param {String} [options.prefix=eg-flick] Prefix string for flicking elements
 	 * @param {Number} [options.deceleration=0.0006] Deceleration this value can be altered to change the momentum animation duration. higher numbers make the animation shorter.
 	 * @param {Boolean} [options.circular=false] To make panels rotate infinitely
-	 * @param {Number} [options.previewPadding=0] Padding value to display previous and next panels
+	 * @param {Number|Array} [options.previewPadding=[0,0]] Padding value to display previous and next panels. If set array value the order is left to right
 	 * @param {Number} [options.threshold=40] Threshold pixels to move panels in prev/next direction
 	 * @param {Number} [options.duration=100] Duration time of panel change animation in milliseconds
 	 * @param {Function} [options.panelEffect=easing.easeInCubic] Function of the jQuery Easing Plugin
 	 * @param {Number} [options.defaultIndex=0] Default panel index to show in first time
 	 *
 	 * @see jQuery Easing Plugin {@link http://gsgd.co.uk/sandbox/jquery/easing}
+	 * @example
+	 	<!-- HTML -->
+		<div id="mflick">
+			<div>
+				<p>Layer 0</p>
+			</div>
+			<div>
+				<p>Layer 1</p>
+			</div>
+			<div>
+				<p>Layer 2</p>
+			</div>
+		</div>
+		<script>
+	 	var some = eg.Flicking("#mflick", {
+	 		circular : true,
+	 		threshold : 50
+	 	}).on({
+	 		beforeRestore : function(e) { ... },
+	 		flickStart : function(e) { ... }
+	 	);
+	 	</script>
 	 */
 	ns.Flicking = ns.Class.extend(ns.Component,{
 		/**
@@ -39,7 +61,7 @@
 				deceleration : 0.0006,		// deceleration value
 				horizontal : true,			// set if only horizontal move is permitted
 				circular : false,			// circular mode. In this mode at least 3 panels are required.
-				previewPadding : [ 0, 0 ],	// preview padding value. In this mode at least 5 panels are required.
+				previewPadding : [ 0, 0 ],	// preview padding value (left to right order). In this mode at least 5 panels are required.
 				threshold : 40,				// the distance pixel threshold value for change panel
 				duration : 100,				// duration ms for animation
 				panelEffect : $.easing.easeInCubic, // $.easing function for panel change animation
@@ -114,7 +136,7 @@
 			}
 
 			// create MovableCoord instance
-			this._movableCoord = new ns.MovableCoord({
+			this._mcInst = new ns.MovableCoord({
 				min : [ 0, 0 ],
 				max : [ panelWidth * (panelCount-1), 0 ],
 				bounce : [ 0, 50, 0, 50 ],
@@ -146,7 +168,6 @@
 			// if panels are given less than required when circular option is set, then clone node to apply circular mode
 			if(this.options.circular) {
 				if(panelCount < panel.minCount) {
-
 					while((dfChildren = df.children()).length < nodeCountToClone) {
 						df.append(list.clone());
 					}
@@ -200,7 +221,7 @@
 					coord = [ panel.width * index, 0];
 
 					this._setTranslate(-coord[0], coord[1]);
-					this._movableCoord.setTo(coord[0], coord[1]);
+					this._mcInst.setTo(coord[0], coord[1]);
 				}
 			}
 		},
@@ -227,7 +248,7 @@
 
 				// set index for base element's position
 				panel.index = this._getBasePositionIndex();
-				this._movableCoord.setTo(panel.width * panel.index, 0);
+				this._mcInst.setTo(panel.width * panel.index, 0);
 			}
 
 			// set each panel's position
@@ -263,7 +284,7 @@
 		 * Bind events
 		 */
 		_bindEvents : function() {
-			this._movableCoord.on({
+			this._mcInst.on({
 				hold : this._holdHandler.bind(this),
 				change : this._changeHandler.bind(this),
 				release : this._releaseHandler.bind(this),
@@ -353,8 +374,8 @@
 			touch.destPos[0] = pos[0] = Math.round(pos[0] / panelWidth) * panelWidth;
 
 			// when reach to the last panel
-			/*if(pos[0] >= this._movableCoord.options.max[0]) {
-				this._movableCoord.options.max[0] += panelWidth;
+			/*if(pos[0] >= this._mcInst.options.max[0]) {
+				this._mcInst.options.max[0] += panelWidth;
 			}*/
 
 			/**
@@ -460,7 +481,7 @@
 		/**
 		 * 'animationEnd' event handler
 		 */
-		_animationEndHandler : function(e) {
+		_animationEndHandler : function() {
 			// adjust panel coordination
 			var panel = this._conf.panel,
 				x = -panel.width * panel.index,
@@ -627,7 +648,7 @@
 				this._conf.touch.direction = direction;
 				this._setPanelNo(true);
 				panel.index = index;
-				this._movableCoord.setBy(panel.width * ( (direction === ns.DIRECTION_RIGHT || this.options.circular) ? 1 : -1 ), 0, duration);
+				this._mcInst.setBy(panel.width * ( (direction === ns.DIRECTION_RIGHT || this.options.circular) ? 1 : -1 ), 0, duration);
 				this._arrangePanels(true);
 			}
 		},
@@ -794,7 +815,7 @@
 
 			} else {
 				panel.index = no;
-				this._movableCoord.setTo(panel.width * indexToMove, 0, duration);
+				this._mcInst.setTo(panel.width * indexToMove, 0, duration);
 			}
 		},
 
@@ -813,7 +834,7 @@
 			panel.list.css("width", width);
 
 			// adjust the position of current panel
-			this._movableCoord.setTo(width * panel.index, 0).options.max = maxCoord;
+			this._mcInst.setTo(width * panel.index, 0).options.max = maxCoord;
 		}
 	});
 })(jQuery, eg);

@@ -3,7 +3,7 @@ module("Flicking component test", {
 		this.inst = null;
 	},
 	teardown : function() {
-		this.inst && this.inst._movableCoord.destroy();
+		this.inst && this.inst._mcInst.destroy();
 	}
 });
 
@@ -27,7 +27,7 @@ test("Option: circular", function() {
 
 	// Then
 	equal(this.inst.getElement().next().length, 0, "Is not circular?");
-	this.inst._movableCoord.destroy();
+	this.inst._mcInst.destroy();
 
 	// Given
 	this.inst = new eg.Flicking($("#mflick2"), { circular : true });
@@ -37,7 +37,7 @@ test("Option: circular", function() {
 
 	// Then
 	ok(this.inst.getNextElement(), "Is circular?");
-	this.inst._movableCoord.destroy();
+	this.inst._mcInst.destroy();
 
 	// Given
 	this.inst = new eg.Flicking($("#mflick2-1"), { circular : true });
@@ -286,7 +286,7 @@ test("Method: getTotalCount()", function() {
 	// When
 	// Then
 	deepEqual(counts, this.inst._container.children().length, "Return total panel elements count?");
-	this.inst._movableCoord.destroy();
+	this.inst._mcInst.destroy();
 
 	// When
 	this.inst = new eg.Flicking($("#mflick2-1"), {
@@ -388,7 +388,7 @@ test("Method: moveTo()", function() {
 	// Then
 	ok(this.inst.getElement()[0].style[transform].match(/0%/), "Moved to first panel?");
 
-	this.inst._movableCoord.destroy();
+	this.inst._mcInst.destroy();
 
 	// Given
 	this.inst = new eg.Flicking($("#mflick3"), {
@@ -420,7 +420,7 @@ test("Method: resize()", function() {
 	this.inst = new eg.Flicking(element);
 
 	panelWidth = this.inst._conf.panel.width;
-	coordMax = this.inst._movableCoord.options.max;
+	coordMax = this.inst._mcInst.options.max;
 
 	// When
 	element.width(width + 50);
@@ -433,7 +433,7 @@ test("Method: resize()", function() {
 
 	// Then
 	deepEqual(this.inst._conf.panel.width, element.width(), "The panel width should be same as current wrapper element");
-	notDeepEqual(coordMax, this.inst._movableCoord.options.max, "Should be updated MovableCoord's 'max' options value");
+	notDeepEqual(coordMax, this.inst._mcInst.options.max, "Should be updated MovableCoord's 'max' options value");
 });
 
 asyncTest("Custom events #1 - When changes panel normally", function() {
@@ -480,6 +480,7 @@ asyncTest("Custom events #2 - When stop event on beforeRestore", function() {
 	// Given
 	var el = $("#mflick1").get(0),
 		eventFired = [],
+		called = false,
 		handler = function(e) {
 			var type = e.eventType;
 
@@ -487,22 +488,22 @@ asyncTest("Custom events #2 - When stop event on beforeRestore", function() {
 				eventFired.push(type);
 			}
 		},
-		called = false;
-
-	var inst = this.inst = new eg.Flicking(el, { threshold : 100 }).on({
-		touchStart : handler,
-		touchMove : handler,
-		touchEnd : handler,
-		flickStart : handler,
-		flick : handler,
-		flickEnd : handler,
-		beforeRestore : function(e) {
-			e.stop();
-		},
-		restore : function(e) {
-			called = true;
-		}
-	});
+		inst = this.inst = new eg.Flicking(el, { threshold : 100 }).on({
+			touchStart : handler,
+			touchMove : handler,
+			touchEnd : handler,
+			flickStart : handler,
+			flick : handler,
+			flickEnd : handler,
+			beforeRestore : function(e) {
+				e.stop();
+			},
+			restore : function(e) {
+				called = true;
+			}
+		}),
+		rx = /\(-?(\d+)/,
+		currentTransform = (this.inst._container[0].style[transform].match(rx) || [,])[1];
 
 	// When
 	Simulator.gestures.pan(el, {
@@ -515,6 +516,7 @@ asyncTest("Custom events #2 - When stop event on beforeRestore", function() {
 		// Then
 		setTimeout(function() {
 			ok(!called, "restore event should not be triggered");
+			notEqual(currentTransform, (inst._container[0].style[transform].match(rx) || [,])[1], "the panel should not be restored");
 			start();
 		},1000);
     });
