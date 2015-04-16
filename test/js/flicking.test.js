@@ -1,4 +1,4 @@
-﻿module("Flicking component test", {
+module("Flicking component test", {
 	setup : function() {
 		this.inst = null;
 	},
