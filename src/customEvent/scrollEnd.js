@@ -35,7 +35,7 @@
     /**
      * Below iOS7 : Scroll event occurs once when the scroll is stopped
      * Since iOS8 : Scroll event occurs every time scroll
-     * android : Scroll event's occurs every time scroll
+     * android : Scroll event occurs every time scroll
      * Below android 2.x : Touch event-based processing
      * android & chrome : Scroll event occurs when the rotation
      * @ko
