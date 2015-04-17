@@ -87,7 +87,7 @@
 					reached : false,	// if panel reached first/last panel
 					changed : false,	// if panel changed
 					animating : false,	// current animating status boolean
-					minCount : padding[0] + padding[1] > 0 ? 5 : 3,  // minimum panel count
+					minCount : padding[0] + padding[1] > 0 ? 5 : 3  // minimum panel count
 				},
 				touch : {
 					holdPos : [ 0, 0 ],	// hold x,y coordinate
@@ -142,7 +142,7 @@
 				margin : [ 0, 0, 0, 0 ],
 				circular :  [ false, false, false, false ],
 				easing : this.options.panelEffect,
-				deceleration : this.options.deceleration,
+				deceleration : this.options.deceleration
 			}).bind(this._wrapper, {
 				scale : [ -1, 0 ],
 				direction : ns[ "DIRECTION_"+ (this.options.horizontal ? "HORIZONTAL" : "VERTICAL") ],
