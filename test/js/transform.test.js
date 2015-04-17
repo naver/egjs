@@ -1,6 +1,5 @@
 module("transform Test", {
 	setup : function() {
-
 	},
 	teardown : function() {
 	}
@@ -81,49 +80,6 @@ test("computeValue" , function() {
 	}
 });
 
-// test("interpolation" , function() {
-// 	// Given
-// 	// When
-// 	var value = {
-// 		"translate3d(20px, 30xp"
-// 	}
-// });
-
-
-// test("parse", function() {
-// 	// Given
-// 	var width = 200,
-// 		height = 100;
-// 		// styleTransform =
-
-
-
-// 	var propertyStr = {
-// 		"translate3d(10,20,3px)" : [ "translate3d" , [ "10", "20", "3px"] ],
-// 		"translate(10,20)" : [ "translate" , [ "10", "20"] ],
-// 		"translate(10px,20%)" : [ "translate" , [ "10px", "20%"] ],
-// 		"translateX(10)" : [ "translateX" , ["10"] ],
-// 		"translateX(+=10)"  : [ "translateX" , ["+=10"] ],
-// 		"translateY(10px)"  : [ "translateY" , ["10px"] ],
-// 		"translateY(-=10px)"  : [ "translateY" , ["-=10px"] ],
-// 		"translateZ(10%)"  : [ "translateZ" , ["10%"] ],
-// 		"translateZ(+=10%)"  : [ "translateZ" , ["+=10%"] ],
-// 		"translateZ(-=10%)"  :  [ "translateZ" , ["-=10%"] ],
-// 		"matrix(1, 0, 0, 1, 0, 20)"  :  [ "matrix" , [ "1", "0", "0", "1", "0", "20" ] ],
-// 		"rotateX(0deg)" : [ "rotateX" , ["0deg"] ],
-// 		"perspective( 10 )" : [ "perspective" , ["10"] ],
-// 		"matrix3d(1, 0, 0, 1, 0, 20, 10, 1, 0, 0, 0, 1, 0, 1, 0, 1)" :[ "matrix3d" , [ "1", "0", "0", "1", "0", "20", "10", "1", "0", "0", "0", "1", "0", "1", "0", "1" ] ],
-// 	};
-
-// 	//When
-// 	for( var p in propertyStr) {
-// 		// Then
-// 		deepEqual(__transform.parseStyle(p), propertyStr[p], p);
-// 	};
-// });
-
-
-
 test("toMatrix" , function() {
 	// Given
 	// When
@@ -168,8 +124,8 @@ test("toMatrix3d" , function() {
 
 test("unMatrix" , function() {
 	// Given
-	var $box = $("#box"),
-		matrix;
+	var matrix,
+		$box = $("#box");
 
 	// When
 	var value = [
@@ -219,79 +175,100 @@ test("unMatrix" , function() {
 			}
 		}
 	];
-
-
 	// Then
 	value.forEach(function(v) {
 		// When
 		$box.css("transform", v.input);
-		console.log($box.css("transform"));
 		// Then
 		deepEqual(__transform.unMatrix(__transform.parseStyle($box.css("transform"))), v.output, v.input);
 	});
 });
 
 
-
-
 test("parse", function() {
 	// Given
+	var width = 100;
+	var height = 200;
 	var propertyStr = {
-		"translate(150px,120px) translateY(0px) rotate(20deg) scaleX(2) scaleY(4.2)" : [ "translate3d" , [ "10", "20", "3px"] ]
+		//2d
+		"translate(150px,120px) rotate(20deg) scale(2)" : {
+			currentStyle : {rotate: 0, scaleX: 1, scaleY: 1, translateX: 0, translateY: 0},
+			output : "translateX(150px) translateY(120px) rotate(20deg) scaleX(2) scaleY(2)"
+		},
 
-		// "translate(10,20)" : [ "translate" , [ "10", "20"] ],
-		// "translate(10px,20%)" : [ "translate" , [ "10px", "20%"] ],
-		// "translateX(10)" : [ "translateX" , ["10"] ],
-		// "translateX(+=10)"  : [ "translateX" , ["+=10"] ],
-		// "translateY(10px)"  : [ "translateY" , ["10px"] ],
-		// "translateY(-=10px)"  : [ "translateY" , ["-=10px"] ],
-		// "translateZ(10%)"  : [ "translateZ" , ["10%"] ],
-		// "translateZ(+=10%)"  : [ "translateZ" , ["+=10%"] ],
-		// "translateZ(-=10%)"  :  [ "translateZ" , ["-=10%"] ],
-		// "matrix(1, 0, 0, 1, 0, 20)"  :  [ "matrix" , [ "1", "0", "0", "1", "0", "20" ] ],
-		// "rotateX(0deg)" : [ "rotateX" , ["0deg"] ],
-		// "matrix3d(1, 0, 0, 1, 0, 20, 10, 1, 0, 0, 0, 1, 0, 1, 0, 1)" :[ "matrix3d" , [ "1", "0", "0", "1", "0", "20", "10", "1", "0", "0", "0", "1", "0", "1", "0", "1" ] ],
+		//2d
+		"translate(150px,120px) rotate(20deg) scale(2,4.2)" : {
+			currentStyle : {rotate: 0, scaleX: 1, scaleY: 1, translateX: 0, translateY: 0},
+			output : "translateX(150px) translateY(120px) rotate(20deg) scaleX(2) scaleY(4.2)"
+		},
+		// 2d
+		"translate(100%,50%) rotate(+=20deg) scaleX(1.2) scaleY(4.2)" : {
+			currentStyle : {rotate: 20, scaleX: 1, scaleY: 1, translateX: 0, translateY: 0},
+			output : "translateX(100px) translateY(100px) rotate(40deg) scaleX(1.2) scaleY(4.2)"
+		},
+		// 2d
+		"translate(100%,50%) rotate(+=20deg)" : {
+			currentStyle : {rotate: 20, scaleX: 1, scaleY: 1, translateX: 0, translateY: 0},
+			output : "translateX(100px) translateY(100px) rotate(40deg) scaleX(1) scaleY(1)"
+		},
+		// 2d
+		"translate(+=100%,-=50%) rotate(-=20deg)" : {
+			currentStyle : {rotate: 20, scaleX: 1, scaleY: 1, translateX: 200, translateY: 0},
+			output : "translateX(300px) translateY(-100px) rotate(0deg) scaleX(1) scaleY(1)"
+		},
+
+		// 3d
+		"translateZ(0px) rotate(20deg) scaleX(2) scaleY(4.2)" : {
+			currentStyle : {rotate: 0, scaleX: 1, scaleY: 1,scaleZ: 1, translateX: 0, translateY: 0, translateZ: 0 },
+			output : "translateZ(0px) rotate(20deg) scaleX(2) scaleY(4.2) scaleZ(1) translateX(0px) translateY(0px)"
+		},
+
+		// 3d
+		"translateZ(0px) rotate(20deg) scaleZ(1)" : {
+			currentStyle : {rotate: 0, scaleX: 1, scaleY: 1,scaleZ: 1, translateX: 0, translateY: 0, translateZ: 0 },
+			output : "translateZ(0px) rotate(20deg) scaleZ(1) scaleX(1) scaleY(1) translateX(0px) translateY(0px)"
+		},
+
+		// 3d
+		"translate3d(150px,+=10%,-=20px) rotate(+=20deg) scale3d(+=2, 4.2, -=-1)" : {
+			currentStyle : {rotate: 30, scaleX: 2, scaleY: 1,scaleZ: 2, translateX: 0, translateY: 120, translateZ: 10 },
+			output : "translateZ(-10px) translateX(150px) translateY(140px) rotate(50deg) scaleZ(3) scaleX(4) scaleY(4.2)"
+		},
+
+		// 3d
+		"translate3d(150px,+=10%,-=20px) rotate(+=20deg) scale(+=2, 4.2)" : {
+			currentStyle : {rotate: 30, scaleX: 2, scaleY: 1,scaleZ: 2, translateX: 0, translateY: 120, translateZ: 10 },
+			output : "translateZ(-10px) translateX(150px) translateY(140px) rotate(50deg) scaleX(4) scaleY(4.2) scaleZ(2)"
+		},
+
+		// 3d
+		"translate3d(150px,+=10%,-=20px) rotate(+=20deg) scale(2)" : {
+			currentStyle : {rotate: 30, scaleX: 2, scaleY: 1,scaleZ: 2, translateX: 0, translateY: 120, translateZ: 10 },
+			output : "translateZ(-10px) translateX(150px) translateY(140px) rotate(50deg) scaleX(2) scaleY(2) scaleZ(2)"
+		},
+
+		// 3d
+		"rotate(20deg) scaleZ(1)" : {
+			currentStyle : {rotate: 0, scaleX: 1, scaleY: 1,scaleZ: 1, translateX: 0, translateY: 0, translateZ: 0 },
+			output : "rotate(20deg) scaleZ(1) scaleX(1) scaleY(1) translateX(0px) translateY(0px) translateZ(0px)"
+		},
+
+		// matrix
+		"matrix(1.000000, 0.000000, 0.000000, 1.000000, 20.000000, 29.000000)" : {
+			currentStyle : {rotate: 0, scaleX: 1, scaleY: 1, translateX: 0, translateY: 0},
+			output : "matrix(1.000000, 0.000000, 0.000000, 1.000000, 20.000000, 29.000000)"
+		},
+
+		// matrix-3d
+		"matrix3d(1, 0, 0, 1, 0, 20, 10, 1, 0, 0, 0, 1, 0, 1, 0, 1)" : {
+			currentStyle : {rotate: 0, scaleX: 1, scaleY: 1, translateX: 0, translateY: 0},
+			output : "matrix3d(1, 0, 0, 1, 0, 20, 10, 1, 0, 0, 0, 1, 0, 1, 0, 1)"
+		}
 	};
 
-	// //When
-	// for( var p in propertyStr) {
-	// 	// Then
-	// 	deepEqual(__transform.parseStyle(p), propertyStr[p], p);
-	// };
+	//When
+	for( var p in propertyStr) {
+		// Then
+		deepEqual(__transform.parse(p, width, height, propertyStr[p].currentStyle), propertyStr[p].output, p);
+	};
 });
-
-
-// test("parse ", function() {
-// 	ok(true, "---");
-// // 	var fn = __transform.rateFn(  $("#box"), $("#box").css("transform"),"translate3d(20px, +=30%, 0) rotateX(40deg) perspective( 10 ) scale(1)");
-// // 	console.log("1",fn(0.5));
-// // 	console.log(fn(1));
-// });
-
-
-// test("---", function() {
-// 	// When
-// 	transformStr = "translate3d(1,2,3) rotateX(0deg)";
-// 	// // Then
-// 	__transform.parse(transformStr);
-
-// 	transformStr = "matrix(1, 0, 0, 1, 0, 20) translate(0%,10px) rotateX(0deg)";
-// 	__transform.parse(transformStr);
-
-// 	// transformStr = "translate3d(0,0,0) rotateX(0deg) matrix(1, 0, 0, 1, 0, 20)";
-// 	// __transform.parse(transformStr);
-
-// 	transformStr = "translateY(0) translateX(0) translateZ(20)";
-// 	__transform.parse(transformStr);
-
-
-// 	// transformStr = "matrix(1, 0, 0, 1, 0, 20) translate3d(0,+=10,0) rotateX(+=10deg)";
-// 	// __transform.parse(transformStr);
-
-// 	// transformStr = "translate3d(0,+=10,0) rotateX(+=10deg)";
-// 	// __transform.parse(transformStr);
-
-// 	//
-// 	// Then
-// 	ok("eg" in window, "namespace is window.eg");
-// });

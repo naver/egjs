@@ -1,5 +1,111 @@
 var __transform = (function($, global) {
 	"use strict";
+    /**
+     * Extends jQuery animate in order to use 'transform' property.
+     * @ko jQuery animate 사용시 transform을 사용할 수 있도록 확장한 animate 메소드
+     * @name jQuery.extention#animate
+     * @method
+     * @param {Object} properties An object of CSS properties and values that the animation will move toward.
+     * @param {Number|String} [duration=4000] A string or number determining how long the animation will run.
+     * @param {String} [easing="swing"] A string indicating which easing function to use for the transition.
+     * @param {Function} [complete] A function to call once the animation is complete.
+     *<br>
+     * <table>
+ <thead>
+  <tr>
+   <th>property</th>
+   <th>support unit</th>
+   <th>relative function</th>
+   <th>remark</th>
+  </tr>
+ </thead>
+ <tbody>
+  <tr>
+   <td>translate(x,y)</td>
+   <td>px, %, none</td>
+   <td>+=,-=</td>
+   <td></td>
+  </tr>
+  <tr>
+   <td>translateX(x)</td>
+   <td>px, %, none</td>
+   <td>+=,-=</td>
+   <td></td>
+  </tr>
+  <tr>
+   <td>translateY(y)</td>
+   <td>px, %, none</td>
+   <td>+=,-=</td>
+   <td></td>
+  </tr>
+  <tr>
+   <td>translateZ(z)</td>
+   <td>px, none</td>
+   <td>+=,-=</td>
+   <td></td>
+  </tr>
+  <tr>
+   <td>translate3d(x,y,z)</td>
+   <td>px, %, none</td>
+   <td>+=,-=</td>
+   <td>z값에 대해서는 %단위 미지원</td>
+  </tr>
+  <tr>
+   <td>scaleX(x)</td>
+   <td>none</td>
+   <td>+=,-=</td>
+   <td></td>
+  </tr>
+  <tr>
+   <td>scaleY(y)</td>
+   <td>none</td>
+   <td>+=,-=</td>
+   <td></td>
+  </tr>
+  <tr>
+   <td>scaleZ(z)</td>
+   <td>none</td>
+   <td>+=,-=</td>
+   <td></td>
+  </tr>
+  <tr>
+   <td>scale(x,y)</td>
+   <td>none</td>
+   <td>+=,-=</td>
+   <td></td>
+  </tr>
+  <tr>
+   <td>scale3d(x,y,z)</td>
+   <td>none</td>
+   <td>+=,-=</td>
+   <td></td>
+  </tr>
+  <tr>
+   <td>rotate(angle)</td>
+   <td>deg, none</td>
+   <td>+=,-=</td>
+   <td></td>
+  </tr>
+  <tr>
+   <td>matrix(a,b,c,d,x,y)</td>
+   <td>none</td>
+   <td></td>
+   <td></td>
+  </tr>
+  <tr>
+   <td>matrix3d(a1,b1,c1,d1, a2, b2, c2, d2, a3, b3, c3, d3, a4, b4, c4, d4)</td>
+   <td>none</td>
+   <td></td>
+   <td></td>
+  </tr>
+ </tbody>
+</table>
+     * @example
+     * $("#box").animate({"transform" : "translate3d(150px,100px,0px) rotate(20deg) scaleX(1)"} , 3000)
+     * .animate({"transform" : "translate3d(150px,+=10%,-=20px) rotate(+=20deg) scale3d(+=2, 4.2, -=-1)"} , 3000);
+     * @see {@link http://api.jquery.com/animate/}
+     */
+
 	var CSSMatrix = global.WebKitCSSMatrix || global.MSCSSMatrix || global.OCSSMatrix || global.MozCSSMatrix || global.CSSMatrix,
 		RADIAN = 180 / Math.PI;
 
@@ -16,7 +122,7 @@ var __transform = (function($, global) {
 		}
 		result = divideTransform(properties);
 		for(var p in styleTransform) {
-			if( typeof result[p] === "undefined") {
+			if( styleTransform.hasOwnProperty(p) && typeof result[p] === "undefined") {
 				result[p] = styleTransform[p];
 			}
 		}
@@ -26,19 +132,15 @@ var __transform = (function($, global) {
 
 	// @return function
 	function rateFn(element, startTf, endTf) {
-		console.info("parsing...: " , startTf, "->", endTf);
 		var $el = $(element),
 			needToConvert = /%/.test(startTf) || /%/.test(endTf),
 			width = needToConvert ? $el.width() : 0,
 			height = needToConvert ? $el.height() : 0,
 			styleTransform = unMatrix(toMatrix($el.css("transform"))),
-			start = parse(startTf, width, height, styleTransform),
-			end = parse(endTf, width, height, styleTransform);
-		// console.error(start, "->");
-		// console.error(end);
-		start = toMatrix(start);
-		end = toMatrix(end);
-		if (/3d|Z|perspective/.test(startTf + endTf) || start[0] !== end[0]) {
+			start = toMatrix(parse(startTf, width, height, styleTransform)),
+			end = toMatrix(parse(endTf, width, height, styleTransform));
+
+		if (/3d|Z/.test(startTf + endTf) || start[0] !== end[0]) {
 			start = toMatrix3d(start);
 			end = toMatrix3d(end);
 		}
@@ -58,18 +160,20 @@ var __transform = (function($, global) {
 	}
 
 	function data2String(property) {
-		var name, unit,html = [];
+		var name,html = [];
 		if(Array.isArray(property)) {
 			name = property[0];
-			unit = /translate/.test(name) ? "px" : (/rotate/.test(name) ? "deg" : "");
-			return name + "(" + property[1].join(unit + ",") + unit + ")";
+			return name + "(" + property[1].join(unit(name) + ",") + unit(name) + ")";
 		} else {
 			for(name in property) {
-				unit = /translate/.test(name) ? "px" : (/rotate/.test(name) ? "deg" : "");
-				html.push(name + "(" +  property[name] + unit + ")");
+				html.push(name + "(" +  property[name] + unit(name) + ")");
 			}
 			return html.join(" ");
 		}
+	}
+
+	function unit(name) {
+		return /translate/.test(name) ? "px" : (/rotate/.test(name) ? "deg" : "");
 	}
 
 	// Object {translateZ: 0, translateX: 20, translateY: 15, rotate: 0, perspective: 10}
@@ -79,6 +183,7 @@ var __transform = (function($, global) {
 			val = p[1];
 			switch(name = p[0]) {
 				case "translate3d":
+				case "scale3d" :
 					name = name.replace(/3d$/, "");
 					result[name + "Z"] = val[2];
 				case "translate":
@@ -119,36 +224,44 @@ var __transform = (function($, global) {
 	function interpolation(parsedProperty, width, height, styleTransform) {
 		width = width || 0;
 		height = height || 0;
-		var name =parsedProperty[0];
-		var options = [];
-		var opt = {};
+		var name =parsedProperty[0],
+			m,
+			options = [],
+			opt = {};
 
-		// prepare % and relative position (translate)
-		if(/translate/.test(name)) {
-			var m = name.match(/translate([XYZ])/);
-			if(m && m.length > 1) {
-				switch(m[1]) {
-					case "X" : opt.size=width; break;
-					case "Y" : opt.size=height; break;
-					case "Z" : opt.size=0; break;
-				}
-				styleTransform  && (opt.baseVal = styleTransform[name] || 0);
-				options.push(opt);
-			} else { // translate of traslate3d
-				options = [ { size : width}, {size: height}, {size: 0} ];
-				if(styleTransform) {
-					options[0].baseVal = styleTransform["translateX"] || 0;
-					options[1].baseVal = styleTransform["translateY"] || 0;
-					options[2].baseVal = styleTransform["translateZ"] || 0;
-				}
+		if( (m = name.match(/(rotate|translate|scale)([XYZ]|3d)?/)) && m.length > 1) {
+			switch(m[1]) {
+				case "translate" :
+				case "scale" :
+					if(/[XYZ]/.test(m[2])) {
+						if(/translate/.test(m[1])) {
+							switch(m[2]) {
+								case "X" : opt.size=width; break;
+								case "Y" : opt.size=height; break;
+								case "Z" : opt.size=0; break;
+							}
+						}
+						styleTransform  && (opt.baseVal = styleTransform[name] || 0);
+						options.push(opt);
+					} else {
+						(/scale/.test(m[1])) && (width = height = 0);
+						options = [ { size : width}, {size: height}, {size: 0} ];
+						if(styleTransform) {
+							options[0].baseVal = styleTransform[m[1] + "X"] || 0;
+							options[1].baseVal = styleTransform[m[1] + "Y"] || 0;
+							options[2].baseVal = styleTransform[m[1] + "Z"] || 0;
+						}
+					}
+					break;
+				case "rotate" :
+					!m[2] && styleTransform  && (opt.baseVal = styleTransform[name] || 0);
+					options.push(opt);
+					break;
 			}
-		} else if(styleTransform && /scale[^Z3]|rotate[^XYZ3]/.test(name)) {
-			// prepare relative position (scale, scaleX, scaleY, rotate)
-			opt.baseVal = styleTransform[name];
+			parsedProperty[1].forEach(function(v,i,a) {
+				a[i] = computeValue(v, options[i]);
+			});
 		}
-		parsedProperty[1].forEach(function(v,i,a) {
-			a[i] = computeValue(v, options[i]);
-		});
 		return parsedProperty;
 	}
 
@@ -202,8 +315,6 @@ var __transform = (function($, global) {
 			sx, sy, sz;
 		if(/matrix3d/.test(matrix[0])) {
 			sx = Math.sqrt(m0*m0 + m1*m1 + m2*m2);
-
-
 			sy = Math.sqrt(m[4]*m[4] + m[5]*m[5] + m[6]*m[6]);
 			sz = Math.sqrt(m[8]*m[8] + m[9]*m[9] + m[10]*m[10]);
 			// rx = Math.atan2(-m[9]/sz, m[10]/sz) / RADIAN;
@@ -214,7 +325,6 @@ var __transform = (function($, global) {
 			// 	ry = m[4] * -Math.PI/2;
 			// 	rz = m[4] * Math.atan2(m[6]/sy, m[5]/sy) / RADIAN;
 			// }
-			// @todo 3d일 경우, rotate 반환값 찾기???
 			return {
 				translateX: parseFloat( m[12] ),
 				translateY: parseFloat( m[13] ),
@@ -259,7 +369,6 @@ var __transform = (function($, global) {
 		var elem = fx.elem;
 		fx.$el = fx.$el || $(elem);
 		fx._rateFn = fx._rateFn || rateFn(elem, fx.start, fx.end);
-		// console.log(fx._rateFn(fx.pos));
 		fx.$el.css("transform", fx._rateFn(fx.pos));
 	};
 
@@ -270,11 +379,9 @@ var __transform = (function($, global) {
 		rateFn : rateFn,
 		toMatrix : toMatrix,
 		unMatrix : unMatrix,
-		toMatrix3d : toMatrix3d,
-		divideTransform : divideTransform,
-		interpolation : interpolation
+		toMatrix3d : toMatrix3d
 	};
-	// @testcode parse,parseStyle,computeValue,rateFn,toMatrix,unMatrix,toMatrix3d,divideTransform,interpolation
+	// @testcode parse,parseStyle,computeValue,rateFn,toMatrix,unMatrix,toMatrix3d
 })(jQuery, window);
 
 __transform;

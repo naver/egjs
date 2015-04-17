@@ -1,6 +1,6 @@
 (function($, ns) {
 	"use strict";
-	
+
 	/**
 	 * It check element is visible within the specific element or viewport, regardless of the scroll position
 	 * @ko scroll위치와 상관없이 특정 엘리먼트나 viewport 안에 엘리먼트가 보이는지 확인한다.
@@ -37,7 +37,7 @@
 				dummy.innerHTML = "<span class='dummy'></span>";
 				return dummies.length === 1;
 			})();
-			
+
 			this.refresh();
 		},
 		/**
@@ -86,16 +86,16 @@
 		},
 		_reviseElements : function(target,i){
 			if(this._supportElementsByClassName){
-				this._reviseElements = function(target,i){return true;}
+				this._reviseElements = function(){return true;};
 			}else{
 				this._reviseElements = function(target,i){
 					if (!$(target).hasClass(this.options.targetClass)) {
 						target.__VISIBLE__ = null;
 						this._targets.splice(i, 1);
 						return false;
-					}		
+					}
 					return true;
-				}
+				};
 			}
 			return this._reviseElements(target,i);
 		},
@@ -129,9 +129,9 @@
 			                targetArea.bottom < area.top || area.bottom < targetArea.top ||
 			                targetArea.right < area.left || area.right < targetArea.left
 			            );
-					(before !== after) && (after ? visibles : invisibles).unshift(target);	
+					(before !== after) && (after ? visibles : invisibles).unshift(target);
 				}
-				
+
 			}
 
 
