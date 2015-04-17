@@ -1,14 +1,13 @@
 // redefine requestAnimationFrame and cancelAnimationFrame
 
 // @todo change to jindo 'timer.js'
-
-	/**
-     * @namespace eg.polyfill.window
+    /**
+     * @namespace window
      */
     /**
      * requestAnimationFrame polyfill
      * @ko requestAnimationFrame 폴리필
-     * @name eg.polyfill.window.requestAnimationFrame
+     * @name window.requestAnimationFrame
      * @method
      * @return {Number} key
      * @see  https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame

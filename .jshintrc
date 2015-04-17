@@ -25,5 +25,6 @@
         "navigator" : true,
         "requestAnimationFrame" : true,
         "cancelAnimationFrame" : true
-    }
+    },
+    "-W100": true  // "This character may get silently deleted by one or more browsers."
 }

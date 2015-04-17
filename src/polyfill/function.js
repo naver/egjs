@@ -1,12 +1,11 @@
-
-if (!Function.prototype.bind) {
 	/**
-     * @namespace eg.polyfill.Function
+     * @namespace Function
      */
+if (!Function.prototype.bind) {
     /**
      * Function bind polyfill
      * @ko Function bind 폴리필
-     * @name eg.polyfill.Function#bind
+     * @name Function#bind
      * @method
      * @param {Variable} arg
      * @return {Function} bound function

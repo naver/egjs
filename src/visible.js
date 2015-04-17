@@ -35,8 +35,9 @@
 				}
 				dummies = dummy.getElementsByClassName("dummy");
 				dummy.innerHTML = "<span class='dummy'></span>";
-				return dummies === 1;
+				return dummies.length === 1;
 			})();
+			
 			this.refresh();
 		},
 		/**
@@ -83,6 +84,21 @@
 			}
 			return this;
 		},
+		_reviseElements : function(target,i){
+			if(this._supportElementsByClassName){
+				this._reviseElements = function(target,i){return true;}
+			}else{
+				this._reviseElements = function(target,i){
+					if (!$(target).hasClass(this.options.targetClass)) {
+						target.__VISIBLE__ = null;
+						this._targets.splice(i, 1);
+						return false;
+					}		
+					return true;
+				}
+			}
+			return this._reviseElements(target,i);
+		},
 
 		_check : function() {
 			var expandSize = parseInt(this.options.expandSize,10),
@@ -107,19 +123,14 @@
 
 			for(var i= this._targets.length-1, target, targetArea, after, before; target=this._targets[i] ; i--) {
 				targetArea=target.getBoundingClientRect();
-
-				if (!$(target).hasClass(this.options.targetClass)) {
-					target.__VISIBLE__ = null;
-					this._targets.splice(i, 1);
-					continue;
+				if(this._reviseElements(target,i)){
+					before = !!target.__VISIBLE__;
+					target.__VISIBLE__ = after = !(
+			                targetArea.bottom < area.top || area.bottom < targetArea.top ||
+			                targetArea.right < area.left || area.right < targetArea.left
+			            );
+					(before !== after) && (after ? visibles : invisibles).unshift(target);	
 				}
-
-				before = !!target.__VISIBLE__;
-				target.__VISIBLE__ = after = !(
-		                targetArea.bottom < area.top || area.bottom < targetArea.top ||
-		                targetArea.right < area.left || area.right < targetArea.left
-		            );
-				(before !== after) && (after ? visibles : invisibles).unshift(target);	
 				
 			}
 

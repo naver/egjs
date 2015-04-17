@@ -1,13 +1,12 @@
 // Production steps of ECMA-262, Edition 5, 15.4.4.18
 // Reference: http://es5.github.io/#x15.4.4.18
-
     /**
-     * @namespace eg.polyfill.Array
+     * @namespace Array
      */
     /**
      * Array forEach polyfill
      * @ko Array forEach 폴리필
-     * @name eg.polyfill.Array#forEach
+     * @name Array#forEach
      * @method
      * @param {Function} callback
      * @param {This} thisArg
@@ -68,7 +67,7 @@ if (!Array.prototype.forEach) {
     /**
      * Array isArray polyfill
      * @ko Array.isArray 폴리필
-     * @name eg.polyfill.Array.isArray
+     * @name Array.isArray
      * @method
      * @param {Variable} arg
      * @return {Boolean} result
