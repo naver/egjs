@@ -1,5 +1,5 @@
-(function($, ns, global, doc){
-//function __scrollEnd($, ns, global, doc){
+// (function($, ns, global, doc){
+function __scrollEnd($, ns, global, doc){
     "use strict";
     /**
      * Support scrollEnd event in jQuery
@@ -164,15 +164,15 @@
     }
 
     // @qunit getDeviceType, CHROME, TIMERBASE, TOUCHBASE, SCROLLBASE
-//    return {
-//        getDeviceType : getDeviceType,
-//        CHROME : CHROME,
-//        TIMERBASE : TIMERBASE,
-//        TOUCHBASE : TOUCHBASE,
-//        SCROLLBASE : SCROLLBASE
-//    };
-//}
-//    if(!eg.debug){
-//        __scrollEnd(jQuery, eg, window, document);
-//    }
-})(jQuery, eg, window, document);
+   return {
+       getDeviceType : getDeviceType,
+       CHROME : CHROME,
+       TIMERBASE : TIMERBASE,
+       TOUCHBASE : TOUCHBASE,
+       SCROLLBASE : SCROLLBASE
+   };
+}
+if(!eg.debug){
+   __scrollEnd(jQuery, eg, window, document);
+}
+// })(jQuery, eg, window, document);

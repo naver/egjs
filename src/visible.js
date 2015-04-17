@@ -86,7 +86,7 @@
 		},
 		_reviseElements : function(target,i){
 			if(this._supportElementsByClassName){
-				this._reviseElements = function(target,i){return true;}
+				this._reviseElements = function(){return true;};
 			}else{
 				this._reviseElements = function(target,i){
 					if (!$(target).hasClass(this.options.targetClass)) {
@@ -95,7 +95,7 @@
 						return false;
 					}		
 					return true;
-				}
+				};
 			}
 			return this._reviseElements(target,i);
 		},
