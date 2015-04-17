@@ -33,8 +33,8 @@
     };
 
     /**
-     * Below iOS7 : Scroll event's occurs once when the scroll is stopped
-     * Since iOS8 : Scroll event's occurs every time scroll
+     * Below iOS7 : Scroll event occurs once when the scroll is stopped
+     * Since iOS8 : Scroll event occurs every time scroll
      * android : Scroll event's occurs every time scroll
      * Below android 2.x : Touch event-based processing
      * android & chrome : Scroll event occurs when the rotation
@@ -47,21 +47,14 @@
      */
 
     function getDeviceType(){
-        var retValue = SCROLLBASE;
-        var osInfo = ns.agent.os;
-        var browserInfo = ns.agent.browser;
+        var retValue = SCROLLBASE,
+            osInfo = ns.agent.os,
+            browserInfo = ns.agent.browser,
+            version = parseInt(osInfo.version, 10);
 
         if(osInfo.name === "android"){
-            if(browserInfo.name === "chrome") {
-                retValue = CHROME;
-            } else {
-                if(parseInt(osInfo.version, 10) >= 3) {
-                    retValue = TIMERBASE;
-                } else {
-                    retValue = TOUCHBASE;
-                }
-            }
-        }else if((osInfo.name === "window" || osInfo.name === "ios") && parseInt(osInfo.version ,10) >= 8){
+            retValue = browserInfo.name === "chrome" ? CHROME : (version >= 3 ? TIMERBASE : TOUCHBASE);
+        }else if(/^(?:window|ios)$/.test(osInfo.name) && version >= 8){
                  retValue = TIMERBASE;
         }
 
@@ -70,7 +63,8 @@
 
     function attachEvent(){
 
-        $(global).on("scroll" , scroll);
+        var winEvent = $(global).on("scroll" , scroll);
+
         if(deviceType === TOUCHBASE){
             $(doc).on({
                 "touchstart" : touchStart,
@@ -80,7 +74,7 @@
         }
 
         if(deviceType === CHROME) {
-            $(global).on("orientationchange" , function(){
+            winEvent.on("orientationchange" , function(){
                 rotateFlag = true;
             });
         }
@@ -131,8 +125,8 @@
     }
 
     function stopObserver(){
-        clearInterval(observerInterval);
-        observerInterval = 0;
+        observerInterval && clearInterval(observerInterval);
+        observerInterval = null;
     }
 
     function observe(){
@@ -177,9 +171,8 @@
 //        TOUCHBASE : TOUCHBASE,
 //        SCROLLBASE : SCROLLBASE
 //    };
-}
-
-//if(!eg.debug){
-//    __scrollEnd(jQuery, eg, window, document);
 //}
+//    if(!eg.debug){
+//        __scrollEnd(jQuery, eg, window, document);
+//    }
 })(jQuery, eg, window, document);
