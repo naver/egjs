@@ -157,21 +157,22 @@
 		 * @return {Boolean} true : added clone node, false : not added
 		 */
 		_addClonePanels : function() {
-			var df = $(document.createDocumentFragment()),
-				panel = this._conf.panel,
+			var panel = this._conf.panel,
 				panelCount = panel.origCount,
-				nodeCountToClone = panel.minCount - panelCount,
+				cloneCount = panel.minCount - panelCount,
 				list = panel.list,
-				dfChildren;
+				cloneNodes;
 
 			// if panels are given less than required when circular option is set, then clone node to apply circular mode
 			if(this.options.circular) {
 				if(panelCount < panel.minCount) {
-					while((dfChildren = df.children()).length < nodeCountToClone) {
-						df.append(list.clone());
+					cloneNodes = list.clone();
+
+					while(cloneNodes.size() < cloneCount) {
+						cloneNodes = cloneNodes.add(list.clone());
 					}
 
-					dfChildren.length && this._container.append(dfChildren);
+					this._container.append(cloneNodes);
 				}
 
 				return true;
