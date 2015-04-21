@@ -22,7 +22,8 @@ function __rotate($, ns, doc, global){
     var beforeScreenWidth = -1,
         beforeVertical = null,
         rotateTimer = null,
-        isMobile = /android|ios/.test(ns.agent.os.name);
+        agent = ns.agent(),
+        isMobile = /android|ios/.test(agent.os.name);
 
     /*
      * This orientationChange method is return event name for bind orientationChange event.
@@ -39,7 +40,7 @@ function __rotate($, ns, doc, global){
          * In app bug
          * If fire orientationChange in app then change width, height. so delay 200ms using setTimeout.
          */
-        if( (ns.agent.os.name === "android" && ns.agent.os.version === "2.1") ) {//|| htInfo.galaxyTab2)
+        if( (agent.os.name === "android" && agent.os.version === "2.1") ) {//|| htInfo.galaxyTab2)
             type = "resize";
         }else{
             type = "onorientationchange" in global ? "orientationchange" : "resize";
@@ -113,7 +114,7 @@ function __rotate($, ns, doc, global){
             }, 0);
         } else {
             delay = 300;
-            if(ns.agent.os.name === "android") {
+            if(agent.os.name === "android") {
                 screenWidth = doc.documentElement.clientWidth;
                 if (e.type === "orientationchange" && screenWidth === beforeScreenWidth) {
                     global.setTimeout(function(){

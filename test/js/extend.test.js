@@ -1,10 +1,11 @@
 module("extend Test", {
 	setup : function() {
+		this.agent = eg.agent;
 		this.isHWAccelerable = eg.isHWAccelerable;
 		this.isTransitional = eg.isTransitional;
 	},
 	teardown : function() {
-		eg.defaults = {};
+		eg.agent = this.agent;
 		eg.isHWAccelerable = this.isHWAccelerable;
 		eg.isTransitional = this.isTransitional;
 	}
@@ -23,43 +24,44 @@ test("determine the return value of a 'isHWAccelerable' function", function() {
 	var controllValue = result;
 	eg.isHWAccelerable = this.isHWAccelerable;
 	// When
-	eg.defaults.isHWAccelerable = function(agent) {
+	eg.hook.isHWAccelerable = function(defaultValue,agent) {
 		return !controllValue;
 	};
 	// Then
 	notEqual(result, eg.isHWAccelerable(), "change default value");
 });
 
-test("pass the return value of a 'isHWAccelerable' function", function() {
-	var result;
-	// Given
-	result = eg.isHWAccelerable();
-	// When
-	eg.defaults.isHWAccelerable = function(agent) {
-		return null;
-	};
-	// Then
-	equal(result, eg.isHWAccelerable(), "pass default value");
+// not support
+// test("pass the return value of a 'isHWAccelerable' function", function() {
+// 	var result;
+// 	// Given
+// 	result = eg.isHWAccelerable();
+// 	// When
+// 	eg.hook.isHWAccelerable = function(agent) {
+// 		return null;
+// 	};
+// 	// Then
+// 	equal(result, eg.isHWAccelerable(), "pass default value");
 
-	// Given
-	result = eg.isHWAccelerable();
-	// When
-	eg.defaults.isHWAccelerable = function(agent) {
-		// undefined
-	};
-	// Then
-	equal(result, eg.isHWAccelerable(), "pass default value");
-});
+// 	// Given
+// 	result = eg.isHWAccelerable();
+// 	// When
+// 	eg.hook.isHWAccelerable = function(agent) {
+// 		// undefined
+// 	};
+// 	// Then
+// 	equal(result, eg.isHWAccelerable(), "pass default value");
+// });
 
-test("remove 'defaults' function", function() {
+test("remove 'hook' function", function() {
 	// Given
 	var result = eg.isHWAccelerable();
 	var controllValue = result;
-	eg.defaults.isHWAccelerable = function(agent) {
+	eg.hook.isHWAccelerable = function(defaultValue, agent) {
 		return !controllValue;
 	};
 	// When
-	delete eg.defaults.isHWAccelerable;
+	eg.hook.isHWAccelerable = null;
 	// Then
 	equal(result, eg.isHWAccelerable(), "pass default value");
 });
@@ -724,47 +726,54 @@ var ua = [
 
 module("extend Agent Test", {
 	setup : function() {
+		this.agent = eg.agent;
 		this.isHWAccelerable = eg.isHWAccelerable;
 		this.isTransitional = eg.isTransitional;
 	},
 	teardown : function() {
-		eg._init(navigator.userAgent);
+		eg.agent = this.agent;
 		eg.isHWAccelerable = this.isHWAccelerable;
 		eg.isTransitional = this.isTransitional;
 	}
 });
-test("agent Test", function() {
-	// Given
-	// When
-	ua.forEach(function(v) {
-		eg._init(v.ua);
+
+	
+ua.forEach(function(v,i) {
+	test("agent Test"+i, function() {
+		// Given
+		// When
+		var agent = eg.agent(v.ua);
 		//Then
-		equal(eg.agent.os.name, v.os.name, "check os name : " + v.ua);
-		equal(eg.agent.os.version, v.os.version, "check os Version");
-		equal(eg.agent.browser.name, v.browser.name, "check browser name");
-		equal(eg.agent.browser.version, v.browser.version, "check browser Version");
+		equal(agent.os.name, v.os.name, "check os name : " + v.ua);
+		equal(agent.os.version, v.os.version, "check os Version");
+		equal(agent.browser.name, v.browser.name, "check browser name");
+		equal(agent.browser.version, v.browser.version, "check browser Version");
 	});
 });
 
-test("agent nativeVersion Test", function() {
-	// Given
-	ok(true, "start Test");
-	// When
-	ua.forEach(function(v) {
-		if(v._documentMode ) {
-			eg._init(v.ua, v._documentMode);
 
+ua.forEach(function(v,i) {
+	if(v._documentMode ) {
+		test("agent nativeVersion Test"+i, function() {
+			// Given
+			// When
+			var agent = eg.agent(v.ua, v._documentMode);
 			//Then
-			equal(eg.agent.browser.nativeVersion, v.browser.nativeVersion, "check browser native Version: " + v.ua + " , " + eg.agent.browser.nativeVersion + " , " + v.browser.nativeVersion);
-		}
-	});
+			equal(agent.browser.nativeVersion, v.browser.nativeVersion, 
+				  "check browser native Version: " + 
+				  v.ua + " , " + 
+				  agent.browser.nativeVersion + " , " + 
+				  v.browser.nativeVersion);
+		});
+	}
 });
+
 
 ua.forEach(function(v,i) {
 	test("isHWAccelerable Test"+i, function() {
 		// Given
 		// When
-		eg._init(v.ua);
+		var agent = eg.agent(v.ua);
 		//Then
 		equal( eg.isHWAccelerable(), v.isHWAccelerable, "check return value : " + v.ua);
 	});
@@ -774,7 +783,7 @@ ua.forEach(function(v,i) {
 	test("isTransitional Test"+i, function() {
 		// Given
 		// When
-		eg._init(v.ua, v._documentMode);
+		var agent = eg.agent(v.ua, v._documentMode);
 		//Then
 		equal(eg.isTransitional(), v.isTransitional, "check return value : " + v.ua);
 	});

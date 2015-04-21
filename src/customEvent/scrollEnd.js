@@ -48,8 +48,9 @@ function __scrollEnd($, ns, global, doc){
 
     function getDeviceType(){
         var retValue = SCROLLBASE,
-            osInfo = ns.agent.os,
-            browserInfo = ns.agent.browser,
+            agent = ns.agent(),
+            osInfo = agent.os,
+            browserInfo = agent.browser,
             version = parseInt(osInfo.version, 10);
 
         if(osInfo.name === "android"){
