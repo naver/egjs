@@ -166,7 +166,7 @@ var __transform = (function($, global) {
 			return name + "(" + property[1].join(unit(name) + ",") + unit(name) + ")";
 		} else {
 			for(name in property) {
-				html.push(name + "(" +  property[name] + unit(name) + ")");
+				property.hasOwnProperty(name) && html.push(name + "(" +  property[name] + unit(name) + ")");
 			}
 			return html.join(" ");
 		}
@@ -213,8 +213,8 @@ var __transform = (function($, global) {
 		if(m && m.length > 2) {
 			name = m[1];
 			value = m[2].split(",");
-			value.forEach(function(v,i,a) {
-				a[i] = v.trim();
+			value.map(function(v){
+			    return v.trim();
 			});
 			result = [ name.trim(), value ];
 		}
@@ -258,7 +258,7 @@ var __transform = (function($, global) {
 					options.push(opt);
 					break;
 			}
-			parsedProperty[1].forEach(function(v,i,a) {
+			parsedProperty[1]=parsedProperty[1].map(function(v,i,a) {
 				a[i] = computeValue(v, options[i]);
 			});
 		}
