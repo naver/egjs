@@ -7,8 +7,7 @@ module("Flicking component test", {
 	}
 });
 
-var transform = navigator.userAgent.indexOf("PhantomJS") > 0 ? "webkitTransform" : "transform";
-
+var transform = navigator.userAgent.indexOf("PhantomJS") > 0 && eg.isHWAccelerable() ? "webkitTransform" : "transform";
 
 test("Check for the initialization", function() {
 	// Given
@@ -504,7 +503,11 @@ asyncTest("Custom events #2 - When stop event on beforeRestore", function() {
 			}
 		}),
 		rx = /\(-?(\d+)/,
-		currentTransform = (this.inst._container[0].style[transform].match(rx) || [,])[1];
+		currentTransform = inst._container[0].style[transform];
+
+		if(currentTransform) {
+			currentTransform = (currentTransform.match(rx) || [,])[1];
+		}
 
 	// When
 	Simulator.gestures.pan(el, {
