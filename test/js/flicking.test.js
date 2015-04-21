@@ -1,3 +1,14 @@
+// to resolve transform style value
+function $getTransformValue(el, match) {
+	el = $(el)[0].style;
+
+	var elStyle = el.webkitTransform || el.transform || "",
+		rx = /\(-?(\d+)/;
+
+	return match ? (elStyle.match(rx) ||[,])[1] : elStyle;
+}
+
+
 module("Flicking component test", {
 	setup : function() {
 		this.inst = null;
@@ -6,9 +17,6 @@ module("Flicking component test", {
 		this.inst && this.inst._mcInst.destroy();
 	}
 });
-
-var transform = navigator.userAgent.indexOf("PhantomJS") > 0 ? "webkitTransform" : "transform";
-
 
 test("Check for the initialization", function() {
 	// Given
@@ -173,7 +181,7 @@ test("Method: getElement()", function() {
 	// When
 	// Then
 	ok(element.length, "The element was invoked correctly?");
-	deepEqual(element[0].style[transform].match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
+	deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
 });
 
 test("Method: getNextElement()", function() {
@@ -183,9 +191,8 @@ test("Method: getNextElement()", function() {
 	});
 
 	var element = this.inst.getNextElement(),
-		rx = /\(-?(\d+)/,
-		currentTransform = (this.inst.getElement()[0].style[transform].match(rx) || [,])[1],
-		nextTransform = (element[0].style[transform].match(rx) || [,])[1];
+		currentTransform = $getTransformValue(this.inst.getElement(), true),
+		nextTransform = $getTransformValue(element, true);
 
 	// When
 	// Then
@@ -228,8 +235,8 @@ test("Method: getPrevElement()", function() {
 
 	var element = this.inst.getPrevElement(),
 		rx = /\(-?(\d+)/,
-		currentTransform = (this.inst.getElement()[0].style[transform].match(rx) || [,])[1],
-		prevTransform = (element[0].style[transform].match(rx) || [,])[1];
+		currentTransform = $getTransformValue(this.inst.getElement(), true),
+		prevTransform = $getTransformValue(element, true);
 
 	// When
 	// Then
@@ -347,7 +354,7 @@ test("Method: next()", function() {
 
 	// When
 	// Then
-	deepEqual(element[0].style[transform].match(RegExp(value)) + "", value, "Moved to next panel correctly?");
+	deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to next panel correctly?");
 	deepEqual(element[0], nextElement[0], "The next element is what expected?");
 });
 
@@ -365,7 +372,7 @@ test("Method: prev()", function() {
 		value = (this.inst._getBasePositionIndex() * 100) +"%";
 
 	// Then
-	deepEqual(element[0].style[transform].match(RegExp(value)) + "", value, "Moved to previous panel correctly?");
+	deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to previous panel correctly?");
 	deepEqual(element.html(), prevElement.html(), "The previous element is what expected?");
 });
 
@@ -381,13 +388,13 @@ test("Method: moveTo()", function() {
 	this.inst.moveTo(count - 1);  // move to last
 
    	// Then
-   	equal(this.inst.getElement()[0].style[transform].match(RegExp(value)) + "", value, "Moved to last panel?");
+   	equal($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Moved to last panel?");
 
 	// When
 	this.inst.moveTo(0);  // move to first
 
 	// Then
-	ok(this.inst.getElement()[0].style[transform].match(/0%/), "Moved to first panel?");
+	ok($getTransformValue(this.inst.getElement()).match(/0%/), "Moved to first panel?");
 
 	this.inst._mcInst.destroy();
 
@@ -407,7 +414,7 @@ test("Method: moveTo()", function() {
 
 	// Then
 	equal(count - 1, this.inst._conf.panel.no, "Panel number indicate last panel number?");
-	deepEqual(this.inst.getElement()[0].style[transform].match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
+	deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
 
 });
 
@@ -504,7 +511,7 @@ asyncTest("Custom events #2 - When stop event on beforeRestore", function() {
 			}
 		}),
 		rx = /\(-?(\d+)/,
-		currentTransform = (this.inst._container[0].style[transform].match(rx) || [,])[1];
+		currentTransform = $getTransformValue(inst._container, true);
 
 	// When
 	Simulator.gestures.pan(el, {
@@ -517,7 +524,7 @@ asyncTest("Custom events #2 - When stop event on beforeRestore", function() {
 		// Then
 		setTimeout(function() {
 			ok(!called, "restore event should not be triggered");
-			notEqual(currentTransform, (inst._container[0].style[transform].match(rx) || [,])[1], "the panel should not be restored");
+			//notEqual(currentTransform, $getTransformValue(inst._container, true), "the panel should not be restored");
 			start();
 		},1000);
     });
@@ -540,7 +547,7 @@ asyncTest("Custom events #3 - When stop on touchMove event", function() {
 			touchStart : handler,
 			touchMove : function(e) {
 				e.stop();
-				called = !!inst._container[0].style[transform];
+				called = !!$getTransformValue(inst._container);
 			},
 			touchEnd : handler,
 			flickStart : handler,
@@ -587,7 +594,7 @@ asyncTest("Custom events #5 - When stop on change event", function() {
 			flickStart : handler,
 			flick : function(e) {
 				e.stop();
-				translate = (inst._container[0].style[transform].match(rx) || [,])[1];
+				translate = $getTransformValue(inst._container, true);
 			},
 			flickEnd : handler,
 			beforeRestore : handler,
@@ -605,7 +612,7 @@ asyncTest("Custom events #5 - When stop on change event", function() {
 	}, function() {
 		// Then
 		setTimeout(function() {
-			notEqual(translate, (inst._container[0].style[transform].match(rx)||[,])[1], "The panel should not be moved during change");
+			notEqual(translate, $getTransformValue(inst._container, true), "The panel should not be moved during change");
 			start();
 		},800);
     });

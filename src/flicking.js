@@ -168,7 +168,7 @@
 				if(panelCount < panel.minCount) {
 					cloneNodes = list.clone();
 
-					while(cloneNodes.size() < cloneCount) {
+					while(cloneNodes.length < cloneCount) {
 						cloneNodes = cloneNodes.add(list.clone());
 					}
 
