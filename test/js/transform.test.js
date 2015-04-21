@@ -193,64 +193,64 @@ test("parse", function() {
 		//2d
 		"translate(150px,120px) rotate(20deg) scale(2)" : {
 			currentStyle : {rotate: 0, scaleX: 1, scaleY: 1, translateX: 0, translateY: 0},
-			output : "translateX(150px) translateY(120px) rotate(20deg) scaleX(2) scaleY(2)"
+			output : "translateY(120px) translateX(150px) scaleY(2) scaleX(2) rotate(20deg)"
 		},
 
 		//2d
 		"translate(150px,120px) rotate(20deg) scale(2,4.2)" : {
 			currentStyle : {rotate: 0, scaleX: 1, scaleY: 1, translateX: 0, translateY: 0},
-			output : "translateX(150px) translateY(120px) rotate(20deg) scaleX(2) scaleY(4.2)"
+			output : "translateY(120px) translateX(150px) scaleY(4.2) scaleX(2) rotate(20deg)"
 		},
 		// 2d
 		"translate(100%,50%) rotate(+=20deg) scaleX(1.2) scaleY(4.2)" : {
 			currentStyle : {rotate: 20, scaleX: 1, scaleY: 1, translateX: 0, translateY: 0},
-			output : "translateX(100px) translateY(100px) rotate(40deg) scaleX(1.2) scaleY(4.2)"
+			output : "translateY(100px) translateX(100px) scaleY(4.2) scaleX(1.2) rotate(40deg)"
 		},
 		// 2d
 		"translate(100%,50%) rotate(+=20deg)" : {
 			currentStyle : {rotate: 20, scaleX: 1, scaleY: 1, translateX: 0, translateY: 0},
-			output : "translateX(100px) translateY(100px) rotate(40deg) scaleX(1) scaleY(1)"
+			output : "translateY(100px) translateX(100px) scaleY(1) scaleX(1) rotate(40deg)"
 		},
 		// 2d
 		"translate(+=100%,-=50%) rotate(-=20deg)" : {
 			currentStyle : {rotate: 20, scaleX: 1, scaleY: 1, translateX: 200, translateY: 0},
-			output : "translateX(300px) translateY(-100px) rotate(0deg) scaleX(1) scaleY(1)"
+			output : "translateY(-100px) translateX(300px) scaleY(1) scaleX(1) rotate(0deg)"
 		},
 
 		// 3d
 		"translateZ(0px) rotate(20deg) scaleX(2) scaleY(4.2)" : {
 			currentStyle : {rotate: 0, scaleX: 1, scaleY: 1,scaleZ: 1, translateX: 0, translateY: 0, translateZ: 0 },
-			output : "translateZ(0px) rotate(20deg) scaleX(2) scaleY(4.2) scaleZ(1) translateX(0px) translateY(0px)"
+			output : "translateZ(0px) translateY(0px) translateX(0px) scaleZ(1) scaleY(4.2) scaleX(2) rotate(20deg)"
 		},
 
 		// 3d
 		"translateZ(0px) rotate(20deg) scaleZ(1)" : {
 			currentStyle : {rotate: 0, scaleX: 1, scaleY: 1,scaleZ: 1, translateX: 0, translateY: 0, translateZ: 0 },
-			output : "translateZ(0px) rotate(20deg) scaleZ(1) scaleX(1) scaleY(1) translateX(0px) translateY(0px)"
+			output : "translateZ(0px) translateY(0px) translateX(0px) scaleZ(1) scaleY(1) scaleX(1) rotate(20deg)"
 		},
 
 		// 3d
 		"translate3d(150px,+=10%,-=20px) rotate(+=20deg) scale3d(+=2, 4.2, -=-1)" : {
 			currentStyle : {rotate: 30, scaleX: 2, scaleY: 1,scaleZ: 2, translateX: 0, translateY: 120, translateZ: 10 },
-			output : "translateZ(-10px) translateX(150px) translateY(140px) rotate(50deg) scaleZ(3) scaleX(4) scaleY(4.2)"
+			output : "translateZ(-10px) translateY(140px) translateX(150px) scaleZ(3) scaleY(4.2) scaleX(4) rotate(50deg)"
 		},
 
 		// 3d
 		"translate3d(150px,+=10%,-=20px) rotate(+=20deg) scale(+=2, 4.2)" : {
 			currentStyle : {rotate: 30, scaleX: 2, scaleY: 1,scaleZ: 2, translateX: 0, translateY: 120, translateZ: 10 },
-			output : "translateZ(-10px) translateX(150px) translateY(140px) rotate(50deg) scaleX(4) scaleY(4.2) scaleZ(2)"
+			output : "translateZ(-10px) translateY(140px) translateX(150px) scaleZ(2) scaleY(4.2) scaleX(4) rotate(50deg)"
 		},
 
 		// 3d
 		"translate3d(150px,+=10%,-=20px) rotate(+=20deg) scale(2)" : {
 			currentStyle : {rotate: 30, scaleX: 2, scaleY: 1,scaleZ: 2, translateX: 0, translateY: 120, translateZ: 10 },
-			output : "translateZ(-10px) translateX(150px) translateY(140px) rotate(50deg) scaleX(2) scaleY(2) scaleZ(2)"
+			output : "translateZ(-10px) translateY(140px) translateX(150px) scaleZ(2) scaleY(2) scaleX(2) rotate(50deg)"
 		},
 
 		// 3d
 		"rotate(20deg) scaleZ(1)" : {
 			currentStyle : {rotate: 0, scaleX: 1, scaleY: 1,scaleZ: 1, translateX: 0, translateY: 0, translateZ: 0 },
-			output : "rotate(20deg) scaleZ(1) scaleX(1) scaleY(1) translateX(0px) translateY(0px) translateZ(0px)"
+			output : "translateZ(0px) translateY(0px) translateX(0px) scaleZ(1) scaleY(1) scaleX(1) rotate(20deg)"
 		},
 
 		// matrix

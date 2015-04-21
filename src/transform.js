@@ -130,97 +130,6 @@ var __transform = (function($, global) {
 		return result;
 	}
 
-	// @return function
-	function rateFn(element, startTf, endTf) {
-		var $el = $(element),
-			needToConvert = /%/.test(startTf) || /%/.test(endTf),
-			width = needToConvert ? $el.width() : 0,
-			height = needToConvert ? $el.height() : 0,
-			styleTransform = unMatrix(toMatrix($el.css("transform"))),
-			start = toMatrix(parse(startTf, width, height, styleTransform)),
-			end = toMatrix(parse(endTf, width, height, styleTransform));
-
-		if (/3d|Z/.test(startTf + endTf) || start[0] !== end[0]) {
-			start = toMatrix3d(start);
-			end = toMatrix3d(end);
-		}
-		return function(pos) {
-			if(pos === 1) {
-				return data2String(end);
-			} else {
-				var result = [];
-				for(var i=0, s,e, l = start[1].length; i< l; i++) {
-					s = parseFloat(start[1][i]);
-					e = parseFloat(end[1][i]);
-					result.push(s + ( e- s) * pos);
-				}
-				return data2String([ start[0], result ]);
-			}
-		};
-	}
-
-	function data2String(property) {
-		var name,html = [];
-		if(Array.isArray(property)) {
-			name = property[0];
-			return name + "(" + property[1].join(unit(name) + ",") + unit(name) + ")";
-		} else {
-			for(name in property) {
-				property.hasOwnProperty(name) && html.push(name + "(" +  property[name] + unit(name) + ")");
-			}
-			return html.join(" ");
-		}
-	}
-
-	function unit(name) {
-		return /translate/.test(name) ? "px" : (/rotate/.test(name) ? "deg" : "");
-	}
-
-	// Object {translateZ: 0, translateX: 20, translateY: 15, rotate: 0, perspective: 10}
-	function divideTransform(parsedProperties) {
-		var result = {};
-		for(var i=0, p, name, val; p = parsedProperties[i]; i++) {
-			val = p[1];
-			switch(name = p[0]) {
-				case "translate3d":
-				case "scale3d" :
-					name = name.replace(/3d$/, "");
-					result[name + "Z"] = val[2];
-				case "translate":
-				case "scale":
-					result[name + "X"] = val[0];
-					if (typeof val[1] === "undefined") {
-						(name === "scale") && (result[name + "Y"] = val[0]);
-					} else {
-						result[name + "Y"] = val[1];
-					}
-					break;
-				case "rotate":
-					result[name] = val[0];
-					break;
-				default:
-					result[name] = +val.join("");
-					break;
-			}
-		}
-		return result;
-	}
-
-	//  [ "translate3d" , [ "10", "20", "3px"] ]
-	function parseStyle(property) {
-		var m = property.match(/(\b\w+?)\((\s*[^\)]+)/),
-			name, value, result = ["",""];
-		if(m && m.length > 2) {
-			name = m[1];
-			value = m[2].split(",");
-			value.map(function(v){
-			    return v.trim();
-			});
-			result = [ name.trim(), value ];
-		}
-		return result;
-	}
-
 	function interpolation(parsedProperty, width, height, styleTransform) {
 		width = width || 0;
 		height = height || 0;
@@ -259,10 +168,113 @@ var __transform = (function($, global) {
 					break;
 			}
 			parsedProperty[1]=parsedProperty[1].map(function(v,i,a) {
-				a[i] = computeValue(v, options[i]);
+				return computeValue(v, options[i]);
 			});
 		}
 		return parsedProperty;
+	}
+
+	// @return function
+	function rateFn(element, startTf, endTf) {
+		var $el = $(element),
+			needToConvert = /%/.test(startTf) || /%/.test(endTf),
+			width = needToConvert ? $el.width() : 0,
+			height = needToConvert ? $el.height() : 0,
+			styleTransform = unMatrix(toMatrix($el.css("transform"))),
+			start = toMatrix(startTf),
+			end = toMatrix(parse(endTf, width, height, styleTransform));
+
+		if (/3d|Z/.test(startTf + endTf) || start[0] !== end[0]) {
+			start = toMatrix3d(start);
+			end = toMatrix3d(end);
+		}
+		return function(pos) {
+			if(pos === 1) {
+				return data2String(end);
+			} else {
+				var result = [];
+				for(var i=0, s,e, l = start[1].length; i< l; i++) {
+					s = parseFloat(start[1][i]);
+					e = parseFloat(end[1][i]);
+					result.push(s + ( e- s) * pos);
+				}
+				return data2String([ start[0], result ]);
+			}
+		};
+	}
+
+	function data2String(property) {
+		var name,tmp = [];
+		if(Array.isArray(property)) {
+			name = property[0];
+			return name + "(" + property[1].join(unit(name) + ",") + unit(name) + ")";
+		} else {
+			for(name in property) {
+				property.hasOwnProperty(name) && tmp.push(name);
+			}
+			// order by translate, scale, roate
+			tmp = tmp.sort(function(a,b) {
+				if(a>b) {
+					return -1;
+				} else if(a<b) {
+					return 1;
+				} else {
+					return 0;
+				}
+			});
+			return tmp.map(function(v) {
+				return v + "(" +  property[v] + unit(v) + ")";
+			}).join(" ");
+		}
+	}
+
+	function unit(name) {
+		return /translate/.test(name) ? "px" : (/rotate/.test(name) ? "deg" : "");
+	}
+
+	// Object {translateZ: 0, translateX: 20, translateY: 15, rotate: 0, perspective: 10}
+	function divideTransform(parsedProperties) {
+		var result = {};
+		for(var i=0, p, name, val; p = parsedProperties[i]; i++) {
+			val = p[1];
+			switch(name = p[0]) {
+				case "translate3d":
+				case "scale3d" :
+					name = name.replace(/3d$/, "");
+					result[name + "Z"] = val[2];
+				case "translate":
+				case "scale":
+					result[name + "X"] = val[0];
+					if (typeof val[1] !== "undefined") {
+						result[name + "Y"] = val[1];
+					} else if (name === "scale") {
+						result[name + "Y"] = val[0];
+					}
+					break;
+				case "rotate":
+					result[name] = val[0];
+					break;
+				default:
+					result[name] = +val.join("");
+					break;
+			}
+		}
+		return result;
+	}
+
+	//  [ "translate3d" , [ "10", "20", "3px"] ]
+	function parseStyle(property) {
+		var m = property.match(/(\b\w+?)\((\s*[^\)]+)/),
+			name, value, result = ["",""];
+		if(m && m.length > 2) {
+			name = m[1];
+			value = m[2].split(",");
+			value = value.map(function(v){
+			    return v.trim();
+			});
+			result = [ name.trim(), value ];
+		}
+		return result;
 	}
 
 	// compute %, relative value
