@@ -599,6 +599,75 @@ var ua = [
 		"isTransitional" : false
 	},
 	{
+		// Phantomjs Window (default value)
+		"ua" : "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) PhantomJS/1.9.8 Safari/534.34",
+		"os" : {
+			"name" : "window",
+			"version" : "6.1"
+		},
+		"browser" : {
+			"name" : "phantomjs",
+			"version" : "1.9.8"
+		},
+		"isHWAccelerable" : false,
+		"isTransitional" : false
+	}
+];
+
+module("extend Agent Test", {
+	setup : function() {
+		this.agent = eg.agent;
+		this.isHWAccelerable = eg.isHWAccelerable;
+		this.isTransitional = eg.isTransitional;
+	},
+	teardown : function() {
+		eg.agent = this.agent;
+		eg.isHWAccelerable = this.isHWAccelerable;
+		eg.isTransitional = this.isTransitional;
+	}
+});
+
+	
+ua.forEach(function(v,i) {
+	test("agent Test"+i, function() {
+		// Given
+		// When
+		var agent = eg.agent(v.ua);
+		//Then
+		equal(agent.os.name, v.os.name, "check os name : " + v.ua);
+		equal(agent.os.version, v.os.version, "check os Version");
+		equal(agent.browser.name, v.browser.name, "check browser name");
+		equal(agent.browser.version, v.browser.version, "check browser Version");
+	});
+});
+
+ua.forEach(function(v,i) {
+	test("isHWAccelerable Test"+i, function() {
+		// Given
+		// When
+		var agent = eg.agent(v.ua);
+		//Then
+		equal( eg.isHWAccelerable(), v.isHWAccelerable, "check return value : " + v.ua);
+	});
+});
+
+ua.forEach(function(v,i) {
+	test("isTransitional Test"+i, function() {
+		// Given
+		// When
+		var agent = eg.agent(v.ua, v._documentMode);
+		//Then
+		equal(eg.isTransitional(), v.isTransitional, "check return value : " + v.ua);
+	});
+});
+
+
+
+
+
+
+
+var nativeVersionProfile = [{
 		// Window 2000 && IE8에서 IE7모드
 		"ua" : "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; IPMS/DE240D0A-14B4E9316A6-00000032300C; TCO_20100114140812; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30; InfoPath.2; .NET CLR 3.0.04506.648; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; OfficeLiveConnector.1.3; OfficeLivePatch.0.0)",
 		"os" : {
@@ -692,39 +761,10 @@ var ua = [
 		},
 		"isHWAccelerable" : true,
 		"isTransitional" : true
-	},
-	{
-		// ios8 && inapp
-		"ua" : "Mozilla/5.0 (iPhone; CPU iPhone OS 8_1_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12B466 NAVER(inapp; search; 380; 5.9.1; 5S)",
-		"os" : {
-			"name" : "ios",
-			"version" : "8.1.3"
-		},
-		"browser" : {
-			"name" : "inapp",
-			"version" : "8.1.3",
-			"nativeVersion" : "-1"
-		},
-		"isHWAccelerable" : true,
-		"isTransitional" : false
-	},
-	{
-		// Phantomjs Window (default value)
-		"ua" : "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) PhantomJS/1.9.8 Safari/534.34",
-		"os" : {
-			"name" : "window",
-			"version" : "6.1"
-		},
-		"browser" : {
-			"name" : "phantomjs",
-			"version" : "1.9.8"
-		},
-		"isHWAccelerable" : false,
-		"isTransitional" : false
-	}
-];
+	}];
 
-module("extend Agent Test", {
+
+module("extend hook Test", {
 	setup : function() {
 		this.agent = eg.agent;
 		this.isHWAccelerable = eg.isHWAccelerable;
@@ -737,55 +777,33 @@ module("extend Agent Test", {
 	}
 });
 
-	
-ua.forEach(function(v,i) {
-	test("agent Test"+i, function() {
+nativeVersionProfile.forEach(function(v,i) {
+	test("agent hook nativeVersion Test"+i, function() {
 		// Given
+		eg.hook.agent = function(agent){
+			var dm = dm || v._documentMode || -1,
+				nativeVersion;
+			if(dm > 0) {
+				if(m = /(Trident)[\/\s]([\d.]+)/.exec(v.ua)) {
+					if(m[2] > 3) {
+						nativeVersion = parseFloat(m[2],10) + 4;
+					}
+				} else {
+					nativeVersion = dm;
+				}
+			} else {
+				nativeVersion = parseFloat(agent.browser.version,10);
+			}
+			agent.browser.nativeVersion = nativeVersion;
+			return agent;
+		}
 		// When
 		var agent = eg.agent(v.ua);
 		//Then
-		equal(agent.os.name, v.os.name, "check os name : " + v.ua);
-		equal(agent.os.version, v.os.version, "check os Version");
-		equal(agent.browser.name, v.browser.name, "check browser name");
-		equal(agent.browser.version, v.browser.version, "check browser Version");
+		equal(agent.browser.nativeVersion, v.browser.nativeVersion, 
+			  "check browser native Version: " + 
+			  v.ua + " , " + 
+			  agent.browser.nativeVersion + " , " + 
+			  v.browser.nativeVersion);
 	});
 });
-
-
-ua.forEach(function(v,i) {
-	if(v._documentMode ) {
-		test("agent nativeVersion Test"+i, function() {
-			// Given
-			// When
-			var agent = eg.agent(v.ua, v._documentMode);
-			//Then
-			equal(agent.browser.nativeVersion, v.browser.nativeVersion, 
-				  "check browser native Version: " + 
-				  v.ua + " , " + 
-				  agent.browser.nativeVersion + " , " + 
-				  v.browser.nativeVersion);
-		});
-	}
-});
-
-
-ua.forEach(function(v,i) {
-	test("isHWAccelerable Test"+i, function() {
-		// Given
-		// When
-		var agent = eg.agent(v.ua);
-		//Then
-		equal( eg.isHWAccelerable(), v.isHWAccelerable, "check return value : " + v.ua);
-	});
-});
-
-ua.forEach(function(v,i) {
-	test("isTransitional Test"+i, function() {
-		// Given
-		// When
-		var agent = eg.agent(v.ua, v._documentMode);
-		//Then
-		equal(eg.isTransitional(), v.isTransitional, "check return value : " + v.ua);
-	});
-});
-

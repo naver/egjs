@@ -65,9 +65,8 @@ eg.hook.agent = function(agent) {
 
 			 */
 
-		agent : function(useragent, dm){
+		agent : function(useragent){
 			ua = useragent || navigator.userAgent;
-			dm = dm || document.documentMode || -1;
 
 			var osMatch = /(iPhone |iPad )?OS ([\d|_]+)/.exec(ua) ||
 					/(Android) ([\w.]+)/.exec(ua) ||
@@ -79,8 +78,7 @@ eg.hook.agent = function(agent) {
 				browserMatch = /(Chrome|CriOS|Firefox)[\s\/]([\w.]+)/.exec(ua) ||
 					/(MSIE|Trident)[\/\s]([\d.]+)/.exec(ua) ||
 					/(PhantomJS)\/([\d.]+)/.exec(ua) ||
-					[],
-				nativeVersion, m;
+					[];
 
 			// os
 			if(osMatch.length >= 3) {
@@ -103,18 +101,6 @@ eg.hook.agent = function(agent) {
 					browserMatch[1] = /SAMSUNG/.test(ua) ? "sbrowser" : "chrome";
 				} else if(/MSIE|Trident/.test(ua)) {
 					browserMatch[1] = "ie";
-					// nativeVersion
-					if(dm > 0) {
-						if(m = /(Trident)[\/\s]([\d.]+)/.exec(ua)) {
-							if(m[2] > 3) {
-								nativeVersion = parseFloat(m[2],10) + 4;
-							}
-						} else {
-							nativeVersion = dm;
-						}
-					} else {
-						nativeVersion = browserMatch[2];
-					}
 				} else {
 					browserMatch[1] = browserMatch[1].toLowerCase();
 				}
@@ -133,8 +119,7 @@ eg.hook.agent = function(agent) {
 				},
 				browser : {
 					name : browserMatch[1] || "default",
-					version : browserMatch[2] || osMatch[2] || "-1",
-					nativeVersion : (nativeVersion + "") || "-1"
+					version : browserMatch[2] || osMatch[2] || "-1"
 				}
 			};
 
@@ -148,10 +133,6 @@ eg.hook.agent = function(agent) {
 
 			return info;
 
-		},
-		_init : function() {
-			
-			
 		},
 		// __checkLibrary__ : function(condition, message) {
 		// 	if(condition) {
@@ -338,5 +319,4 @@ eg.hook.isTransitional = function(defaultVal, agent) {
        */
 	global.eg.DIRECTION_ALL = global.eg.DIRECTION_HORIZONTAL | global.eg.DIRECTION_VERTICAL;
 
-	// global.eg._init();
 })(jQuery, window);
