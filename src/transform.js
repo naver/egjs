@@ -167,7 +167,7 @@ var __transform = (function($, global) {
 					options.push(opt);
 					break;
 			}
-			parsedProperty[1]=parsedProperty[1].map(function(v,i,a) {
+			parsedProperty[1]=parsedProperty[1].map(function(v,i) {
 				return computeValue(v, options[i]);
 			});
 		}
