@@ -14,6 +14,8 @@
     "undef": true,
     "unused": true,
     "node": true,
+    "-W069" : true, // "['{a}'] is better written in dot notation."
+    "-W086": true,  // "Expected a 'break' statement before '{a}'."
     "globals" : {
         "jQuery" : true,
         "eg" : true,
