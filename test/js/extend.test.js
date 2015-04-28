@@ -706,7 +706,7 @@ ua.forEach(function(v,i) {
 	test("_hasClickBug Test "+i, function() {
 		// Given
 		// When
-		var agent = eg.agent(v.ua);
+		eg.agent(v.ua);
 		//Then
 		equal(eg._hasClickBug(), v._hasClickBug, "check return value : " + v.ua);
 	});

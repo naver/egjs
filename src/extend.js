@@ -208,7 +208,7 @@ eg.hook.isHWAccelerable = function(defalutVal,agent) {
 			this.isHWAccelerable = function(){
 				return result;
 			};
-			return this.isHWAccelerable();
+			return result;
 		},
 		/**
 		 * If your device could use a css transtion, this method returns "true"
@@ -256,7 +256,7 @@ eg.hook.isTransitional = function(defaultVal, agent) {
 			this.isTransitional = function(){
 				return result;
 			};
-			return this.isTransitional();
+			return result;
 		},
 
 		// 1. user press one position on screen.
@@ -264,12 +264,12 @@ eg.hook.isTransitional = function(defaultVal, agent) {
 		// 3. when user releases fingers on screen, 'click' event is fired at previous position.
 		_hasClickBug : function() {
 			var agent = this.agent(),
-				result = /ios/.test(agent.os.name);
+				result = "ios" === agent.os.name;
 			result = this.hook._hasClickBug ? this.hook._hasClickBug(result, agent) : result;
 			this._hasClickBug = function(){
 				return result;
 			};
-			return this._hasClickBug();
+			return result;
 		}
 	};
 

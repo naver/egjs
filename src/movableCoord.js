@@ -183,12 +183,12 @@
 			 * @param {Array} pos coordinate
 			 * @param {Array} pos.0 x-coordinate
 			 * @param {Array} pos.1 y-coordinate
-			 * @param {Object} originalEvent Hammerjs event. http://hammerjs.github.io/api/#hammer.input-event
+			 * @param {Object} hammerEvent Hammerjs event. http://hammerjs.github.io/api/#hammer.input-event
 			 *
 			 */
 			this.trigger("hold", {
 				pos : [ pos[0], pos[1] ],
-				originalEvent : e
+				hammerEvent : e
 			});
 			this._grabOutside = this._isOutside(pos, this.options.min, this.options.max);
 		},
@@ -358,7 +358,7 @@
 					depaPos : [ pos[0], pos[1] ],
 					destPos : destPos,
 					bounce : isBounce,
-					originalEvent : e || {}
+					hammerEvent : e || {}
 				};
 			if (!isBounce) {
 				/**
@@ -372,7 +372,7 @@
 				 * @param {Number} pos.0 departure x-coordinate
 				 * @param {Number} pos.1 departure y-coordinate
 				 * @param {Boolean} holding
-				 * @param {Object} originalEvent Hammerjs event. http://hammerjs.github.io/api/#hammer.input-event
+				 * @param {Object} hammerEvent Hammerjs event. http://hammerjs.github.io/api/#hammer.input-event
 				 *
 				 */
 				this.trigger("release", param);
@@ -511,13 +511,13 @@
 			 * @param {Number} param.pos.0 departure x-coordinate
 			 * @param {Number} param.pos.1 departure y-coordinate
 			 * @param {Boolean} param.holding
-			 * @param {Object} param.originalEvent Hammerjs event. http://hammerjs.github.io/api/#hammer.input-event
+			 * @param {Object} param.hammerEvent Hammerjs event. http://hammerjs.github.io/api/#hammer.input-event
 			 *
 			 */
 			this.trigger("change", {
 				pos : [ pos[0], pos[1] ],
 				holding : holding,
-				originalEvent : e || { }
+				hammerEvent : e || { }
 			});
 		},
 
