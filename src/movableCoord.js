@@ -111,7 +111,7 @@
 				this._subOptions = subOptions;
 				this._curHammer = hammer;
 				this._panstart(e);
-			}.bind(this, hammer))
+			}.bind(this))
 			.on("panmove", this._panmove.bind(this))
 			.on("panend", this._panend.bind(this));
 			return hammer;
@@ -172,29 +172,29 @@
 		},
 
 		// panstart event handler
-		_panstart : function() {
+		_panstart : function(e) {
 			var pos = this._pos;
 			this._grab();
 			/**
 			 * When an area was pressed
+			 * @ko 스크린에서 사용자가 손을 대었을 때
 			 * @name eg.MovableCoord#hold
 			 * @event
 			 * @param {Array} pos coordinate
 			 * @param {Array} pos.0 x-coordinate
 			 * @param {Array} pos.1 y-coordinate
+			 * @param {Object} originalEvent Hammerjs event. http://hammerjs.github.io/api/#hammer.input-event
 			 *
 			 */
 			this.trigger("hold", {
-				pos : [ pos[0], pos[1] ]
+				pos : [ pos[0], pos[1] ],
+				originalEvent : e
 			});
 			this._grabOutside = this._isOutside(pos, this.options.min, this.options.max);
 		},
 
 		// panmove event handler
 		_panmove : function(e) {
-			e.srcEvent.preventDefault();
-			e.srcEvent.stopPropagation();
-
 			var tv, tn, tx, pos = this._pos,
 				min = this.options.min,
 				max = this.options.max,
@@ -203,7 +203,8 @@
 				easing = this.options.easing,
 				direction = this._subOptions.direction,
 				scale = this._subOptions.scale,
-				out = [ margin[0] + bounce[0], margin[1] + bounce[1], margin[2] + bounce[2], margin[3] + bounce[3] ];
+				out = [ margin[0] + bounce[0], margin[1] + bounce[1], margin[2] + bounce[2], margin[3] + bounce[3] ],
+				prevent  = false;
 
 			// not support offset properties in Hammerjs - start
 			var prevInput = this._curHammer.session.prevInput || {};
@@ -217,10 +218,17 @@
 
 			if(direction & ns.DIRECTION_HORIZONTAL) {
 				pos[0] += e.offsetX * scale[0];
+				prevent = true;
 			}
 			if(direction & ns.DIRECTION_VERTICAL) {
 				pos[1] += e.offsetY * scale[1];
+				prevent = true;
 			}
+			if(prevent) {
+				e.srcEvent.preventDefault();
+				e.srcEvent.stopPropagation();
+			}
+			e.preventSystemEvent = prevent;
 			pos = this._getCircularPos(pos, min, max);
 
 			// from outside to inside
@@ -252,7 +260,8 @@
 					pos[0] = max[0]+easing(null, tv>1?1:tv , 0, 1, 1)*out[1];
 				}
 			}
-			this._triggerChange(pos, true);
+
+			this._triggerChange(pos, true, e);
 		},
 
 		// panend event handler
@@ -265,13 +274,12 @@
 			// console.log(e.velocityX, e.velocityY, e.deltaX, e.deltaY);
 			!(direction & ns.DIRECTION_HORIZONTAL) && (vX = 0);
 			!(direction & ns.DIRECTION_VERTICAL) && (vY = 0);
-
 			this._animateBy(
 				this._getNextOffsetPos( [
 					vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
 					vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
 				], this._subOptions.maximumSpeed ),
-			this._animationEnd, false);
+			this._animationEnd, false, null, e);
 		},
 
 		_animationEnd : function() {
@@ -307,12 +315,12 @@
 			return duration < 100 ? 0 : duration;
 		},
 
-		_animateBy : function(offset, callback, isBounce, duration) {
+		_animateBy : function(offset, callback, isBounce, duration, e) {
 			var pos = this._pos;
 			return this._animateTo([
 				pos[0] + offset[0],
 				pos[1] + offset[1]
-			], callback, isBounce, duration);
+			], callback, isBounce, duration, e);
 		},
 
 		_getPointOfIntersection : function(depaPos, destPos) {
@@ -343,15 +351,30 @@
 				(circular[3] && destPos[0] < min[0]);
 		},
 
-		_animateTo : function(absPos, callback, isBounce, duration) {
+		_animateTo : function(absPos, callback, isBounce, duration, e) {
 			var pos = this._pos,
 				destPos = this._getPointOfIntersection(pos, absPos),
 				param = {
 					depaPos : [ pos[0], pos[1] ],
 					destPos : destPos,
-					bounce : isBounce
+					bounce : isBounce,
+					originalEvent : e || {}
 				};
 			if (!isBounce) {
+				/**
+				 * When an area was released
+				 * @ko 스크린에서 사용자가 손을 떼었을
+				 * @name eg.MovableCoord#release
+				 * @event
+				 *
+				 * @param {Object}
+				 * @param {Array} pos departure coordinate
+				 * @param {Number} pos.0 departure x-coordinate
+				 * @param {Number} pos.1 departure y-coordinate
+				 * @param {Boolean} holding
+				 * @param {Object} originalEvent Hammerjs event. http://hammerjs.github.io/api/#hammer.input-event
+				 *
+				 */
 				this.trigger("release", param);
 			}
 			this._afterReleaseProcess(param, callback, isBounce, duration);
@@ -399,17 +422,16 @@
 			 * @name eg.MovableCoord#animation
 			 * @event
 			 *
-			 * @param {Object} param
-			 * @param {Number} param.duration
-			 * @param {Array} param.depaPos departure coordinate
-			 * @param {Number} param.depaPos.0 departure x-coordinate
-			 * @param {Number} param.depaPos.1 departure y-coordinate
-			 * @param {Array} param.destPos destination coordinate
-			 * @param {Number} param.destPos.0 destination x-coordinate
-			 * @param {Number} param.destPos.1 destination y-coordinate
-			 * @param {Boolean} param.isBounce
-			 * @param {Boolean} param.isCircular
-			 * @param {Function} param.done
+			 * @param {Number} duration
+			 * @param {Array} depaPos departure coordinate
+			 * @param {Number} depaPos.0 departure x-coordinate
+			 * @param {Number} depaPos.1 departure y-coordinate
+			 * @param {Array} destPos destination coordinate
+			 * @param {Number} destPos.0 destination x-coordinate
+			 * @param {Number} destPos.1 destination y-coordinate
+			 * @param {Boolean} isBounce
+			 * @param {Boolean} isCircular
+			 * @param {Function} done
 			 *
 			 */
 			var retTrigger = this.trigger("animation", param);
@@ -477,7 +499,7 @@
 		},
 
 		// trigger 'change' event
-		_triggerChange : function(pos, holding) {
+		_triggerChange : function(pos, holding, e) {
 			/**
 			 * When coordinate was changed
 			 * @ko 좌표가 변경됐을 때 발생한다.
@@ -489,11 +511,13 @@
 			 * @param {Number} param.pos.0 departure x-coordinate
 			 * @param {Number} param.pos.1 departure y-coordinate
 			 * @param {Boolean} param.holding
+			 * @param {Object} param.originalEvent Hammerjs event. http://hammerjs.github.io/api/#hammer.input-event
 			 *
 			 */
 			this.trigger("change", {
 				pos : [ pos[0], pos[1] ],
-				holding : holding
+				holding : holding,
+				originalEvent : e || { }
 			});
 		},
 
