@@ -98,9 +98,9 @@ module.exports = function(grunt) {
         }
     }
   });
-  
+
   grunt.registerTask("docBuild", ["copy:doc", "jsdoc"]);
   grunt.registerTask("test", ["jshint", "qunit"]);
-  grunt.registerTask("build", ["jshint", "concat", "uglify", "copy:lib", "jsdoc"]);
+  grunt.registerTask("build", ["concat", "uglify", "copy:lib", "docBuild"]);
   grunt.registerTask("default", ["test", "concat", "uglify", "copy:lib","copy:doc", "jsdoc"]);
 };
