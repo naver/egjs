@@ -31,7 +31,7 @@ function __persist($, global){
 
 	function _onPageshow(e) {
 		if (_isPersisted(e.originalEvent)) {
-			_reset(); // 이거 꼭 해야되남여 
+			_reset();
 		} else {
 			if (_isBackForwardNavigated() && history.state) {
 				$(global).trigger("persist", _clone(history.state));
