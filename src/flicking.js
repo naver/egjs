@@ -97,7 +97,7 @@
 				},
 				customEvent : {}		// for custom event return value
 			};
-
+			this._hasClickBug = ns._hasClickBug();
 			this._build();
 			this._bindEvents();
 			this._arrangePanels();
@@ -323,6 +323,9 @@
 		 */
 		_changeHandler : function(e) {
 			var pos = e.pos, x = -pos[0], y = 0;
+			// for "click" bug
+			this._hasClickBug && e.holding && e.hammerEvent.preventSystemEvent && this._container.css("pointerEvents", "none");
+
 			/**
 			 * When touch moves
 			 * @ko 터치한 상태에서 이동될 때 발생하는 이벤트
@@ -397,6 +400,9 @@
 			 * @param {Number} param.destPos.1 Destination y-coordinate
 			 */
 			this._triggerEvent("touchEnd", { depaPos : e.depaPos, destPos : e.destPos });
+
+			// for "click" bug
+			this._hasClickBug && this._container.css("pointerEvents", "auto");
 		},
 
 		/**

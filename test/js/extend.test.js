@@ -90,7 +90,8 @@ var ua = [
 			"version" : "4.0"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : true
+		"isTransitional" : true,
+		"_hasClickBug" : true
 	},
 	{
 		// iPhone 4.3.3
@@ -104,7 +105,8 @@ var ua = [
 			"version" : "5.0.2"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : true
+		"isTransitional" : true,
+		"_hasClickBug" : true
 	},
 	{
 		// iPad 4.2.1
@@ -118,7 +120,8 @@ var ua = [
 			"version" : "5.0.2"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : true
+		"isTransitional" : true,
+		"_hasClickBug" : true
 	},
 	{
 		// iPad 4.3.3
@@ -132,7 +135,8 @@ var ua = [
 			"version" : "5.0.2"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : true
+		"isTransitional" : true,
+		"_hasClickBug" : true
 	},
 	{
 		// iPhone 5.0.1
@@ -146,7 +150,8 @@ var ua = [
 			"version" : "5.1"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : true
+		"isTransitional" : true,
+		"_hasClickBug" : true
 	},
 	{
 		// iPhone 6.0
@@ -160,7 +165,8 @@ var ua = [
 			"version" : "6.0"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : true
 	},
 	{
 		// iPhone 6.1.2
@@ -174,7 +180,8 @@ var ua = [
 			"version" : "6.0"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : true
 	},
 	{
 		// iPhone 7.0
@@ -188,7 +195,8 @@ var ua = [
 			"version" : "6.0"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : true
 	},
 	{
 		// GalaxyS:2.1
@@ -202,7 +210,8 @@ var ua = [
 			"version" : "2.1"
 		},
 		"isHWAccelerable" : false,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// GalaxyS:2.2
@@ -216,7 +225,8 @@ var ua = [
 			"version" : "2.2"
 		},
 		"isHWAccelerable" : false,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// GalaxyS:2.3.4
@@ -230,7 +240,8 @@ var ua = [
 			"version" : "2.3.4"
 		},
 		"isHWAccelerable" : false,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// GalaxyS2:2.3.3
@@ -244,7 +255,8 @@ var ua = [
 			"version" : "2.3.3"
 		},
 		"isHWAccelerable" : false,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// GalaxyNote:2.3.6
@@ -258,7 +270,8 @@ var ua = [
 			"version" : "2.3.6"
 		},
 		"isHWAccelerable" : false,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// GalaxyTab2:3.1
@@ -272,7 +285,8 @@ var ua = [
 			"version" : "3.1"
 		},
 		"isHWAccelerable" : false,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// GalaxyNexus:4.0.1
@@ -286,7 +300,8 @@ var ua = [
 			"version" : "4.0.1"
 		},
 		"isHWAccelerable" : false,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// GalaxyS3:4.0.4
@@ -300,7 +315,8 @@ var ua = [
 			"version" : "4.0.4"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// GalaxyS2:chrome
@@ -314,7 +330,8 @@ var ua = [
 			"version" : "16.0.912.77",
 		},
 		"isHWAccelerable" : false,
-		"isTransitional" : true
+		"isTransitional" : true,
+		"_hasClickBug" : false
 	},
 	{
 		// GalaxyS4:4.2.2
@@ -328,7 +345,8 @@ var ua = [
 			"version" : "18.0.1025.308",
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// GalaxyS4:chrome
@@ -342,7 +360,8 @@ var ua = [
 			"version" : "18.0.1025.166",
 		},
 		"isHWAccelerable" : false,
-		"isTransitional" : true
+		"isTransitional" : true,
+		"_hasClickBug" : false
 	},
 	{
 		// GalaxyNexus:4.2.2
@@ -356,7 +375,8 @@ var ua = [
 			"version" : "4.2.2"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// GalaxyNexus:chrome
@@ -370,7 +390,8 @@ var ua = [
 			"version" : "18.0.1364.169"
 		},
 		"isHWAccelerable" : false,
-		"isTransitional" : true
+		"isTransitional" : true,
+		"_hasClickBug" : false
 	},
 	{
 		// GalaxyNexus:chrome
@@ -384,7 +405,8 @@ var ua = [
 			"version" : "25.0.1364.169"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : true
+		"isTransitional" : true,
+		"_hasClickBug" : false
 	},
 	{
 		// GalaxyNote2:chrome
@@ -398,7 +420,8 @@ var ua = [
 			"version" : "31.0.1650.59"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : true
+		"isTransitional" : true,
+		"_hasClickBug" : false
 	},
 	{
 		// Xiaomi_2013061_TD:browser
@@ -412,7 +435,8 @@ var ua = [
 			"version" : "4.2.1"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 
 
@@ -428,7 +452,8 @@ var ua = [
 			"version" : "7.0"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// Windows 7 && IE
@@ -442,7 +467,8 @@ var ua = [
 			"version" : "8.0"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// Windows 7 && IE
@@ -456,7 +482,8 @@ var ua = [
 			"version" : "7.0"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// Windows 7 && Chrome
@@ -470,7 +497,8 @@ var ua = [
 			"version" : "41.0.2272.101"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : true
+		"isTransitional" : true,
+		"_hasClickBug" : false
 	},
 	{
 		// Windows 7 && Firefox
@@ -484,7 +512,8 @@ var ua = [
 			"version" : "36.0"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : true
+		"isTransitional" : true,
+		"_hasClickBug" : false
 	},
 	{
 		// Mac && Chrome
@@ -498,7 +527,8 @@ var ua = [
 			"version" : "41.0.2272.101"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : true
+		"isTransitional" : true,
+		"_hasClickBug" : false
 	},
 	{
 		// Mac && Safari
@@ -512,7 +542,8 @@ var ua = [
 			"version" : "8.0.3"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : true
+		"isTransitional" : true,
+		"_hasClickBug" : false
 	},
 	{
 		// Phantomjs (default value)
@@ -526,7 +557,8 @@ var ua = [
 			"version" : "1.9.8"
 		},
 		"isHWAccelerable" : false,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// Window XP && ie6
@@ -540,7 +572,8 @@ var ua = [
 			"version" : "6.0"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// Window && ie6
@@ -554,7 +587,8 @@ var ua = [
 			"version" : "6.0"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// Window XP && ie7
@@ -568,7 +602,8 @@ var ua = [
 			"version" : "7.0"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// Window Vista && ie6.2
@@ -582,7 +617,8 @@ var ua = [
 			"version" : "6.2"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// Window 2000 && ie6
@@ -596,7 +632,8 @@ var ua = [
 			"version" : "6.0"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// Phantomjs Window (default value)
@@ -610,7 +647,8 @@ var ua = [
 			"version" : "1.9.8"
 		},
 		"isHWAccelerable" : false,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	}
 ];
 
@@ -619,15 +657,17 @@ module("extend Agent Test", {
 		this.agent = eg.agent;
 		this.isHWAccelerable = eg.isHWAccelerable;
 		this.isTransitional = eg.isTransitional;
+		this._hasClickBug = eg._hasClickBug;
 	},
 	teardown : function() {
 		eg.agent = this.agent;
 		eg.isHWAccelerable = this.isHWAccelerable;
 		eg.isTransitional = this.isTransitional;
+		eg._hasClickBug = this._hasClickBug;
 	}
 });
 
-	
+
 ua.forEach(function(v,i) {
 	test("agent Test"+i, function() {
 		// Given
@@ -642,7 +682,7 @@ ua.forEach(function(v,i) {
 });
 
 ua.forEach(function(v,i) {
-	test("isHWAccelerable Test"+i, function() {
+	test("isHWAccelerable Test "+i, function() {
 		// Given
 		// When
 		var agent = eg.agent(v.ua);
@@ -652,17 +692,25 @@ ua.forEach(function(v,i) {
 });
 
 ua.forEach(function(v,i) {
-	test("isTransitional Test"+i, function() {
+	test("isTransitional Test "+i, function() {
 		// Given
 		// When
-		var agent = eg.agent(v.ua, v._documentMode);
+		var agent = eg.agent(v.ua);
 		//Then
 		equal(eg.isTransitional(), v.isTransitional, "check return value : " + v.ua);
 	});
 });
 
 
-
+ua.forEach(function(v,i) {
+	test("_hasClickBug Test "+i, function() {
+		// Given
+		// When
+		eg.agent(v.ua);
+		//Then
+		equal(eg._hasClickBug(), v._hasClickBug, "check return value : " + v.ua);
+	});
+});
 
 
 
@@ -800,10 +848,10 @@ nativeVersionProfile.forEach(function(v,i) {
 		// When
 		var agent = eg.agent(v.ua);
 		//Then
-		equal(agent.browser.nativeVersion, v.browser.nativeVersion, 
-			  "check browser native Version: " + 
-			  v.ua + " , " + 
-			  agent.browser.nativeVersion + " , " + 
+		equal(agent.browser.nativeVersion, v.browser.nativeVersion,
+			  "check browser native Version: " +
+			  v.ua + " , " +
+			  agent.browser.nativeVersion + " , " +
 			  v.browser.nativeVersion);
 	});
 });

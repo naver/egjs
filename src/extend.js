@@ -23,9 +23,9 @@
 	     */
 		VERSION : "#__VERSION__#",
 		hook : {
-			isHWAccelerable : null,
-			isTransitional 	: null,
-			agent : null
+			// isHWAccelerable : null,
+			// isTransitional 	: null,
+			// agent : null
 		},
 			/**
 			 * Get Agent Information
@@ -59,7 +59,7 @@ eg.hook.agent = function(agent) {
 	if(agent.os.name === "naver") {
 		agent.browser.name = "inapp";
 		return agent;
-	} 
+	}
 }
 
 
@@ -122,11 +122,7 @@ eg.hook.agent = function(agent) {
 					version : browserMatch[2] || osMatch[2] || "-1"
 				}
 			};
-
-			if(this.hook.agent !== null){
-				info = this.hook.agent(info);
-			}
-
+			info = this.hook.agent  ? this.hook.agent(info) : info;
 			this.agent = function(){
 				return info;
 			};
@@ -208,15 +204,11 @@ eg.hook.isHWAccelerable = function(defalutVal,agent) {
 						/SHW-|SHV-|GT-|SCH-|SGH-|SPH-|LG-F160|LG-F100|LG-F180|LG-F200|EK-|IM-A|LG-F240|LG-F260/.test(useragent) &&
 						!/SHW-M420|SHW-M200|GT-S7562/.test(useragent));
 			}
-
-			if(this.hook.isHWAccelerable !== null){
-				result = this.hook.isHWAccelerable(result,agent);
-			}
-
+			result = this.hook.isHWAccelerable ? this.hook.isHWAccelerable(result,agent) : result;
 			this.isHWAccelerable = function(){
 				return result;
 			};
-			return this.isHWAccelerable();
+			return result;
 		},
 		/**
 		 * If your device could use a css transtion, this method returns "true"
@@ -235,7 +227,7 @@ eg.hook.isTransitional = function(defaultVal, agent) {
 	} else if(agent.browser.name === "chrome" ) {
 		// if browser is 'chrome', return value is 'true'
 		return true;
-	} 
+	}
 	return defaultVal;
 }
 		 */
@@ -243,7 +235,6 @@ eg.hook.isTransitional = function(defaultVal, agent) {
 			var result = false,
 				agent = this.agent();
 
-			// if( result === null ) {
 			var browser = agent.browser.name;
 
 			if(/chrome|firefox/.test(browser)) {
@@ -261,12 +252,24 @@ eg.hook.isTransitional = function(defaultVal, agent) {
 						break;
 				}
 			}
-			// }
-
+			result = this.hook.isTransitional ? this.hook.isTransitional(result,agent) : result;
 			this.isTransitional = function(){
 				return result;
 			};
-			return this.isTransitional();
+			return result;
+		},
+
+		// 1. user press one position on screen.
+		// 2. user moves to the other position on screen.
+		// 3. when user releases fingers on screen, 'click' event is fired at previous position.
+		_hasClickBug : function() {
+			var agent = this.agent(),
+				result = "ios" === agent.os.name;
+			result = this.hook._hasClickBug ? this.hook._hasClickBug(result, agent) : result;
+			this._hasClickBug = function(){
+				return result;
+			};
+			return result;
 		}
 	};
 
