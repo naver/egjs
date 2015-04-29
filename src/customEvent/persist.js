@@ -24,13 +24,21 @@ function __persist($, global){
 		return !!e.persisted;
 	}
 	
+	var _hasReplaceState = function() {
+		var result = ("replaceState" in history) ? true : false;
+		_hasReplaceState = function(){
+			return result;
+		};
+		return result;		
+	};
+	
 	function _isBackForwardNavigated() {
 		var wp = global.performance;
 		return !(wp && wp.navigation && (wp.navigation.type === wp.navigation.TYPE_NAVIGATE || wp.navigation.type === wp.navigation.TYPE_RELOAD));
 	}
 	
 	function _reset() {
-		("replaceState" in history) && history.replaceState(null, document.title, location.href);
+		_hasReplaceState() && history.replaceState(null, document.title, location.href);
 	}
 
 	function _clone(obj) {
@@ -45,10 +53,10 @@ function __persist($, global){
 	}
 	
 	function persist(state) {
-		if ("replaceState" in history) {
-			state && history.replaceState(state, document.title, location.href);
-			return _clone(history.state);
+		if (_hasReplaceState() && state) {
+			history.replaceState(state, document.title, location.href);
 		}
+		return _clone(history.state);
 	}
 	
 	$.persist = persist;

@@ -1,33 +1,65 @@
 function noop() {};
 module("persist", {
 	setup: function() {
-		this.fakeWindow = {};
+		this.fakeWindow = {
+			document: {
+				title: ""
+			},
+			location: {
+				href: ""
+			},
+			history: new History()
+		};
 		this.fakeEvent = {};
+		this.data = {
+			"scrollTop": 100
+		};
+		
+		this.method = __persist(jQuery, this.fakeWindow);
+		/*
+		 *	 Mock History Object
+		*/
+		function History() {
+			this.state = null;
+		}
+		History.prototype.replaceState = function(state) {
+			this.state = state;
+		};
+	},
+	teardown: function() {
+		this.fakeWindow.history.replaceState(null, "", "");
 	}
 });
-test("_isPersisted : pageshow event persisted property supported", function() {
+
+test("_isPersisted : When persisted property of pageshow event supported", function() {
 	// Given
 	this.fakeEvent = {
 		"persisted": true
 	};
 	var method = __persist(jQuery, this.fakeWindow);
+	
 	// Then
 	equal(method._isPersisted(this.fakeEvent), true);
+	
 	// Given
 	this.fakeEvent = {
 		"persisted": false
 	};
+	
 	// Then
 	equal(method._isPersisted(this.fakeEvent), false);
 });
-test("_isPersisted : pageshow event persisted property not supported", function() {
+
+test("_isPersisted : When persisted property of pageshow event not supported", function() {
 	// Given
 	this.fakeEvent = {};
 	var method = __persist(jQuery, this.fakeWindow);
+	
 	// Then
 	equal(method._isPersisted(this.fakeEvent), false);
 });
-test("_isBackForwardNavigated : supported ", function() {
+
+test("_isBackForwardNavigated", function() {
 	// Given
 	this.fakeWindow.performance = {};
 	this.fakeWindow.performance.navigation = {
@@ -38,69 +70,56 @@ test("_isBackForwardNavigated : supported ", function() {
 	};
 	this.fakeWindow.performance.navigation.type = 0;
 	var method = __persist(jQuery, this.fakeWindow);
+	
 	// Then
 	equal(method._isBackForwardNavigated(), false);
+	
 	// Given
 	this.fakeWindow.performance.navigation.type = 1;
 	var method = __persist(jQuery, this.fakeWindow);
+	
 	// Then
 	equal(method._isBackForwardNavigated(), false);
+	
 	// Given
 	this.fakeWindow.performance.navigation.type = 2;
 	var method = __persist(jQuery, this.fakeWindow);
+	
 	// Then
 	equal(method._isBackForwardNavigated(), true);
 });
-test("_reset : supported", function() {
-	// Given  
-	this.fakeWindow = {
-		document : {
-			title : ""
-		},
-		location : {
-			href : ""
-		},
-		history : {
-			state : {}
-		}
-	};
-	
-	var method = __persist(jQuery, this.fakeWindow);
+
+test("_reset", function() {
 	// When
-	method._reset();
+	this.method._reset();
+	
 	// Then
 	equal(this.fakeWindow.history.state, null);
 });
+
 test("_clone : new Object but same key and values", function() {
-	// Given  
-	var data = {
-		"name": "evergreen"
-	};
-	var method = __persist(jQuery, this.fakeWindow);
 	// When
-	var clonedData = method._clone(data);
+	var clonedData = this.method._clone(this.data);
+	
 	// Then
-	notEqual(clonedData, data);
-	deepEqual(clonedData, data);
+	notEqual(clonedData, this.data);
+	deepEqual(clonedData, this.data);
 });
+
 test("persist : save state data, get state data", function() {
-	// Given  
-	var method = __persist(jQuery, this.fakeWindow);
-	equal(method.persist(), null);
-	// When
-	var clonedData = method.persist(data);
+	// Given
 	// Then
-	notEqual(clonedData, data);
-	deepEqual(clonedData, data);
+	equal(this.method.persist(), null);
+	
+	// When
+	var clonedData = this.method.persist(this.data);
+	
+	// Then
+	notEqual(clonedData, this.data);
+	deepEqual(clonedData, this.data);
 });
+
 test("_onPageshow : when bfCache hits, _reset method must be executed.", function() {
-	// Given  
-	var data = {
-		"scrollTop": 100
-	};
-	var method = __persist(jQuery, this.fakeWindow);
-	var clonedData = method.persist(data);
-	deepEqual(clonedData, data);
 	// When
 	$(this.fakeWindow).trigger({
 		type: "pageshow",
@@ -108,9 +127,11 @@ test("_onPageshow : when bfCache hits, _reset method must be executed.", functio
 			persisted: true
 		}
 	});
+	
 	// Then
-	equal(method.persist(data), null);
+	equal(this.method.persist(), null);
 });
+
 test("_onPageshow : when bfCache miss and not BF navigated, _reset method must be executed.", function() {
 	// Given  
 	this.fakeWindow.performance = {};
@@ -122,11 +143,7 @@ test("_onPageshow : when bfCache miss and not BF navigated, _reset method must b
 	};
 	this.fakeWindow.performance.navigation.type = 0;
 	var method = __persist(jQuery, this.fakeWindow);
-	var data = {
-		"scrollTop": 100
-	};
-	var clonedData = method.persist(data);
-	deepEqual(clonedData, data);
+	
 	// When
 	$(this.fakeWindow).trigger({
 		type: "pageshow",
@@ -135,12 +152,12 @@ test("_onPageshow : when bfCache miss and not BF navigated, _reset method must b
 		}
 	});
 	// Then
-	equal(method.persist(data), null);
+	equal(method.persist(), null);
+	
 	// Given 
 	this.fakeWindow.performance.navigation.type = 1;
 	var method = __persist(jQuery, this.fakeWindow);
-	var clonedData = method.persist(data);
-	propEqual(clonedData, data);
+
 	// When
 	$(this.fakeWindow).trigger({
 		type: "pageshow",
@@ -149,12 +166,12 @@ test("_onPageshow : when bfCache miss and not BF navigated, _reset method must b
 		}
 	});
 	// Then
-	equal(method.persist(data), null);
+	equal(method.persist(), null);
 });
-test("_onPageshow : when bfCache miss and BF navigated, persist event must be triggered.", function() {
+
+test("_onPageshow : when bfCache miss and BF navigated, persist event must be triggered.", function(assert) {
 	// Given  
 	var done = assert.async();
-	
 	this.fakeWindow.performance = {};
 	this.fakeWindow.performance.navigation = {
 		TYPE_BACK_FORWARD: 2,
@@ -164,25 +181,24 @@ test("_onPageshow : when bfCache miss and BF navigated, persist event must be tr
 	};
 	this.fakeWindow.performance.navigation.type = 2;
 	var method = __persist(jQuery, this.fakeWindow);
-	var data = {
-		"scrollTop": 100
-	};
-	var clonedData = method.persist(data);
-	deepEqual(clonedData, data);
+	
+	// When
 	var restoredState = null;
 	$(this.fakeWindow).on("persist", function(e, state) {
 		restoredState = state;
-	}.bind(this));
-	// When
+	});
+	var clonedData = method.persist(this.data);
 	$(this.fakeWindow).trigger({
 		type: "pageshow",
 		originalEvent: {
 			persisted: false
 		}
 	});
-	// Then
+	
+	// Then	
 	setTimeout(function() {
-		deepEqual(restoredState, data);
+		deepEqual(restoredState, clonedData);
 		done();
 	});
+
 });
