@@ -324,7 +324,7 @@
 		_changeHandler : function(e) {
 			var pos = e.pos, x = -pos[0], y = 0;
 			// for "click" bug
-			this._hasClickBug && e.holding && e.originalEvent.preventSystemEvent && this._container.css("pointerEvents", "none");
+			this._hasClickBug && e.holding && e.hammerEvent.preventSystemEvent && this._container.css("pointerEvents", "none");
 
 			/**
 			 * When touch moves
