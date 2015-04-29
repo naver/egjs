@@ -178,9 +178,10 @@ test("unMatrix" , function() {
 	// Then
 	value.forEach(function(v) {
 		// When
-		$box.css("transform", v.input);
+		$box.css("-webkit-transform", v.input);
+
 		// Then
-		deepEqual(__transform.unMatrix(__transform.parseStyle($box.css("transform"))), v.output, v.input);
+		deepEqual(__transform.unMatrix(__transform.parseStyle($box.css("-webkit-transform"))), v.output, v.input);
 	});
 });
 
