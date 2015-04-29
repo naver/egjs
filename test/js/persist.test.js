@@ -151,6 +151,7 @@ test("_onPageshow : when bfCache miss and not BF navigated, _reset method must b
 			persisted: false
 		}
 	});
+	
 	// Then
 	equal(method.persist(), null);
 	
