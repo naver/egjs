@@ -30,7 +30,7 @@ module.exports = function(grunt) {
         }
       },
       build: {
-        src: ["src/polyfill/**/*.js","src/customEvent/*.js", "src/extend.js", "src/class.js", "src/component.js", "src/*.js" ],
+        src: ["src/polyfill/**/*.js", "src/extend.js", "src/customEvent/*.js", "src/class.js", "src/component.js", "src/movableCoord.js", "src/flicking.js", "src/.js" ],
         dest: "dist/<%=pkg.outputname%>.js"
       },
     },
@@ -48,7 +48,7 @@ module.exports = function(grunt) {
         expand : true,
         flatten : true,
         src : [
-            "bower_components/jquery/dist/jquery.js",
+            "bower_components/jquery/jquery.js",
             "bower_components/hammer.js/hammer.js",
             "bower_components/jquery.easing/js/jquery.easing.js",
           ],
@@ -75,8 +75,7 @@ module.exports = function(grunt) {
           coberturaReport: "report",
           linesThresholdPct: 0
         }
-      },
-      all: ["test/**/*.html"]
+      }
     },
     watch : {
       source : {
@@ -99,8 +98,21 @@ module.exports = function(grunt) {
     }
   });
 
+  grunt.registerTask("test", function() {
+    var eachfile = Array.prototype.slice.apply(arguments);
+    if(eachfile.length) {
+      eachfile = eachfile.map(function(v, i, a) {
+        return "test/" + v + ".test.html";
+      }, this);
+    } else {
+        eachfile.push("test/*.test.html");
+    }
+    grunt.config.set("qunit.each", eachfile);
+    grunt.log.oklns(grunt.config.get("qunit.each"));
+    grunt.task.run("qunit:each");
+  });
+
   grunt.registerTask("docBuild", ["copy:doc", "jsdoc"]);
-  grunt.registerTask("test", ["jshint", "qunit"]);
   grunt.registerTask("build", ["concat", "uglify", "copy:lib", "docBuild"]);
   grunt.registerTask("default", ["test", "concat", "uglify", "copy:lib","copy:doc", "jsdoc"]);
 };
