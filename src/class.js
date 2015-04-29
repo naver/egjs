@@ -6,6 +6,20 @@
 	 * @ko Class는 어플리케이션을 객체지향 프로그래밍 방식으로 구현하는데 사용합니다.
 	 * @class
 	 * @name eg.Class
+	 * @param {Object} oDef Class definition of object literal type.
+	 * @example
+	 	var Some = eg.Class({
+	 		//Class initialize
+			"construct" : function(val){
+				this.val = val;
+			},
+			"sumVal" : function(val) {
+				return this.val + val;
+			}
+	 	});
+
+	 	var some = new Some(5);
+	 	some.sumVal(5);//10
 	 */
     ns.Class = function(oDef) {
 		var typeClass = function typeClass() {
@@ -23,7 +37,7 @@
 	 * @ko extend는 Class를 상속할 때 사용합니다.
 	 * @static
 	 * @method eg.Class.extend
-	 * @param {Class} oSuperClass
+	 * @param {eg.Class} oSuperClass
 	 * @param {Object} oDef
 	 * @return {Class}
 	 * @example
