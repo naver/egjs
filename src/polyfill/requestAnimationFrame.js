@@ -3,6 +3,7 @@
 // @todo change to jindo 'timer.js'
     /**
      * @namespace window
+     * @group Polyfill
      */
     /**
      * requestAnimationFrame polyfill

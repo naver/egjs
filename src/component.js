@@ -3,6 +3,7 @@
 	/**
 	 * Component
 	 * @class
+	 * @group EvergreenJs
 	 * @name eg.Component
 	 */
 	ns.Component = ns.Class({

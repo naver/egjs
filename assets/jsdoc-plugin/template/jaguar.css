@@ -366,6 +366,25 @@ footer {
   border: 0px;
 }
 
+/** Navigation Customize */
+.navigation .list .group {
+  border: 1px dashed rgba(150, 130, 130, 0.5);
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.navigation .group span {
+  font-size: 0.9em;
+  color: #777;
+}
+
+.navigation .group li.item {
+  margin: 5px 0 5px 20px;
+  padding: 5px;
+  border-bottom: 1px solid #333;
+}
+
 /** Parameter CSS */
 .main article ul.parameters {
   1margin: 0 0 20px 20px;

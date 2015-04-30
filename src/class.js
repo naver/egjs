@@ -1,8 +1,10 @@
 (function(ns) {
 	"use strict";
 	/**
+	 *
 	 * Class
 	 * The Class() object is used to implement the application using object-oriented programming.
+	 * @group EvergreenJs
 	 * @ko Class는 어플리케이션을 객체지향 프로그래밍 방식으로 구현하는데 사용합니다.
 	 * @class
 	 * @name eg.Class

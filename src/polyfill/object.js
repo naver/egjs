@@ -1,6 +1,7 @@
 if(!Object.keys) {
 	/**
      * @namespace Object
+     * @group Polyfill
      */
     /**
      * Object keys polyfill

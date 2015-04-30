@@ -1,7 +1,9 @@
 (function($, ns) {
 	"use strict";
 	/**
+	 *
 	 * To build flickable UI
+	 * @group EvergreenJs
 	 * @ko 플리킹 UI를 구성한다.
 	 * @class
 	 * @name eg.Flicking

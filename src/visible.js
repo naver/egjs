@@ -7,6 +7,7 @@
 	 * @class
 	 * @name eg.Visible
 	 * @extends eg.Component
+	 * @group EvergreenJs
 	 *
 	 * @param {Object} options
 	 * @param {String} [options.targetClass="check_visible"] a classname of tagets
