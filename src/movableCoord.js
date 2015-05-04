@@ -149,13 +149,17 @@
 			max = max || this.options.max;
 			circular = circular || this.options.circular;
 
-			// right & left
-			if( val = ( (circular[1] && pos[0] > max[0]) && min[0] ) || ( (circular[3] && pos[0] < min[0]) && max[0] ) ) {
-			    pos[0] = (pos[0] - min[0]) % (max[0] - min[0] + 1) + val;
+			if (circular[0] && pos[1] < min[1]) { // up
+				pos[1] = (pos[1] - min[1]) % (max[1] - min[1] + 1) + max[1];
 			}
-			// up & down
-			if( val = ( (circular[0] && pos[1] < min[1]) && max[1] ) || ( (circular[2] && pos[1] > max[1]) && min[1] ) ) {
-			    pos[1] = (pos[1] - min[1]) % (max[1] - min[1] + 1) + val;
+			if (circular[1] && pos[0] > max[0]) { // right
+				pos[0] = (pos[0] - min[0]) % (max[0] - min[0] + 1) + min[0];
+			}
+			if (circular[2] && pos[1] > max[1]) { // down
+				pos[1] = (pos[1] - min[1]) % (max[1] - min[1] + 1) + min[1];
+			}
+			if (circular[3] && pos[0] < min[0]) { // left
+				pos[0] = (pos[0] - min[0]) % (max[0] - min[0] + 1) + max[0];
 			}
 			return pos;
 		},
