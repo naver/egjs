@@ -59,6 +59,9 @@ function __persist($, global) {
 		return (state === null) ? null : $.extend(true, {}, state);
 	}
 	
+	/*
+	 * $.persist method saves state at history.state by history replaceState and returns current state.
+	 */
 	$.persist = function(state) {
 		if (_hasReplaceState && state) {
 			history.replaceState(state, document.title, location.href);
