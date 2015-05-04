@@ -16,12 +16,14 @@ module("persist", {
 		};
 		
 		this.method = __persist(jQuery, this.fakeWindow);
+		
 		/*
 		 *	 Mock History Object
 		*/
 		function History() {
 			this.state = null;
 		}
+		
 		History.prototype.replaceState = function(state) {
 			this.state = state;
 		};
@@ -38,16 +40,22 @@ test("_isPersisted : When persisted property of pageshow event supported", funct
 	};
 	var method = __persist(jQuery, this.fakeWindow);
 	
+	// When
+	var isPersisted = method._isPersisted(this.fakeEvent);
+	
 	// Then
-	equal(method._isPersisted(this.fakeEvent), true);
+	equal(isPersisted, true);
 	
 	// Given
 	this.fakeEvent = {
 		"persisted": false
 	};
-	
+
+	// When
+	isPersisted = method._isPersisted(this.fakeEvent);
+		
 	// Then
-	equal(method._isPersisted(this.fakeEvent), false);
+	equal(isPersisted, false);
 });
 
 test("_isPersisted : When persisted property of pageshow event not supported", function() {
@@ -55,8 +63,11 @@ test("_isPersisted : When persisted property of pageshow event not supported", f
 	this.fakeEvent = {};
 	var method = __persist(jQuery, this.fakeWindow);
 	
+	// When
+	var isPersisted = method._isPersisted(this.fakeEvent);
+	
 	// Then
-	equal(method._isPersisted(this.fakeEvent), false);
+	equal(isPersisted, false);
 });
 
 test("_isBackForwardNavigated", function() {
@@ -71,22 +82,31 @@ test("_isBackForwardNavigated", function() {
 	this.fakeWindow.performance.navigation.type = 0;
 	var method = __persist(jQuery, this.fakeWindow);
 	
+	// When
+	var isBackForwardNavigated = method._isBackForwardNavigated();
+
 	// Then
-	equal(method._isBackForwardNavigated(), false);
+	equal(isBackForwardNavigated, false);
 	
 	// Given
 	this.fakeWindow.performance.navigation.type = 1;
 	var method = __persist(jQuery, this.fakeWindow);
-	
+
+	// When
+	isBackForwardNavigated = method._isBackForwardNavigated();
+		
 	// Then
-	equal(method._isBackForwardNavigated(), false);
+	equal(isBackForwardNavigated, false);
 	
 	// Given
 	this.fakeWindow.performance.navigation.type = 2;
 	var method = __persist(jQuery, this.fakeWindow);
 	
+	// When
+	isBackForwardNavigated = method._isBackForwardNavigated();
+	
 	// Then
-	equal(method._isBackForwardNavigated(), true);
+	equal(isBackForwardNavigated, true);
 });
 
 test("_reset", function() {
@@ -97,30 +117,22 @@ test("_reset", function() {
 	equal(this.fakeWindow.history.state, null);
 });
 
-test("_clone : new Object but same key and values", function() {
-	// When
-	var clonedData = this.method._clone(this.data);
-	
-	// Then
-	notEqual(clonedData, this.data);
-	deepEqual(clonedData, this.data);
-});
-
 test("persist : save state data, get state data", function() {
-	// Given
+	// When
+	var state = this.method.persist();
+	
 	// Then
-	equal(this.method.persist(), null);
+	equal(state, null);
 	
 	// When
-	var clonedData = this.method.persist(this.data);
+	var clonedState = this.method.persist(this.data);
 	
 	// Then
-	notEqual(clonedData, this.data);
-	deepEqual(clonedData, this.data);
+	notEqual(clonedState, this.data);
 });
 
 test("_onPageshow : when bfCache hits, _reset method must be executed.", function() {
-	// When
+	// When : pageshow 이벤트가 호출되면 연동된 persist 이벤트가 호출되고 핸들러인 _onPageshow 가 실행된다.
 	$(this.fakeWindow).trigger({
 		type: "pageshow",
 		originalEvent: {
@@ -166,8 +178,26 @@ test("_onPageshow : when bfCache miss and not BF navigated, _reset method must b
 			persisted: false
 		}
 	});
+	
 	// Then
 	equal(method.persist(), null);
+});
+
+test("_clone: new Object but same key and values", function() {
+	// When
+	var clonedData = this.method._clone(this.data);
+	
+	// Then
+	notEqual(clonedData, this.data);
+	deepEqual(clonedData, this.data);
+});
+
+test("_clone: null in, null out", function() {
+	// When
+	var clonedData = this.method._clone(null);
+	
+	// Then
+	equal(clonedData, null);
 });
 
 test("_onPageshow : when bfCache miss and BF navigated, persist event must be triggered.", function(assert) {
@@ -182,13 +212,14 @@ test("_onPageshow : when bfCache miss and BF navigated, persist event must be tr
 	};
 	this.fakeWindow.performance.navigation.type = 2;
 	var method = __persist(jQuery, this.fakeWindow);
-	
-	// When
+
 	var restoredState = null;
 	$(this.fakeWindow).on("persist", function(e, state) {
 		restoredState = state;
 	});
 	var clonedData = method.persist(this.data);
+		
+	// When
 	$(this.fakeWindow).trigger({
 		type: "pageshow",
 		originalEvent: {
