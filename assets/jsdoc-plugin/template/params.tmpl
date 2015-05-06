@@ -72,7 +72,14 @@
     
         <!-- Description -->
         <div>
-            <?js= param.description ?>
+            <?js if (param.description) { 
+                var enDesc = param.description.replace(/<ko>(.|\n)*?<\/ko>/, "");
+                var koMatch = param.description.match(/<ko>((.|\n)*?)<\/ko>/, "");
+                var koDesc = koMatch && "<p>" + koMatch[1] + "</p>";
+            ?>
+            <div class="description en"><?js= enDesc ?></div>
+            <div class="description ko"><?js= koDesc || enDesc ?></div>
+            <?js } ?>
         </div>
 
         <!-- Sub parameters -->
