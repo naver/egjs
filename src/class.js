@@ -8,7 +8,7 @@
 	 * @ko Class는 어플리케이션을 객체지향 프로그래밍 방식으로 구현하는데 사용합니다.
 	 * @class
 	 * @name eg.Class
-	 * @param {Object} oDef Class definition of object literal type.
+	 * @param {Object} oDef Class definition of object literal type. <ko>리터럴 형태의 클래스 정의부</ko>
 	 * @example
 	 	var Some = eg.Class({
 	 		//Class initialize
@@ -39,8 +39,8 @@
 	 * @ko extend는 Class를 상속할 때 사용합니다.
 	 * @static
 	 * @method eg.Class.extend
-	 * @param {eg.Class} oSuperClass
-	 * @param {Object} oDef
+	 * @param {eg.Class} oSuperClass Super class. <ko>상속하려는 클래스</ko>
+	 * @param {Object} oDef Class definition of object literal type. <ko>리터럴 형태의 클래스 정의부</ko>
 	 * @return {Class}
 	 * @example
 	 	var Some = eg.Class.extend(eg.Component,{
