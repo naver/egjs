@@ -1,10 +1,10 @@
 function noop() {};
 module("persist", {
 	setup: function() {
+		this.fakeDocument = {
+			title: ""
+		};
 		this.fakeWindow = {
-			document: {
-				title: ""
-			},
 			location: {
 				href: ""
 			},
@@ -15,7 +15,7 @@ module("persist", {
 			"scrollTop": 100
 		};
 		
-		this.method = __persist(jQuery, this.fakeWindow);
+		this.method = __persist(jQuery, this.fakeDocument, this.fakeWindow);
 		
 		/*
 		 *	 Mock History Object
@@ -38,7 +38,7 @@ test("isPersisted : When persisted property of pageshow event supported", functi
 	this.fakeEvent = {
 		"persisted": true
 	};
-	var method = __persist(jQuery, this.fakeWindow);
+	var method = __persist(jQuery, this.fakeDocument, this.fakeWindow);
 	
 	// When
 	var isPersisted = method.isPersisted(this.fakeEvent);
@@ -61,7 +61,7 @@ test("isPersisted : When persisted property of pageshow event supported", functi
 test("isPersisted : When persisted property of pageshow event not supported", function() {
 	// Given
 	this.fakeEvent = {};
-	var method = __persist(jQuery, this.fakeWindow);
+	var method = __persist(jQuery, this.fakeDocument, this.fakeWindow);
 	
 	// When
 	var isPersisted = method.isPersisted(this.fakeEvent);
@@ -80,7 +80,7 @@ test("isBackForwardNavigated", function() {
 		TYPE_RESERVED: 255
 	};
 	this.fakeWindow.performance.navigation.type = 0;
-	var method = __persist(jQuery, this.fakeWindow);
+	var method = __persist(jQuery, this.fakeDocument, this.fakeWindow);
 	
 	// When
 	var isBackForwardNavigated = method.isBackForwardNavigated();
@@ -90,7 +90,7 @@ test("isBackForwardNavigated", function() {
 	
 	// Given
 	this.fakeWindow.performance.navigation.type = 1;
-	var method = __persist(jQuery, this.fakeWindow);
+	var method = __persist(jQuery, this.fakeDocument, this.fakeWindow);
 
 	// When
 	isBackForwardNavigated = method.isBackForwardNavigated();
@@ -100,7 +100,7 @@ test("isBackForwardNavigated", function() {
 	
 	// Given
 	this.fakeWindow.performance.navigation.type = 2;
-	var method = __persist(jQuery, this.fakeWindow);
+	var method = __persist(jQuery, this.fakeDocument, this.fakeWindow);
 	
 	// When
 	isBackForwardNavigated = method.isBackForwardNavigated();
@@ -154,7 +154,7 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 		TYPE_RESERVED: 255
 	};
 	this.fakeWindow.performance.navigation.type = 0;
-	var method = __persist(jQuery, this.fakeWindow);
+	var method = __persist(jQuery, this.fakeDocument, this.fakeWindow);
 	
 	// When
 	$(this.fakeWindow).trigger({
@@ -169,7 +169,7 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 	
 	// Given 
 	this.fakeWindow.performance.navigation.type = 1;
-	var method = __persist(jQuery, this.fakeWindow);
+	var method = __persist(jQuery, this.fakeDocument, this.fakeWindow);
 
 	// When
 	$(this.fakeWindow).trigger({
@@ -211,11 +211,11 @@ test("onPageshow : when bfCache miss and BF navigated, persist event must be tri
 		TYPE_RESERVED: 255
 	};
 	this.fakeWindow.performance.navigation.type = 2;
-	var method = __persist(jQuery, this.fakeWindow);
+	var method = __persist(jQuery, this.fakeDocument, this.fakeWindow);
 
 	var restoredState = null;
-	$(this.fakeWindow).on("persist", function(e, state) {
-		restoredState = state;
+	$(this.fakeWindow).on("persist", function(e) {
+		restoredState = e.state;
 	});
 	var clonedData = method.persist(this.data);
 		

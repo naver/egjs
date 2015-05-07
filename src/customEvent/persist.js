@@ -1,6 +1,6 @@
 // debug
 
-function __persist($, global) {
+function __persist($, doc, global) {
 	"use strict";
 	// debug
 	/**
@@ -8,17 +8,18 @@ function __persist($, global) {
 	 * @ko jQuery custom persist 이벤트 지원
 	 * @name jQuery.extention#persist
 	 * @event
-	 * @param {Event} e event
-	 * @param {Object} state
+     * @param {Object} e.state state info to be restored
 	 * @example
-	 * $(window).on("persist",function(e, state){
-	 *     // restore state
+	 * $(window).on("persist",function(e){
+	 * 		// restore state
+     *      e.state.scrollTop;
+     *      e.state.flickingPage;
 	 * });
 	 *
 	 */
 	var history = global.history;
 	var location = global.location;
-	var hasReplaceState = ("replaceState" in history) ? true : false;
+	var hasReplaceState = "replaceState" in history;
 
 
 	function onPageshow(e) {
@@ -26,7 +27,7 @@ function __persist($, global) {
 			reset();
 		} else {
 			if (isBackForwardNavigated() && history.state) {
-				$(global).trigger("persist", clone(history.state));
+				$(global).trigger("persist");
 			} else {
 				reset();
 			}
@@ -52,7 +53,7 @@ function __persist($, global) {
 	 * flush current history state
 	 */
 	function reset() {
-		hasReplaceState && history.replaceState(null, document.title, location.href);
+		hasReplaceState && history.replaceState(null, doc.title, location.href);
 	}
 	
 	function clone(state) {
@@ -64,7 +65,7 @@ function __persist($, global) {
 	 */
 	$.persist = function(state) {
 		if (hasReplaceState && state) {
-			history.replaceState(state, document.title, location.href);
+			history.replaceState(state, doc.title, location.href);
 		}
 		return clone(history.state);
 	};
@@ -75,7 +76,10 @@ function __persist($, global) {
 		},
 		teardown: function() {
 			$(global).off("pageshow", onPageshow);
-		}
+		},
+        trigger : function(e){
+            e.state = clone(history.state);
+        }
 	};
 		
 	// debug
@@ -89,6 +93,6 @@ function __persist($, global) {
 	};
 }
 if (!eg.debug) {
-	__persist(jQuery, window);
+	__persist(jQuery, document, window);
 }
 // debug
