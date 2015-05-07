@@ -2,6 +2,7 @@
 (function($, global) {
 	/**
 	 * @namespace eg
+	 * @group EvergreenJs
 	 */
 	var ua;
 	// ,

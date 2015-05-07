@@ -1,5 +1,6 @@
 	/**
      * @namespace Function
+     * @group Polyfill
      */
 if (!Function.prototype.bind) {
     /**

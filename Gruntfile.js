@@ -57,6 +57,7 @@ module.exports = function(grunt) {
       doc : {
         files: [
           {expand : true, flatten : true, src: ["assets/jsdoc-plugin/jsdoc/*.js"], dest: "node_modules/grunt-jsdoc/node_modules/jsdoc/plugins"},
+          {expand : true, flatten : true, src: ["assets/jsdoc-plugin/jaguarjs-jsdoc/*.*"], dest: "node_modules/jaguarjs-jsdoc/"},
           {expand : true, flatten : true, src: ["assets/jsdoc-plugin/template/*.tmpl"], dest: "node_modules/jaguarjs-jsdoc/tmpl"},
           {expand : true, flatten : true, src: ["assets/jsdoc-plugin/template/*.js"], dest: "node_modules/jaguarjs-jsdoc/static/scripts"},
           {expand : true, flatten : true, src: ["assets/jsdoc-plugin/template/*.css"], dest: "node_modules/jaguarjs-jsdoc/static/styles"}

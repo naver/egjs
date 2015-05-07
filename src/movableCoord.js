@@ -5,6 +5,7 @@
 	// ns.__checkLibrary__( !("easeOutQuint" in $.easing), "You must download jQuery Easing Plugin(http://gsgd.co.uk/sandbox/jquery/easing/)\n\ne.g. bower install jquery.easing");
 	/**
 	 * The MovableCoord can control coordinate by user's action.
+	 * @group EvergreenJs
 	 * @ko MovableCoord는 사용자 행동으로 좌표를 제어할 수 있다.
 	 * @class
 	 * @name eg.MovableCoord
