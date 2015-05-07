@@ -18,17 +18,17 @@ function __persist($, global) {
 	 */
 	var history = global.history;
 	var location = global.location;
-	var _hasReplaceState = ("replaceState" in history) ? true : false;
+	var hasReplaceState = ("replaceState" in history) ? true : false;
 
 
-	function _onPageshow(e) {
-		if (_isPersisted(e.originalEvent)) {
-			_reset();
+	function onPageshow(e) {
+		if (isPersisted(e.originalEvent)) {
+			reset();
 		} else {
-			if (_isBackForwardNavigated() && history.state) {
-				$(global).trigger("persist", _clone(history.state));
+			if (isBackForwardNavigated() && history.state) {
+				$(global).trigger("persist", clone(history.state));
 			} else {
-				_reset();
+				reset();
 			}
 		}
 	}
@@ -36,14 +36,14 @@ function __persist($, global) {
 	/*
 	 * If page is persisted(bfCache hit) return true else return false.
 	 */
-	function _isPersisted(e) {
+	function isPersisted(e) {
 		return !!e.persisted;
 	}
 	
 	/*
 	 * If current page navigated by browser back or forward button, returns true else returns false.
 	 */
-	function _isBackForwardNavigated() {
+	function isBackForwardNavigated() {
 		var wp = global.performance;
 		return !(wp && wp.navigation && (wp.navigation.type === wp.navigation.TYPE_NAVIGATE || wp.navigation.type === wp.navigation.TYPE_RELOAD));
 	}
@@ -51,11 +51,11 @@ function __persist($, global) {
 	/*
 	 * flush current history state
 	 */
-	function _reset() {
-		_hasReplaceState && history.replaceState(null, document.title, location.href);
+	function reset() {
+		hasReplaceState && history.replaceState(null, document.title, location.href);
 	}
 	
-	function _clone(state) {
+	function clone(state) {
 		return (state === null) ? null : $.extend(true, {}, state);
 	}
 	
@@ -63,28 +63,28 @@ function __persist($, global) {
 	 * $.persist method saves state at history.state by history replaceState and returns current state.
 	 */
 	$.persist = function(state) {
-		if (_hasReplaceState && state) {
+		if (hasReplaceState && state) {
 			history.replaceState(state, document.title, location.href);
 		}
-		return _clone(history.state);
+		return clone(history.state);
 	};
 	
 	$.event.special.persist = {
 		setup: function() {
-			$(global).on("pageshow", _onPageshow);
+			$(global).on("pageshow", onPageshow);
 		},
 		teardown: function() {
-			$(global).off("pageshow", _onPageshow);
+			$(global).off("pageshow", onPageshow);
 		}
 	};
 		
 	// debug
 	return {
-		"_isPersisted": _isPersisted,
-		"_isBackForwardNavigated": _isBackForwardNavigated,
-		"_onPageshow": _onPageshow,
-		"_reset": _reset,
-		"_clone": _clone,
+		"isPersisted": isPersisted,
+		"isBackForwardNavigated": isBackForwardNavigated,
+		"onPageshow": onPageshow,
+		"reset": reset,
+		"clone": clone,
 		"persist": $.persist
 	};
 }

@@ -33,7 +33,7 @@ module("persist", {
 	}
 });
 
-test("_isPersisted : When persisted property of pageshow event supported", function() {
+test("isPersisted : When persisted property of pageshow event supported", function() {
 	// Given
 	this.fakeEvent = {
 		"persisted": true
@@ -41,7 +41,7 @@ test("_isPersisted : When persisted property of pageshow event supported", funct
 	var method = __persist(jQuery, this.fakeWindow);
 	
 	// When
-	var isPersisted = method._isPersisted(this.fakeEvent);
+	var isPersisted = method.isPersisted(this.fakeEvent);
 	
 	// Then
 	equal(isPersisted, true);
@@ -52,25 +52,25 @@ test("_isPersisted : When persisted property of pageshow event supported", funct
 	};
 
 	// When
-	isPersisted = method._isPersisted(this.fakeEvent);
+	isPersisted = method.isPersisted(this.fakeEvent);
 		
 	// Then
 	equal(isPersisted, false);
 });
 
-test("_isPersisted : When persisted property of pageshow event not supported", function() {
+test("isPersisted : When persisted property of pageshow event not supported", function() {
 	// Given
 	this.fakeEvent = {};
 	var method = __persist(jQuery, this.fakeWindow);
 	
 	// When
-	var isPersisted = method._isPersisted(this.fakeEvent);
+	var isPersisted = method.isPersisted(this.fakeEvent);
 	
 	// Then
 	equal(isPersisted, false);
 });
 
-test("_isBackForwardNavigated", function() {
+test("isBackForwardNavigated", function() {
 	// Given
 	this.fakeWindow.performance = {};
 	this.fakeWindow.performance.navigation = {
@@ -83,7 +83,7 @@ test("_isBackForwardNavigated", function() {
 	var method = __persist(jQuery, this.fakeWindow);
 	
 	// When
-	var isBackForwardNavigated = method._isBackForwardNavigated();
+	var isBackForwardNavigated = method.isBackForwardNavigated();
 
 	// Then
 	equal(isBackForwardNavigated, false);
@@ -93,7 +93,7 @@ test("_isBackForwardNavigated", function() {
 	var method = __persist(jQuery, this.fakeWindow);
 
 	// When
-	isBackForwardNavigated = method._isBackForwardNavigated();
+	isBackForwardNavigated = method.isBackForwardNavigated();
 		
 	// Then
 	equal(isBackForwardNavigated, false);
@@ -103,15 +103,15 @@ test("_isBackForwardNavigated", function() {
 	var method = __persist(jQuery, this.fakeWindow);
 	
 	// When
-	isBackForwardNavigated = method._isBackForwardNavigated();
+	isBackForwardNavigated = method.isBackForwardNavigated();
 	
 	// Then
 	equal(isBackForwardNavigated, true);
 });
 
-test("_reset", function() {
+test("reset", function() {
 	// When
-	this.method._reset();
+	this.method.reset();
 	
 	// Then
 	equal(this.fakeWindow.history.state, null);
@@ -131,7 +131,7 @@ test("persist : save state data, get state data", function() {
 	notEqual(clonedState, this.data);
 });
 
-test("_onPageshow : when bfCache hits, _reset method must be executed.", function() {
+test("onPageshow : when bfCache hits, _reset method must be executed.", function() {
 	// When : pageshow 이벤트가 호출되면 연동된 persist 이벤트가 호출되고 핸들러인 _onPageshow 가 실행된다.
 	$(this.fakeWindow).trigger({
 		type: "pageshow",
@@ -144,7 +144,7 @@ test("_onPageshow : when bfCache hits, _reset method must be executed.", functio
 	equal(this.method.persist(), null);
 });
 
-test("_onPageshow : when bfCache miss and not BF navigated, _reset method must be executed.", function() {
+test("onPageshow : when bfCache miss and not BF navigated, _reset method must be executed.", function() {
 	// Given  
 	this.fakeWindow.performance = {};
 	this.fakeWindow.performance.navigation = {
@@ -183,24 +183,24 @@ test("_onPageshow : when bfCache miss and not BF navigated, _reset method must b
 	equal(method.persist(), null);
 });
 
-test("_clone: new Object but same key and values", function() {
+test("clone: new Object but same key and values", function() {
 	// When
-	var clonedData = this.method._clone(this.data);
+	var clonedData = this.method.clone(this.data);
 	
 	// Then
 	notEqual(clonedData, this.data);
 	deepEqual(clonedData, this.data);
 });
 
-test("_clone: null in, null out", function() {
+test("clone: null in, null out", function() {
 	// When
-	var clonedData = this.method._clone(null);
+	var clonedData = this.method.clone(null);
 	
 	// Then
 	equal(clonedData, null);
 });
 
-test("_onPageshow : when bfCache miss and BF navigated, persist event must be triggered.", function(assert) {
+test("onPageshow : when bfCache miss and BF navigated, persist event must be triggered.", function(assert) {
 	// Given  
 	var done = assert.async();
 	this.fakeWindow.performance = {};
