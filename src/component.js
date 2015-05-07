@@ -3,6 +3,7 @@
 	/**
 	 * Component
 	 * @class
+	 * @group EvergreenJs
 	 * @name eg.Component
 	 */
 	ns.Component = ns.Class({
@@ -88,6 +89,7 @@
 				"some" : function(){
 					this.on("hi",this.hi); //attach event
 				}
+			});
 		 */
 		on : function(eventName, handlerToAttach) {
 			if (typeof handlerToAttach === "undefined") {
@@ -121,6 +123,7 @@
 				"some" : function(){
 					this.off("hi",this.hi); //detach event
 				}
+			});
 		 */
 		off : function(eventName, handlerToDetach) {
 			// All event detach.

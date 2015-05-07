@@ -102,6 +102,7 @@ li {
 .main {
   padding: 20px 20px;
   margin-left: 250px;
+  max-width: 750px;
 }
 .main .page-title {
   display: none;
@@ -363,4 +364,69 @@ footer {
   padding: 2px 4px;
   margin-right: 8px;
   border: 0px;
+}
+
+/** Navigation Customize */
+.navigation .list .group {
+  border: 1px dashed rgba(150, 130, 130, 0.5);
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.navigation .group span {
+  font-size: 0.9em;
+  color: #777;
+}
+
+.navigation .group li.item {
+  margin: 5px 0 5px 20px;
+  padding: 5px;
+  border-bottom: 1px solid #333;
+}
+
+/** Parameter CSS */
+.main article ul.parameters {
+  1margin: 0 0 20px 20px;
+  margin: 10px 0;
+  background: #eee;
+  1border: 1px solid #ccc;
+  1margin: 0 auto 15px;
+  border-radius: 3px;
+  color: #333;
+  text-shadow: 0 1px 0 #fff;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+
+.main article ul.parameters ul {
+  margin-bottom: 0;
+  margin-left: 20px;
+
+  border: 0px;
+}
+
+.main article ul.parameters ul.parameters li:first-child {
+  border-top: 1px solid #CCC;
+}
+
+.main article ul.parameters li {
+  padding-bottom: 5px;
+  padding-top: 5px;
+  padding-left: 20px;
+  line-height: 20px;
+  list-style-type: none;
+  1background: url(../images/bullet.png) no-repeat 0 10px;
+  border-bottom: 1px solid #CCC;
+}
+
+.main article ul.parameters li .optional {
+  1float: left;
+  border-radius: 3px;
+  background-color: #ddd!important;
+  font-size: 0.7em;
+  padding: 2px 4px;
+  margin-right: 5px;
+  color: gray;
 }

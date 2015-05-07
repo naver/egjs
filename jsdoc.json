@@ -3,7 +3,7 @@
         "allowUnknownTags" : true,
         "dictionaries": ["jsdoc","closure"]
     },
-    "plugins": ["plugins/markdown","plugins/ko"],
+    "plugins": ["plugins/markdown","plugins/ko", "plugins/group", "plugins/codepen"],
     "templates": {
         "cleverLinks": true,
         "monospaceLinks": true,

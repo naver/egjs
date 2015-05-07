@@ -46,13 +46,20 @@ $(function () {
     var filename = $('.page-title').data('filename').replace(/\.[a-z]+$/, '');
     var $currentItem = $('.navigation .item[data-name*="' + filename + '"]:eq(0)');
 
+    // if ($currentItem.length) {
+    //     $currentItem
+    //         .remove()
+    //         .prependTo('.navigation .list')
+    //         .show()
+    //         .find('.itemMembers')
+    //             .show();
+    // }
+    // Retain a menu order 2015.04.29. jongmoon.
     if ($currentItem.length) {
         $currentItem
-            .remove()
-            .prependTo('.navigation .list')
             .show()
             .find('.itemMembers')
-                .show();
+                .slideDown();
     }
 
     // Auto resizing on navigation
