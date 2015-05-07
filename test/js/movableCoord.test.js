@@ -247,6 +247,7 @@ asyncTest("slow movement test (no-velocity)", function() {
 		"hold" : function(e) {
 			firedHold = true;
 			deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
+			equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
 		},
 		"change" : function(e) {
 			equal(e.holding, true, "holding value was 'true' after animation event");
@@ -301,6 +302,7 @@ asyncTest("fast movement test (velocity)", function() {
 		"hold" : function(e) {
 			firedHold = true;
 			deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
+			equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
 		},
 		"change" : function(e) {
 			if(firedAnimation) {
