@@ -107,13 +107,13 @@
 						]
 					]
 				});
-			hammer.on("panstart", function(e) {
+			hammer.on("hammer.input", function(e) {
 				// apply options each
 				this._subOptions = subOptions;
 				this._curHammer = hammer;
 				this._panstart(e);
 			}.bind(this))
-			.on("panmove", this._panmove.bind(this))
+			.on("panstart panmove", this._panmove.bind(this))
 			.on("panend", this._panend.bind(this));
 			return hammer;
 		},
@@ -145,7 +145,6 @@
 		},
 
 		_getCircularPos : function(pos, min, max, circular) {
-			var val;
 			min = min || this.options.min;
 			max = max || this.options.max;
 			circular = circular || this.options.circular;
@@ -222,11 +221,11 @@
 			// not support offset properties in Hammerjs - end
 
 			if(direction & ns.DIRECTION_HORIZONTAL) {
-				pos[0] += e.offsetX * scale[0];
+				pos[0] = -e.deltaX + (e.offsetX * scale[0]);
 				prevent = true;
 			}
 			if(direction & ns.DIRECTION_VERTICAL) {
-				pos[1] += e.offsetY * scale[1];
+				pos[1] = -e.deltaY + (e.offsetY * scale[1]);
 				prevent = true;
 			}
 			if(prevent) {
