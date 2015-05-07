@@ -249,19 +249,19 @@
 				pos[1] = tv>tx?tx:(tv<tn?tn:tv);
 			} else {	// when start pointer is holded inside
 				// get a initialization slop value to prevent smooth animation.
-				var initSlop = easing(null, 0.0001 , 0, 1, 1) / 0.0001;
+				var initSlope = this._isInEasing ? easing(null, 0.9999 , 0, 1, 1) / 0.9999 : easing(null, 0.0001 , 0, 1, 1) / 0.0001;
 				if (pos[1] < min[1]) { // up
-					tv = (min[1]-pos[1])/(out[0]*initSlop);
+					tv = (min[1]-pos[1])/(out[0]*initSlope);
 					pos[1] = min[1]-easing(null, tv>1?1:tv , 0, 1, 1)* out[0];
 				} else if (pos[1] > max[1]) { // down
-					tv = (pos[1]-max[1])/(out[2]*initSlop);
+					tv = (pos[1]-max[1])/(out[2]*initSlope);
 					pos[1] = max[1]+easing(null, tv>1?1:tv , 0, 1, 1)*out[2];
 				}
 				if (pos[0] < min[0]) { // left
-					tv = (min[0]-pos[0])/(out[3]*initSlop);
+					tv = (min[0]-pos[0])/(out[3]*initSlope);
 					pos[0] = min[0]-easing(null, tv>1?1:tv , 0, 1, 1)*out[3];
 				} else if (pos[0] > max[0]) { // right
-					tv = (pos[0]-max[0])/(out[1]*initSlop);
+					tv = (pos[0]-max[0])/(out[1]*initSlope);
 					pos[0] = max[0]+easing(null, tv>1?1:tv , 0, 1, 1)*out[1];
 				}
 			}
@@ -593,6 +593,21 @@
 				y != null ? this._pos[1] + y : this._pos[1],
 				duration
 			);
+		},
+
+		_isInEasing : function(easing) {
+			for(var p in $.easing) {
+				if($.easing[p] === easing) {
+					if(p.indexOf("Out") === -1) {
+						// easing in type
+						return true;
+					} else {
+						// easing out type
+						return false;
+					}
+				}
+			}
+			return false;
 		},
 
 		/**
