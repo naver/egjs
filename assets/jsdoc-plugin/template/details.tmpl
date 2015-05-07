@@ -82,18 +82,26 @@ var self = this;
     </dd>
     <?js } ?>
 
-    <?js if (data.codepen && codepen.length) { ?>
-        <h5>Codepen</h5>
+    <?js if (data.codepen) { ?>
+        <h5>Codepen:</h5>
         <?js {
-        function toCodepenEmbedHtml(id) {
-            return '<p data-height="268" data-theme-id="0" data-slug-hash="' + id + '" data-default-tab="result" data-user="evergreenjs" class=\'codepen\'>See the Pen <a href=\'http://codepen.io/evergreenjs/pen/' + id + '/\'>eg.Flicking</a> by evergreenjs (<a href=\'http://codepen.io/evergreenjs\'>@evergreenjs</a>) on <a href=\'http://codepen.io\'>CodePen</a>.</p>\
+        function toCodepenEmbedHtml(id, height) {
+            if (!height) {
+                height = 268;
+            }
+
+            return '<p data-height="' + height + '" data-theme-id="0" data-slug-hash="' + id + '" data-default-tab="result" data-user="evergreenjs" class=\'codepen\'>See the Pen <a href=\'http://codepen.io/evergreenjs/pen/' + id + '/\'>eg.Flicking</a> by evergreenjs (<a href=\'http://codepen.io/evergreenjs\'>@evergreenjs</a>) on <a href=\'http://codepen.io\'>CodePen</a>.</p>\
             <script async src="http://assets.codepen.io/assets/embed/ei.js"></script>';
-        }
-        codepen.forEach(function(info) {?>
-            <div class="description ko"><?js= info.ko ?></div>
-            <div class="description en"><?js= info.en ?></div>
-            <?js= toCodepenEmbedHtml(info.id) ?>
-        <?js }); ?><!--codepen.forEach -->
-        <?js } ?><!-- toCodepenEmbedHtml -->
+        } ?>
+
+        <?js if (codepen.collectionId) { ?>
+        <div class="description ko"><a href="http://codepen.io/collection/<?js= codepen.collectionId ?>">전체 데모 보기</a></div>
+        <div class="description en"><a href="http://codepen.io/collection/<?js= codepen.collectionId ?>">Demo Collection</a></div>
+        <?js } ?>
+
+        <div class="description ko"><?js= codepen.ko ?></div>
+        <div class="description en"><?js= codepen.en ?></div>
+        <?js= toCodepenEmbedHtml(codepen.id, codepen.height) ?>
+        <?js } ?>
     <?js } ?>
 </dl>

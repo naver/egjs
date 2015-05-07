@@ -22,7 +22,7 @@
 	 * @param {Function} [options.panelEffect=easing.easeInCubic] Function of the jQuery Easing Plugin
 	 * @param {Number} [options.defaultIndex=0] Default panel index to show in first time
      * 
-	 * @codepen [{"id":"YPoqNg", "ko":"플리킹 기본 예제", "en":"Flicking default example"}]
+	 * @codepen {"id":"rVOpPK", "ko":"플리킹 기본 예제", "en":"Flicking default example", "collectionId":"ArxyLK", "height" : 403}
 	 *
 	 * @see jQuery Easing Plugin {@link http://gsgd.co.uk/sandbox/jquery/easing}
 	 * @example
