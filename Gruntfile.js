@@ -101,7 +101,7 @@ module.exports = function(grunt) {
   grunt.registerTask("test", function() {
     var eachfile = Array.prototype.slice.apply(arguments);
     if(eachfile.length) {
-      eachfile = eachfile.map(function(v, i, a) {
+      eachfile = eachfile.map(function(v) {
         return "test/" + v + ".test.html";
       }, this);
     } else {
