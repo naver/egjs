@@ -99,9 +99,11 @@ var self = this;
         <div class="description en"><a href="http://codepen.io/collection/<?js= codepen.collectionId ?>">Demo Collection</a></div>
         <?js } ?>
 
+        <?js if (codepen.id) { ?>
         <div class="description ko"><?js= codepen.ko ?></div>
         <div class="description en"><?js= codepen.en ?></div>
         <?js= toCodepenEmbedHtml(codepen.id, codepen.height) ?>
-        <?js } ?>
-    <?js } ?>
+        <?js } ?> <!-- if codepen.id -->
+        <?js } ?> <!-- toCodepenEmbedHtml 상단 -->
+    <?js } ?><!-- if data.codepen -->
 </dl>
