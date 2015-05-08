@@ -11,11 +11,13 @@ function __persist($, doc, global) {
      * @param {Object} e.state state info to be restored
 	 * @example
 	 * $(window).on("persist",function(e){
-	 * 		// restore state
-     *      e.state.scrollTop;
-     *      e.state.flickingPage;
+	 * 		// restore state     
+     *		if(e.state.flickingPage)
+     *			oSlideFlicking.moveTo(e.state.flickingPage);
+     *
+	 *		if(e.state.scrollTop)
+     *      	document.scrollTo(e.state.scrollTop);
 	 * });
-	 *
 	 */
 	var history = global.history;
 	var location = global.location;
@@ -60,8 +62,27 @@ function __persist($, doc, global) {
 		return (state === null) ? null : $.extend(true, {}, state);
 	}
 	
-	/*
-	 * $.persist method saves state at history.state by history replaceState and returns current state.
+	/**
+	 * Saves state and returns current state.
+	 * @ko 인자로 넘긴 현재 상태정보를 저장하고, 저장되어있는 현재 상태 객체를 반환한다.
+	 * @method jQuery.extention#persist
+     * @param {Object} state state info to be restored
+	 * @return {Object} state info to be restored
+	 * @example
+	 * $("a").on("click",function(e){
+	 *	 	e.preventdefault()
+	 * 		
+	 *		// get state
+	 *		var state = $.persist();
+	 *
+	 *		// update state
+	 *		state.scrollTop = document.scrollTop;
+     *      
+     *		// save state
+     *		$.persist(state);
+     *
+     * 		location.href = this.attr("href")
+	 * });
 	 */
 	$.persist = function(state) {
 		if (hasReplaceState && state) {
