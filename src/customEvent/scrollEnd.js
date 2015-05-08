@@ -4,7 +4,7 @@ function __scrollEnd($, ns, global, doc){
     /**
      * Support scrollEnd event in jQuery
      * @ko jQuery custom scrollEnd 이벤트 지원
-     * @name jQuery.extention#scrollEnd
+     * @name jQuery#scrollEnd
      * @event
      * @param {Number} e.top top position
      * @param {Number} e.left left position

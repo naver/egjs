@@ -4,14 +4,14 @@ function __rotate($, ns, doc, global){
 // debug
 
     /**
-     * @namespace jQuery.extention
+     * @namespace jQuery
      * @group jQuery Extension
      */
     /**
      * Support rotate event in jQuery
      *
      * @ko jQuery custom rotate 이벤트 지원
-     * @name jQuery.extention#rotate
+     * @name jQuery#rotate
      * @event
      * @param {Event} e event
      * @param {Boolean} e.isVertical vertical
