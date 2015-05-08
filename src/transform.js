@@ -3,7 +3,7 @@ var __transform = (function($, global) {
     /**
      * Extends jQuery animate in order to use 'transform' property.
      * @ko jQuery animate 사용시 transform을 사용할 수 있도록 확장한 animate 메소드
-     * @name jQuery.extention#animate
+     * @name jQuery#animate
      * @method
      * @param {Object} properties An object of CSS properties and values that the animation will move toward.
      * @param {Number|String} [duration=4000] A string or number determining how long the animation will run.
