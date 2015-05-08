@@ -79,7 +79,8 @@ eg.hook.agent = function(agent) {
 				browserMatch = /(Chrome|CriOS|Firefox)[\s\/]([\w.]+)/.exec(ua) ||
 					/(MSIE|Trident)[\/\s]([\d.]+)/.exec(ua) ||
 					/(PhantomJS)\/([\d.]+)/.exec(ua) ||
-					[];
+					[],
+                webviewMatch = /(NAVER|Daum)/.exec(ua) || [];
 
 			// os
 			if(osMatch.length >= 3) {
@@ -106,10 +107,10 @@ eg.hook.agent = function(agent) {
 					browserMatch[1] = browserMatch[1].toLowerCase();
 				}
 			} else if(browserMatch.length === 0 && osMatch[1] && osMatch[1] !== "android") {
-				browserMatch = /(Safari)\/([\w.]+)/.exec(ua) || ["","inapp"];
+				browserMatch = /(Safari)\/([\w.]+)/.exec(ua) || (osMatch[1] === "ios" ? ["", "safari"] : ["",""]);
 				browserMatch[1] = browserMatch[1].toLowerCase();
-				if(/safari/.test(browserMatch[1]) ) {
-					browserMatch[2] = /Apple/.test(ua) ? ua.match(/Version\/([\d.]+)/)[1] : null;
+				if(browserMatch[0] && /safari/.test(browserMatch[1]) ) {
+					browserMatch[2] = /Apple/.test(ua) ? ua.match(/Version\/([\d.]+)/)[1] || null : null;
 				}
 			}
 
@@ -120,7 +121,8 @@ eg.hook.agent = function(agent) {
 				},
 				browser : {
 					name : browserMatch[1] || "default",
-					version : browserMatch[2] || osMatch[2] || "-1"
+					version : browserMatch[2] || /*osMatch[2] ||*/ "-1",
+					webview : webviewMatch.length > 0
 				}
 			};
 			info = this.hook.agent  ? this.hook.agent(info) : info;
