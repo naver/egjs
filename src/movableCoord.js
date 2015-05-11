@@ -60,6 +60,7 @@
 			this._hammers = {};
 			this._curHammer = null;
 			this._pos = [ this.options.min[0], this.options.min[1] ];
+			this._moveDistance = null;
 			this._subOptions = {};
 			this._animationEnd = this._animationEnd.bind(this);	// for caching
 		},
@@ -107,13 +108,15 @@
 						]
 					]
 				});
-			hammer.on("panstart", function(e) {
-				// apply options each
-				this._subOptions = subOptions;
-				this._curHammer = hammer;
-				this._panstart(e);
+			hammer.on("hammer.input", function(e) {
+				if(e.isFirst) {
+					// apply options each
+					this._subOptions = subOptions;
+					this._curHammer = hammer;
+					this._panstart(e);
+				}
 			}.bind(this))
-			.on("panmove", this._panmove.bind(this))
+			.on("panstart panmove", this._panmove.bind(this))
 			.on("panend", this._panend.bind(this));
 			return hammer;
 		},
@@ -145,7 +148,6 @@
 		},
 
 		_getCircularPos : function(pos, min, max, circular) {
-			var val;
 			min = min || this.options.min;
 			max = max || this.options.max;
 			circular = circular || this.options.circular;
@@ -185,16 +187,18 @@
 			 * @ko 스크린에서 사용자가 손을 대었을 때
 			 * @name eg.MovableCoord#hold
 			 * @event
-			 * @param {Array} pos coordinate
-			 * @param {Array} pos.0 x-coordinate
-			 * @param {Array} pos.1 y-coordinate
-			 * @param {Object} hammerEvent Hammerjs event. http://hammerjs.github.io/api/#hammer.input-event
+			 * @param {Object} param
+			 * @param {Array} param.pos coordinate
+			 * @param {Number} param.pos.0 x-coordinate
+			 * @param {Number} param.pos.1 y-coordinate
+			 * @param {Object} param.hammerEvent Hammerjs event. http://hammerjs.github.io/api/#hammer.input-event
 			 *
 			 */
 			this.trigger("hold", {
 				pos : [ pos[0], pos[1] ],
 				hammerEvent : e
 			});
+			this._moveDistance = [ pos[0], pos[1] ];
 			this._grabOutside = this._isOutside(pos, this.options.min, this.options.max);
 		},
 
@@ -222,11 +226,11 @@
 			// not support offset properties in Hammerjs - end
 
 			if(direction & ns.DIRECTION_HORIZONTAL) {
-				pos[0] += e.offsetX * scale[0];
+				this._moveDistance[0] += (e.offsetX * scale[0]);
 				prevent = true;
 			}
 			if(direction & ns.DIRECTION_VERTICAL) {
-				pos[1] += e.offsetY * scale[1];
+				this._moveDistance[1] += (e.offsetY * scale[1]);
 				prevent = true;
 			}
 			if(prevent) {
@@ -234,6 +238,7 @@
 				e.srcEvent.stopPropagation();
 			}
 			e.preventSystemEvent = prevent;
+			pos[0] = this._moveDistance[0], pos[1] = this._moveDistance[1];
 			pos = this._getCircularPos(pos, min, max);
 
 			// from outside to inside
@@ -265,12 +270,12 @@
 					pos[0] = max[0]+easing(null, tv>1?1:tv , 0, 1, 1)*out[1];
 				}
 			}
-
 			this._triggerChange(pos, true, e);
 		},
 
 		// panend event handler
 		_panend : function(e) {
+			if(!this._moveDistance) { return; }
 			var direction = this._subOptions.direction,
 				scale = this._subOptions.scale,
 				vX =  Math.abs(e.velocityX),
@@ -285,6 +290,7 @@
 					vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
 				], this._subOptions.maximumSpeed ),
 			this._animationEnd, false, null, e);
+			this._moveDistance = null;
 		},
 
 		_animationEnd : function() {
@@ -372,12 +378,12 @@
 				 * @name eg.MovableCoord#release
 				 * @event
 				 *
-				 * @param {Object}
-				 * @param {Array} pos departure coordinate
-				 * @param {Number} pos.0 departure x-coordinate
-				 * @param {Number} pos.1 departure y-coordinate
-				 * @param {Boolean} holding
-				 * @param {Object} hammerEvent Hammerjs event. http://hammerjs.github.io/api/#hammer.input-event
+				 * @param {Object} param
+				 * @param {Array} param.pos departure coordinate
+				 * @param {Number} param.pos.0 departure x-coordinate
+				 * @param {Number} param.pos.1 departure y-coordinate
+				 * @param {Boolean} param.holding
+				 * @param {Object} param.hammerEvent Hammerjs event. http://hammerjs.github.io/api/#hammer.input-event
 				 *
 				 */
 				this.trigger("release", param);
@@ -426,17 +432,17 @@
 			 * @ko 에니메이션이 시작했을 때 발생한다.
 			 * @name eg.MovableCoord#animation
 			 * @event
-			 *
-			 * @param {Number} duration
-			 * @param {Array} depaPos departure coordinate
-			 * @param {Number} depaPos.0 departure x-coordinate
-			 * @param {Number} depaPos.1 departure y-coordinate
-			 * @param {Array} destPos destination coordinate
-			 * @param {Number} destPos.0 destination x-coordinate
-			 * @param {Number} destPos.1 destination y-coordinate
-			 * @param {Boolean} isBounce
-			 * @param {Boolean} isCircular
-			 * @param {Function} done
+			 * @param {Object} param
+			 * @param {Number} param.duration
+			 * @param {Array} param.depaPos departure coordinate
+			 * @param {Number} param.depaPos.0 departure x-coordinate
+			 * @param {Number} param.depaPos.1 departure y-coordinate
+			 * @param {Array} param.destPos destination coordinate
+			 * @param {Number} param.destPos.0 destination x-coordinate
+			 * @param {Number} param.destPos.1 destination y-coordinate
+			 * @param {Boolean} param.isBounce
+			 * @param {Boolean} param.isCircular
+			 * @param {Function} param.done
 			 *
 			 */
 			var retTrigger = this.trigger("animation", param);

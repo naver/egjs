@@ -57,7 +57,6 @@ module.exports = function(grunt) {
       doc : {
         files: [
           {expand : true, flatten : true, src: ["assets/jsdoc-plugin/jsdoc/*.js"], dest: "node_modules/grunt-jsdoc/node_modules/jsdoc/plugins"},
-          {expand : true, flatten : true, src: ["assets/jsdoc-plugin/jaguarjs-jsdoc/*.*"], dest: "node_modules/jaguarjs-jsdoc/"},
           {expand : true, flatten : true, src: ["assets/jsdoc-plugin/template/*.tmpl"], dest: "node_modules/jaguarjs-jsdoc/tmpl"},
           {expand : true, flatten : true, src: ["assets/jsdoc-plugin/template/*.js"], dest: "node_modules/jaguarjs-jsdoc/static/scripts"},
           {expand : true, flatten : true, src: ["assets/jsdoc-plugin/template/*.css"], dest: "node_modules/jaguarjs-jsdoc/static/styles"}
@@ -81,7 +80,7 @@ module.exports = function(grunt) {
     watch : {
       source : {
         files : [ "src/**/*.js"],
-        tasks : [ "build", "jsdoc" ],
+        tasks : [ "build" ],
         options : {
           spawn : false
         }
@@ -102,7 +101,7 @@ module.exports = function(grunt) {
   grunt.registerTask("test", function() {
     var eachfile = Array.prototype.slice.apply(arguments);
     if(eachfile.length) {
-      eachfile = eachfile.map(function(v, i, a) {
+      eachfile = eachfile.map(function(v) {
         return "test/" + v + ".test.html";
       }, this);
     } else {
@@ -115,5 +114,5 @@ module.exports = function(grunt) {
 
   grunt.registerTask("docBuild", ["copy:doc", "jsdoc"]);
   grunt.registerTask("build", ["concat", "uglify", "copy:lib", "docBuild"]);
-  grunt.registerTask("default", ["test", "concat", "uglify", "copy:lib","copy:doc", "jsdoc"]);
+  grunt.registerTask("default", ["jshint", "test", "build"]);
 };
