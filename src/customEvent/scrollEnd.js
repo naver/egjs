@@ -6,8 +6,8 @@ function __scrollEnd($, ns, global, doc){
      * @ko jQuery custom scrollEnd 이벤트 지원
      * @name jQuery#scrollEnd
      * @event
-     * @param {Number} e.top top position
-     * @param {Number} e.left left position
+     * @param {Number} e.top top position <ko>상단(top) 위치 값</ko>
+     * @param {Number} e.left left position <ko>왼쪽(left) 위치 값</ko>
      * @example
      * $(window).on("scrollend",function(e){
      *      e.top;
