@@ -131,7 +131,7 @@ test("one element, double bind", function() {
 	equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "hammer instance count is same" );
 });
 
-module("movableCoord public methods Test", {
+module("movableCoord methods Test", {
 	setup : function() {
 		this.inst = new eg.MovableCoord( {
 			min : [ 0, 0 ],
@@ -174,6 +174,22 @@ test("setTo", function() {
 	this.inst.setTo(600, -900);
 	// Then
 	deepEqual(this.inst.get(), [300, 0], "if position parameters was out of range, set to position min or max values.");
+});
+
+
+test("_isInEasing", function() {
+	// Given
+	var easing = [
+		[ $.easing.easeInQuad, true ],
+		[ $.easing.easeInOutCirc, false ],
+		[ $.easing.easeInCubic, true ],
+		[ $.easing.easeOutQuint, false ]
+	];
+	// When
+	// Then
+	easing.forEach(function(v) {
+		equal(this.inst._isInEasing(v[0]), v[1], "determine if easing function is 'In' style");
+	}, this);
 });
 
 asyncTest("setTo : check a 'change' event", function() {
