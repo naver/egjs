@@ -219,7 +219,8 @@ var ua = [
             "version" : "8.0"
         },
         "isHWAccelerable" : true,
-        "isTransitional" : false
+        "isTransitional" : false,
+        "_hasClickBug" : true
     },
 	{
         // iPhone 8.0 - webview
@@ -235,7 +236,8 @@ var ua = [
             "webview" : true
         },
         "isHWAccelerable" : true,
-        "isTransitional" : false
+        "isTransitional" : false,
+        "_hasClickBug" : true
     },
 	{
 		// GalaxyS:2.1
@@ -426,7 +428,8 @@ var ua = [
 			"version" : "28.0.1500.94",
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false
+		"isTransitional" : false,
+		"_hasClickBug" : false
 	},
 	{
 		// GalaxyS5:chrome
@@ -441,7 +444,8 @@ var ua = [
 			"version" : "42.0.2311.108",
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : true
+		"isTransitional" : true,
+		"_hasClickBug" : false
 	},
 	{
         // GalaxyS5 - webview
@@ -457,7 +461,8 @@ var ua = [
             "webview" : true
         },
         "isHWAccelerable" : true,
-        "isTransitional" : true
+        "isTransitional" : true,
+        "_hasClickBug" : false
     },
 	{
         // GalaxyS5 - higgs
@@ -473,7 +478,8 @@ var ua = [
             "webview" : true
         },
         "isHWAccelerable" : true,
-        "isTransitional" : true
+        "isTransitional" : true,
+        "_hasClickBug" : false
     },
 	{
 		// GalaxyNexus:4.2.2
@@ -834,7 +840,7 @@ ua.forEach(function(v,i) {
 
 
 ua.forEach(function(v,i) {
-	test("_hasClickBug Test "+i, function() {
+	test("_hasClickBug Test : "+ v.device, function() {
 		// Given
 		// When
 		eg.agent(v.ua);
