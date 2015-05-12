@@ -472,7 +472,7 @@ asyncTest("Custom events #1 - When changes panel normally", function() {
 	Simulator.gestures.pan(el, {
 		pos: [0, 0],
 		deltaX: -70,
-		deltaY: 100,
+		deltaY: 0,
 		duration: 500,
 		easing: "linear"
 	}, function() {
