@@ -225,13 +225,13 @@
 			}
 			// not support offset properties in Hammerjs - end
 
-			if(direction & ns.DIRECTION_HORIZONTAL) {
+ 			if((e.offsetDirection & ns.DIRECTION_HORIZONTAL) && (direction & ns.DIRECTION_HORIZONTAL)) {
 				this._moveDistance[0] += (e.offsetX * scale[0]);
-				prevent = true;
+	              	prevent = true;
 			}
-			if(direction & ns.DIRECTION_VERTICAL) {
-				this._moveDistance[1] += (e.offsetY * scale[1]);
-				prevent = true;
+			if((e.offsetDirection & ns.DIRECTION_VERTICAL) && (direction & ns.DIRECTION_VERTICAL)) {
+			     this._moveDistance[1] += (e.offsetY * scale[1]);
+			     prevent = true;
 			}
 			if(prevent) {
 				e.srcEvent.preventDefault();
