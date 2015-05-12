@@ -1,4 +1,4 @@
-(function($, ns) {
+eg.module("visible",[jQuery, eg],function($, ns){
 	"use strict";
 
 	/**
@@ -156,4 +156,4 @@
 			this._wrapper = this._timer = null;
 		}
 	});
-})(jQuery, eg);
+});

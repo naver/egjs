@@ -1,8 +1,5 @@
-// debug
-function __rotate($, ns, doc, global){
+eg.module("rotate",[jQuery, eg, window, document],function($, ns, global, doc){
     "use strict";
-// debug
-
     /**
      * @namespace jQuery
      * @group jQuery Extension
@@ -21,6 +18,7 @@ function __rotate($, ns, doc, global){
      * });
      *
      */
+
     var beforeScreenWidth = -1,
         beforeVertical = null,
         rotateTimer = null,
@@ -122,7 +120,7 @@ function __rotate($, ns, doc, global){
                     global.setTimeout(function(){
                         handler(e);
                     }, 500);
-                    // When fire orientationchange if width not change then again call handler after 500ms.
+                    // When fire orientationchange if width not change then again call handler after 300ms.
                     return false; 
                 }
                 beforeScreenWidth = screenWidth;
@@ -148,16 +146,10 @@ function __rotate($, ns, doc, global){
         }
     };
 
-// debug
     return {
         "orientationChange" : orientationChange,
         "isVertical" : isVertical,
         "triggerRotate" : triggerRotate,
         "handler" : handler
-    };
-}
-
-if(!eg.debug){
-    __rotate(jQuery, eg, document, window);
-}
-// debug
+    };    
+});

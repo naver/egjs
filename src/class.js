@@ -1,4 +1,4 @@
-(function(ns) {
+eg.module("class",[eg],function(ns){
 	"use strict";
 	/**
 	 *
@@ -74,4 +74,4 @@
 
 		return extendClass;
 	};
-})(eg);
+});

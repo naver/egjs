@@ -1,6 +1,5 @@
 // debug
-
-function __persist($, doc, global) {
+eg.module("persist",[jQuery, window, document],function($, global, doc){
 	"use strict";
 	// debug
 	/**
@@ -107,8 +106,5 @@ function __persist($, doc, global) {
 		"clone": clone,
 		"persist": $.persist
 	};
-}
-if (!eg.debug) {
-	__persist(jQuery, document, window);
-}
+});
 // debug

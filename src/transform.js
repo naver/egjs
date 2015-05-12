@@ -1,4 +1,5 @@
-var __transform = (function($, global) {
+eg.module("transform",[jQuery, window],function($, global){
+
 	"use strict";
     /**
      * Extends jQuery animate in order to use 'transform' property.
@@ -394,7 +395,6 @@ var __transform = (function($, global) {
 		toMatrix3d : toMatrix3d
 	};
 	// @testcode parse,parseStyle,computeValue,rateFn,toMatrix,unMatrix,toMatrix3d
-})(jQuery, window);
+});
 
-__transform;
 // https://gist.github.com/fwextensions/2052247
