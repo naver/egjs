@@ -24,7 +24,7 @@ test("Check for the initialization", function() {
 
 	// When
 	// Then
-	deepEqual(this.inst._container.width(), this.inst._conf.panel.count * this.inst._conf.panel.width, "Then panel container was added and the width is same as total panels width.");
+	deepEqual(this.inst._container.width(), this.inst._conf.panel.count * this.inst._conf.panel.size, "Then panel container was added and the width is same as total panels width.");
 });
 
 test("Option: circular", function() {
@@ -54,27 +54,58 @@ test("Option: circular", function() {
 	// When
 	// Then
 	ok(this.inst._conf.panel.count > this.inst._conf.panel.origCount, "When panel elements are not enough, should be added cloned elements");
+
+	// Given
+	this.inst = new eg.Flicking($("#mflick3"), { circular : true, horizontal : false });
+
+	// When
+	this.inst.moveTo(this.inst._conf.panel.origCount - 1);
+
+	// Then
+	ok(this.inst.getNextElement(), "Is circular?");
+
 });
 
-test("Option: preview", function() {
+test("Option: preview - horizontal", function() {
 	// Given
 	this.inst = new eg.Flicking($("#mflick3"), {
 		circular : true,
 		previewPadding : [ 50, 70 ]
 	});
 
-	var right = parseInt(this.inst._wrapper.css("padding-right"),10),
+	var padding = this.inst.options.previewPadding,
+		right = parseInt(this.inst._wrapper.css("padding-right"),10),
 		left = parseInt(this.inst._wrapper.css("padding-left"),10),
 		wrapperWidth = this.inst._wrapper.width(),
 		panelWidth = this.inst._container.children().width();
 
 	// When
 	// Then
-	ok(left === this.inst.options.previewPadding[0] && right === this.inst.options.previewPadding[1], "Preview padding value applied correctly?");
+	ok(left === padding[0] && right === padding[1], "Preview padding value applied correctly?");
 	equal(wrapperWidth, panelWidth, "Each panel's width should be same as wrapper element's width");
 });
 
-asyncTest("Option: threshold #1 - when moved more than threshold pixels", function() {
+test("Option: preview - vertical", function() {
+	// Given
+	this.inst = new eg.Flicking($("#mflick3"), {
+		circular : true,
+		horizontal : false,
+		previewPadding : [ 15, 10 ]
+	});
+
+	var padding = this.inst.options.previewPadding,
+		top = parseInt(this.inst._wrapper.css("padding-top"),10),
+		bottom = parseInt(this.inst._wrapper.css("padding-bottom"),10),
+		wrapperHeight = this.inst._wrapper.height(),
+		panelHeight = this.inst._container.children().height();
+
+	// When
+	// Then
+	ok(top === padding[0] && bottom === padding[1], "Preview padding value applied correctly?");
+	equal(wrapperHeight - (padding[0] + padding[1]), panelHeight, "Each panel's height should be same as wrapper element's height");
+});
+
+asyncTest("Option: threshold #1 - (horizontal) when moved more than threshold pixels", function() {
 	// Given
 	var el = $("#mflick2")[0],
 		changedPanelNo = 0, panelNo;
@@ -94,7 +125,7 @@ asyncTest("Option: threshold #1 - when moved more than threshold pixels", functi
 	Simulator.gestures.pan(el, {
 		pos: [0, 0],
 		deltaX: -100,
-		deltaY: 100,
+		deltaY: 0,
 		duration: 500,
 		easing: "linear"
 	}, function() {
@@ -106,7 +137,40 @@ asyncTest("Option: threshold #1 - when moved more than threshold pixels", functi
     });
 });
 
-asyncTest("Option: threshold #2 - when moved less than threshold pixels", function() {
+asyncTest("Option: threshold #2 - (vertical) when moved more than threshold pixels", function() {
+	// Given
+	var el = $("#mflick2")[0],
+		changedPanelNo = 0, panelNo;
+
+	var inst =this.inst = new eg.Flicking(el, {
+		circular : true,
+		horizontal : false,
+		threshold : 20
+	}).on({
+		flickEnd : function(e) {
+			changedPanelNo = e.no;
+		}
+	})
+
+	panelNo = this.inst._conf.panel.no;
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [0, 0],
+		deltaX: 0,
+		deltaY: -100,
+		duration: 500,
+		easing: "linear"
+	}, function() {
+		// Then
+		setTimeout(function() {
+			deepEqual(panelNo + 1, changedPanelNo, "Moved to next panel?");
+			start();
+		},1000);
+    });
+});
+
+asyncTest("Option: threshold #3 - (horizontal) when moved less than threshold pixels", function() {
 	// Given
 	var el = $("#mflick2").get(0),
 		changedPanelNo;
@@ -126,7 +190,40 @@ asyncTest("Option: threshold #2 - when moved less than threshold pixels", functi
 	Simulator.gestures.pan(el, {
 		pos: [0, 0],
 		deltaX: -70,
-		deltaY: 100,
+		deltaY: 0,
+		duration: 500,
+		easing: "linear"
+	}, function() {
+		// Then
+		setTimeout(function() {
+			deepEqual(panelNo, changedPanelNo, "Not moved to next panel?");
+			start();
+		},1000);
+    });
+});
+
+asyncTest("Option: threshold #4 - (vertical) when moved less than threshold pixels", function() {
+	// Given
+	var el = $("#mflick2").get(0),
+		changedPanelNo;
+
+	this.inst = new eg.Flicking(el, {
+		circular : true,
+		horizontal : false,
+		threshold : 20
+	}).on({
+		flickEnd : function(e) {
+			changedPanelNo = e.no;
+		}
+	})
+
+	changedPanelNo = panelNo = this.inst._conf.panel.no;
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [0, 0],
+		deltaX: 0,
+		deltaY: -10,
 		duration: 500,
 		easing: "linear"
 	}, function() {
@@ -325,7 +422,7 @@ asyncTest("Method: isPlaying()", function() {
 	Simulator.gestures.pan(el, {
 		pos: [0, 0],
 		deltaX: -100,
-		deltaY: 100,
+		deltaY: 0,
 		duration: 1000,
 		easing: "linear"
 	}, function() {
@@ -381,7 +478,7 @@ test("Method: moveTo()", function() {
 	this.inst = new eg.Flicking($("#mflick1"));
 
 	var count = this.inst._conf.panel.count,
-		panelWidth = this.inst._conf.panel.width,
+		panelSize = this.inst._conf.panel.size,
 		value = (count - 1) * 100;
 
 	// When
@@ -404,7 +501,7 @@ test("Method: moveTo()", function() {
 	});
 
 	count = this.inst._conf.panel.count,
-	panelWidth = this.inst._conf.panel.width;
+	panelSize = this.inst._conf.panel.size;
 
 	// When
 	var index = count - 1;
@@ -422,12 +519,11 @@ test("Method: resize()", function() {
 	// Given
 	var element = $("#mflick1"),
 		width = element.width(),
-		panelWidth,
-		coordMax;
+		panelWidth, coordMax;
 
 	this.inst = new eg.Flicking(element);
 
-	panelWidth = this.inst._conf.panel.width;
+	panelWidth = this.inst._conf.panel.size;
 	coordMax = this.inst._mcInst.options.max;
 
 	// When
@@ -440,7 +536,7 @@ test("Method: resize()", function() {
 	this.inst.resize();
 
 	// Then
-	deepEqual(this.inst._conf.panel.width, element.width(), "The panel width should be same as current wrapper element");
+	deepEqual(this.inst._conf.panel.size, element.width(), "The panel width should be same as current wrapper element");
 	notDeepEqual(coordMax, this.inst._mcInst.options.max, "Should be updated MovableCoord's 'max' options value");
 });
 
@@ -517,7 +613,7 @@ asyncTest("Custom events #2 - When stop event on beforeRestore", function() {
 	Simulator.gestures.pan(el, {
 		pos: [0, 0],
 		deltaX: -70,
-		deltaY: 100,
+		deltaY: 0,
 		duration: 500,
 		easing: "linear"
 	}, function() {
@@ -561,7 +657,7 @@ asyncTest("Custom events #3 - When stop on touchMove event", function() {
 	Simulator.gestures.pan(el, {
 		pos: [0, 0],
 		deltaX: -70,
-		deltaY: 100,
+		deltaY: 0,
 		duration: 1000,
 		easing: "linear",
 		touches : 1
@@ -605,7 +701,7 @@ asyncTest("Custom events #5 - When stop on change event", function() {
 	Simulator.gestures.pan(el, {
 		pos: [0, 0],
 		deltaX: -70,
-		deltaY: 100,
+		deltaY: 0,
 		duration: 500,
 		easing: "linear",
 		touches : 1
