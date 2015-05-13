@@ -59,7 +59,7 @@
 				curHammer : null,
 				moveDistance : null,
 				animating : null
-			}
+			};
 			this._hammers = {};
 			this._pos = [ this.options.min[0], this.options.min[1] ];
 			this._subOptions = {};
