@@ -19,9 +19,9 @@
 	 * @param {Number|Array} [options.previewPadding=[0,0]] Padding value to display previous and next panels. If set array value the order is left to right
 	 * @param {Number} [options.threshold=40] Threshold pixels to move panels in prev/next direction
 	 * @param {Number} [options.duration=100] Duration time of panel change animation in milliseconds
-	 * @param {Function} [options.panelEffect=easing.easeInCubic] Function of the jQuery Easing Plugin
+	 * @param {Function} [options.panelEffect=easing.easeOutQuint] Function of the jQuery Easing Plugin
 	 * @param {Number} [options.defaultIndex=0] Default panel index to show in first time
-     * 
+     *
 	 * @codepen {"id":"rVOpPK", "ko":"플리킹 기본 예제", "en":"Flicking default example", "collectionId":"ArxyLK", "height" : 403}
 	 *
 	 * @see jQuery Easing Plugin {@link http://gsgd.co.uk/sandbox/jquery/easing}
@@ -67,7 +67,7 @@
 				previewPadding : [ 0, 0 ],	// preview padding value (left to right order). In this mode at least 5 panels are required.
 				threshold : 40,				// the distance pixel threshold value for change panel
 				duration : 100,				// duration ms for animation
-				panelEffect : $.easing.easeInCubic, // $.easing function for panel change animation
+				panelEffect : $.easing.easeOutQuint, // $.easing function for panel change animation
 				defaultIndex : 0			// initial panel index to be shown
 			}, options);
 

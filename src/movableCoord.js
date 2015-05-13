@@ -604,13 +604,7 @@
 		_isInEasing : function(easing) {
 			for(var p in $.easing) {
 				if($.easing[p] === easing) {
-					if(p.indexOf("Out") === -1) {
-						// easing in type
-						return true;
-					} else {
-						// easing out type
-						return false;
-					}
+					return !~p.indexOf("Out");
 				}
 			}
 			return false;
