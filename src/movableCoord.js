@@ -473,16 +473,12 @@
 			var curTime = new Date() - param.startTime,
 				per = Math.min(1, curTime / param.duration),
 				easingPer = this.options.easing(null, curTime, 0, 1, param.duration),
-				dist,
-				pos = [ param.depaPos[0], param.depaPos[1] ];
+				pos = [ param.depaPos[0], param.depaPos[1] ],
+				i = 0;
 
-			if(pos[0] !== param.destPos[0]) {
-				dist = param.destPos[0] - pos[0];
-				pos[0] += dist * easingPer;
-			}
-			if(pos[1] !== param.destPos[1]) {
-				dist = param.destPos[1] - pos[1];
-				pos[1] += dist * easingPer;
+			while(i<2) {
+				(pos[i] !== param.destPos[i]) && (pos[i] += (param.destPos[i] - pos[i]) * easingPer);
+				i++;
 			}
 			pos = this._getCircularPos(pos);
 			this._triggerChange(pos, false);

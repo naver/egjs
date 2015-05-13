@@ -238,6 +238,7 @@ var __transform = (function($, global) {
 		for(var i=0, p, name, val; p = parsedProperties[i]; i++) {
 			val = p[1];
 			/* jshint -W086 : false */
+			//  W086: Expected a 'break' statement before '{a}'.
 			switch(name = p[0]) {
 				case "translate3d":
 				case "scale3d" :
