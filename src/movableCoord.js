@@ -54,14 +54,16 @@
 				deceleration : 0.0006
 			};
 			this._reviseOptions(options);
-			this._grabOutside = false;
-			this._animating = null;
-			this._raf = null;
+			this._status = {
+				grabOutside : false,
+				curHammer : null,
+				moveDistance : null,
+				animating : null
+			}
 			this._hammers = {};
-			this._curHammer = null;
 			this._pos = [ this.options.min[0], this.options.min[1] ];
-			this._moveDistance = null;
 			this._subOptions = {};
+			this._raf = null;
 			this._animationEnd = this._animationEnd.bind(this);	// for caching
 		},
 		/**
@@ -112,7 +114,7 @@
 				if(e.isFirst) {
 					// apply options each
 					this._subOptions = subOptions;
-					this._curHammer = hammer;
+					this._status.curHammer = hammer;
 					this._panstart(e);
 				}
 			}.bind(this))
@@ -138,10 +140,10 @@
 		},
 
 		_grab : function() {
-			if(this._animating) {
+			if(this._status.animating) {
 				this._pos = this._getCircularPos(this._pos);
 				this._triggerChange(this._pos, true);
-				this._animating = null;
+				this._status.animating = null;
 				this._raf && cancelAnimationFrame(this._raf);
 				this._raf = null;
 			}
@@ -198,8 +200,8 @@
 				pos : [ pos[0], pos[1] ],
 				hammerEvent : e
 			});
-			this._moveDistance = [ pos[0], pos[1] ];
-			this._grabOutside = this._isOutside(pos, this.options.min, this.options.max);
+			this._status.moveDistance = [ pos[0], pos[1] ];
+			this._status.grabOutside = this._isOutside(pos, this.options.min, this.options.max);
 		},
 
 		// panmove event handler
@@ -216,7 +218,7 @@
 				prevent  = false;
 
 			// not support offset properties in Hammerjs - start
-			var prevInput = this._curHammer.session.prevInput || {};
+			var prevInput = this._status.curHammer.session.prevInput || {};
 			if(prevInput) {
 			    e.offsetX = e.deltaX - prevInput.deltaX;
 			    e.offsetY = e.deltaY - prevInput.deltaY;
@@ -226,11 +228,11 @@
 			// not support offset properties in Hammerjs - end
 
  			if((e.offsetDirection & ns.DIRECTION_HORIZONTAL) && (direction & ns.DIRECTION_HORIZONTAL)) {
-				this._moveDistance[0] += (e.offsetX * scale[0]);
+				this._status.moveDistance[0] += (e.offsetX * scale[0]);
 	              	prevent = true;
 			}
 			if((e.offsetDirection & ns.DIRECTION_VERTICAL) && (direction & ns.DIRECTION_VERTICAL)) {
-			     this._moveDistance[1] += (e.offsetY * scale[1]);
+			     this._status.moveDistance[1] += (e.offsetY * scale[1]);
 			     prevent = true;
 			}
 			if(prevent) {
@@ -238,16 +240,16 @@
 				e.srcEvent.stopPropagation();
 			}
 			e.preventSystemEvent = prevent;
-			pos[0] = this._moveDistance[0], pos[1] = this._moveDistance[1];
+			pos[0] = this._status.moveDistance[0], pos[1] = this._status.moveDistance[1];
 			pos = this._getCircularPos(pos, min, max);
 
 			// from outside to inside
-			if (this._grabOutside && !this._isOutside(pos, min, max)) {
-				this._grabOutside = false;
+			if (this._status.grabOutside && !this._isOutside(pos, min, max)) {
+				this._status.grabOutside = false;
 			}
 
 			// when move pointer is holded outside
-			if (this._grabOutside) {
+			if (this._status.grabOutside) {
 				tn = min[0]-out[3], tx = max[0]+out[1], tv = pos[0];
 				pos[0] = tv>tx?tx:(tv<tn?tn:tv);
 				tn = min[1]-out[0], tx = max[1]+out[2], tv = pos[1];
@@ -275,7 +277,7 @@
 
 		// panend event handler
 		_panend : function(e) {
-			if(!this._moveDistance) { return; }
+			if(!this._status.moveDistance) { return; }
 			var direction = this._subOptions.direction,
 				scale = this._subOptions.scale,
 				vX =  Math.abs(e.velocityX),
@@ -290,7 +292,7 @@
 					vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
 				], this._subOptions.maximumSpeed ),
 			this._animationEnd, false, null, e);
-			this._moveDistance = null;
+			this._status.moveDistance = null;
 		},
 
 		_animationEnd : function() {
@@ -408,7 +410,7 @@
 				this._getDurationFromPos( [ Math.abs(destPos[0]-pos[0]), Math.abs(destPos[1]-pos[1]) ] ) );
 
 			var	done = function() {
-					this._animating = null;
+					this._status.animating = null;
 					pos[0] = Math.round(destPos[0]);
 					pos[1] = Math.round(destPos[1]);
 					pos = this._getCircularPos(pos, min, max, circular);
@@ -452,34 +454,34 @@
 			}
 			param.depaPos = pos;
 			param.startTime = new Date().getTime();
-			this._animating = param;
+			this._status.animating = param;
 
 			if (retTrigger) {
 				// console.error("depaPos", pos, "depaPos",destPos, "duration", duration, "ms");
-				var animating = this._animating,
+				var info = this._status.animating,
 					self = this;
 				(function loop() {
 					self._raf=null;
-					if (self._frame(animating) >= 1) { return done(); } // animationEnd
+					if (self._frame(info) >= 1) { return done(); } // animationEnd
 					self._raf = requestAnimationFrame(loop);
 				})();
 			}
 		},
 
 		// animation frame (0~1)
-		_frame : function(animating) {
-			var curTime = new Date() - animating.startTime,
-				per = Math.min(1, curTime / animating.duration),
-				easingPer = this.options.easing(null, curTime, 0, 1, animating.duration),
+		_frame : function(param) {
+			var curTime = new Date() - param.startTime,
+				per = Math.min(1, curTime / param.duration),
+				easingPer = this.options.easing(null, curTime, 0, 1, param.duration),
 				dist,
-				pos = [ animating.depaPos[0], animating.depaPos[1] ];
+				pos = [ param.depaPos[0], param.depaPos[1] ];
 
-			if(pos[0] !== animating.destPos[0]) {
-				dist = animating.destPos[0] - pos[0];
+			if(pos[0] !== param.destPos[0]) {
+				dist = param.destPos[0] - pos[0];
 				pos[0] += dist * easingPer;
 			}
-			if(pos[1] !== animating.destPos[1]) {
-				dist = animating.destPos[1] - pos[1];
+			if(pos[1] !== param.destPos[1]) {
+				dist = param.destPos[1] - pos[1];
 				pos[1] += dist * easingPer;
 			}
 			pos = this._getCircularPos(pos);
