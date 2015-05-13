@@ -35,7 +35,7 @@ test("orientationChange : android && 2.1 ", function() {
     };
   }
   
-  var method = __rotate(jQuery, eg, this.fakeDocument, this.fakeWindow);
+  var method = eg._invoke("rotate",[jQuery, null, this.fakeWindow, this.fakeDocument]);
 
   // When
   $(this.fakeDocument).on("rotate",noop);
@@ -57,7 +57,7 @@ test("orientationChange : The window has onorientationchange", function() {
   var fakeWindow = {
     "onorientationchange" : "onorientationchange"
   };
-  var method = __rotate(jQuery, eg, this.fakeDocument, fakeWindow);
+  var method = eg._invoke("rotate",[jQuery, null, fakeWindow, this.fakeDocument]);
 
   // When
   $(this.fakeDocument).on("rotate",noop);
@@ -78,7 +78,7 @@ test("orientationChange : The window not has onorientationchange", function() {
   var fakeWindow = {
     "resize" : "resize"
   };
-  var method = __rotate(jQuery, eg, this.fakeDocument, fakeWindow);
+  var method = eg._invoke("rotate",[jQuery, null, fakeWindow, this.fakeDocument]);
 
   // When
   $(this.fakeDocument).on("rotate",noop);
@@ -108,7 +108,7 @@ test("isVertical : If event is resize then first time call.", function() {
       "clientHeight" : 200
     }
   };
-  var method = __rotate(jQuery, eg, fakeDocument, fakeWindow);
+  var method = eg._invoke("rotate",[jQuery, null, fakeWindow, fakeDocument]);
 
   // When
   // Then
@@ -134,7 +134,7 @@ test("isVertical : If event is resize then sencond times call. and rotate vertic
       "clientHeight" : 100
     }
   };
-  var method = __rotate(jQuery, eg, fakeDocument, fakeWindow);
+  var method = eg._invoke("rotate",[jQuery, null, fakeWindow, fakeDocument]);
   method.isVertical();
 
   // When
@@ -166,7 +166,7 @@ test("isVertical : If event is resize then sencond times call. and stay.", funct
       "clientHeight" : 200
     }
   };
-  var method = __rotate(jQuery, eg, fakeDocument, fakeWindow);
+  var method = eg._invoke("rotate",[jQuery, null, fakeWindow, fakeDocument]);
   method.isVertical();
 
   // When
@@ -197,7 +197,7 @@ test("isVertical : If event is resize then sencond times call. and rotate horizo
       "clientHeight" : 200
     }
   };
-  var method = __rotate(jQuery, eg, fakeDocument, fakeWindow);
+  var method = eg._invoke("rotate",[jQuery, null, fakeWindow, fakeDocument]);
   method.isVertical();
 
   // When
@@ -222,7 +222,7 @@ test("isVertical : If event is orientationchange then vertical.", function() {
     "onorientationchange" : "onorientationchange",
     "orientation" : 0
   };  
-  var method = __rotate(jQuery, eg, this.fakeDocument, fakeWindow);
+  var method = eg._invoke("rotate",[jQuery, null, fakeWindow, this.fakeDocument]);
 
   // When
   var isVertical =  method.isVertical();
@@ -249,7 +249,7 @@ test("isVertical : If event is orientationchange then vertical.", function() {
     "onorientationchange" : "onorientationchange",
     "orientation" : 90
   };  
-  var method = __rotate(jQuery, eg, this.fakeDocument, fakeWindow);
+  var method = eg._invoke("rotate",[jQuery, null, fakeWindow, this.fakeDocument]);
 
   // When
   var isNotVertical =  !method.isVertical();
@@ -265,15 +265,13 @@ test("isVertical : If event is orientationchange then vertical.", function() {
 
 module("rotate: handler", {
   setup : function() {
-   this.agent = eg.agent;
+   var agent = eg.agent();
    this.clock = sinon.useFakeTimers( Date.now() );
-   eg.hook.agent = function(){
-      return {
-        "os" : {
-          "name" : "ios"
-        }
-      };
-    }
+   this.realOSAgent = agent.os;
+   agent.os.name = "ios";
+   eg.agent = function(){
+      return agent;
+   }
 
     this.fakeWindow = {
       "onorientationchange" : "onorientationchange",
@@ -291,8 +289,11 @@ module("rotate: handler", {
 
   },
   teardown : function() {
-    eg.agent = this.agent;
-    eg.hook.agent = null;
+    var agent = eg.agent();
+    agent.os = this.realOSAgent;
+    eg.agent = function(){
+      return agent;
+    }
     this.clock.restore();
   }
 });
@@ -300,7 +301,7 @@ module("rotate: handler", {
 
 test("If event is orientationchange then trigger and not android.", function() {
   // Given
-  var method = __rotate(jQuery, eg, this.fakeDocument, this.fakeWindow);
+  var method = eg._invoke("rotate",[jQuery, null, this.fakeWindow, this.fakeDocument]);
   var isCall = false;
   var isVertical = false;
   $(this.fakeWindow).on("rotate",function(e){
@@ -336,15 +337,15 @@ test("If event is orientationchange then trigger and android.", function() {
   // Given
   var isCall = false;
   var isVertical = false;
-  eg.hook.agent = function(){
-    return {
-      "os" : {
+  var agent = eg.agent();
+  agent.os = {
         "name" : "android",
         "version" :"4"
-      }
-    };
+  };
+  eg.agent = function(){
+    return agent;
   }
-  var method = __rotate(jQuery, eg, this.fakeDocument, this.fakeWindow);
+  var method = eg._invoke("rotate",[jQuery, null, this.fakeWindow, this.fakeDocument]);
 
   $(this.fakeWindow).on("rotate",function(e){
     isCall = true;
@@ -401,7 +402,7 @@ test("If event is resize then trigger.", function() {
   this.fakeWindow.resize = "resize";
 
 
-  var method = __rotate(jQuery, eg, this.fakeDocument, this.fakeWindow);
+  var method = eg._invoke("rotate",[jQuery, null, this.fakeWindow, this.fakeDocument]);
   $(this.fakeWindow).on("rotate",function(e){
     isCall = true;
     isVertical = e.isVertical;

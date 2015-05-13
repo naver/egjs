@@ -25,7 +25,7 @@ test("getDeviceType : android && 2.1 ", function() {
          "browser" : {}
       }
     }
-    var method = __scrollEnd(jQuery, eg, window, document);
+    var method = eg._invoke("scrollEnd",[null,null,null,null]);
 
     // When
     $(window).on("scrollend", function(){
@@ -49,7 +49,7 @@ test("getDeviceType : android && chrome ", function() {
        }
      }
     };
-    var method = __scrollEnd(jQuery, eg, window, document);
+    var method = eg._invoke("scrollEnd",[null,null,null,null]);
 
     // When
     $(window).on("scrollend", function(){
@@ -74,7 +74,7 @@ test("getDeviceType : android && version 3.x over ", function() {
        }
      }
     };
-    var method = __scrollEnd(jQuery, eg, window, document);
+    var method = eg._invoke("scrollEnd",[null,null,null,null]);
 
     // When
     $(window).on("scrollend", function(){
@@ -98,7 +98,7 @@ test("getDeviceType : ios && version 8.x over ", function() {
        }
      }
     };
-    var method = __scrollEnd(jQuery, eg, window, document);
+    var method = eg._invoke("scrollEnd",[null,null,null,null]);
 
     // When
     $(window).on("scrollend", function(){
@@ -123,7 +123,7 @@ test("getDeviceType : window && version 8.x over ", function() {
        }
      }
   };
-    var method = __scrollEnd(jQuery, eg, window, document);
+    var method = eg._invoke("scrollEnd",[null,null,null,null]);
 
     // When
     $(window).on("scrollend", function(){
@@ -149,7 +149,7 @@ test("touchbase scroll", function() {
     };
 
     window.scrollTo(0, 1);
-    var method = __scrollEnd(jQuery, eg, window, document);
+    var method = eg._invoke("scrollEnd",[null,null,null,null]);
     var self = this;
 
   // When
@@ -196,7 +196,7 @@ test("scroll scroll", function() {
     };
 
     window.scrollTo(0, 1);
-    var method = __scrollEnd(jQuery, eg, window, document);
+    var method = eg._invoke("scrollEnd",[null,null,null,null]);
     var self = this;
 
   // When
@@ -238,7 +238,7 @@ test("timer scroll", function() {
     };
 
     window.scrollTo(0, 1);
-    var method = __scrollEnd(jQuery, eg, window, document);
+    var method = eg._invoke("scrollEnd",[null,null,null,null]);
     var self = this;
 
   // When
@@ -280,7 +280,7 @@ test("chrome scroll", function() {
     };
 
     window.scrollTo(0, 1);
-    var method = __scrollEnd(jQuery, eg, window, document);
+    var method = eg._invoke("scrollEnd",[null,null,null,null]);
     var self = this;
 
   // When

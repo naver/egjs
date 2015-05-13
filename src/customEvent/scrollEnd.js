@@ -1,5 +1,4 @@
-// (function($, ns, global, doc){
-function __scrollEnd($, ns, global, doc){
+eg.module("scrollEnd",[jQuery, eg, window, document],function($, ns, global, doc){
     "use strict";
     /**
      * Support scrollEnd event in jQuery
@@ -172,8 +171,4 @@ function __scrollEnd($, ns, global, doc){
        TOUCHBASE : TOUCHBASE,
        SCROLLBASE : SCROLLBASE
    };
-}
-if(!eg.debug){
-   __scrollEnd(jQuery, eg, window, document);
-}
-// })(jQuery, eg, window, document);
+});

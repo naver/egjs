@@ -1,4 +1,4 @@
-(function($, ns) {
+eg.module("flicking",[jQuery, eg],function($, ns){
 	"use strict";
 	/**
 	 *
@@ -847,4 +847,4 @@
 			this._mcInst.setTo(width * panel.index, 0).options.max = maxCoord;
 		}
 	});
-})(jQuery, eg);
+});

@@ -1,5 +1,6 @@
 module("transform Test", {
 	setup : function() {
+		this.transform = eg._invoke("transform",[jQuery,window]);
 	},
 	teardown : function() {
 	}
@@ -27,7 +28,7 @@ test("parseStyle", function() {
 	//When
 	for( var p in propertyStr) {
 		// Then
-		deepEqual(__transform.parseStyle(p), propertyStr[p], p);
+		deepEqual(this.transform.parseStyle(p), propertyStr[p], p);
 	};
 });
 
@@ -73,7 +74,7 @@ test("computeValue" , function() {
 	// Then
 	for( var p in value) {
 		// Then
-		equal(__transform.computeValue(p, {
+		equal(this.transform.computeValue(p, {
 			size : size,
 			baseVal : baseVal
 		}), value[p], p);
@@ -92,7 +93,7 @@ test("toMatrix" , function() {
 	// Then
 	for( var p in value) {
 		// Then
-		deepEqual(__transform.toMatrix(p), value[p], p);
+		deepEqual(this.transform.toMatrix(p), value[p], p);
 	}
 });
 
@@ -113,11 +114,12 @@ test("toMatrix3d" , function() {
 			output : ["matrix3d", [ "1.000000", "0.000000", "0", "0", "0.000000", "1.000000", "0","0","0","0","1","0","20.000000","29.000000","0","1" ] ]
 		},
 	];
+	var _this = this;
 	// When
 	// Then
 	value.forEach(function(v) {
 		// Then
-		deepEqual(__transform.toMatrix3d(v.input), v.output, v.input);
+		deepEqual(_this.transform.toMatrix3d(v.input), v.output, v.input);
 	});
 });
 
@@ -175,13 +177,14 @@ test("unMatrix" , function() {
 			}
 		}
 	];
+	var _this = this;
 	// Then
 	value.forEach(function(v) {
 		// When
 		$box.css("-webkit-transform", v.input);
 
 		// Then
-		deepEqual(__transform.unMatrix(__transform.parseStyle($box.css("-webkit-transform"))), v.output, v.input);
+		deepEqual(_this.transform.unMatrix(_this.transform.parseStyle($box.css("-webkit-transform"))), v.output, v.input);
 	});
 });
 
@@ -270,6 +273,6 @@ test("parse", function() {
 	//When
 	for( var p in propertyStr) {
 		// Then
-		deepEqual(__transform.parse(p, width, height, propertyStr[p].currentStyle), propertyStr[p].output, p);
+		deepEqual(this.transform.parse(p, width, height, propertyStr[p].currentStyle), propertyStr[p].output, p);
 	};
 });

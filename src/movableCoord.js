@@ -1,4 +1,4 @@
-(function($, ns) {
+eg.module("movableCoord",[jQuery, eg],function($, ns){
 	"use strict";
 	// It is scheduled to be removed in case of build process.
 	// ns.__checkLibrary__( !("Hammer" in window), "You must download Hammerjs. (http://hammerjs.github.io/)\n\ne.g. bower install hammerjs");
@@ -626,4 +626,4 @@
 		}
 	});
 	ns.MovableCoord.KEY = "__MOVABLECOORD__";
-})(jQuery, eg);
+});

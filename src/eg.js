@@ -1,5 +1,5 @@
-"use strict";
-(function($, global) {
+eg.module("eg",[jQuery, eg, window],function($, ns, global){
+	"use strict";
 	/**
 	 * @namespace eg
 	 * @group EvergreenJs
@@ -16,7 +16,7 @@
 
 
 
-	global.eg = {
+	var eg = {
 		/**
 		 * @name eg.VERSION
 		 * @description version infomation
@@ -276,6 +276,14 @@ eg.hook.isTransitional = function(defaultVal, agent) {
 		}
 	};
 
+	// Regist method to eg.
+
+	for(var i in eg){
+		if (eg.hasOwnProperty(i)) {
+			ns[i] = eg[i];
+		}
+	}
+
 	/**
 	 * @name eg.DIRECTION_NONE
 	 * @constant
@@ -325,4 +333,4 @@ eg.hook.isTransitional = function(defaultVal, agent) {
        */
 	global.eg.DIRECTION_ALL = global.eg.DIRECTION_HORIZONTAL | global.eg.DIRECTION_VERTICAL;
 
-})(jQuery, window);
+});
