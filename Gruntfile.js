@@ -88,7 +88,7 @@ module.exports = function(grunt) {
             src: ["src/**/*.js", "README.md"],
             options: {
                 destination: "doc",
-                template : "node_modules/jsdoc-template-jsdoc",
+                template : "node_modules/egjs-jsdoc-template",
                 configure : "jsdoc.json"
             }
         }
