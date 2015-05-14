@@ -18,6 +18,11 @@ eg.module("cssPrefix",[jQuery, document],function($, doc){
       throw( new Error( "jQuery 1.4.3+ is needed for this plugin to work" ) );
     }
 
+    // run in jQuery 1.8.x below
+    if ( $.fn && $.fn.jquery && $.fn.jquery.replace(/[.]/, "") >= "18" ) {
+        return;
+    }
+
     var cssPrefixes = [ "Webkit", "Moz" , "O" , "ms" ],
         acts = ["transitionProperty" , "transitionDuration" , "transition", "transform", "transitionTimingFunction"];
 
