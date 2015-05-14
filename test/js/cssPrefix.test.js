@@ -3,9 +3,13 @@ var cssPrefixes = [ "Webkit", "Moz" , "O" , "ms" ];
 
 module("cssPrefix", {
   setup : function() {
-    this.fakeDocument = jQuery.extend({}, document);
-    delete this.fakeDocument.body.style;
-    this.fakeDocument.body.style = {};
+
+    this.fakeDocument = {
+        body : {
+            style : {}
+        }
+    }
+
     jQuery.cssHooks = {};
   },
   teardown : function() {
@@ -13,16 +17,34 @@ module("cssPrefix", {
 });
 
 
+test("When is not jQuery.cssHooks", function() {
+    // Given
+    delete jQuery.cssHooks;
+    var method = null;
+
+    try{
+        method = eg._invoke("cssPrefix",[jQuery, null]);
+    }catch(e){
+        method = false;
+    }
+
+    // When
+
+    //Then
+    equal(method, false);
+});
+
 cssPrefixes.forEach(function(v,i) {
     test("vendor check : "+ v, function() {
         // Given
+        jQuery.cssHooks = {};
         this.fakeDocument.body.style[v+"Transition"] = "";
         var method = eg._invoke("cssPrefix",[jQuery, this.fakeDocument]);
 
         // When
 
         //Then
-        equal(method.getCssPrefix(), v);
+        equal(method.vendorPrefix, v);
     });
 });
 
@@ -31,7 +53,6 @@ cssPrefixes.forEach(function(v,i) {
         // Given
         this.fakeDocument.body.style[v+"Transition"] = "";
         var method = eg._invoke("cssPrefix",[jQuery, this.fakeDocument]);
-
         var checkPropertie = v.toLowerCase() + "Transform";
 
         // When
@@ -41,3 +62,40 @@ cssPrefixes.forEach(function(v,i) {
     });
 });
 
+
+test("transform property set/get", function() {
+    // Given
+    var method = eg._invoke("cssPrefix",[jQuery, document]);
+
+    // When
+    $("#prefixId").css("transform", "translate(100px, 0px)");
+
+    //Then
+    var returnValue = jQuery("#prefixId").css("transform");
+    equal(returnValue , "matrix(1, 0, 0, 1, 100, 0)");
+});
+
+
+test("Transform property set/get", function() {
+    // Given
+    var method = eg._invoke("cssPrefix",[jQuery, document]);
+
+    // When
+    $("#prefixId").css("Transform", "translate(300px, 0px)");
+
+    //Then
+    var returnValue = jQuery("#prefixId").css("Transform");
+    equal(returnValue , "matrix(1, 0, 0, 1, 300, 0)");
+});
+
+test("webkitTransform property set/get", function() {
+    // Given
+    var method = eg._invoke("cssPrefix",[jQuery, document]);
+
+    // When
+    $("#prefixId").css("webkitTransform", "translate(200px, 0px)");
+
+    //Then
+    var returnValue = jQuery("#prefixId").css("webkitTransform");
+    equal(returnValue , "matrix(1, 0, 0, 1, 200, 0)");
+});

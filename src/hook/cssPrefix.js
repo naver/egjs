@@ -1,27 +1,41 @@
 eg.module("cssPrefix",[jQuery, document],function($, doc){
+    /**
+     * Apply css prefix cssHooks
+     * @ko css prefix cssHooks 적용
+     *
+     * @namespace cssPrefix
+     * @group hook
+     *
+     * @example
+     * $("#ID").css("transform", "translate('10px', '10px');
+     * $("#ID").css("Transform", "translate('10px', '10px');
+     * $("#ID").css("webkitTransform", "translate('10px', '10px');
+     * $("#ID").css("transform");
+     * $("#ID").css("webkitTransform");
+     */
 
     if ( !$.cssHooks ) {
       throw( new Error( "jQuery 1.4.3+ is needed for this plugin to work" ) );
-    };
+    }
 
     var cssPrefixes = [ "Webkit", "Moz" , "O" , "ms" ],
-        acts = ["transitionProperty" , "transitionDuration" , "transition", "transform", "transitionTimingFunction"],
-        vendorPrefix = "";
+        acts = ["transitionProperty" , "transitionDuration" , "transition", "transform", "transitionTimingFunction"];
 
-    var getCssPrefix = function() {
+    var vendorPrefix = (function() {
         var bodyStyle = doc.body.style;
         for ( var i = 0, len = cssPrefixes.length ; i < len ; i++ ) {
             if( cssPrefixes[i]+"Transition" in bodyStyle ){
                 return cssPrefixes[i];
             }
         }
-    };
+    })();
 
     var setCssHooks = function( prop ) {
         var upperProp = prop.charAt(0).toUpperCase() + prop.slice(1),
             vendorProp = vendorPrefix + upperProp;
-        $.cssHooks[vendorPrefix.toLowerCase() + upperProp] = $.cssHooks[prop] = {
-            get: function( elem, computed, extra ){
+
+        $.cssHooks[upperProp] = $.cssHooks[vendorPrefix.toLowerCase() + upperProp] = $.cssHooks[prop] = {
+            get: function( elem ){
                 return $.css( elem, vendorProp );
             },
             set: function( elem, value ){
@@ -30,17 +44,13 @@ eg.module("cssPrefix",[jQuery, document],function($, doc){
         };
     };
 
-    vendorPrefix = getCssPrefix();
-
     for( var n = 0, actsLen = acts.length ; n < actsLen ; n++ ){
         setCssHooks(acts[n]);
-    };
+    }
 
-
-    // @qunit getDeviceType, CHROME, TIMERBASE, TOUCHBASE, SCROLLBASE
-   return {
-       getCssPrefix : getCssPrefix,
+    return {
+       vendorPrefix : vendorPrefix,
        setCssHooks: setCssHooks
-   };
+    };
 
 });
