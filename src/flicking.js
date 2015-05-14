@@ -1,4 +1,4 @@
-eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, mc) {
+eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 	"use strict";
 	/**
 	 * To build flickable UI
@@ -11,7 +11,7 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, mc) {
 	 * @param {HTMLElement|String|jQuery} element wrapper element <ko>기준 요소</ko>
 	 * @param {Object} options
 	 * @param {Function} [options.effect=easing.linear] jQuery Easing Plugin function <ko>jQuery Easing 플러그인 함수</ko>
-	 * @param {Boolean} [options.hwCompositing=eg.isHWAccelerable()] Force to use HW compositing <ko>하드웨어 가속 사용여부</ko>
+	 * @param {Boolean} [options.hwAccelerable=eg.isHWAccelerable()] Force to use HW compositing <ko>하드웨어 가속 사용여부</ko>
 	 * @param {String} [options.prefix=eg-flick] Prefix string for flicking elements <ko>요소에 설정될 접두사</ko>
 	 * @param {Number} [options.deceleration=0.0006] Deceleration this value can be altered to change the momentum animation duration. higher numbers make the animation shorter
 	 * @param {Boolean} [options.horizontal=true] For move direction (when horizontal is false, then move direction is vertical) <ko>이동방향 설정 (horizontal == true 가로방향, horizontal == false 세로방향)</ko>
@@ -59,7 +59,7 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, mc) {
 
 			$.extend(this.options = {
 				effect : $.easing.linear,	// $.easing functions for animation
-				hwCompositing : ns.isHWAccelerable(),  // check weather hw acceleration is available
+				hwAccelerable : ns.isHWAccelerable(),  // check weather hw acceleration is available
 				prefix : "eg-flick",		// prefix value of class name
 				deceleration : 0.0006,		// deceleration value
 				horizontal : true,			// move direction (true == horizontal, false == vertical)
@@ -72,7 +72,12 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, mc) {
 			}, options);
 
 			var padding = this.options.previewPadding;
-			padding = this.options.previewPadding = $.isNumeric(padding) && [ padding, padding ] || !$.isArray(padding) && [ 0, 0 ] || padding;
+
+			if(typeof padding === "number") {
+				padding = this.options.previewPadding = [ padding, padding ];
+			} else if(padding.constructor !== Array) {
+				padding = this.options.previewPadding = [ 0, 0 ];
+			}
 
 			// config value
 			this._conf = {
@@ -99,9 +104,9 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, mc) {
 				dirData : []
 			};
 
-			[[ "RIGHT", "LEFT" ], [ "DOWN", "UP" ]][ +!this.options.horizontal ].forEach((function(v) {
+			[[ "RIGHT", "LEFT" ], [ "DOWN", "UP" ]][ +!this.options.horizontal ].forEach(function(v) {
 				this._conf.dirData.push(ns[ "DIRECTION_"+ v ]);
-			}).bind(this));
+			}, this);
 
 			this._build();
 			this._bindEvents();
@@ -148,11 +153,11 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, mc) {
 			}
 
 			// create MovableCoord instance
-			this._mcInst = new mc({
+			this._mcInst = new MC({
 				min : [ 0, 0 ],
 				max : this._getDataByDirection([ panel.size * ( panelCount-1 ), 0 ]),
-				margin : [ 0, 0, 0, 0 ],
-				circular :  [ false, false, false, false ],
+				margin : 0,
+				circular : false,
 				easing : options.panelEffect,
 				deceleration : options.deceleration
 			}).bind(this._wrapper, {
@@ -162,11 +167,6 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, mc) {
 			});
 
 			this._setDefaultPanel(options.defaultIndex);
-
-			// if browser support 'will-change' property, then force not to use HW composition option
-			if(this._conf.hint) {
-				options.hwCompositing = false;
-			}
 		},
 
 		/**
@@ -245,7 +245,8 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, mc) {
 			var panel = this._conf.panel,
 				touch = this._conf.touch,
 				dirData = this._conf.dirData,
-				hwCompositing = this.options.hwCompositing;
+				hwAccelerable = this.options.hwAccelerable && !this._conf.hint,
+				coords;
 
 			if(this.options.circular) {
 				// move elements according direction
@@ -259,16 +260,15 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, mc) {
 
 				// set index for base element's position
 				panel.index = this._getBasePositionIndex();
-				this._mcInst.setTo.apply(this._mcInst,
-					this._getDataByDirection([ panel.size * panel.index, 0 ])
-				);
+				coords = this._getDataByDirection([ panel.size * panel.index, 0 ]);
+
+				this._mcInst.setTo(coords[0], coords[1]);
 			}
 
 			// set each panel's position
 			panel.list.each((function(i, v) {
-				$(v).css("transform", ns.translate.apply(this,
-					this._getDataByDirection([ (100 * i) +"%", 0 ], hwCompositing)
-				));
+				coords = this._getDataByDirection([ (100 * i) +"%", 0 ]);
+				$(v).css("transform", ns.translate(coords[0], coords[1], hwAccelerable));
 			}).bind(this));
 		},
 
@@ -278,7 +278,7 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, mc) {
 		 * @param {Boolean} set
 		 */
 		_setHint : function(set) {
-			if(this._conf.hint) {
+			if(this.options.hwAccelerable && this._conf.hint) {
 				var value = set ? "transform" : "";
 				this._container.css("willChange", value);
 				this._conf.panel.list.css("willChange", value);
@@ -289,12 +289,10 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, mc) {
 		 * Get data according options.horizontal value
 		 *
 		 * @param {Array} value primary data to handle
-		 * @param {*} additional value to add on return value
 		 * @return {Array}
 		 */
-		_getDataByDirection : function(value, additional) {
+		_getDataByDirection : function(value) {
 			!this.options.horizontal && value.reverse();
-			additional && value.concat(additional);
 			return value;
 		},
 
@@ -304,12 +302,13 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, mc) {
 		 * @param {Number} times
 		 */
 		_arrangePanelPosition : function(direction, times) {
-			var list = this._conf.panel.list,
-				lastIndex = list.length - 1,
-				next = direction === this._conf.dirData[0];
+			var next = direction === this._conf.dirData[0],
+				pos = [ this._conf.panel.list.length - 1 ];
+
+			pos[ next ? "unshift" : "push"](0);
 
 			for(var i=0, len=Math.abs(times || 1); i < len; i++) {
-				this._movePanelPosition.apply(this, next ? [ i, lastIndex ] : [ lastIndex, 0 ] );
+				this._movePanelPosition(pos[0], pos[1]);
 			}
 		},
 
@@ -602,13 +601,15 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, mc) {
 		 * @param {Array} coords coordinate x,y value
 		 */
 		_setTranslate : function(coords) {
+			var hwAccelerable = this.options.hwAccelerable && !this._conf.hint;
+
 			// the param comes as [ val, 0 ], whatever the direction. So reorder the value depend the direction.
 			this._getDataByDirection(coords);
 
 			this._container.css("transform", ns.translate(
 				this._getUnitValue(coords[0]),
 				this._getUnitValue(coords[1]),
-				this.options.hwCompositing
+				hwAccelerable
 			));
 		},
 
@@ -699,16 +700,16 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, mc) {
 		_movePanel : function(direction, duration) {
 			var panel = this._conf.panel,
 				next = direction === this._conf.dirData[0],
-				index = this[ next ? "getNextIndex" : "getPrevIndex" ]();
+				index = this[ next ? "getNextIndex" : "getPrevIndex" ](),
+				coords;
 
 			if(index != null) {
 				this._conf.touch.direction = direction;
 				this._setPanelNo(true);
 				panel.index = index;
 
-				this._mcInst.setBy.apply(this._mcInst,
-					this._getDataByDirection( [ panel.size * ( next ? 1 : -1 ), 0 ], duration )
-				);
+				coords = this._getDataByDirection([ panel.size * ( next ? 1 : -1 ), 0 ]);
+				this._mcInst.setBy(coords[0], coords[1], duration);
 				this._arrangePanels(true);
 			}
 		},
@@ -837,36 +838,31 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, mc) {
 		 */
 		moveTo : function(no, duration) {
 			var panel = this._conf.panel,
-				indexToMove = no,
-				movableCount;
+				currentIndex = panel.index,
+				indexToMove = 0,
+				movableCount, coords;
 
 			if(typeof no !== "number" || no >= panel.origCount || no === panel.no) {
 				return;
 			}
 
-			duration = duration || this.options.duration;
-
 			if(this.options.circular) {
 				// real panel count which can be moved on each(left(up)/right(down)) sides
-				movableCount = Math.round((panel.count - this._getBasePositionIndex()) / 2);
-				indexToMove = -(panel.no - no);
+				movableCount = [ currentIndex, panel.count - (currentIndex + 1) ];
 
-				if(panel.no === panel.origCount-1 && panel.no > no && no === 0) {
-					indexToMove = 1;
-				} else if(no > panel.no) {
+				if(no > panel.no) {
 					indexToMove = no - panel.no;
-				}
 
-				if(indexToMove > movableCount) {
-					indexToMove = movableCount - indexToMove;
-
-					if(no === 0) {
-						indexToMove = Math.abs(indexToMove);
-					} else if(no === panel.origCount-1) {
-						indexToMove++;
-					} else if(indexToMove < 0) {
-						indexToMove--;
+					if(indexToMove > movableCount[1]) {
+						indexToMove = -( movableCount[0] + 1 - ( indexToMove - movableCount[1] ) );
 					}
+				} else {
+					indexToMove = -(panel.no - no);
+
+					if(Math.abs(indexToMove) > movableCount[0]) {
+						indexToMove = movableCount[1] + 1 - ( Math.abs(indexToMove) - movableCount[0] );
+					}
+
 				}
 
 				panel.no = no;
@@ -874,10 +870,8 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, mc) {
 
 			} else {
 				panel.index = no;
-
-				this._mcInst.setTo.apply(this._mcInst,
-					this._getDataByDirection( [ panel.size * indexToMove, 0 ], duration )
-				);
+				coords = this._getDataByDirection([ panel.size * indexToMove, 0 ]);
+				this._mcInst.setTo(coords[0], coords[1], duration || this.options.duration);
 			}
 		},
 

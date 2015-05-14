@@ -512,7 +512,21 @@ test("Method: moveTo()", function() {
 	// Then
 	equal(count - 1, this.inst._conf.panel.no, "Panel number indicate last panel number?");
 	deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
+	ok(this.inst.getElement().html().indexOf("Layer "+ (count - 1)), "Moved correctly?");
 
+	// When
+	this.inst.moveTo(0);  // move to first
+
+	equal(this.inst._conf.panel.no, 0, "Panel number indicate first panel number?");
+	deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
+	ok(this.inst.getElement().html().indexOf("Layer 0"), "Moved correctly?");
+
+	// When
+	this.inst.moveTo(2);  // move to third
+
+	equal(this.inst._conf.panel.no, 2, "Panel number indicate correct panel number?");
+	deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
+	ok(this.inst.getElement().html().indexOf("Layer 2"), "Moved correctly?");
 });
 
 test("Method: resize()", function() {
