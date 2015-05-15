@@ -287,7 +287,7 @@ test("chrome scroll", function() {
     $(window).on("scrollend", function(){
        self.isFireEvent = true;
     });
-    $(document).trigger("orientationchange");
+    $(window).trigger("orientationchange");
 
     this.intervalNum = setInterval(function(){
         self.topPos += 10;
