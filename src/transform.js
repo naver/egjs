@@ -350,7 +350,7 @@ eg.module("transform",[jQuery, window],function($, global){
 				rotate : parseFloat((Math.atan2(m1, m0) * RADIAN).toFixed(10)),
 				scaleX : parseFloat(sx.toFixed(10)),
 				scaleY : parseFloat(sy.toFixed(10)),
-				scaleZ : parseFloat(sz.toFixed(10)),
+				scaleZ : parseFloat(sz.toFixed(10))
 			};
 		} else {
 			sx = Math.sqrt( m0 * m0 + m1 * m1 );

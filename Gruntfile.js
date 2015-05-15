@@ -32,7 +32,7 @@ module.exports = function(grunt) {
       build: {
         src: ["src/polyfill/**/*.js", "src/module.js", "src/eg.js", "src/customEvent/*.js", "src/class.js", "src/component.js", "src/movableCoord.js", "src/flicking.js", "src/*.js" ],
         dest: "dist/<%=pkg.outputname%>.js"
-      },
+      }
     },
     uglify: {
       options: {
@@ -50,7 +50,7 @@ module.exports = function(grunt) {
         src : [
             "bower_components/jquery/jquery.js",
             "bower_components/hammer.js/hammer.js",
-            "bower_components/jquery.easing/js/jquery.easing.js",
+            "bower_components/jquery.easing/js/jquery.easing.js"
           ],
         dest : "dist/lib"
       },
