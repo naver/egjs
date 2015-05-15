@@ -28,7 +28,7 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-jsdoc": "^0.5.8",
     "grunt-qunit-istanbul": "^0.4.7",
-    "jaguarjs-jsdoc": "0.0.1",
+    "egjs-jsdoc-template": "git+http://ajaxpf:naver@yobi.navercorp.com/Front-End/egjs-jsdoc-template#master",
     "jshint-stylish": "^1.0.1",
     "load-grunt-tasks": "^3.1.0",
     "time-grunt": "^1.1.0"
