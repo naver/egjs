@@ -71,7 +71,8 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				defaultIndex : 0			// initial panel index to be shown
 			}, options);
 
-			var padding = this.options.previewPadding;
+			var padding = this.options.previewPadding,
+				supportHint = window.CSS && window.CSS.supports && window.CSS.supports("will-change", "transform");
 
 			if(typeof padding === "number") {
 				padding = this.options.previewPadding = [ padding, padding ];
@@ -96,11 +97,12 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 					holdPos : [ 0, 0 ],	// hold x,y coordinate
 					destPos : [ 0, 0 ],	// destination x,y coordinate
 					distance : 0,		// touch distance pixel of start to end touch
-					direction : null,	// touch direction
+					direction : null	// touch direction
 				},
 				customEvent : {},		// for custom event return value
 				clickBug : ns._hasClickBug(),
-				hint : window.CSS && window.CSS.supports && window.CSS.supports("will-change", "transform"),
+				useLayerHack : this.options.hwAccelerable && !supportHint,
+				useHint : this.options.hwAccelerable && supportHint,
 				dirData : []
 			};
 
@@ -193,12 +195,18 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 
 		/**
 		 * Move panel's position within array
-		 * @param {Number} from
-		 * @param {To} to
+		 * @param {Number} from starting index
+		 * @param {Number} count element count to move
 		 */
-		_movePanelPosition : function(from, to) {
-			var list = this._conf.panel.list;
-			list.splice(to, 0, list.splice(from, 1)[0]);
+		_movePanelPosition : function(from, count) {
+			var list = this._conf.panel.list, listToMove;
+
+			if(from > 0) {
+				from += 1 - count;
+			}
+
+			listToMove = list.splice(from, count);
+			this._conf.panel.list = $(from === 0 ? $.merge(list, listToMove) : $.merge(listToMove, list));
 		},
 
 		/**
@@ -208,20 +216,16 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		_setDefaultPanel : function(index) {
 			var panel = this._conf.panel,
 				lastIndex = panel.count - 1,
-				coords, i, pos;
+				coords;
 
 			if(this.options.circular) {
 				// if default index is given, then move correspond panel to the first position
 				if(index > 0 && index <= lastIndex) {
-					for(i=0; i < index; i++) {
-						this._movePanelPosition(0, lastIndex);
-					}
+					this._movePanelPosition(0, index);
 				}
 
 				// set first panel's position according physical node length
-				for(i=1, pos = this._getBasePositionIndex(); pos >= i; i++) {
-					this._movePanelPosition(lastIndex, 0);
-				}
+				this._movePanelPosition(lastIndex, this._getBasePositionIndex());
 
 				panel.no = index;
 			} else {
@@ -245,7 +249,7 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			var panel = this._conf.panel,
 				touch = this._conf.touch,
 				dirData = this._conf.dirData,
-				hwAccelerable = this.options.hwAccelerable && !this._conf.hint,
+				hwAccelerable = this._conf.useLayerHack,
 				coords;
 
 			if(this.options.circular) {
@@ -278,7 +282,7 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * @param {Boolean} set
 		 */
 		_setHint : function(set) {
-			if(this.options.hwAccelerable && this._conf.hint) {
+			if(this._conf.useHint) {
 				var value = set ? "transform" : "";
 				this._container.css("willChange", value);
 				this._conf.panel.list.css("willChange", value);
@@ -303,13 +307,9 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 */
 		_arrangePanelPosition : function(direction, times) {
 			var next = direction === this._conf.dirData[0],
-				pos = [ this._conf.panel.list.length - 1 ];
+				lastIndex = this._conf.panel.list.length - 1;
 
-			pos[ next ? "unshift" : "push"](0);
-
-			for(var i=0, len=Math.abs(times || 1); i < len; i++) {
-				this._movePanelPosition(pos[0], pos[1]);
-			}
+			this._movePanelPosition( next ? 0 : lastIndex, Math.abs(times || 1) );
 		},
 
 		/**
@@ -351,7 +351,7 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
 			 * @param {Number} param.index Current panel physical index <ko>현재 패널 물리적 인덱스</ko>
 			 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
-			 * @param {Boolean} param.direction Direction of the panel move <ko>플리킹 방향</ko>
+			 * @param {Number} param.direction Direction of the panel move (see eg.DIRECTION_* constant) <ko>플리킹 방향 (eg.DIRECTION_* constant 확인)</ko>
 			 * @param {Array} param.pos Departure coordinate <ko>출발점 좌표</ko>
 			 * @param {Number} param.pos.0 Departure x-coordinate <ko>x 좌표</ko>
 			 * @param {Number} param.pos.1 Departure y-coordinate <ko>y 좌표</ko>
@@ -377,7 +377,7 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
 			 * @param {Number} param.index Current panel physical index <ko>현재 패널 물리적 인덱스</ko>
 			 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
-			 * @param {Boolean} param.direction Direction of the panel move <ko>플리킹 방향</ko>
+			 * @param {Number} param.direction Direction of the panel move (see eg.DIRECTION_* constant) <ko>플리킹 방향 (eg.DIRECTION_* constant 확인)</ko>
 			 * @param {Array} param.pos Departure coordinate <ko>출발점 좌표</ko>
 			 * @param {Number} param.pos.0 Departure x-coordinate <ko>x 좌표</ko>
 			 * @param {Number} param.pos.1 Departure y-coordinate <ko>y 좌표</ko>
@@ -392,7 +392,7 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
 			 * @param {Number} param.index Current panel physical index <ko>현재 패널 물리적 인덱스</ko>
 			 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
-			 * @param {Boolean} param.direction Direction of the panel move <ko>플리킹 방향</ko>
+			 * @param {Number} param.direction Direction of the panel move (see eg.DIRECTION_* constant) <ko>플리킹 방향 (eg.DIRECTION_* constant 확인)</ko>
 			 * @param {Array} param.pos Departure coordinate <ko>출발점 좌표</ko>
 			 * @param {Number} param.pos.0 Departure x-coordinate <ko>x 좌표</ko>
 			 * @param {Number} param.pos.1 Departure y-coordinate <ko>y 좌표</ko>
@@ -433,7 +433,7 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
 			 * @param {Number} param.index Current panel physical index <ko>현재 패널 물리적 인덱스</ko>
 			 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
-			 * @param {Boolean} param.direction Direction of the panel move <ko>플리킹 방향</ko>
+			 * @param {Number} param.direction Direction of the panel move (see eg.DIRECTION_* constant) <ko>플리킹 방향 (eg.DIRECTION_* constant 확인)</ko>
 			 * @param {Array} param.depaPos Departure coordinate <ko>출발점 좌표</ko>
 			 * @param {Number} param.depaPos.0 Departure x-coordinate <ko>x 좌표</ko>
 			 * @param {Number} param.depaPos.1 Departure y-coordinate <ko>y 좌표</ko>
@@ -471,7 +471,7 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
 				 * @param {Number} param.index Current panel physical index <ko>현재 패널 물리적 인덱스</ko>
 				 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
-				 * @param {Boolean} param.direction Direction of the panel move <ko>플리킹 방향</ko>
+			 	 * @param {Number} param.direction Direction of the panel move (see eg.DIRECTION_* constant) <ko>플리킹 방향 (eg.DIRECTION_* constant 확인)</ko>
 				 * @param {Array} param.depaPos Departure coordinate <ko>출발점 좌표</ko>
 				 * @param {Number} param.depaPos.0 Departure x-coordinate <ko>x 좌표</ko>
 				 * @param {Number} param.depaPos.1 Departure y-coordinate <ko>y 좌표</ko>
@@ -501,7 +501,7 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
 				 * @param {Number} param.index Current panel physical index <ko>현재 패널 물리적 인덱스</ko>
 				 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
-				 * @param {Boolean} param.direction Direction of the panel move <ko>플리킹 방향</ko>
+			 	 * @param {Number} param.direction Direction of the panel move (see eg.DIRECTION_* constant) <ko>플리킹 방향 (eg.DIRECTION_* constant 확인)</ko>
 				 * @param {Array} param.depaPos Departure coordinate <ko>출발점 좌표</ko>
 				 * @param {Number} param.depaPos.0 Departure x-coordinate <ko>x 좌표</ko>
 				 * @param {Number} param.depaPos.1 Departure y-coordinate <ko>y 좌표</ko>
@@ -544,7 +544,7 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
 			 * @param {Number} param.index Current panel physical index <ko>현재 패널 물리적 인덱스</ko>
 			 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
-			 * @param {Boolean} param.direction Direction of the panel move <ko>플리킹 방향</ko>
+			 * @param {Number} param.direction Direction of the panel move (see eg.DIRECTION_* constant) <ko>플리킹 방향 (eg.DIRECTION_* constant 확인)</ko>
 			 */
 			/**
 			 * After panel restores it's last position
@@ -556,7 +556,7 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
 			 * @param {Number} param.index Current panel physical index <ko>현재 패널 물리적 인덱스</ko>
 			 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
-			 * @param {Boolean} param.direction Direction of the panel move <ko>플리킹 방향</ko>
+			 * @param {Number} param.direction Direction of the panel move (see eg.DIRECTION_* constant) <ko>플리킹 방향 (eg.DIRECTION_* constant 확인)</ko>
 			 */
 			if(panel.changed) {
 				this._triggerEvent("flickEnd");
@@ -601,15 +601,13 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * @param {Array} coords coordinate x,y value
 		 */
 		_setTranslate : function(coords) {
-			var hwAccelerable = this.options.hwAccelerable && !this._conf.hint;
-
 			// the param comes as [ val, 0 ], whatever the direction. So reorder the value depend the direction.
 			this._getDataByDirection(coords);
 
 			this._container.css("transform", ns.translate(
 				this._getUnitValue(coords[0]),
 				this._getUnitValue(coords[1]),
-				hwAccelerable
+				this._conf.useLayerHack
 			));
 		},
 
