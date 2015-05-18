@@ -10,10 +10,11 @@ eg.module("visible",[jQuery, eg],function($, ns){
 	 * @group EvergreenJs
 	 *
 	 * @param {Object} options
-	 * @param {String} [options.targetClass="check_visible"] a classname of tagets
-	 * @param {HTMLElement|String|jQuery} [options.wrapper=document] parent element that to check targets (wrapper is only one.)
+	 * @param {HTMLElement|String|jQuery} [options.wrapper=document] The parent element that to check targets (wrapper is only one.) <ko>확인할 영역의 상위 엘리먼트</ko>
+	 * @param {String} [options.targetClass="check_visible"] A classname of tagets <ko>확인할 엘리먼트가 가진 클래스명</ko>
 	 * @param {Number} [options.expandSize=0] expand size of the wrapper.
 	 * e.g. If a wrapper size is 100 x 100 and 'expandSize' option is 20, visible range is 120 x 120
+	 * <ko> 상위 엘리먼트 기준으로 추가적인 영역을 확인하도록 지정</ko>
 	 */
 	ns.Visible = ns.Class.extend(ns.Component,{
 		construct : function(options) {
@@ -48,7 +49,8 @@ eg.module("visible",[jQuery, eg],function($, ns){
 		 * @return {Instance}
 		 *
 		 * @remark
-		 * if targets was added or removed, you must call 'refresh' method.
+		 * If targets was added or removed, you must call 'refresh' method.
+		 * <ko> 확인 대상이 영역 안에 추가 된 경우, 또는 확인 대상이 영역 안에서 삭제 된 경우, 영역 내의 확인 대상을 이 메소드를 호출하여 갱신해야한다. <ko>
 		 */
 		refresh : function() {
 		    if (this._supportElementsByClassName) {
@@ -69,7 +71,7 @@ eg.module("visible",[jQuery, eg],function($, ns){
 		 * Checks if the target elements has been changed.
 		 * @ko target들이 변경했는지 확인한다.
 		 * @method eg.Visible#check
-		 * @param {Number} [deply=-1] delay time (ms)
+		 * @param {Number} [deply=-1] Delay time in milliseconds <ko>호출 후, 일정 시간이 지난 후에 확인하고자 할때 사용한다.</ko>
 		 * @return {Instance}
 		 */
 		check : function(delay) {
@@ -141,8 +143,8 @@ eg.module("visible",[jQuery, eg],function($, ns){
 			 * @ko 기준 영역을 기준으로 보이는 엘리먼트와 사라진 엘리먼트가 변경된 경우 발생하는 이벤트
 			 * @name eg.Visible#change
 			 * @event
-			 * @param {Array} visible visible elements (the element type is `HTMLElement`)
-			 * @param {Array} invisible invisible elements (the element type is `HTMLElement`)
+			 * @param {Array} visible The visible elements (the element type is `HTMLElement`) <ko>보여지게 된 엘리먼트들 </ko>
+			 * @param {Array} invisible The invisible elements (the element type is `HTMLElement`) <ko>안 보여지게 된 엘리먼트들 </ko>
 			 */
 			this.trigger("change", {
 				visible : visibles,
