@@ -27,7 +27,7 @@ eg.module("cssPrefix",[jQuery, document],function($, doc){
         acts = ["transitionProperty" , "transitionDuration" , "transition", "transform", "transitionTimingFunction"];
 
     var vendorPrefix = (function() {
-        var bodyStyle = doc.body.style;
+        var bodyStyle = doc.head.style;
         for ( var i = 0, len = cssPrefixes.length ; i < len ; i++ ) {
             if( cssPrefixes[i]+"Transition" in bodyStyle ){
                 return cssPrefixes[i];
