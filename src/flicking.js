@@ -195,18 +195,15 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 
 		/**
 		 * Move panel's position within array
-		 * @param {Number} from starting index
-		 * @param {Number} count element count to move
+		 * @param {Number} count element counts to move
+		 * @param {Boolean} append where the list to be appended(moved) (true: to the end, false: to the beginning)
 		 */
-		_movePanelPosition : function(from, count) {
-			var list = this._conf.panel.list, listToMove;
+		_movePanelPosition : function(count, append) {
+			var panel = this._conf.panel,
+				list = panel.list, listToMove;
 
-			if(from > 0) {
-				from += 1 - count;
-			}
-
-			listToMove = list.splice(from, count);
-			this._conf.panel.list = $(from === 0 ? $.merge(list, listToMove) : $.merge(listToMove, list));
+			listToMove = list.splice(append ? 0 : panel.count - count, count);
+			this._conf.panel.list = $(append ? $.merge(list, listToMove) : $.merge(listToMove, list));
 		},
 
 		/**
@@ -215,17 +212,16 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 */
 		_setDefaultPanel : function(index) {
 			var panel = this._conf.panel,
-				lastIndex = panel.count - 1,
-				coords;
+				lastIndex = panel.count - 1, coords;
 
 			if(this.options.circular) {
 				// if default index is given, then move correspond panel to the first position
 				if(index > 0 && index <= lastIndex) {
-					this._movePanelPosition(0, index);
+					this._movePanelPosition(index, true);
 				}
 
 				// set first panel's position according physical node length
-				this._movePanelPosition(lastIndex, this._getBasePositionIndex());
+				this._movePanelPosition(this._getBasePositionIndex(), false);
 
 				panel.no = index;
 			} else {
@@ -306,10 +302,8 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * @param {Number} times
 		 */
 		_arrangePanelPosition : function(direction, times) {
-			var next = direction === this._conf.dirData[0],
-				lastIndex = this._conf.panel.list.length - 1;
-
-			this._movePanelPosition( next ? 0 : lastIndex, Math.abs(times || 1) );
+			var next = direction === this._conf.dirData[0];
+			this._movePanelPosition( Math.abs(times || 1), next );
 		},
 
 		/**
