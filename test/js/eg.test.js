@@ -223,9 +223,26 @@ var ua = [
         "_hasClickBug" : true
     },
 	{
+        // iPhone 8.0 - webview (Naver)
+        "device" : "iPhone 8.0 - webview (Naver)",
+        "ua" : "Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12B440 NAVER(inapp; search; 390; 6.0.2)",
+        "os" : {
+            "name" : "ios",
+            "version" : "8.0"
+        },
+        "browser" : {
+            "name" : "safari",
+            "version" : "-1",
+            "webview" : true
+        },
+        "isHWAccelerable" : true,
+        "isTransitional" : false,
+        "_hasClickBug" : true
+    },
+    {
         // iPhone 8.0 - webview
         "device" : "iPhone 8.0 - webview",
-        "ua" : "Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12B440 NAVER(inapp; search; 390; 6.0.2)",
+        "ua" : "Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12B440",
         "os" : {
             "name" : "ios",
             "version" : "8.0"
@@ -377,7 +394,7 @@ var ua = [
 		},
 		"browser" : {
 			"name" : "chrome",
-			"version" : "16.0.912.77",
+			"version" : "16.0.912.77"
 		},
 		"isHWAccelerable" : false,
 		"isTransitional" : true,
@@ -393,7 +410,7 @@ var ua = [
 		},
 		"browser" : {
 			"name" : "sbrowser",
-			"version" : "18.0.1025.308",
+			"version" : "18.0.1025.308"
 		},
 		"isHWAccelerable" : true,
 		"isTransitional" : false,
@@ -409,7 +426,7 @@ var ua = [
 		},
 		"browser" : {
 			"name" : "chrome",
-			"version" : "18.0.1025.166",
+			"version" : "18.0.1025.166"
 		},
 		"isHWAccelerable" : false,
 		"isTransitional" : true,
@@ -425,7 +442,7 @@ var ua = [
 		},
 		"browser" : {
 			"name" : "sbrowser",
-			"version" : "28.0.1500.94",
+			"version" : "28.0.1500.94"
 		},
 		"isHWAccelerable" : true,
 		"isTransitional" : false,
@@ -441,14 +458,14 @@ var ua = [
 		},
 		"browser" : {
 			"name" : "chrome",
-			"version" : "42.0.2311.108",
+			"version" : "42.0.2311.108"
 		},
 		"isHWAccelerable" : true,
 		"isTransitional" : true,
 		"_hasClickBug" : false
 	},
 	{
-        // GalaxyS5 - webview
+        // GalaxyS5 4.4.2 - webview
         "device" : "GalaxyS5 - webview",
         "ua" : "Mozilla/5.0 (Linux; Android 4.4.2; SM-G900S Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/28.0.1500.94 Mobile Safari/537.36 NAVER(inapp; search; 340; 6.0.5)",
         "os" : {
@@ -463,6 +480,23 @@ var ua = [
         "isHWAccelerable" : true,
         "isTransitional" : true,
         "_hasClickBug" : false
+    },
+    {
+         // GalaxyS5 5.0 - webview
+         "device" : "GalaxyS5 5.0 - webview",
+         "ua" : "Mozilla/5.0 (Linux; Android 5.0; SM-G900S Build/LRX21T; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/42.0.2311.138 Mobile Safari/537.36",
+         "os" : {
+             "name" : "android",
+             "version" : "5.0"
+         },
+         "browser" : {
+             "name" : "chrome",
+             "version" : "42.0.2311.138",
+             "webview" : true
+         },
+         "isHWAccelerable" : true,
+         "isTransitional" : true,
+         "_hasClickBug" : false
     },
 	{
         // GalaxyS5 - higgs
@@ -809,12 +843,16 @@ ua.forEach(function(v,i) {
 	test("agent Test : "+ v.device, function() {
 		// Given
 		// When
+		if(!v.browser.webview) {
+		    v.browser.webview = false;
+		}
 		var agent = eg.agent(v.ua);
 		//Then
 		equal(agent.os.name, v.os.name, "check os name : " + v.ua);
 		equal(agent.os.version, v.os.version, "check os Version");
 		equal(agent.browser.name, v.browser.name, "check browser name");
 		equal(agent.browser.version, v.browser.version, "check browser Version");
+		equal(agent.browser.webview, v.browser.webview, "check webview");
 	});
 });
 
