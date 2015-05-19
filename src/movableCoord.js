@@ -59,7 +59,7 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 				curHammer : null,
 				moveDistance : null,
 				animating : null,
-				interrupted : false
+				interrupted : this.options.interruptable
 			};
 			this._hammers = {};
 			this._pos = [ this.options.min[0], this.options.min[1] ];
@@ -186,7 +186,7 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 			if(!this.options.interruptable && this._status.interrupted) {
 				return;
 			}
-			(!this.options.interruptable) && (this._status.interrupted = true);
+			!this.options.interruptable && (this._status.interrupted = true);
 
 			var pos = this._pos;
 			this._grab();
@@ -212,6 +212,9 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 
 		// panmove event handler
 		_panmove : function(e) {
+			if(!this._isInterrupting()) {
+				return;
+			}
 			var tv, tn, tx, pos = this._pos,
 				min = this.options.min,
 				max = this.options.max,
@@ -283,7 +286,7 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 
 		// panend event handler
 		_panend : function(e) {
-			if(!this._status.moveDistance) {
+			if(!this._isInterrupting()) {
 				return;
 			}
 			var direction = this._subOptions.direction,
@@ -301,6 +304,11 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 				], this._subOptions.maximumSpeed ),
 			this._animationEnd, false, null, e);
 			this._status.moveDistance = null;
+		},
+
+		_isInterrupting : function() {
+			// when interruptable is 'true', return value is always 'true'.
+			return this.options.interruptable ? true : this._status.interrupted;
 		},
 
 		_animationEnd : function() {

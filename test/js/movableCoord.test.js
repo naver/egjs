@@ -264,16 +264,16 @@ asyncTest("slow movement test (no-velocity)", function() {
 			firedHold = true;
 			deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
 			equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
-			equal(this._status.interrupted, false, "interrupted property is 'false'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"change" : function(e) {
 			equal(e.holding, true, "holding value was 'true' after animation event");
-			equal(this._status.interrupted, false, "interrupted property is 'false'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"release" : function(e) {
 			firedRelease = true;
 			ok(true, "fire 'release' event");
-			equal(this._status.interrupted, false, "interrupted property is 'false'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"animation" : function(e) {
 			throws(
@@ -286,7 +286,7 @@ asyncTest("slow movement test (no-velocity)", function() {
 		"animationEnd" : function(e) {
 			firedAnimationEnd = true;
 			ok(true, "fire 'animationEnd' event");
-			equal(this._status.interrupted, false, "interrupted property is 'false'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		}
 	});
 	this.inst.bind(el);
@@ -323,7 +323,7 @@ asyncTest("fast movement test (velocity)", function() {
 			firedHold = true;
 			deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
 			equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
-			equal(this._status.interrupted, false, "interrupted property is 'false'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"change" : function(e) {
 			if(firedAnimation) {
@@ -331,22 +331,22 @@ asyncTest("fast movement test (velocity)", function() {
 			} else {
 				equal(e.holding, true, "holding value was 'true' after animation event");
 			}
-			equal(this._status.interrupted, false, "interrupted property is 'false'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"release" : function(e) {
 			firedRelease = true;
 			ok(true, "fire 'release' event");
-			equal(this._status.interrupted, false, "interrupted property is 'false'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"animation" : function(e) {
 			firedAnimation = true;
 			ok(true, "fire 'animation' event");
-			equal(this._status.interrupted, false, "interrupted property is 'false'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"animationEnd" : function(e) {
 			firedAnimationEnd = true;
 			ok(true, "fire 'animationEnd' event");
-			equal(this._status.interrupted, false, "interrupted property is 'false'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		}
 	});
 	this.inst.bind(el);
@@ -387,12 +387,12 @@ asyncTest("movement test when stop method was called in 'animation' event", func
 			} else {
 				equal(e.holding, true, "holding value was 'true' after animation event");
 			}
-			equal(this._status.interrupted, false, "interrupted property is 'false'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"release" : function(e) {
 			firedRelease = true;
 			ok(true, "fire 'release' event");
-			equal(this._status.interrupted, false, "interrupted property is 'false'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"animation" : function(e) {
 			firedAnimation = true;
@@ -402,12 +402,12 @@ asyncTest("movement test when stop method was called in 'animation' event", func
 				e.done();
 			}, e.duration);
 			ok(true, "fire 'animation' event");
-			equal(this._status.interrupted, false, "interrupted property is 'false'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"animationEnd" : function(e) {
 			firedAnimationEnd = true;
 			ok(true, "fire 'animationEnd' event");
-			equal(this._status.interrupted, false, "interrupted property is 'false'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		}
 	});
 	this.inst.bind(el);
@@ -463,7 +463,7 @@ asyncTest("interrupt test when user's action is fast", function() {
 			firedHold = true;
 			deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
 			equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
-			equal(this._status.interrupted, true, "interrupted property is 'true'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"change" : function(e) {
 			if(firedAnimation) {
@@ -471,22 +471,22 @@ asyncTest("interrupt test when user's action is fast", function() {
 			} else {
 				equal(e.holding, true, "holding value was 'true' after animation event");
 			}
-			equal(this._status.interrupted, true, "interrupted property is 'true'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"release" : function(e) {
 			firedRelease = true;
 			ok(true, "fire 'release' event");
-			equal(this._status.interrupted, true, "interrupted property is 'true'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"animation" : function(e) {
 			firedAnimation = true;
 			ok(true, "fire 'animation' event");
-			equal(this._status.interrupted, true, "interrupted property is 'true'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"animationEnd" : function(e) {
 			firedAnimationEnd = true;
 			ok(true, "fire 'animationEnd' event");
-			equal(this._status.interrupted, false, "interrupted property is 'false'");
+			equal(this._isInterrupting(), false, "_isInterrupting is 'false'");
 		}
 	});
 	this.inst.bind(el);
@@ -526,12 +526,12 @@ asyncTest("interrupt test when stop method was called in 'animation' event", fun
 			} else {
 				equal(e.holding, true, "holding value was 'true' after animation event");
 			}
-			equal(this._status.interrupted, true, "interrupted property is 'true'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"release" : function(e) {
 			firedRelease = true;
 			ok(true, "fire 'release' event");
-			equal(this._status.interrupted, true, "interrupted property is 'true'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"animation" : function(e) {
 			firedAnimation = true;
@@ -541,12 +541,12 @@ asyncTest("interrupt test when stop method was called in 'animation' event", fun
 				e.done();
 			}, e.duration);
 			ok(true, "fire 'animation' event");
-			equal(this._status.interrupted, true, "interrupted property is 'true'");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"animationEnd" : function(e) {
 			firedAnimationEnd = true;
 			ok(true, "fire 'animationEnd' event");
-			equal(this._status.interrupted, false, "interrupted property is 'false'");
+			equal(this._isInterrupting(), false, "_isInterrupting is 'false'");
 		}
 	});
 	this.inst.bind(el);
