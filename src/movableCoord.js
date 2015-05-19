@@ -1,4 +1,4 @@
-eg.module("movableCoord",[jQuery, eg],function($, ns){
+eg.module("movableCoord",[jQuery, eg, Hammer],function($, ns, HM){
 	// It is scheduled to be removed in case of build process.
 	// ns.__checkLibrary__( !("Hammer" in window), "You must download Hammerjs. (http://hammerjs.github.io/)\n\ne.g. bower install hammerjs");
 	// ns.__checkLibrary__( !("easeOutQuint" in $.easing), "You must download jQuery Easing Plugin(http://gsgd.co.uk/sandbox/jquery/easing/)\n\ne.g. bower install jquery.easing");
@@ -101,10 +101,10 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 		},
 		_createHammer : function(el, subOptions) {
 			// create Hammer
-			var hammer = new Hammer.Manager(el, {
+			var hammer = new HM.Manager(el, {
 					recognizers : [
 						[
-							Hammer.Pan, {
+							HM.Pan, {
 								direction: subOptions.direction,
 								threshold: 0
 							}
@@ -451,7 +451,7 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 			/**
 			 * When animation was started.
 			 * @ko 에니메이션이 시작했을 때 발생한다.
-			 * @name eg.MovableCoord#animation
+			 * @name eg.MovableCoord#animationStart
 			 * @event
 			 * @param {Object} param
 			 * @param {Number} param.duration
@@ -466,8 +466,8 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 			 * @param {Function} param.done If user control animation, user must call this function. <ko>애니메이션이 끝났다는 것을 알려주는 함수</ko>
 			 *
 			 */
-			var retTrigger = this.trigger("animation", animationParam);
-			// You can't stop the 'animation' event when 'circular' is true.
+			var retTrigger = this.trigger("animationStart", animationParam);
+			// You can't stop the 'animationStart' event when 'circular' is true.
 			if (isCircular && !retTrigger) {
 				throw new Error("You can't stop the 'animation' event when 'circular' is true.");
 			}

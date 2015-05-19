@@ -321,7 +321,7 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				hold : this._holdHandler.bind(this),
 				change : this._changeHandler.bind(this),
 				release : this._releaseHandler.bind(this),
-				animation : this._animationHandler.bind(this),
+				animationStart : this._animationStartHandler.bind(this),
 				animationEnd : this._animationEndHandler.bind(this)
 			});
 		},
@@ -443,9 +443,9 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		},
 
 		/**
-		 * 'animation' event handler
+		 * 'animationStart' event handler
 		 */
-		_animationHandler : function(e) {
+		_animationStartHandler : function(e) {
 			var panel = this._conf.panel,
 				direction = this._conf.touch.direction,
 				dirData = this._conf.dirData;
