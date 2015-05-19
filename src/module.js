@@ -1,5 +1,4 @@
 (function(global){
-	"use strict";
 	global.eg = {};
 	/**
 	 * Regist module.
@@ -9,4 +8,3 @@
 	    fp.apply(global,di);
 	};
 })(window);
-	

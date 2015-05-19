@@ -1,5 +1,4 @@
 eg.module("eg",[jQuery, eg, window],function($, ns, global){
-	"use strict";
 	/**
 	 * @namespace eg
 	 * @group EvergreenJs

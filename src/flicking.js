@@ -1,5 +1,4 @@
 eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
-	"use strict";
 	/**
 	 * To build flickable UI
 	 * @group EvergreenJs
