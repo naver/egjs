@@ -79,8 +79,7 @@ eg.hook.agent = function(agent) {
 				browserMatch = /(Chrome|CriOS|Firefox)[\s\/]([\w.]+)/.exec(ua) ||
 					/(MSIE|Trident)[\/\s]([\d.]+)/.exec(ua) ||
 					/(PhantomJS)\/([\d.]+)/.exec(ua) ||
-					[],
-                appMatch = /(NAVER|Daum)/.exec(ua) || [];
+					[];
 
 			// os
 			if(osMatch.length >= 3) {
@@ -121,8 +120,7 @@ eg.hook.agent = function(agent) {
 				},
 				browser : {
 					name : browserMatch[1] || "default",
-					version : browserMatch[2] || /*osMatch[2] ||*/ "-1",
-					webview : appMatch.length > 0
+					version : browserMatch[2] || /*osMatch[2] ||*/ "-1"
 				}
 			};
 			info = this._checkWebview(info, ua);
@@ -140,15 +138,24 @@ eg.hook.agent = function(agent) {
         // Android 5.0 && chrome 40+ : when there is a keyword of "; wv" in useragent
         // Under android 5.0 :  when there is a keyword of "NAVER or Daum" in useragent
 		_checkWebview : function(info, ua){
-		    // ios
-		    if(info.os.name === "ios" && info.browser.version === "-1"){
-		        info.browser.webview = true;
-		    }
+		    var retWebview = false;
 
 		    // Android
             if(info.os.name === "android" && ua.indexOf("; wv") > -1){
-                info.browser.webview = true;
+                retWebview = true;
             }
+
+		    // ios
+		    else if(info.os.name === "ios" && info.browser.version === "-1"){
+		        retWebview = true;
+		    }
+
+            //Other
+            else if(ua.indexOf("NAVER") > -1 || ua.indexOf("Daum") > -1){
+                retWebview = true;
+            }
+
+            info.browser.webview = retWebview;
 
             return info;
 		},
