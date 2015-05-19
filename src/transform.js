@@ -1,6 +1,4 @@
 eg.module("transform",[jQuery, window],function($, global){
-
-	"use strict";
     /**
      * Extends jQuery animate in order to use 'transform' property.
      * @ko jQuery animate 사용시 transform을 사용할 수 있도록 확장한 animate 메소드
