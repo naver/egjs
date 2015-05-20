@@ -1,6 +1,6 @@
-module("transform Test", {
+module("animate Test", {
 	setup : function() {
-		this.transform = eg._invoke("transform",[jQuery,window]);
+		this.animate = eg._invoke("animate",[jQuery,window]);
 	},
 	teardown : function() {
 	}
@@ -28,7 +28,7 @@ test("parseStyle", function() {
 	//When
 	for( var p in propertyStr) {
 		// Then
-		deepEqual(this.transform.parseStyle(p), propertyStr[p], p);
+		deepEqual(this.animate.parseStyle(p), propertyStr[p], p);
 	};
 });
 
@@ -74,7 +74,7 @@ test("computeValue" , function() {
 	// Then
 	for( var p in value) {
 		// Then
-		equal(this.transform.computeValue(p, {
+		equal(this.animate.computeValue(p, {
 			size : size,
 			baseVal : baseVal
 		}), value[p], p);
@@ -93,7 +93,7 @@ test("toMatrix" , function() {
 	// Then
 	for( var p in value) {
 		// Then
-		deepEqual(this.transform.toMatrix(p), value[p], p);
+		deepEqual(this.animate.toMatrix(p), value[p], p);
 	}
 });
 
@@ -119,7 +119,7 @@ test("toMatrix3d" , function() {
 	// Then
 	value.forEach(function(v) {
 		// Then
-		deepEqual(_this.transform.toMatrix3d(v.input), v.output, v.input);
+		deepEqual(_this.animate.toMatrix3d(v.input), v.output, v.input);
 	});
 });
 
@@ -184,7 +184,7 @@ test("unMatrix" , function() {
 		$box.css("-webkit-transform", v.input);
 
 		// Then
-		deepEqual(_this.transform.unMatrix(_this.transform.parseStyle($box.css("-webkit-transform"))), v.output, v.input);
+		deepEqual(_this.animate.unMatrix(_this.animate.parseStyle($box.css("-webkit-transform"))), v.output, v.input);
 	});
 });
 
@@ -273,6 +273,6 @@ test("parse", function() {
 	//When
 	for( var p in propertyStr) {
 		// Then
-		deepEqual(this.transform.parse(p, width, height, propertyStr[p].currentStyle), propertyStr[p].output, p);
+		deepEqual(this.animate.parse(p, width, height, propertyStr[p].currentStyle), propertyStr[p].output, p);
 	};
 });
