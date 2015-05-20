@@ -4,6 +4,7 @@ eg.module("cssPrefix",[jQuery, document],function($, doc){
      * @ko css prefix cssHooks 적용
      *
      * @name jQuery#cssPrefix
+     * @hook
      *
      * @example
      * $("#ID").css("transform", "translate('10px', '10px');
@@ -18,7 +19,7 @@ eg.module("cssPrefix",[jQuery, document],function($, doc){
     }
 
     // run in jQuery 1.8.x below
-    if ( $.fn && $.fn.jquery && $.fn.jquery.replace(/[.]/, "") >= "18" ) {
+    if ( $.fn && $.fn.jquery && $.fn.jquery.replace(/\./, "") >= "18" ) {
         return;
     }
 
@@ -26,7 +27,7 @@ eg.module("cssPrefix",[jQuery, document],function($, doc){
         acts = ["transitionProperty" , "transitionDuration" , "transition", "transform", "transitionTimingFunction"];
 
     var vendorPrefix = (function() {
-        var bodyStyle = doc.head.style;
+        var bodyStyle = (doc.head || doc.getElementsByTagName("head")[0]).style;
         for ( var i = 0, len = cssPrefixes.length ; i < len ; i++ ) {
             if( cssPrefixes[i]+"Transition" in bodyStyle ){
                 return cssPrefixes[i];
