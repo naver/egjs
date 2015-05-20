@@ -1,9 +1,9 @@
 {
-  "name": "EvergreenJs",
+  "name": "egjs",
   "version": "0.0.1",
   "description": "ex jindo (mobile) component",
-  "outputname": "evergreen",
-  "main": "dist/evergreen.js",
+  "outputname": "eg",
+  "main": "dist/eg.js",
   "scripts": {
     "test": "grunt"
   },

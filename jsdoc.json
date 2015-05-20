@@ -10,8 +10,8 @@
         "default": {
             "outputSourceFiles" : true
         },
-        "applicationName": "EvergreenJs",
-        "disqus": "evergreenjs",
+        "applicationName": "egjs",
+        "disqus": "egjs",
         "googleAnalytics": "",
         "openGraph": {
             "title": "",
@@ -21,7 +21,7 @@
             "url": ""
         },
         "meta": {
-            "title": "EvergreenJs - API",
+            "title": "egjs - API",
             "description": "",
             "keyword": ""
         },
