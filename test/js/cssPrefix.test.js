@@ -23,7 +23,7 @@ test("When is not jQuery.cssHooks", function() {
     var method = null;
 
     try{
-        method = eg._invoke("cssPrefix",[jQuery, null]);
+        method = eg.invoke("cssPrefix",[jQuery, null]);
     }catch(e){
         method = false;
     }
@@ -39,7 +39,7 @@ cssPrefixes.forEach(function(v,i) {
         // Given
         jQuery.cssHooks = {};
         this.fakeDocument.body.style[v+"Transition"] = "";
-        var method = eg._invoke("cssPrefix",[jQuery, this.fakeDocument]);
+        var method = eg.invoke("cssPrefix",[jQuery, this.fakeDocument]);
 
         // When
 
@@ -52,7 +52,7 @@ cssPrefixes.forEach(function(v,i) {
     test("css propertie in jQuery.cssHooks : "+ v, function() {
         // Given
         this.fakeDocument.body.style[v+"Transition"] = "";
-        var method = eg._invoke("cssPrefix",[jQuery, this.fakeDocument]);
+        var method = eg.invoke("cssPrefix",[jQuery, this.fakeDocument]);
         var checkPropertie = v.toLowerCase() + "Transform";
 
         // When
@@ -65,7 +65,7 @@ cssPrefixes.forEach(function(v,i) {
 
 test("transform property set/get", function() {
     // Given
-    var method = eg._invoke("cssPrefix",[jQuery, document]);
+    var method = eg.invoke("cssPrefix",[jQuery, document]);
 
     // When
     $("#prefixId").css("transform", "translate(100px, 0px)");
@@ -78,7 +78,7 @@ test("transform property set/get", function() {
 
 test("Transform property set/get", function() {
     // Given
-    var method = eg._invoke("cssPrefix",[jQuery, document]);
+    var method = eg.invoke("cssPrefix",[jQuery, document]);
 
     // When
     $("#prefixId").css("Transform", "translate(300px, 0px)");
@@ -90,7 +90,7 @@ test("Transform property set/get", function() {
 
 test("webkitTransform property set/get", function() {
     // Given
-    var method = eg._invoke("cssPrefix",[jQuery, document]);
+    var method = eg.invoke("cssPrefix",[jQuery, document]);
 
     // When
     $("#prefixId").css("webkitTransform", "translate(200px, 0px)");

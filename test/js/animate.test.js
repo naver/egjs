@@ -1,6 +1,6 @@
 module("animate Test", {
 	setup : function() {
-		this.animate = eg._invoke("animate",[jQuery,window]);
+		this.animate = eg.invoke("animate",[jQuery,window]);
 	},
 	teardown : function() {
 	}
