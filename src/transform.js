@@ -142,7 +142,7 @@ eg.module("transform",[jQuery, window],function($, global){
 				case "translate" :
 				case "scale" :
 					if(/[XYZ]/.test(m[2])) {
-						if(/translate/.test(m[1])) {
+						if(m[1].indexOf("translate") !== -1) {
 							switch(m[2]) {
 								case "X" : opt.size=width; break;
 								case "Y" : opt.size=height; break;
@@ -152,7 +152,7 @@ eg.module("transform",[jQuery, window],function($, global){
 						styleTransform  && (opt.baseVal = styleTransform[name] || 0);
 						options.push(opt);
 					} else {
-						(/scale/.test(m[1])) && (width = height = 0);
+						(m[1].indexOf("scale") !== -1) && (width = height = 0);
 						options = [ { size : width}, {size: height}, {size: 0} ];
 						if(styleTransform) {
 							options[0].baseVal = styleTransform[m[1] + "X"] || 0;
@@ -176,7 +176,7 @@ eg.module("transform",[jQuery, window],function($, global){
 	// @return function
 	function rateFn(element, startTf, endTf) {
 		var $el = $(element),
-			needToConvert = /%/.test(startTf) || /%/.test(endTf),
+			needToConvert = startTf.indexOf("%") !== -1 || endTf.indexOf("%") !== -1,
 			width = needToConvert ? $el.width() : 0,
 			height = needToConvert ? $el.height() : 0,
 			styleTransform = unMatrix(toMatrix($el.css("transform"))),
@@ -228,7 +228,7 @@ eg.module("transform",[jQuery, window],function($, global){
 	}
 
 	function unit(name) {
-		return /translate/.test(name) ? "px" : (/rotate/.test(name) ? "deg" : "");
+		return name.indexOf("translate") !== -1 ? "px" : (name.indexOf("rotate") !== -1 ? "deg" : "");
 	}
 
 	// Object {translateZ: 0, translateX: 20, translateY: 15, rotate: 0, perspective: 10}
@@ -308,7 +308,7 @@ eg.module("transform",[jQuery, window],function($, global){
 	function toMatrix(transform) {
 		if(transform === "none") {
 			return ["matrix" , [ "1", "0","0","1","0","0"] ];
-		} else if(/matrix/.test(transform)) {
+		} else if(transform.indexOf("matrix") !== -1) {
 			return parseStyle(transform);
 		}
 		return CSSMatrix ? parseStyle(new CSSMatrix(transform).toString()) : transform;
@@ -326,7 +326,7 @@ eg.module("transform",[jQuery, window],function($, global){
 			m3 = parseFloat(m[3]),
 			// rx, ry, rz,
 			sx, sy, sz;
-		if(/matrix3d/.test(matrix[0])) {
+		if(matrix[0].indexOf("matrix3d") !== -1 ) {
 			sx = Math.sqrt(m0*m0 + m1*m1 + m2*m2);
 			sy = Math.sqrt(m[4]*m[4] + m[5]*m[5] + m[6]*m[6]);
 			sz = Math.sqrt(m[8]*m[8] + m[9]*m[9] + m[10]*m[10]);

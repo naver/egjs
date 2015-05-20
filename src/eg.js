@@ -85,10 +85,10 @@ eg.hook.agent = function(agent) {
 			if(osMatch.length >= 3) {
 				if(/iPhone|iPad/.test(ua)) {
 					osMatch[1] = "ios";
-				} else if(/Win/.test(ua)) {
+				} else if(ua.indexOf("Win") !== -1) {
 					osMatch[1] = "window";
 					osMatch[2] = osMatch[2] === "2000" ? "5.0" : osMatch[2]; // for window 2000
-				} else if(/Mac/.test(ua)) {
+				} else if(ua.indexOf("Mac") !== -1) {
 					osMatch[1] = "mac";
 				} else {
 					osMatch[1] = osMatch[1].toLowerCase();
@@ -99,7 +99,7 @@ eg.hook.agent = function(agent) {
 			// browser
 			if(browserMatch.length >= 3) {
 				if(/Chrome|CriOS/.test(ua)) {
-					browserMatch[1] = /SAMSUNG/.test(ua) ? "sbrowser" : "chrome";
+					browserMatch[1] = ua.indexOf("SAMSUNG") !== -1 ? "sbrowser" : "chrome";
 				} else if(/MSIE|Trident/.test(ua)) {
 					browserMatch[1] = "ie";
 				} else {
@@ -108,8 +108,8 @@ eg.hook.agent = function(agent) {
 			} else if(browserMatch.length === 0 && osMatch[1] && osMatch[1] !== "android") {
 				browserMatch = /(Safari)\/([\w.]+)/.exec(ua) || (osMatch[1] === "ios" ? ["", "safari"] : ["",""]);
 				browserMatch[1] = browserMatch[1].toLowerCase();
-				if(browserMatch[0] && /safari/.test(browserMatch[1]) ) {
-					browserMatch[2] = /Apple/.test(ua) ? ua.match(/Version\/([\d.]+)/)[1] || null : null;
+				if(browserMatch[0] && browserMatch[1].indexOf("safari") !== -1 ) {
+					browserMatch[2] = ua.indexOf("Apple") !== -1 ? ua.match(/Version\/([\d.]+)/)[1] || null : null;
 				}
 			}
 
@@ -191,11 +191,11 @@ eg.hook.isHWAccelerable = function(defalutVal,agent) {
 
 			// chrome (less then 25) has a text blur bug.
 			// but samsung sbrowser fix it.
-			if(/chrome/.test(browser)) {
+			if(browser.indexOf("chrome") !== -1) {
 				result = browserVersion >= "25";
 			} else if(/ie|firefox|safari|inapp/.test(browser)) {
 				result = true;
-			} else if(/android/.test(agent.os.name)) {
+			} else if( agent.os.name.indexOf("android") !== -1) {
 				useragent = (ua.match(/\(.*\)/) || [null])[0];
 
 				// android 4.1+ blacklist
@@ -247,7 +247,7 @@ eg.hook.isTransitional = function(defaultVal, agent) {
 						result = /safari|inapp/.test(browser) && parseInt(agent.os.version,10) < 6;
 						break;
 					case "window" :
-						result = /safari/.test(browser) || (/ie/.test(browser) && parseInt(agent.browser.nativeVersion,10) >= 10);
+						result = browser.indexOf("safari") !== -1 || ( browser.indexOf("ie") !== -1 && parseInt(agent.browser.nativeVersion,10) >= 10 );
 						break;
 					default :
 						result = /chrome|firefox|safari/.test(browser);
