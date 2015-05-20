@@ -823,6 +823,15 @@ var ua = [
 	}
 ];
 
+// Json common data definitions
+ua = ua.map(function(v){
+    if(!v.browser.webview) {
+        v.browser.webview = false;
+    }
+
+    return v;
+});
+
 module("extend Agent Test", {
 	setup : function() {
 		this.agent = eg.agent;
@@ -843,9 +852,7 @@ ua.forEach(function(v,i) {
 	test("agent Test : "+ v.device, function() {
 		// Given
 		// When
-		if(!v.browser.webview) {
-		    v.browser.webview = false;
-		}
+
 		var agent = eg.agent(v.ua);
 		//Then
 		equal(agent.os.name, v.os.name, "check os name : " + v.ua);
