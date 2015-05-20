@@ -1,4 +1,4 @@
-(function(global){
+(function(global, undefined){
 	"use strict";
 	global.eg = {};
 	global.eg._module = {};
@@ -7,12 +7,14 @@
 	    fp.apply(global,di);
 	}
 	
-	global.eg._invoke = function(name,param){
+	global.eg.invoke = function(name,param){
 	    var module = this._module[name],
 	        di = module[0],
 	        fp = module[1];
-	    return fp.apply(global, param.map(function(v,i){
-	        return v===null?di[i]:v;
+	        param = !param ? [] : param;
+
+	    return fp.apply(global, di.map(function(v,i){
+	        return param[i]===null || param[i] === undefined ? v : param[i];
 	    }));
 	}	
 })(window);
