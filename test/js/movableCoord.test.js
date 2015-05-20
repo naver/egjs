@@ -417,3 +417,32 @@ asyncTest("movement test when stop method was called in 'animation' event", func
 		},1000);
     	});
 });
+
+test("check user's direction", function() {
+	//Given
+	// When
+	this.inst._subOptions.thresholdAngle = 45;
+
+	// Then
+	equal(this.inst._getDirection(0), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal")
+	equal(this.inst._getDirection(20), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal")
+	equal(this.inst._getDirection(45), eg.DIRECTION_HORIZONTAL, "check if a directgion is horizontal");
+	equal(this.inst._getDirection(100), eg.DIRECTION_VERTICAL, "check if a direction is vertical");
+	equal(this.inst._getDirection(134), eg.DIRECTION_VERTICAL, "check if a direction is vertical");
+	equal(this.inst._getDirection(135), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	equal(this.inst._getDirection(136), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	equal(this.inst._getDirection(180), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+
+	// When
+	this.inst._subOptions.thresholdAngle = 20;
+
+	// Then
+	equal(this.inst._getDirection(0), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal")
+	equal(this.inst._getDirection(10), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	equal(this.inst._getDirection(20), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	equal(this.inst._getDirection(30), eg.DIRECTION_VERTICAL, "check if a direction is vertical");
+	equal(this.inst._getDirection(50), eg.DIRECTION_VERTICAL, "check if a direction is vertical");
+	equal(this.inst._getDirection(160), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	equal(this.inst._getDirection(161), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	equal(this.inst._getDirection(180), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+});
