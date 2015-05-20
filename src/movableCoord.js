@@ -38,6 +38,7 @@ eg.module("movableCoord",[jQuery, eg, Hammer],function($, ns, HM){
 	 *
 	 * @param {Function} [options.easing a easing=easing.easeOutQuint] Function of the jQuery Easing Plugin <ko>jQuery Easing 플러그인 함수</ko>
 	 * @param {Number} [options.deceleration=0.0006] deceleration This value can be altered to change the momentum animation duration. higher numbers make the animation shorter. <ko>감속계수. 높을값이 주어질수록 애니메이션의 동작 시간이 짧아진다.</ko>
+	 * @param {Number} [options.interruptable=true] interruptable This value can be enabled to interrupt cycle of the animation event. <ko>이 값이  true이면, 애니메이션의 이벤트 사이클을 중단할수 있다.</ko>
 	 * @see Hammerjs {@link http://hammerjs.github.io}
 	 * @see jQuery Easing Plugin {@link http://gsgd.co.uk/sandbox/jquery/easing}
 	 */
@@ -212,7 +213,7 @@ eg.module("movableCoord",[jQuery, eg, Hammer],function($, ns, HM){
 
 		// panmove event handler
 		_panmove : function(e) {
-			if(!this._isInterrupting()) {
+			if(!this._isInterrupting() || !this._status.moveDistance) {
 				return;
 			}
 			var tv, tn, tx, pos = this._pos,
@@ -286,7 +287,7 @@ eg.module("movableCoord",[jQuery, eg, Hammer],function($, ns, HM){
 
 		// panend event handler
 		_panend : function(e) {
-			if(!this._isInterrupting()) {
+			if(!this._isInterrupting() || !this._status.moveDistance) {
 				return;
 			}
 			var direction = this._subOptions.direction,
