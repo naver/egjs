@@ -53,8 +53,8 @@ grunt의 build를 실행하여, 빌드작업을 진행한다.
 ```
 grunt build
 ```
-- 빌드가 정상적으로 완료되면 `dist` 디렉토리에 egjs.js 와 egjs.min.js 가 생성된다.
-- egjs.js와 의존성이 있는 라이브러리는 `dist/lib` 폴더로 생성된다.
+- 빌드가 정상적으로 완료되면 `dist` 디렉토리에 eg.js 와 eg.min.js 가 생성된다.
+- eg.js와 의존성이 있는 라이브러리는 `dist/lib` 폴더로 생성된다.
 - API문서는 `doc/index.html` 로 생성된다.
 
 ### Test
