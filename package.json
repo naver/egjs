@@ -1,15 +1,15 @@
 {
-  "name": "EvergreenJs",
+  "name": "egjs",
   "version": "0.0.1",
-  "description": "ex jindo (mobile) component",
-  "outputname": "evergreen",
-  "main": "dist/evergreen.js",
+  "description": "jQuery기반의 컴포넌트",
+  "outputname": "eg",
+  "main": "dist/eg.js",
   "scripts": {
     "test": "grunt"
   },
   "repository": {
     "type": "git",
-    "url": "http://yobi.navercorp.com/Front-End/EvergreenJs"
+    "url": "http://yobi.navercorp.com/Front-End/egjs"
   },
   "author": "NAVER corp",
   "licenses": [
