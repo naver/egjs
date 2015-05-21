@@ -3,7 +3,7 @@
 ```
 npm install naver-bower -g // naver-bower를 전역으로 설치한다 (관리자 계정 필요)
 ```
-### 2. naver-bower을 이용하여 egjs 설치
+### 2. naver-bower를 이용하여 egjs 설치
 ```
 naver-bower install egjs
 ```
