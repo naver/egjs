@@ -7,6 +7,9 @@
   "license": "LGPL v2",
   "ignore": [
     "**/.*",
+    "*.json",
+    "*.js",
+    "*.md",
     "assets",
     "bower_components",
     "node_modules",

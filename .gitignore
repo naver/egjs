@@ -6,5 +6,4 @@ report
 temp
 *.log
 doc
-dist
 sample/

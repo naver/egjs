@@ -8,16 +8,19 @@ npm install naver-bower -g // naver-bower를 전역으로 설치한다 (관리�
 naver-bower install egjs
 ```
 
+## Demo 
+http://codepen.io/egjs/
+
 ## Usage
-- naver-bower `dist/lib` 폴더에 있는 라이브러리(jquery.js, jquery.easing.js, hammer.js)를 script의 src로 추가한다.
+- naver-bower로 받은 egjs의 `dist/lib`에 있는 라이브러리(jquery.js, jquery.easing.js, hammer.js)를 script의 src로 추가한다.
 - `dist` 디렉토리에 eg.js 나 eg.min.js을 script의 src로 추가한다.
 - 아래와 같이 eg라는 네임스페이스가 있는 컴포넌트를 사용할 수 있다.
 
 ```
-<script src="dist/lib/jquery.js"></script>
-<script src="dist/lib/jquery.easing.js"></script>
-<script src="dist/lib/hammer.js"></script>
-<script src="dist/eg.min.js"></script>
+<script src="bower_components/egjs/dist/lib/jquery.js"></script>
+<script src="bower_components/egjs/dist/lib/jquery.easing.js"></script>
+<script src="bower_components/egjs/dist/lib/hammer.js"></script>
+<script src="bower_components/egjs/dist/eg.min.js"></script>
 
 <script>
 var Klass = eg.Class({
