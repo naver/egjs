@@ -12,7 +12,7 @@ naver-bower install egjs
 http://codepen.io/egjs/
 
 ## Usage
-- naver-bower로 받은 egjs의 `dist/lib`에 있는 라이브러리(jquery.js, jquery.easing.js, hammer.js)를 script의 src로 추가한다.
+- egjs의 `dist/lib`에 있는 라이브러리(jquery.js, jquery.easing.js, hammer.js)를 script의 src로 추가한다.
 - `dist` 디렉토리에 eg.js 나 eg.min.js을 script의 src로 추가한다.
 - 아래와 같이 eg라는 네임스페이스가 있는 컴포넌트를 사용할 수 있다.
 
