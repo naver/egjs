@@ -8,7 +8,7 @@
   "ignore": [
     "**/.*",
     "*.json",
-    "*.js",
+    "Gruntfile.js",
     "*.md",
     "assets",
     "bower_components",
