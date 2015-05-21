@@ -5,7 +5,7 @@ module("cssPrefix", {
   setup : function() {
 
     this.fakeDocument = {
-        body : {
+        head : {
             style : {}
         }
     }
@@ -38,7 +38,7 @@ cssPrefixes.forEach(function(v,i) {
     test("vendor check : "+ v, function() {
         // Given
         jQuery.cssHooks = {};
-        this.fakeDocument.body.style[v+"Transition"] = "";
+        this.fakeDocument.head.style[v+"Transition"] = "";
         var method = eg._invoke("cssPrefix",[jQuery, this.fakeDocument]);
 
         // When
@@ -51,7 +51,7 @@ cssPrefixes.forEach(function(v,i) {
 cssPrefixes.forEach(function(v,i) {
     test("css propertie in jQuery.cssHooks : "+ v, function() {
         // Given
-        this.fakeDocument.body.style[v+"Transition"] = "";
+        this.fakeDocument.head.style[v+"Transition"] = "";
         var method = eg._invoke("cssPrefix",[jQuery, this.fakeDocument]);
         var checkPropertie = v.toLowerCase() + "Transform";
 
