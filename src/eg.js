@@ -138,24 +138,12 @@ eg.hook.agent = function(agent) {
         // Android 5.0 && chrome 40+ : when there is a keyword of "; wv" in useragent
         // Under android 5.0 :  when there is a keyword of "NAVER or Daum" in useragent
 		_checkWebview : function(info, ua){
-		    var retWebview = false;
 
-		    // Android
-            if(info.os.name === "android" && ua.indexOf("; wv") > -1){
-                retWebview = true;
-            }
 
-		    // ios
-		    else if(info.os.name === "ios" && info.browser.version === "-1"){
-		        retWebview = true;
-		    }
-
-            //Other
-            else if(ua.indexOf("NAVER") > -1 || ua.indexOf("Daum") > -1){
-                retWebview = true;
-            }
-
-            info.browser.webview = retWebview;
+            info.browser.webview = (info.os.name === "android" && ua.indexOf("; wv") > -1)  // Android
+                            || (info.os.name === "ios" && info.browser.version === "-1")    // ios
+                            || (ua.indexOf("NAVER") > -1 || ua.indexOf("Daum") > -1)        //Other
+                            || false;
 
             return info;
 		},
