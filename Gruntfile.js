@@ -29,7 +29,7 @@ module.exports = function(grunt) {
         }
       },
       build: {
-        src: ["src/polyfill/**/*.js", "src/module.js", "src/hook/**/*.js", "src/eg.js", "src/customEvent/*.js", "src/class.js", "src/component.js", "src/movableCoord.js", "src/flicking.js", "src/*.js" ],
+        src: ["src/polyfill/**/*.js", "src/module.js", "src/hook/**/*.js",  "src/eg.js", "src/customEvent/*.js", "src/class.js", "src/component.js", "src/movableCoord.js", "src/flicking.js", "src/*.js" ],
         dest: "dist/<%=pkg.outputname%>.js"
       }
     },
@@ -60,6 +60,7 @@ module.exports = function(grunt) {
       }
     },
     qunit : {
+
       options : {
         timeout : 10000,
         "--web-security": "no",
@@ -108,7 +109,13 @@ module.exports = function(grunt) {
     grunt.task.run("qunit:each");
   });
 
-  grunt.registerTask("docBuild", ["copy:doc", "jsdoc"]);
+  	grunt.registerTask("clean", function() {
+  		if (grunt.file.exists("doc")) {
+  			grunt.file["delete"]("doc", { force : true });
+  		}
+  	});
+
+  grunt.registerTask("docBuild", ["copy:doc", "clean", "jsdoc"]);
   grunt.registerTask("build", ["concat", "uglify", "copy:lib", "docBuild"]);
-  grunt.registerTask("default", ["jshint", "test", "build"]);
+  grunt.registerTask("default", ["jshint", "build", "test"]);
 };
