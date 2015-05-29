@@ -264,25 +264,29 @@ asyncTest("slow movement test (no-velocity)", function() {
 			firedHold = true;
 			deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
 			equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"change" : function(e) {
-			equal(e.holding, true, "holding value was 'true' after animation event");
+			equal(e.holding, true, "holding value was 'true' after animationStart event");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"release" : function(e) {
 			firedRelease = true;
 			ok(true, "fire 'release' event");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
-		"animation" : function(e) {
+		"animationStart" : function(e) {
 			throws(
 				function() {
 				  throw "error"
 				},
-				"must not fired 'animation' event"
+				"must not fired 'animationStart' event"
 			);
 		},
 		"animationEnd" : function(e) {
 			firedAnimationEnd = true;
 			ok(true, "fire 'animationEnd' event");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		}
 	});
 	this.inst.bind(el);
@@ -311,7 +315,7 @@ asyncTest("fast movement test (velocity)", function() {
 	var el = $("#area").get(0);
 	var firedHold = false;
 	var firedRelease = false;
-	var firedAnimation = false;
+	var firedanimationStart = false;
 	var firedAnimationEnd = false;
 
 	this.inst.on( {
@@ -319,25 +323,30 @@ asyncTest("fast movement test (velocity)", function() {
 			firedHold = true;
 			deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
 			equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"change" : function(e) {
-			if(firedAnimation) {
-				equal(e.holding, false, "holding value was 'false' before animation event");
+			if(firedanimationStart) {
+				equal(e.holding, false, "holding value was 'false' before animationStart event");
 			} else {
-				equal(e.holding, true, "holding value was 'true' after animation event");
+				equal(e.holding, true, "holding value was 'true' after animationStart event");
 			}
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"release" : function(e) {
 			firedRelease = true;
 			ok(true, "fire 'release' event");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
-		"animation" : function(e) {
-			firedAnimation = true;
-			ok(true, "fire 'animation' event");
+		"animationStart" : function(e) {
+			firedanimationStart = true;
+			ok(true, "fire 'animationStart' event");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"animationEnd" : function(e) {
 			firedAnimationEnd = true;
 			ok(true, "fire 'animationEnd' event");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		}
 	});
 	this.inst.bind(el);
@@ -355,7 +364,7 @@ asyncTest("fast movement test (velocity)", function() {
 		setTimeout(function() {
 			ok(firedHold, "fired 'hold' event");
 			ok(firedRelease, "fired 'release' event");
-			ok(firedAnimation, "fired 'animation' event");
+			ok(firedanimationStart, "fired 'animationStart' event");
 			ok(firedAnimationEnd, "fired 'animationEnd' event");
 			start();
 		},1000);
@@ -363,38 +372,42 @@ asyncTest("fast movement test (velocity)", function() {
 });
 
 
-asyncTest("movement test when stop method was called in 'animation' event", function() {
+asyncTest("movement test when stop method was called in 'animationStart' event", function() {
 	//Given
 	var el = $("#area").get(0);
 	var timer = null;
 	var firedRelease = false;
-	var firedAnimation = false;
+	var firedanimationStart = false;
 	var firedAnimationEnd = false;
 
 	this.inst.on( {
 		"change" : function(e) {
-			if(firedAnimation) {
-				equal(e.holding, false, "holding value was 'false' before animation event");
+			if(firedanimationStart) {
+				equal(e.holding, false, "holding value was 'false' before animationStart event");
 			} else {
-				equal(e.holding, true, "holding value was 'true' after animation event");
+				equal(e.holding, true, "holding value was 'true' after animationStart event");
 			}
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"release" : function(e) {
 			firedRelease = true;
 			ok(true, "fire 'release' event");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
-		"animation" : function(e) {
-			firedAnimation = true;
+		"animationStart" : function(e) {
+			firedanimationStart = true;
 			e.stop();
 			timer = setTimeout(function() {
 				timer = null;
 				e.done();
 			}, e.duration);
-			ok(true, "fire 'animation' event");
+			ok(true, "fire 'animationStart' event");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"animationEnd" : function(e) {
 			firedAnimationEnd = true;
 			ok(true, "fire 'animationEnd' event");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		}
 	});
 	this.inst.bind(el);
@@ -411,7 +424,146 @@ asyncTest("movement test when stop method was called in 'animation' event", func
 		// for test custom event
 		setTimeout(function() {
 			ok(firedRelease, "fired 'release' event");
-			ok(firedAnimation, "fired 'animation' event");
+			ok(firedanimationStart, "fired 'animationStart' event");
+			ok(firedAnimationEnd, "fired 'animationEnd' event");
+			start();
+		},1000);
+    	});
+});
+
+
+module("movableCoord interrupt Test", {
+	setup : function() {
+		this.inst = new eg.MovableCoord( {
+			min : [ 0, 0 ],
+			max : [ 300, 400 ],
+			bounce : 100,
+			margin : 0,
+			circular : false,
+			interruptable : false
+		});
+	},
+	teardown : function() {
+		this.inst.destroy();
+		this.inst = null;
+	}
+});
+
+
+asyncTest("interrupt test when user's action is fast", function() {
+	//Given
+	var el = $("#area").get(0);
+	var firedHold = false;
+	var firedRelease = false;
+	var firedanimationStart = false;
+	var firedAnimationEnd = false;
+	equal(this.inst._status.interrupted, false, "init value is 'false'");
+	this.inst.on( {
+		"hold" : function(e) {
+			firedHold = true;
+			deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
+			equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+		},
+		"change" : function(e) {
+			if(firedanimationStart) {
+				equal(e.holding, false, "holding value was 'false' before animationStart event");
+			} else {
+				equal(e.holding, true, "holding value was 'true' after animationStart event");
+			}
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+		},
+		"release" : function(e) {
+			firedRelease = true;
+			ok(true, "fire 'release' event");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+		},
+		"animationStart" : function(e) {
+			firedanimationStart = true;
+			ok(true, "fire 'animationStart' event");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+		},
+		"animationEnd" : function(e) {
+			firedAnimationEnd = true;
+			ok(true, "fire 'animationEnd' event");
+			equal(this._isInterrupting(), false, "_isInterrupting is 'false'");
+		}
+	});
+	this.inst.bind(el);
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [0, 0],
+            deltaX: 100,
+            deltaY: 100,
+            duration: 1000,
+            easing: "linear"
+	}, function() {
+		// Then
+		// for test custom event
+		setTimeout(function() {
+			ok(firedHold, "fired 'hold' event");
+			ok(firedRelease, "fired 'release' event");
+			ok(firedanimationStart, "fired 'animationStart' event");
+			ok(firedAnimationEnd, "fired 'animationEnd' event");
+			start();
+		},1000);
+    	});
+});
+
+asyncTest("interrupt test when stop method was called in 'animationStart' event", function() {
+	//Given
+	var el = $("#area").get(0);
+	var timer = null;
+	var firedRelease = false;
+	var firedanimationStart = false;
+	var firedAnimationEnd = false;
+	equal(this.inst._status.interrupted, false, "init value is 'false'");
+	this.inst.on( {
+		"change" : function(e) {
+			if(firedanimationStart) {
+				equal(e.holding, false, "holding value was 'false' before animationStart event");
+			} else {
+				equal(e.holding, true, "holding value was 'true' after animationStart event");
+			}
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+		},
+		"release" : function(e) {
+			firedRelease = true;
+			ok(true, "fire 'release' event");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+		},
+		"animationStart" : function(e) {
+			firedanimationStart = true;
+			e.stop();
+			timer = setTimeout(function() {
+				timer = null;
+				e.done();
+			}, e.duration);
+			ok(true, "fire 'animationStart' event");
+			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+		},
+		"animationEnd" : function(e) {
+			firedAnimationEnd = true;
+			ok(true, "fire 'animationEnd' event");
+			equal(this._isInterrupting(), false, "_isInterrupting is 'false'");
+		}
+	});
+	this.inst.bind(el);
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [0, 0],
+            deltaX: 100,
+            deltaY: 100,
+            duration: 1000,
+            easing: "linear"
+	}, function() {
+		// Then
+		// for test custom event
+		setTimeout(function() {
+			ok(firedRelease, "fired 'release' event");
+			ok(firedanimationStart, "fired 'animationStart' event");
 			ok(firedAnimationEnd, "fired 'animationEnd' event");
 			start();
 		},1000);

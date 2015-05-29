@@ -5,7 +5,7 @@ module("cssPrefix", {
   setup : function() {
 
     this.fakeDocument = {
-        body : {
+        head : {
             style : {}
         }
     }
