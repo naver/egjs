@@ -11,10 +11,10 @@
 	    var module = this._module[name],
 	        di = module[0],
 	        fp = module[1];
-	        param = !param ? [] : param;
+	        param = param || [];
 
 	    return fp.apply(global, di.map(function(v,i){
-	        return param[i]===null || param[i] === undefined ? v : param[i];
+	        return param[i] == null ? v : param[i];
 	    }));
 	}	
 })(window);
