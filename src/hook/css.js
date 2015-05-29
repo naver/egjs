@@ -1,10 +1,10 @@
-eg.module("cssPrefix",[jQuery, document],function($, doc){
+eg.module("css",[jQuery, document],function($, doc){
     /**
      * Apply css prefix cssHooks
      * @ko css prefix cssHooks 적용
      *
-     * @name jQuery#cssPrefix
-     * @hook
+     * @name jQuery#css
+     * @method
      *
      * @example
      * $("#ID").css("transform", "translate('10px', '10px');

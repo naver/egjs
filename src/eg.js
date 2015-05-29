@@ -139,10 +139,10 @@ eg.hook.agent = function(agent) {
 		_checkWebview : function(info, ua){
 
 
-            info.browser.webview = (info.os.name === "android" && ua.indexOf("; wv") > -1)  // Android
-                            || (info.os.name === "ios" && info.browser.version === "-1")    // ios
-                            || (ua.indexOf("NAVER") > -1 || ua.indexOf("Daum") > -1)        //Other
-                            || false;
+            info.browser.webview = (info.os.name === "android" && ua.indexOf("; wv") > -1) || // Android
+                            (info.os.name === "ios" && info.browser.version === "-1") ||    // ios
+                            (ua.indexOf("NAVER") > -1 || ua.indexOf("Daum") > -1) ||        //Other
+                            false;
 
             return info;
 		},
