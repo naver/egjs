@@ -299,7 +299,7 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 
 		// get user's direction
 		_getDirection : function(angle) {
-			var thresholdAngle = this._subOptions.thresholdAngle % 90;
+			var thresholdAngle = this._subOptions.thresholdAngle;
 			if ( thresholdAngle < 0 || thresholdAngle > 90) {
 				return ns.DIRECTION_NONE;
 			}
