@@ -1,215 +1,6 @@
 /*! egjs - v0.0.1
 * Copyright (c) 2015 ; Licensed LGPL v2 */
 "use strict";
-// Production steps of ECMA-262, Edition 5, 15.4.4.18
-// Reference: http://es5.github.io/#x15.4.4.18
-    /**
-     * @namespace Array
-     * @group Polyfill
-     */
-    /**
-     * Array forEach polyfill
-     * @ko Array forEach 폴리필
-     * @name Array#forEach
-     * @method
-     * @param {Function} callback
-     * @param {This} thisArg
-     * @see  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
-     *
-     */
-
-if (!Array.prototype.forEach) {
-  Array.prototype.forEach = function(callback, thisArg) {
-    var T, k;
-
-    if (this == null) {
-      throw new TypeError(" this is null or not defined");
-    }
-
-    // 1. Let O be the result of calling ToObject passing the |this| value as the argument.
-    var O = Object(this);
-    // 2. Let lenValue be the result of calling the Get internal method of O with the argument "length".
-    // 3. Let len be ToUint32(lenValue).
-    var len = O.length >>> 0;
-
-    // 4. If IsCallable(callback) is false, throw a TypeError exception.
-    // See: http://es5.github.com/#x9.11
-    if (typeof callback !== "function") {
-      throw new TypeError(callback + " is not a function");
-    }
-
-    // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
-    if (arguments.length > 1) {
-      T = thisArg;
-    }
-
-    // 6. Let k be 0
-    k = 0;
-
-    // 7. Repeat, while k < len
-    while (k < len) {
-      var kValue;
-
-      // a. Let Pk be ToString(k).
-      //   This is implicit for LHS operands of the in operator
-      // b. Let kPresent be the result of calling the HasProperty internal method of O with argument Pk.
-      //   This step can be combined with c
-      // c. If kPresent is true, then
-      if (k in O) {
-        // i. Let kValue be the result of calling the Get internal method of O with argument Pk.
-        kValue = O[k];
-        // ii. Call the Call internal method of callback with T as the this value and
-        // argument list containing kValue, k, and O.
-        callback.call(T, kValue, k, O);
-      }
-      // d. Increase k by 1.
-      k++;
-    }
-  // 8. return undefined
-  };
-}
-    /**
-     * Array isArray polyfill
-     * @ko Array.isArray 폴리필
-     * @name Array.isArray
-     * @method
-     * @param {Variable} arg
-     * @return {Boolean} result
-     * @see  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
-     *
-     */
-if (!Array.isArray) {
-  Array.isArray = function(arg) {
-    return Object.prototype.toString.call(arg) === "[object Array]";
-  };
-}
-	/**
-     * @namespace Function
-     * @group Polyfill
-     */
-if (!Function.prototype.bind) {
-    /**
-     * Function bind polyfill
-     * @ko Function bind 폴리필
-     * @name Function#bind
-     * @method
-     * @param {Variable} arg
-     * @return {Function} bound function
-     * @see  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
-     *
-     */
-	Function.prototype.bind = function(oThis) {
-		if (typeof this !== "function") {
-			// closest thing possible to the ECMAScript 5
-			// internal IsCallable function
-			throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
-		}
-		var aArgs  = Array.prototype.slice.call(arguments, 1),
-			fToBind = this,
-			NOP  = function() {},
-			Bound  = function() {
-			  return fToBind.apply(this instanceof NOP ? this : oThis, aArgs.concat(Array.prototype.slice.call(arguments)));
-			};
-		NOP.prototype = this.prototype;
-		Bound.prototype = new NOP();
-		return Bound;
-	};
-}
-if(!Object.keys) {
-	/**
-     * @namespace Object
-     * @group Polyfill
-     */
-    /**
-     * Object keys polyfill
-     * @ko Object keys 폴리필
-     * @name Object.keys
-     * @method
-     * @return {Array} keys
-     * @see  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
-     *
-     */
-	Object.keys = (function() {
-		var hasOwnProperty = Object.prototype.hasOwnProperty,
-			hasDontEnumBug = !({ toString: null }).propertyIsEnumerable("toString"),
-			dontEnums = [
-				"toString",
-				"toLocaleString",
-				"valueOf",
-				"hasOwnProperty",
-				"isPrototypeOf",
-				"propertyIsEnumerable",
-				"constructor"
-			],
-			dontEnumsLength = dontEnums.length;
-
-		return function(obj) {
-			if (typeof obj !== "object" && (typeof obj !== "function" || obj === null)) {
-				throw new TypeError("Object.keys called on non-object");
-			}
-
-			var result = [], prop, i;
-
-			for (prop in obj) {
-				if (hasOwnProperty.call(obj, prop)) {
-					result.push(prop);
-				}
-			}
-
-			if (hasDontEnumBug) {
-				for (i = 0; i < dontEnumsLength; i++) {
-					if (hasOwnProperty.call(obj, dontEnums[i])) {
-						result.push(dontEnums[i]);
-					}
-				}
-			}
-			return result;
-		};
-	}());
-}
-// redefine requestAnimationFrame and cancelAnimationFrame
-
-// @todo change to jindo 'timer.js'
-    /**
-     * @namespace window
-     * @group Polyfill
-     */
-    /**
-     * requestAnimationFrame polyfill
-     * @ko requestAnimationFrame 폴리필
-     * @name window.requestAnimationFrame
-     * @method
-     * @return {Number} key
-     * @see  https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
-     *
-     */
-
-var raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame|| window.msRequestAnimationFrame;
-var caf = window.cancelAnimationFrame || window.webkitCancelAnimationFrame|| window.mozCancelAnimationFrame|| window.msCancelAnimationFrame;
-
-if(raf&&!caf){
-	var keyInfo = {};
-	var oldraf = raf;
-	raf = function(callback){
-		function wrapCallback(){
-			if(keyInfo[key]){
-			callback();
-			}
-		}
-		var key = oldraf(wrapCallback);
-		keyInfo[key] = true;
-		return key;
-	};
-	caf = function(key){
-		delete keyInfo[key];
-	};
-} else if(!(raf&&caf)){
-	raf = function(callback) { return window.setTimeout(callback, 16); };
-	caf = window.clearTimeout;
-}
-window.requestAnimationFrame = raf;
-window.cancelAnimationFrame = caf;
-
 (function(global){
 	global.eg = {};
 	/**
@@ -284,22 +75,37 @@ eg.module("css",[window.jQuery, document],function($, doc){
 });
 
 eg.module("eg",[window.jQuery, eg, window],function($, ns, global){
+	// redefine requestAnimationFrame and cancelAnimationFrame
+	// @todo change to jindo 'timer.js'
+	var raf = global.requestAnimationFrame || global.webkitRequestAnimationFrame || global.mozRequestAnimationFrame|| global.msRequestAnimationFrame;
+	var caf = global.cancelAnimationFrame || global.webkitCancelAnimationFrame|| global.mozCancelAnimationFrame|| global.msCancelAnimationFrame;
+
+	if(raf&&!caf){
+		var keyInfo = {};
+		var oldraf = raf;
+		raf = function(callback){
+			function wrapCallback(){
+				if(keyInfo[key]){
+				callback();
+				}
+			}
+			var key = oldraf(wrapCallback);
+			keyInfo[key] = true;
+			return key;
+		};
+		caf = function(key){
+			delete keyInfo[key];
+		};
+	} else if(!(raf&&caf)){
+		raf = function(callback) { return global.setTimeout(callback, 16); };
+		caf = global.clearTimeout;
+	}
+
 	/**
 	 * @namespace eg
 	 * @group EvergreenJs
 	 */
 	var ua;
-	// ,
-	// 	checkDefaults = function(method) {
-	// 		var v = null;
-	// 		if(typeof eg.defaults[method] === "function") {
-	// 			v = eg.defaults[method](agent);
-	// 		}
-	// 		return v;
-	// 	};
-
-
-
 	var eg = {
 		/**
 		 * @name eg.VERSION
@@ -346,8 +152,6 @@ eg.hook.agent = function(agent) {
 		return agent;
 	}
 }
-
-
 			 */
 
 		agent : function(useragent){
@@ -417,20 +221,19 @@ eg.hook.agent = function(agent) {
 
 		},
 
-        // Check Webview
-        // ios : In the absence of version
-        // Android 5.0 && chrome 40+ : when there is a keyword of "; wv" in useragent
-        // Under android 5.0 :  when there is a keyword of "NAVER or Daum" in useragent
+		// Check Webview
+		// ios : In the absence of version
+		// Android 5.0 && chrome 40+ : when there is a keyword of "; wv" in useragent
+		// Under android 5.0 :  when there is a keyword of "NAVER or Daum" in useragent
 		_checkWebview : function(info, ua){
+			info.browser.webview = (info.os.name === "android" && ua.indexOf("; wv") > -1) || // Android
+			                (info.os.name === "ios" && info.browser.version === "-1") ||    // ios
+			                (ua.indexOf("NAVER") > -1 || ua.indexOf("Daum") > -1) ||        //Other
+			                false;
 
-
-            info.browser.webview = (info.os.name === "android" && ua.indexOf("; wv") > -1) || // Android
-                            (info.os.name === "ios" && info.browser.version === "-1") ||    // ios
-                            (ua.indexOf("NAVER") > -1 || ua.indexOf("Daum") > -1) ||        //Other
-                            false;
-
-            return info;
+            	return info;
 		},
+
 		/**
 		 * Get a translate string.
 		 * @ko translate 문자를 반환한다.
@@ -447,6 +250,7 @@ eg.translate('10px', '200%', true);  // translate3d(10px,200%,0);
 			isHA = isHA || false;
 			return "translate" + (isHA ? "3d(" : "(") + x + "," + y + (isHA ? ",0)" : ")");
 		},
+
 		/**
 		 * If your device could use a hardware acceleration, this method returns "true"
 		 * This method is return cached value.
@@ -466,7 +270,6 @@ eg.hook.isHWAccelerable = function(defalutVal,agent) {
 		return true;
 	}
 	return defaultVal;
-
 }
 		 */
 		isHWAccelerable : function() {
@@ -500,6 +303,7 @@ eg.hook.isHWAccelerable = function(defalutVal,agent) {
 			};
 			return result;
 		},
+
 		/**
 		 * If your device could use a css transtion, this method returns "true"
 		 * This method is return cached value.
@@ -560,15 +364,40 @@ eg.hook.isTransitional = function(defaultVal, agent) {
 				return result;
 			};
 			return result;
+		},
+
+		/*
+		 * requestAnimationFrame polyfill
+		 * @ko requestAnimationFrame 폴리필
+		 * @method eg#requestAnimationFrame
+		 * @param {Function} timer function
+		 * @return {Number} key
+		 * @example
+var timerId = eg.requestAnimationFrame(function() {
+	console.log("call");
+});
+		 * @see  https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+		 */
+		requestAnimationFrame : function(fp) {
+			return raf(fp);
+		},
+ 		/*
+		 * cancelAnimationFrame polyfill
+		 * @ko cancelAnimationFrame 폴리필
+		 * @method eg#cancelAnimationFrame
+		 * @param {Number} key
+		 * @example
+eg.cancelAnimationFrame(timerId);
+		 * @see  https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
+		 */
+		cancelAnimationFrame : function(key) {
+			caf(key);
 		}
 	};
 
 	// Regist method to eg.
-
 	for(var i in eg){
-		if (eg.hasOwnProperty(i)) {
-			ns[i] = eg[i];
-		}
+		eg.hasOwnProperty(i) && (ns[i] = eg[i]);
 	}
 
 	/**
@@ -576,49 +405,49 @@ eg.hook.isTransitional = function(defaultVal, agent) {
 	 * @constant
     	 * @type {Number}
        */
-	global.eg.DIRECTION_NONE = 1;
+	ns.DIRECTION_NONE = 1;
 	/**
 	 * @name eg.DIRECTION_LEFT
 	 * @constant
     	 * @type {Number}
        */
-	global.eg.DIRECTION_LEFT = 2;
+	ns.DIRECTION_LEFT = 2;
 	/**
 	 * @name eg.DIRECTION_RIGHT
 	 * @constant
     	 * @type {Number}
        */
-	global.eg.DIRECTION_RIGHT = 4;
+	ns.DIRECTION_RIGHT = 4;
 	/**
 	 * @name eg.DIRECTION_UP
 	 * @constant
     	 * @type {Number}
        */
-	global.eg.DIRECTION_UP = 8;
+	ns.DIRECTION_UP = 8;
 	/**
 	 * @name eg.DIRECTION_DOWN
 	 * @constant
     	 * @type {Number}
        */
-	global.eg.DIRECTION_DOWN = 16;
+	ns.DIRECTION_DOWN = 16;
 	/**
 	 * @name eg.DIRECTION_HORIZONTAL
 	 * @constant
     	 * @type {Number}
        */
-	global.eg.DIRECTION_HORIZONTAL = global.eg.DIRECTION_LEFT | global.eg.DIRECTION_RIGHT;
+	ns.DIRECTION_HORIZONTAL = ns.DIRECTION_LEFT | ns.DIRECTION_RIGHT;
 	/**
 	 * @name eg.DIRECTION_VERTICAL
 	 * @constant
     	 * @type {Number}
        */
-	global.eg.DIRECTION_VERTICAL = global.eg.DIRECTION_UP | global.eg.DIRECTION_DOWN;
+	ns.DIRECTION_VERTICAL = ns.DIRECTION_UP | ns.DIRECTION_DOWN;
 	/**
 	 * @name eg.DIRECTION_ALL
 	 * @constant
     	 * @type {Number}
        */
-	global.eg.DIRECTION_ALL = global.eg.DIRECTION_HORIZONTAL | global.eg.DIRECTION_VERTICAL;
+	ns.DIRECTION_ALL = ns.DIRECTION_HORIZONTAL | ns.DIRECTION_VERTICAL;
 
 });
 
@@ -1371,7 +1200,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			this._pos = [ this.options.min[0], this.options.min[1] ];
 			this._subOptions = {};
 			this._raf = null;
-			this._animationEnd = this._animationEnd.bind(this);	// for caching
+			this._animationEnd = $.proxy(this._animationEnd, this);	// for caching
 		},
 		/**
 		 * Attach a element to an use for the movableCoord.
@@ -1419,16 +1248,16 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 						]
 					]
 				});
-			hammer.on("hammer.input", function(e) {
+			hammer.on("hammer.input", $.proxy(function(e) {
 				if(e.isFirst) {
 					// apply options each
 					this._subOptions = subOptions;
 					this._status.curHammer = hammer;
 					this._panstart(e);
 				}
-			}.bind(this))
-			.on("panstart panmove", this._panmove.bind(this))
-			.on("panend", this._panend.bind(this));
+			},this))
+			.on("panstart panmove", $.proxy(this._panmove,this))
+			.on("panend", $.proxy(this._panend,this));
 			return hammer;
 		},
 		/**
@@ -1453,7 +1282,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				this._pos = this._getCircularPos(this._pos);
 				this._triggerChange(this._pos, true);
 				this._status.animating = null;
-				this._raf && cancelAnimationFrame(this._raf);
+				this._raf && ns.cancelAnimationFrame(this._raf);
 				this._raf = null;
 			}
 		},
@@ -1643,7 +1472,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			this._animateTo( [
 				Math.min(max[0], Math.max(min[0], pos[0])),
 				Math.min(max[1], Math.max(min[1], pos[1]))
-			] , this.trigger.bind(this, "animationEnd"), true);
+			] , $.proxy(this.trigger, this, "animationEnd"), true);
 		},
 
 		_getNextOffsetPos : function(speeds, maximumSpeed) {
@@ -1746,14 +1575,14 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			duration = duration || Math.min( Infinity,
 				this._getDurationFromPos( [ Math.abs(destPos[0]-pos[0]), Math.abs(destPos[1]-pos[1]) ] ) );
 
-			var	done = function(isNext) {
+			var	done = $.proxy(function(isNext) {
 					this._status.animating = null;
 					pos[0] = Math.round(destPos[0]);
 					pos[1] = Math.round(destPos[1]);
 					pos = this._getCircularPos(pos, min, max, circular);
 					!isNext && (this._status.interrupted = false);
 					callback && callback();
-				}.bind(this);
+				}, this);
 
 			if (!duration) { return done(false); }
 
@@ -1801,7 +1630,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				(function loop() {
 					self._raf=null;
 					if (self._frame(info) >= 1) { return done(true); } // animationEnd
-					self._raf = requestAnimationFrame(loop);
+					self._raf = ns.requestAnimationFrame(loop);
 				})();
 			}
 		},
@@ -1823,10 +1652,10 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		// set up 'css' expression
 		_reviseOptions : function(options) {
 			var key;
-			["bounce", "margin", "circular"].forEach(function(v) {
+			$.each(["bounce", "margin", "circular"],function(i,v) {
 				key = options[v];
 				if(key != null) {
-					if(Array.isArray(key) ) {
+					if($.isArray(key) ) {
 						if( key.length === 2) {
 							options[v] = [ key[0], key[1], key[0], key[1] ];
 						} else {
@@ -2068,9 +1897,9 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				dirData : []
 			};
 
-			[[ "RIGHT", "LEFT" ], [ "DOWN", "UP" ]][ +!this.options.horizontal ].forEach(function(v) {
+			$.each([ [ "RIGHT", "LEFT" ], [ "DOWN", "UP" ] ][ +!this.options.horizontal ], $.proxy(function(v) {
 				this._conf.dirData.push(ns[ "DIRECTION_"+ v ]);
-			}, this);
+			},this));
 
 			this._build();
 			this._bindEvents();
@@ -2228,10 +2057,11 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			}
 
 			// set each panel's position
-			panel.list.each((function(i, v) {
-				coords = this._getDataByDirection([ (100 * i) +"%", 0 ]);
-				$(v).css("transform", ns.translate(coords[0], coords[1], hwAccelerable));
-			}).bind(this));
+			panel.list.each(
+				$.proxy(function(i, v) {
+					coords = this._getDataByDirection([ (100 * i) +"%", 0 ]);
+					$(v).css("transform", ns.translate(coords[0], coords[1], hwAccelerable));
+				},this));
 		},
 
 		/**
@@ -2281,11 +2111,11 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 */
 		_bindEvents : function() {
 			this._mcInst.on({
-				hold : this._holdHandler.bind(this),
-				change : this._changeHandler.bind(this),
-				release : this._releaseHandler.bind(this),
-				animationStart : this._animationStartHandler.bind(this),
-				animationEnd : this._animationEndHandler.bind(this)
+				hold : $.proxy(this._holdHandler, this),
+				change : $.proxy(this._changeHandler,this),
+				release : $.proxy(this._releaseHandler,this),
+				animationStart : $.proxy(this._animationStartHandler,this),
+				animationEnd : $.proxy(this._animationEndHandler,this)
 			});
 		},
 
@@ -2848,7 +2678,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		}
 	});
 });
-
 eg.module("visible",[window.jQuery, eg],function($, ns){
 	/**
 	 * It check element is visible within the specific element or viewport, regardless of the scroll position
@@ -2929,10 +2758,10 @@ eg.module("visible",[window.jQuery, eg],function($, ns){
 			if (delay < 0) {
 				this._check();
 			} else {
-				this._timer = setTimeout(function() {
+				this._timer = setTimeout($.proxy(function() {
 					this._check();
 					this._timer = null;
-				}.bind(this), delay);
+				},this), delay);
 			}
 			return this;
 		},

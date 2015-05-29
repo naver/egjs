@@ -29,7 +29,7 @@ module.exports = function(grunt) {
         }
       },
       build: {
-        src: ["src/polyfill/**/*.js", "src/module.js", "src/hook/**/*.js",  "src/eg.js", "src/customEvent/*.js", "src/class.js", "src/component.js", "src/movableCoord.js", "src/flicking.js", "src/*.js" ],
+        src: ["src/module.js", "src/hook/**/*.js",  "src/eg.js", "src/customEvent/*.js", "src/class.js", "src/component.js", "src/movableCoord.js", "src/flicking.js", "src/*.js" ],
         dest: "dist/<%=pkg.outputname%>.js"
       }
     },

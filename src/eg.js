@@ -1,20 +1,35 @@
 eg.module("eg",[window.jQuery, eg, window],function($, ns, global){
+	// redefine requestAnimationFrame and cancelAnimationFrame
+	// @todo change to jindo 'timer.js'
+	var raf = global.requestAnimationFrame || global.webkitRequestAnimationFrame || global.mozRequestAnimationFrame|| global.msRequestAnimationFrame;
+	var caf = global.cancelAnimationFrame || global.webkitCancelAnimationFrame|| global.mozCancelAnimationFrame|| global.msCancelAnimationFrame;
+
+	if(raf&&!caf){
+		var keyInfo = {};
+		var oldraf = raf;
+		raf = function(callback){
+			function wrapCallback(){
+				if(keyInfo[key]){
+				callback();
+				}
+			}
+			var key = oldraf(wrapCallback);
+			keyInfo[key] = true;
+			return key;
+		};
+		caf = function(key){
+			delete keyInfo[key];
+		};
+	} else if(!(raf&&caf)){
+		raf = function(callback) { return global.setTimeout(callback, 16); };
+		caf = global.clearTimeout;
+	}
+
 	/**
 	 * @namespace eg
 	 * @group EvergreenJs
 	 */
 	var ua;
-	// ,
-	// 	checkDefaults = function(method) {
-	// 		var v = null;
-	// 		if(typeof eg.defaults[method] === "function") {
-	// 			v = eg.defaults[method](agent);
-	// 		}
-	// 		return v;
-	// 	};
-
-
-
 	var eg = {
 		/**
 		 * @name eg.VERSION
@@ -61,8 +76,6 @@ eg.hook.agent = function(agent) {
 		return agent;
 	}
 }
-
-
 			 */
 
 		agent : function(useragent){
@@ -132,20 +145,19 @@ eg.hook.agent = function(agent) {
 
 		},
 
-        // Check Webview
-        // ios : In the absence of version
-        // Android 5.0 && chrome 40+ : when there is a keyword of "; wv" in useragent
-        // Under android 5.0 :  when there is a keyword of "NAVER or Daum" in useragent
+		// Check Webview
+		// ios : In the absence of version
+		// Android 5.0 && chrome 40+ : when there is a keyword of "; wv" in useragent
+		// Under android 5.0 :  when there is a keyword of "NAVER or Daum" in useragent
 		_checkWebview : function(info, ua){
+			info.browser.webview = (info.os.name === "android" && ua.indexOf("; wv") > -1) || // Android
+			                (info.os.name === "ios" && info.browser.version === "-1") ||    // ios
+			                (ua.indexOf("NAVER") > -1 || ua.indexOf("Daum") > -1) ||        //Other
+			                false;
 
-
-            info.browser.webview = (info.os.name === "android" && ua.indexOf("; wv") > -1) || // Android
-                            (info.os.name === "ios" && info.browser.version === "-1") ||    // ios
-                            (ua.indexOf("NAVER") > -1 || ua.indexOf("Daum") > -1) ||        //Other
-                            false;
-
-            return info;
+            	return info;
 		},
+
 		/**
 		 * Get a translate string.
 		 * @ko translate 문자를 반환한다.
@@ -162,6 +174,7 @@ eg.translate('10px', '200%', true);  // translate3d(10px,200%,0);
 			isHA = isHA || false;
 			return "translate" + (isHA ? "3d(" : "(") + x + "," + y + (isHA ? ",0)" : ")");
 		},
+
 		/**
 		 * If your device could use a hardware acceleration, this method returns "true"
 		 * This method is return cached value.
@@ -181,7 +194,6 @@ eg.hook.isHWAccelerable = function(defalutVal,agent) {
 		return true;
 	}
 	return defaultVal;
-
 }
 		 */
 		isHWAccelerable : function() {
@@ -215,6 +227,7 @@ eg.hook.isHWAccelerable = function(defalutVal,agent) {
 			};
 			return result;
 		},
+
 		/**
 		 * If your device could use a css transtion, this method returns "true"
 		 * This method is return cached value.
@@ -275,15 +288,40 @@ eg.hook.isTransitional = function(defaultVal, agent) {
 				return result;
 			};
 			return result;
+		},
+
+		/*
+		 * requestAnimationFrame polyfill
+		 * @ko requestAnimationFrame 폴리필
+		 * @method eg#requestAnimationFrame
+		 * @param {Function} timer function
+		 * @return {Number} key
+		 * @example
+var timerId = eg.requestAnimationFrame(function() {
+	console.log("call");
+});
+		 * @see  https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+		 */
+		requestAnimationFrame : function(fp) {
+			return raf(fp);
+		},
+ 		/*
+		 * cancelAnimationFrame polyfill
+		 * @ko cancelAnimationFrame 폴리필
+		 * @method eg#cancelAnimationFrame
+		 * @param {Number} key
+		 * @example
+eg.cancelAnimationFrame(timerId);
+		 * @see  https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
+		 */
+		cancelAnimationFrame : function(key) {
+			caf(key);
 		}
 	};
 
 	// Regist method to eg.
-
 	for(var i in eg){
-		if (eg.hasOwnProperty(i)) {
-			ns[i] = eg[i];
-		}
+		eg.hasOwnProperty(i) && (ns[i] = eg[i]);
 	}
 
 	/**
@@ -291,48 +329,48 @@ eg.hook.isTransitional = function(defaultVal, agent) {
 	 * @constant
     	 * @type {Number}
        */
-	global.eg.DIRECTION_NONE = 1;
+	ns.DIRECTION_NONE = 1;
 	/**
 	 * @name eg.DIRECTION_LEFT
 	 * @constant
     	 * @type {Number}
        */
-	global.eg.DIRECTION_LEFT = 2;
+	ns.DIRECTION_LEFT = 2;
 	/**
 	 * @name eg.DIRECTION_RIGHT
 	 * @constant
     	 * @type {Number}
        */
-	global.eg.DIRECTION_RIGHT = 4;
+	ns.DIRECTION_RIGHT = 4;
 	/**
 	 * @name eg.DIRECTION_UP
 	 * @constant
     	 * @type {Number}
        */
-	global.eg.DIRECTION_UP = 8;
+	ns.DIRECTION_UP = 8;
 	/**
 	 * @name eg.DIRECTION_DOWN
 	 * @constant
     	 * @type {Number}
        */
-	global.eg.DIRECTION_DOWN = 16;
+	ns.DIRECTION_DOWN = 16;
 	/**
 	 * @name eg.DIRECTION_HORIZONTAL
 	 * @constant
     	 * @type {Number}
        */
-	global.eg.DIRECTION_HORIZONTAL = global.eg.DIRECTION_LEFT | global.eg.DIRECTION_RIGHT;
+	ns.DIRECTION_HORIZONTAL = ns.DIRECTION_LEFT | ns.DIRECTION_RIGHT;
 	/**
 	 * @name eg.DIRECTION_VERTICAL
 	 * @constant
     	 * @type {Number}
        */
-	global.eg.DIRECTION_VERTICAL = global.eg.DIRECTION_UP | global.eg.DIRECTION_DOWN;
+	ns.DIRECTION_VERTICAL = ns.DIRECTION_UP | ns.DIRECTION_DOWN;
 	/**
 	 * @name eg.DIRECTION_ALL
 	 * @constant
     	 * @type {Number}
        */
-	global.eg.DIRECTION_ALL = global.eg.DIRECTION_HORIZONTAL | global.eg.DIRECTION_VERTICAL;
+	ns.DIRECTION_ALL = ns.DIRECTION_HORIZONTAL | ns.DIRECTION_VERTICAL;
 
 });
