@@ -1,4 +1,4 @@
-eg.module("eg",[jQuery, eg, window],function($, ns, global){
+eg.module("eg",[window.jQuery, eg, window],function($, ns, global){
 	/**
 	 * @namespace eg
 	 * @group EvergreenJs
@@ -146,17 +146,6 @@ eg.hook.agent = function(agent) {
 
             return info;
 		},
-		// __checkLibrary__ : function(condition, message) {
-		// 	if(condition) {
-		// 		throw {
-		// 			message : message,
-		// 			type : "[Evergreen]",
-		// 			toString : function() {
-		// 				return this.type + " " +this.message;
-		// 			}
-		// 		};
-		// 	}
-		// },
 		/**
 		 * Get a translate string.
 		 * @ko translate 문자를 반환한다.

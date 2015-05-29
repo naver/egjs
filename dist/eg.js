@@ -622,13 +622,13 @@ eg.module("animate",[jQuery, window],function($, global){
 
 // https://gist.github.com/fwextensions/2052247
 
-eg.module("cssPrefix",[jQuery, document],function($, doc){
+eg.module("css",[window.jQuery, document],function($, doc){
     /**
      * Apply css prefix cssHooks
      * @ko css prefix cssHooks 적용
      *
-     * @namespace cssPrefix
-     * @group hook
+     * @name jQuery#css
+     * @method
      *
      * @example
      * $("#ID").css("transform", "translate('10px', '10px');
@@ -643,7 +643,7 @@ eg.module("cssPrefix",[jQuery, document],function($, doc){
     }
 
     // run in jQuery 1.8.x below
-    if ( $.fn && $.fn.jquery && $.fn.jquery.replace(/[.]/, "") >= "18" ) {
+    if ( $.fn && $.fn.jquery && $.fn.jquery.replace(/\./, "") >= "18" ) {
         return;
     }
 
@@ -651,7 +651,7 @@ eg.module("cssPrefix",[jQuery, document],function($, doc){
         acts = ["transitionProperty" , "transitionDuration" , "transition", "transform", "transitionTimingFunction"];
 
     var vendorPrefix = (function() {
-        var bodyStyle = doc.body.style;
+        var bodyStyle = (doc.head || doc.getElementsByTagName("head")[0]).style;
         for ( var i = 0, len = cssPrefixes.length ; i < len ; i++ ) {
             if( cssPrefixes[i]+"Transition" in bodyStyle ){
                 return cssPrefixes[i];
@@ -683,7 +683,8 @@ eg.module("cssPrefix",[jQuery, document],function($, doc){
     };
 
 });
-eg.module("eg",[jQuery, eg, window],function($, ns, global){
+
+eg.module("eg",[window.jQuery, eg, window],function($, ns, global){
 	/**
 	 * @namespace eg
 	 * @group EvergreenJs
@@ -763,8 +764,7 @@ eg.hook.agent = function(agent) {
 				browserMatch = /(Chrome|CriOS|Firefox)[\s\/]([\w.]+)/.exec(ua) ||
 					/(MSIE|Trident)[\/\s]([\d.]+)/.exec(ua) ||
 					/(PhantomJS)\/([\d.]+)/.exec(ua) ||
-					[],
-                webviewMatch = /(NAVER|Daum)/.exec(ua) || [];
+					[];
 
 			// os
 			if(osMatch.length >= 3) {
@@ -805,10 +805,10 @@ eg.hook.agent = function(agent) {
 				},
 				browser : {
 					name : browserMatch[1] || "default",
-					version : browserMatch[2] || /*osMatch[2] ||*/ "-1",
-					webview : webviewMatch.length > 0
+					version : browserMatch[2] || /*osMatch[2] ||*/ "-1"
 				}
 			};
+			info = this._checkWebview(info, ua);
 			info = this.hook.agent  ? this.hook.agent(info) : info;
 			this.agent = function(){
 				return info;
@@ -816,6 +816,21 @@ eg.hook.agent = function(agent) {
 
 			return info;
 
+		},
+
+        // Check Webview
+        // ios : In the absence of version
+        // Android 5.0 && chrome 40+ : when there is a keyword of "; wv" in useragent
+        // Under android 5.0 :  when there is a keyword of "NAVER or Daum" in useragent
+		_checkWebview : function(info, ua){
+
+
+            info.browser.webview = (info.os.name === "android" && ua.indexOf("; wv") > -1) || // Android
+                            (info.os.name === "ios" && info.browser.version === "-1") ||    // ios
+                            (ua.indexOf("NAVER") > -1 || ua.indexOf("Daum") > -1) ||        //Other
+                            false;
+
+            return info;
 		},
 		// __checkLibrary__ : function(condition, message) {
 		// 	if(condition) {
@@ -1700,7 +1715,7 @@ eg.module("component",[eg],function(ns){
 
 
 
-eg.module("movableCoord",[jQuery, eg],function($, ns){
+eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 	// It is scheduled to be removed in case of build process.
 	// ns.__checkLibrary__( !("Hammer" in window), "You must download Hammerjs. (http://hammerjs.github.io/)\n\ne.g. bower install hammerjs");
 	// ns.__checkLibrary__( !("easeOutQuint" in $.easing), "You must download jQuery Easing Plugin(http://gsgd.co.uk/sandbox/jquery/easing/)\n\ne.g. bower install jquery.easing");
@@ -1740,6 +1755,7 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 	 *
 	 * @param {Function} [options.easing a easing=easing.easeOutQuint] Function of the jQuery Easing Plugin <ko>jQuery Easing 플러그인 함수</ko>
 	 * @param {Number} [options.deceleration=0.0006] deceleration This value can be altered to change the momentum animation duration. higher numbers make the animation shorter. <ko>감속계수. 높을값이 주어질수록 애니메이션의 동작 시간이 짧아진다.</ko>
+	 * @param {Number} [options.interruptable=true] interruptable This value can be enabled to interrupt cycle of the animation event. <ko>이 값이  true이면, 애니메이션의 이벤트 사이클을 중단할수 있다.</ko>
 	 * @see Hammerjs {@link http://hammerjs.github.io}
 	 * @see jQuery Easing Plugin {@link http://gsgd.co.uk/sandbox/jquery/easing}
 	 */
@@ -1752,14 +1768,16 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 				margin : [0,0,0,0],
 				circular : [false, false, false, false],
 				easing : $.easing.easeOutQuint,
-				deceleration : 0.0006
+				deceleration : 0.0006,
+				interruptable : true
 			};
 			this._reviseOptions(options);
 			this._status = {
 				grabOutside : false,
 				curHammer : null,
 				moveDistance : null,
-				animating : null
+				animating : null,
+				interrupted : this.options.interruptable
 			};
 			this._hammers = {};
 			this._pos = [ this.options.min[0], this.options.min[1] ];
@@ -1801,10 +1819,10 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 		},
 		_createHammer : function(el, subOptions) {
 			// create Hammer
-			var hammer = new Hammer.Manager(el, {
+			var hammer = new HM.Manager(el, {
 					recognizers : [
 						[
-							Hammer.Pan, {
+							HM.Pan, {
 								direction: subOptions.direction,
 								threshold: 0
 							}
@@ -1883,6 +1901,11 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 
 		// panstart event handler
 		_panstart : function(e) {
+			if(!this.options.interruptable && this._status.interrupted) {
+				return;
+			}
+			!this.options.interruptable && (this._status.interrupted = true);
+
 			var pos = this._pos;
 			this._grab();
 			/**
@@ -1907,6 +1930,9 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 
 		// panmove event handler
 		_panmove : function(e) {
+			if(!this._isInterrupting() || !this._status.moveDistance) {
+				return;
+			}
 			var tv, tn, tx, pos = this._pos,
 				min = this.options.min,
 				max = this.options.max,
@@ -1978,7 +2004,9 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 
 		// panend event handler
 		_panend : function(e) {
-			if(!this._status.moveDistance) { return; }
+			if(!this._isInterrupting() || !this._status.moveDistance) {
+				return;
+			}
 			var direction = this._subOptions.direction,
 				scale = this._subOptions.scale,
 				vX =  Math.abs(e.velocityX),
@@ -1994,6 +2022,11 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 				], this._subOptions.maximumSpeed ),
 			this._animationEnd, false, null, e);
 			this._status.moveDistance = null;
+		},
+
+		_isInterrupting : function() {
+			// when interruptable is 'true', return value is always 'true'.
+			return this.options.interruptable ? true : this._status.interrupted;
 		},
 
 		_animationEnd : function() {
@@ -2071,7 +2104,6 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 				param = {
 					depaPos : [ pos[0], pos[1] ],
 					destPos : destPos,
-					bounce : isBounce,
 					hammerEvent : e || {}
 				};
 			if (!isBounce) {
@@ -2106,24 +2138,26 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 				max = this.options.max,
 				circular = this.options.circular,
 				destPos = param.destPos,
-				isCircular = this._isCircular(circular, destPos, min, max);
+				isCircular = this._isCircular(circular, destPos, min, max),
+				animationParam;
 			this._isOutToOut(pos, destPos, min, max) && (destPos = pos);
 
 			duration = duration || Math.min( Infinity,
 				this._getDurationFromPos( [ Math.abs(destPos[0]-pos[0]), Math.abs(destPos[1]-pos[1]) ] ) );
 
-			var	done = function() {
+			var	done = function(isNext) {
 					this._status.animating = null;
 					pos[0] = Math.round(destPos[0]);
 					pos[1] = Math.round(destPos[1]);
 					pos = this._getCircularPos(pos, min, max, circular);
+					!isNext && (this._status.interrupted = false);
 					callback && callback();
 				}.bind(this);
 
-			if (!duration) { return done(); }
+			if (!duration) { return done(false); }
 
 			// prepare animation parameters
-			param = {
+			animationParam = {
 				duration : duration,
 				depaPos : [ pos[0], pos[1] ],
 				destPos : destPos,
@@ -2135,7 +2169,7 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 			/**
 			 * When animation was started.
 			 * @ko 에니메이션이 시작했을 때 발생한다.
-			 * @name eg.MovableCoord#animation
+			 * @name eg.MovableCoord#animationStart
 			 * @event
 			 * @param {Object} param
 			 * @param {Number} param.duration
@@ -2150,14 +2184,14 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 			 * @param {Function} param.done If user control animation, user must call this function. <ko>애니메이션이 끝났다는 것을 알려주는 함수</ko>
 			 *
 			 */
-			var retTrigger = this.trigger("animation", param);
-			// You can't stop the 'animation' event when 'circular' is true.
+			var retTrigger = this.trigger("animationStart", animationParam);
+			// You can't stop the 'animationStart' event when 'circular' is true.
 			if (isCircular && !retTrigger) {
 				throw new Error("You can't stop the 'animation' event when 'circular' is true.");
 			}
-			param.depaPos = pos;
-			param.startTime = new Date().getTime();
-			this._status.animating = param;
+			animationParam.depaPos = pos;
+			animationParam.startTime = new Date().getTime();
+			this._status.animating = animationParam;
 
 			if (retTrigger) {
 				// console.error("depaPos", pos, "depaPos",destPos, "duration", duration, "ms");
@@ -2165,7 +2199,7 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 					self = this;
 				(function loop() {
 					self._raf=null;
-					if (self._frame(info) >= 1) { return done(); } // animationEnd
+					if (self._frame(info) >= 1) { return done(true); } // animationEnd
 					self._raf = requestAnimationFrame(loop);
 				})();
 			}
@@ -2326,7 +2360,7 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 	ns.MovableCoord.KEY = "__MOVABLECOORD__";
 });
 
-eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
+eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 	/**
 	 * To build flickable UI
 	 * @group EvergreenJs
@@ -2649,7 +2683,7 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				hold : this._holdHandler.bind(this),
 				change : this._changeHandler.bind(this),
 				release : this._releaseHandler.bind(this),
-				animation : this._animationHandler.bind(this),
+				animationStart : this._animationStartHandler.bind(this),
 				animationEnd : this._animationEndHandler.bind(this)
 			});
 		},
@@ -2771,9 +2805,9 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		},
 
 		/**
-		 * 'animation' event handler
+		 * 'animationStart' event handler
 		 */
-		_animationHandler : function(e) {
+		_animationStartHandler : function(e) {
 			var panel = this._conf.panel,
 				direction = this._conf.touch.direction,
 				dirData = this._conf.dirData;
@@ -3213,7 +3247,8 @@ eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		}
 	});
 });
-eg.module("visible",[jQuery, eg],function($, ns){
+
+eg.module("visible",[window.jQuery, eg],function($, ns){
 	/**
 	 * It check element is visible within the specific element or viewport, regardless of the scroll position
 	 * @ko scroll위치와 상관없이 특정 엘리먼트나 viewport 안에 엘리먼트가 보이는지 확인한다.
