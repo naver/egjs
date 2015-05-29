@@ -75,7 +75,7 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 		 * @param {Array} options.scale The moving scale. <ko>이동 배율</ko>
 		 * @param {Number} [options.scale.0=1] x-scale <ko>x축 배율</ko>
 		 * @param {Number} [options.scale.1=1] y-scale <ko>y축 배율</ko>
-		 * @param {Number} [options.thresholdAngle=45] The threshold angle about direction. <ko>방향에 대한 임계각</ko>
+		 * @param {Number} [options.thresholdAngle=45] The threshold angle about direction which range is 0~90 <ko>방향에 대한 임계각</ko>
 		 * @param {Number} [options.maximumSpeed=Infinity] The maximum speed. <ko>최대 좌표 변환 속도 (px/ms)</ko>
 		 * @return {Boolean}
 		 */
@@ -242,7 +242,7 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 				e.srcEvent.stopPropagation();
 			}
 			e.preventSystemEvent = prevent;
-			pos[0] = this._status.moveDistance[0], pos[1] = this._status.moveDistance[1];
+			pos = [ this._status.moveDistance[0], this._status.moveDistance[1] ];
 			pos = this._getCircularPos(pos, min, max);
 
 			// from outside to inside
@@ -299,7 +299,10 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 
 		// get user's direction
 		_getDirection : function(angle) {
-			var thresholdAngle = this._subOptions.thresholdAngle%90;
+			var thresholdAngle = this._subOptions.thresholdAngle % 90;
+			if ( thresholdAngle < 0 || thresholdAngle > 90) {
+				return ns.DIRECTION_NONE;
+			}
 			angle = Math.abs(angle);
 			return angle > thresholdAngle && angle < 180 - thresholdAngle ? ns.DIRECTION_VERTICAL : ns.DIRECTION_HORIZONTAL;
 		},
