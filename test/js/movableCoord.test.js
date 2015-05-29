@@ -439,8 +439,7 @@ module("movableCoord interrupt Test", {
 			max : [ 300, 400 ],
 			bounce : 100,
 			margin : 0,
-			circular : false,
-			interruptable : false
+			circular : false
 		});
 	},
 	teardown : function() {
@@ -489,7 +488,9 @@ asyncTest("interrupt test when user's action is fast", function() {
 			equal(this._status.interrupted, false, "interrupted property is 'false'");
 		}
 	});
-	this.inst.bind(el);
+	this.inst.bind(el, {
+		interruptable : false
+	});
 
 	// When
 	Simulator.gestures.pan(el, {
@@ -549,7 +550,9 @@ asyncTest("interrupt test when stop method was called in 'animationStart' event"
 			equal(this._status.interrupted, false, "interrupted property is 'false'");
 		}
 	});
-	this.inst.bind(el);
+	this.inst.bind(el, {
+		interruptable : false
+	});
 
 	// When
 	Simulator.gestures.pan(el, {
@@ -578,8 +581,7 @@ module("movableCoord interrupt Test", {
 			max : [ 300, 400 ],
 			bounce : 100,
 			margin : 0,
-			circular : false,
-			interruptable : false
+			circular : false
 		});
 	},
 	teardown : function() {
@@ -628,7 +630,9 @@ asyncTest("interrupt test when user's action is fast", function() {
 			equal(this._isInterrupting(), false, "_isInterrupting is 'false'");
 		}
 	});
-	this.inst.bind(el);
+	this.inst.bind(el, {
+		interruptable : false
+	});
 
 	// When
 	Simulator.gestures.pan(el, {
@@ -688,7 +692,9 @@ asyncTest("interrupt test when stop method was called in 'animationStart' event"
 			equal(this._isInterrupting(), false, "_isInterrupting is 'false'");
 		}
 	});
-	this.inst.bind(el);
+	this.inst.bind(el, {
+		interruptable : false
+	});
 
 	// When
 	Simulator.gestures.pan(el, {
