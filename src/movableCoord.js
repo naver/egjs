@@ -75,7 +75,7 @@ eg.module("movableCoord",[jQuery, eg],function($, ns){
 		 * @param {Array} options.scale The moving scale. <ko>이동 배율</ko>
 		 * @param {Number} [options.scale.0=1] x-scale <ko>x축 배율</ko>
 		 * @param {Number} [options.scale.1=1] y-scale <ko>y축 배율</ko>
-		 * @param {Number} [options.thresholdAngle=45] The threshold angle about direction which range is 0~90 <ko>방향에 대한 임계각</ko>
+		 * @param {Number} [options.thresholdAngle=45] The threshold angle about direction which range is 0~90 <ko>방향에 대한 임계각 (0~90)</ko>
 		 * @param {Number} [options.maximumSpeed=Infinity] The maximum speed. <ko>최대 좌표 변환 속도 (px/ms)</ko>
 		 * @return {Boolean}
 		 */
