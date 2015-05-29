@@ -8,6 +8,13 @@ npm install naver-bower -g // naver-bower를 전역으로 설치한다 (관리�
 naver-bower install egjs
 ```
 
+## Browser Support
+`jQuery 1.7 이상`에서 egjs를 사용하실수 있습니다.
+
+|Internet Explorer|Chrome|FireFox|Safari|iOS|Android|네이버앱 iOS|네이버앱 Android|
+|---|---|---|---|---|---|---|---|
+|7+(지원예정)|최신|최신|최신|7+|2.3+ (3.x는 제외)|최신|최신|
+
 ## Demo 
 http://codepen.io/egjs/
 
