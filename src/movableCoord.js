@@ -78,6 +78,7 @@ eg.module("movableCoord",[jQuery, eg, Hammer],function($, ns, HM){
 		 * @param {Array} options.scale The moving scale. <ko>이동 배율</ko>
 		 * @param {Number} [options.scale.0=1] x-scale <ko>x축 배율</ko>
 		 * @param {Number} [options.scale.1=1] y-scale <ko>y축 배율</ko>
+		 * @param {Number} [options.thresholdAngle=45] The threshold angle about direction which range is 0~90 <ko>방향에 대한 임계각 (0~90)</ko>
 		 * @param {Number} [options.maximumSpeed=Infinity] The maximum speed. <ko>최대 좌표 변환 속도 (px/ms)</ko>
 		 * @return {Boolean}
 		 */
@@ -87,6 +88,7 @@ eg.module("movableCoord",[jQuery, eg, Hammer],function($, ns, HM){
 				subOptions = {
 					direction : ns.DIRECTION_ALL,
 					scale : [ 1, 1 ],
+					thresholdAngle : 45,
 					maximumSpeed : Infinity
 				};
 			$.extend(subOptions, options);
@@ -224,6 +226,7 @@ eg.module("movableCoord",[jQuery, eg, Hammer],function($, ns, HM){
 				easing = this.options.easing,
 				direction = this._subOptions.direction,
 				scale = this._subOptions.scale,
+				userDirection = this._getDirection(e.angle),
 				out = [ margin[0] + bounce[0], margin[1] + bounce[1], margin[2] + bounce[2], margin[3] + bounce[3] ],
 				prevent  = false;
 
@@ -237,11 +240,11 @@ eg.module("movableCoord",[jQuery, eg, Hammer],function($, ns, HM){
 			}
 			// not support offset properties in Hammerjs - end
 
- 			if((e.offsetDirection & ns.DIRECTION_HORIZONTAL) && (direction & ns.DIRECTION_HORIZONTAL)) {
+ 			if((userDirection & ns.DIRECTION_HORIZONTAL) && (direction & ns.DIRECTION_HORIZONTAL)) {
 				this._status.moveDistance[0] += (e.offsetX * scale[0]);
 	              	prevent = true;
 			}
-			if((e.offsetDirection & ns.DIRECTION_VERTICAL) && (direction & ns.DIRECTION_VERTICAL)) {
+			if((userDirection & ns.DIRECTION_VERTICAL) && (direction & ns.DIRECTION_VERTICAL)) {
 			     this._status.moveDistance[1] += (e.offsetY * scale[1]);
 			     prevent = true;
 			}
@@ -250,7 +253,7 @@ eg.module("movableCoord",[jQuery, eg, Hammer],function($, ns, HM){
 				e.srcEvent.stopPropagation();
 			}
 			e.preventSystemEvent = prevent;
-			pos[0] = this._status.moveDistance[0], pos[1] = this._status.moveDistance[1];
+			pos = [ this._status.moveDistance[0], this._status.moveDistance[1] ];
 			pos = this._getCircularPos(pos, min, max);
 
 			// from outside to inside
@@ -310,6 +313,16 @@ eg.module("movableCoord",[jQuery, eg, Hammer],function($, ns, HM){
 		_isInterrupting : function() {
 			// when interruptable is 'true', return value is always 'true'.
 			return this.options.interruptable ? true : this._status.interrupted;
+		},
+
+		// get user's direction
+		_getDirection : function(angle) {
+			var thresholdAngle = this._subOptions.thresholdAngle;
+			if ( thresholdAngle < 0 || thresholdAngle > 90) {
+				return ns.DIRECTION_NONE;
+			}
+			angle = Math.abs(angle);
+			return angle > thresholdAngle && angle < 180 - thresholdAngle ? ns.DIRECTION_VERTICAL : ns.DIRECTION_HORIZONTAL;
 		},
 
 		_animationEnd : function() {
