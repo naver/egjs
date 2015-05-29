@@ -1,7 +1,7 @@
 
 var cssPrefixes = [ "Webkit", "Moz" , "O" , "ms" ];
 
-module("cssPrefix", {
+module("css", {
   setup : function() {
 
     this.fakeDocument = {
@@ -23,7 +23,7 @@ test("When is not jQuery.cssHooks", function() {
     var method = null;
 
     try{
-        method = eg.invoke("cssPrefix",[jQuery, null]);
+        method = eg.invoke("css",[jQuery, null]);
     }catch(e){
         method = false;
     }
@@ -39,7 +39,7 @@ cssPrefixes.forEach(function(v,i) {
         // Given
         jQuery.cssHooks = {};
         this.fakeDocument.head.style[v+"Transition"] = "";
-        var method = eg.invoke("cssPrefix",[jQuery, this.fakeDocument]);
+        var method = eg.invoke("css",[jQuery, this.fakeDocument]);
 
         // When
 
@@ -52,7 +52,7 @@ cssPrefixes.forEach(function(v,i) {
     test("css propertie in jQuery.cssHooks : "+ v, function() {
         // Given
         this.fakeDocument.head.style[v+"Transition"] = "";
-        var method = eg.invoke("cssPrefix",[jQuery, this.fakeDocument]);
+        var method = eg.invoke("css",[jQuery, this.fakeDocument]);
         var checkPropertie = v.toLowerCase() + "Transform";
 
         // When
@@ -65,7 +65,7 @@ cssPrefixes.forEach(function(v,i) {
 
 test("transform property set/get", function() {
     // Given
-    var method = eg.invoke("cssPrefix",[jQuery, document]);
+    var method = eg.invoke("css",[jQuery, document]);
 
     // When
     $("#prefixId").css("transform", "translate(100px, 0px)");
@@ -78,7 +78,7 @@ test("transform property set/get", function() {
 
 test("Transform property set/get", function() {
     // Given
-    var method = eg.invoke("cssPrefix",[jQuery, document]);
+    var method = eg.invoke("css",[jQuery, document]);
 
     // When
     $("#prefixId").css("Transform", "translate(300px, 0px)");
@@ -90,7 +90,7 @@ test("Transform property set/get", function() {
 
 test("webkitTransform property set/get", function() {
     // Given
-    var method = eg.invoke("cssPrefix",[jQuery, document]);
+    var method = eg.invoke("css",[jQuery, document]);
 
     // When
     $("#prefixId").css("webkitTransform", "translate(200px, 0px)");
