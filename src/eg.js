@@ -33,13 +33,13 @@ eg.module("eg",[window.jQuery, eg, window],function($, ns, global){
 			 * @ko Agent 정보를 반환한다. 값은 캐싱된다.
 			 * @method eg#agent
 			 * @return {Object} agent
-			 * @return {String} agent.os os infomation
-			 * @return {String} agent.os.name os name (android, ios, window, mac)
-			 * @return {String} agent.os.version os version
-			 * @return {String} agent.browser browser information
-			 * @return {String} agent.browser.name browser name (default, safari, chrome, sbrowser, ie, firefox)
-			 * @return {String} agent.browser.version browser version
-			 * @return {String} agent.browser.nativeVersion browser version (in case of ie)
+			 * @return {String} agent.os os infomation <ko>os 정보 객체</ko>
+			 * @return {String} agent.os.name os name (android, ios, window, mac) <ko>os 이름 (android, ios, window, mac)</ko>
+			 * @return {String} agent.os.version os version <ko>os 버전</ko>
+			 * @return {String} agent.browser browser information <ko>브라우저 정보 객체</ko>
+			 * @return {String} agent.browser.name browser name (default, safari, chrome, sbrowser, ie, firefox) <ko>브라우저 이름 (default, safari, chrome, sbrowser, ie, firefox)</ko>
+			 * @return {String} agent.browser.version browser version <ko>브라우저 버전 정보</ko>
+			 * @return {String} agent.browser.webview check whether browser is webview <ko>웹뷰 브라우저 여부</ko>
 		 	 * @example
 eg.agent();
 // {
@@ -150,9 +150,9 @@ eg.hook.agent = function(agent) {
 		 * Get a translate string.
 		 * @ko translate 문자를 반환한다.
 		 * @method eg#translate
-		 * @param {String} x
-		 * @param {String} y
-		 * @param {Boolean} [isHA]
+		 * @param {String} x x-coordinate <ko>x 좌표</ko>
+		 * @param {String} y y-coordinate <ko>y 좌표</ko>
+		 * @param {Boolean} [isHA] isHWAccelerable <ko>하드웨어 가속 여부</ko>
 		 * @return {String}
 		 * @example
 eg.translate('10px', '200%');  // translate(10px,200%);
