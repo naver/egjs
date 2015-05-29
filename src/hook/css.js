@@ -3,7 +3,7 @@ eg.module("css",[jQuery, document],function($, doc){
      * Apply css prefix cssHooks
      * @ko css prefix cssHooks 적용
      *
-     * @name jQuery#animate
+     * @name jQuery#css
      * @method
      *
      * @example
