@@ -15,7 +15,7 @@ module("persist", {
 			"scrollTop": 100
 		};
 		
-		this.method = eg._invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
+		this.method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 		
 		/*
 		 *	 Mock History Object
@@ -39,7 +39,7 @@ test("isPersisted : When persisted property of pageshow event supported", functi
 		"persisted": true
 	};
 
-	var method = eg._invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
+	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 	
 	// When
 	var isPersisted = method.isPersisted(this.fakeEvent);
@@ -62,7 +62,7 @@ test("isPersisted : When persisted property of pageshow event supported", functi
 test("isPersisted : When persisted property of pageshow event not supported", function() {
 	// Given
 	this.fakeEvent = {};
-	var method = eg._invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
+	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 	
 	// When
 	var isPersisted = method.isPersisted(this.fakeEvent);
@@ -81,7 +81,7 @@ test("isBackForwardNavigated", function() {
 		TYPE_RESERVED: 255
 	};
 	this.fakeWindow.performance.navigation.type = 0;
-	var method = eg._invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
+	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 	
 	// When
 	var isBackForwardNavigated = method.isBackForwardNavigated();
@@ -91,7 +91,7 @@ test("isBackForwardNavigated", function() {
 	
 	// Given
 	this.fakeWindow.performance.navigation.type = 1;
-	var method = eg._invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
+	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 
 	// When
 	isBackForwardNavigated = method.isBackForwardNavigated();
@@ -101,7 +101,7 @@ test("isBackForwardNavigated", function() {
 	
 	// Given
 	this.fakeWindow.performance.navigation.type = 2;
-	var method = eg._invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
+	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 	
 	// When
 	isBackForwardNavigated = method.isBackForwardNavigated();
@@ -155,7 +155,7 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 		TYPE_RESERVED: 255
 	};
 	this.fakeWindow.performance.navigation.type = 0;
-	var method = eg._invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
+	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 	
 	// When
 	$(this.fakeWindow).trigger({
@@ -170,7 +170,7 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 	
 	// Given 
 	this.fakeWindow.performance.navigation.type = 1;
-	var method = eg._invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
+	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 
 	// When
 	$(this.fakeWindow).trigger({
@@ -212,7 +212,7 @@ test("onPageshow : when bfCache miss and BF navigated, persist event must be tri
 		TYPE_RESERVED: 255
 	};
 	this.fakeWindow.performance.navigation.type = 2;
-	var method = eg._invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
+	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 
 	var restoredState = null;
 	$(this.fakeWindow).on("persist", function(e) {
