@@ -1,4 +1,4 @@
-eg.module("flicking",[jQuery, eg, eg.MovableCoord],function($, ns, MC) {
+eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 	/**
 	 * To build flickable UI
 	 * @group EvergreenJs

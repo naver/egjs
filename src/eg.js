@@ -1,4 +1,4 @@
-eg.module("eg",[jQuery, eg, window],function($, ns, global){
+eg.module("eg",[window.jQuery, eg, window],function($, ns, global){
 	/**
 	 * @namespace eg
 	 * @group EvergreenJs

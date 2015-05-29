@@ -1,4 +1,4 @@
-eg.module("visible",[jQuery, eg],function($, ns){
+eg.module("visible",[window.jQuery, eg],function($, ns){
 	/**
 	 * It check element is visible within the specific element or viewport, regardless of the scroll position
 	 * @ko scroll위치와 상관없이 특정 엘리먼트나 viewport 안에 엘리먼트가 보이는지 확인한다.
