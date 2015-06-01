@@ -33,7 +33,7 @@ http://codepen.io/egjs/
 
 ## API
 http://jindo.nhncorp.com/eg 를 통해 최신 egjs의 API 문서를 볼 수 있다.
-또한, http://jindo.nhncorp.com/eg/[버전]/ 을 통해 버전별 API 문서를 제공한다.
+또한, `http://jindo.nhncorp.com/eg/[버전]/` 을 통해 버전별 API 문서를 제공한다.
 
 ## Usage
 - egjs의 `dist/lib`에 있는 라이브러리(jquery.js, jquery.easing.js, hammer.js)를 script의 src로 추가한다.
