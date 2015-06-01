@@ -78,10 +78,10 @@ eg.module("visible",[window.jQuery, eg],function($, ns){
 			if (delay < 0) {
 				this._check();
 			} else {
-				this._timer = setTimeout(function() {
+				this._timer = setTimeout($.proxy(function() {
 					this._check();
 					this._timer = null;
-				}.bind(this), delay);
+				},this), delay);
 			}
 			return this;
 		},

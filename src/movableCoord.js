@@ -66,7 +66,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			this._pos = [ this.options.min[0], this.options.min[1] ];
 			this._subOptions = {};
 			this._raf = null;
-			this._animationEnd = this._animationEnd.bind(this);	// for caching
+			this._animationEnd = $.proxy(this._animationEnd, this);	// for caching
 		},
 		/**
 		 * Attach a element to an use for the movableCoord.
@@ -114,16 +114,16 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 						]
 					]
 				});
-			hammer.on("hammer.input", function(e) {
+			hammer.on("hammer.input", $.proxy(function(e) {
 				if(e.isFirst) {
 					// apply options each
 					this._subOptions = subOptions;
 					this._status.curHammer = hammer;
 					this._panstart(e);
 				}
-			}.bind(this))
-			.on("panstart panmove", this._panmove.bind(this))
-			.on("panend", this._panend.bind(this));
+			},this))
+			.on("panstart panmove", $.proxy(this._panmove,this))
+			.on("panend", $.proxy(this._panend,this));
 			return hammer;
 		},
 		/**
@@ -148,7 +148,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				this._pos = this._getCircularPos(this._pos);
 				this._triggerChange(this._pos, true);
 				this._status.animating = null;
-				this._raf && cancelAnimationFrame(this._raf);
+				this._raf && ns.cancelAnimationFrame(this._raf);
 				this._raf = null;
 			}
 		},
@@ -338,7 +338,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			this._animateTo( [
 				Math.min(max[0], Math.max(min[0], pos[0])),
 				Math.min(max[1], Math.max(min[1], pos[1]))
-			] , this.trigger.bind(this, "animationEnd"), true);
+			] , $.proxy(this.trigger, this, "animationEnd"), true);
 		},
 
 		_getNextOffsetPos : function(speeds, maximumSpeed) {
@@ -441,14 +441,14 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			duration = duration || Math.min( Infinity,
 				this._getDurationFromPos( [ Math.abs(destPos[0]-pos[0]), Math.abs(destPos[1]-pos[1]) ] ) );
 
-			var	done = function(isNext) {
+			var	done = $.proxy(function(isNext) {
 					this._status.animating = null;
 					pos[0] = Math.round(destPos[0]);
 					pos[1] = Math.round(destPos[1]);
 					pos = this._getCircularPos(pos, min, max, circular);
 					!isNext && (this._status.interrupted = false);
 					callback && callback();
-				}.bind(this);
+				}, this);
 
 			if (!duration) { return done(false); }
 
@@ -496,7 +496,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				(function loop() {
 					self._raf=null;
 					if (self._frame(info) >= 1) { return done(true); } // animationEnd
-					self._raf = requestAnimationFrame(loop);
+					self._raf = ns.requestAnimationFrame(loop);
 				})();
 			}
 		},
@@ -518,10 +518,10 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		// set up 'css' expression
 		_reviseOptions : function(options) {
 			var key;
-			["bounce", "margin", "circular"].forEach(function(v) {
+			$.each(["bounce", "margin", "circular"],function(i,v) {
 				key = options[v];
 				if(key != null) {
-					if(Array.isArray(key) ) {
+					if($.isArray(key) ) {
 						if( key.length === 2) {
 							options[v] = [ key[0], key[1], key[0], key[1] ];
 						} else {

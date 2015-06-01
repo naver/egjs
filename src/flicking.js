@@ -105,9 +105,9 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				dirData : []
 			};
 
-			[[ "RIGHT", "LEFT" ], [ "DOWN", "UP" ]][ +!this.options.horizontal ].forEach(function(v) {
+			$.each([ [ "RIGHT", "LEFT" ], [ "DOWN", "UP" ] ][ +!this.options.horizontal ], $.proxy(function(v) {
 				this._conf.dirData.push(ns[ "DIRECTION_"+ v ]);
-			}, this);
+			},this));
 
 			this._build();
 			this._bindEvents();
@@ -265,10 +265,11 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			}
 
 			// set each panel's position
-			panel.list.each((function(i, v) {
-				coords = this._getDataByDirection([ (100 * i) +"%", 0 ]);
-				$(v).css("transform", ns.translate(coords[0], coords[1], hwAccelerable));
-			}).bind(this));
+			panel.list.each(
+				$.proxy(function(i, v) {
+					coords = this._getDataByDirection([ (100 * i) +"%", 0 ]);
+					$(v).css("transform", ns.translate(coords[0], coords[1], hwAccelerable));
+				},this));
 		},
 
 		/**
@@ -318,11 +319,11 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 */
 		_bindEvents : function() {
 			this._mcInst.on({
-				hold : this._holdHandler.bind(this),
-				change : this._changeHandler.bind(this),
-				release : this._releaseHandler.bind(this),
-				animationStart : this._animationStartHandler.bind(this),
-				animationEnd : this._animationEndHandler.bind(this)
+				hold : $.proxy(this._holdHandler, this),
+				change : $.proxy(this._changeHandler,this),
+				release : $.proxy(this._releaseHandler,this),
+				animationStart : $.proxy(this._animationStartHandler,this),
+				animationEnd : $.proxy(this._animationEndHandler,this)
 			});
 		},
 
