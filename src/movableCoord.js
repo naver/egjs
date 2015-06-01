@@ -38,7 +38,6 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 	 *
 	 * @param {Function} [options.easing a easing=easing.easeOutQuint] Function of the jQuery Easing Plugin <ko>jQuery Easing 플러그인 함수</ko>
 	 * @param {Number} [options.deceleration=0.0006] deceleration This value can be altered to change the momentum animation duration. higher numbers make the animation shorter. <ko>감속계수. 높을값이 주어질수록 애니메이션의 동작 시간이 짧아진다.</ko>
-	 * @param {Number} [options.interruptable=true] interruptable This value can be enabled to interrupt cycle of the animation event. <ko>이 값이  true이면, 애니메이션의 이벤트 사이클을 중단할수 있다.</ko>
 	 * @see Hammerjs {@link http://hammerjs.github.io}
 	 * @see jQuery Easing Plugin {@link http://gsgd.co.uk/sandbox/jquery/easing}
 	 */
@@ -51,16 +50,15 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				margin : [0,0,0,0],
 				circular : [false, false, false, false],
 				easing : $.easing.easeOutQuint,
-				deceleration : 0.0006,
-				interruptable : true
+				deceleration : 0.0006
 			};
 			this._reviseOptions(options);
 			this._status = {
-				grabOutside : false,
-				curHammer : null,
-				moveDistance : null,
-				animating : null,
-				interrupted : this.options.interruptable
+				grabOutside : false,	// check whether user's action started on outside
+				curHammer : null,		// current hammer instance
+				moveDistance : null,	// a position of the first user's action
+				animating : null,		// animation infomation
+				interrupted : false		//  check whether the animation event was interrupted
 			};
 			this._hammers = {};
 			this._pos = [ this.options.min[0], this.options.min[1] ];
@@ -80,6 +78,8 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		 * @param {Number} [options.scale.1=1] y-scale <ko>y축 배율</ko>
 		 * @param {Number} [options.thresholdAngle=45] The threshold angle about direction which range is 0~90 <ko>방향에 대한 임계각 (0~90)</ko>
 		 * @param {Number} [options.maximumSpeed=Infinity] The maximum speed. <ko>최대 좌표 변환 속도 (px/ms)</ko>
+		 * @param {Number} [options.interruptable=true] interruptable This value can be enabled to interrupt cycle of the animation event. <ko>이 값이  true이면, 애니메이션의 이벤트 사이클을 중단할수 있다.</ko>
+
 		 * @return {Boolean}
 		 */
 		bind : function(el, options) {
@@ -89,7 +89,8 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 					direction : ns.DIRECTION_ALL,
 					scale : [ 1, 1 ],
 					thresholdAngle : 45,
-					maximumSpeed : Infinity
+					maximumSpeed : Infinity,
+					interruptable : true
 				};
 			$.extend(subOptions, options);
 
@@ -118,6 +119,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				if(e.isFirst) {
 					// apply options each
 					this._subOptions = subOptions;
+					this._status.interrupted = subOptions.interruptable;
 					this._status.curHammer = hammer;
 					this._panstart(e);
 				}
@@ -186,10 +188,10 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 
 		// panstart event handler
 		_panstart : function(e) {
-			if(!this.options.interruptable && this._status.interrupted) {
+			if(!this._subOptions.interruptable && this._status.interrupted) {
 				return;
 			}
-			!this.options.interruptable && (this._status.interrupted = true);
+			!this._subOptions.interruptable && (this._status.interrupted = true);
 
 			var pos = this._pos;
 			this._grab();
@@ -312,7 +314,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 
 		_isInterrupting : function() {
 			// when interruptable is 'true', return value is always 'true'.
-			return this.options.interruptable ? true : this._status.interrupted;
+			return this._subOptions.interruptable || this._status.interrupted;
 		},
 
 		// get user's direction
