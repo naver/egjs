@@ -9,23 +9,20 @@ naver-bower install egjs
 ```
 
 ## Download URL
-egjs는 URL 을 통해 다운로드 받을수 있다.
+egjs는 http://jindo.nhncorp.com/eg/dist을 통해 버전별 다운로드 링크를 제공한다.
+
  - 개발버전
-http://jindo.nhncorp.com/eg/dist/master/eg.js
-```
 http://jindo.nhncorp.com/eg/dist/[버전]/eg.js
-```
  - 제품버전
-http://jindo.nhncorp.com/eg/dist/master/eg.min.js
-```
 http://jindo.nhncorp.com/eg/dist/[버전]/eg.min.js
-```
+
 ## Browser Support
 `jQuery 1.7 이상`에서 egjs를 사용하실수 있습니다.
 
 |Internet Explorer|Chrome|FireFox|Safari|iOS|Android|네이버앱 iOS|네이버앱 Android|
 |---|---|---|---|---|---|---|---|
 |7+|최신|최신|최신|7+|2.3+ (3.x는 제외)|최신|최신|
+- 컴포넌트별 지원범위가 다를수 있으며, 사용시 API 문서를 참조한다.
 
 ## Demo 
 http://codepen.io/egjs/
