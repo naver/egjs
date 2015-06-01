@@ -18,6 +18,9 @@ naver-bower install egjs
 ## Demo 
 http://codepen.io/egjs/
 
+## API
+http://jindo.nhncorp.com/eg/master/
+
 ## Usage
 - egjs의 `dist/lib`에 있는 라이브러리(jquery.js, jquery.easing.js, hammer.js)를 script의 src로 추가한다.
 - `dist` 디렉토리에 eg.js 나 eg.min.js을 script의 src로 추가한다.
