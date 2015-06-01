@@ -8,18 +8,26 @@ npm install naver-bower -g // naver-bower를 전역으로 설치한다 (관리�
 naver-bower install egjs
 ```
 
+## Download URL
+egjs는 URL 을 통해 다운로드 받을수 있다.
+ - 개발버전
+http://jindo.nhncorp.com/eg/dist/[버전]/eg.js
+ - 제품버전
+http://jindo.nhncorp.com/eg/dist/[버전]/eg.min.js
+
 ## Browser Support
 `jQuery 1.7 이상`에서 egjs를 사용하실수 있습니다.
 
 |Internet Explorer|Chrome|FireFox|Safari|iOS|Android|네이버앱 iOS|네이버앱 Android|
 |---|---|---|---|---|---|---|---|
-|7+(지원예정)|최신|최신|최신|7+|2.3+ (3.x는 제외)|최신|최신|
+|7+|최신|최신|최신|7+|2.3+ (3.x는 제외)|최신|최신|
 
 ## Demo 
 http://codepen.io/egjs/
 
 ## API
-http://jindo.nhncorp.com/eg/master/
+http://jindo.nhncorp.com/eg 를 통해 최신 egjs의 API 문서를 볼 수 있다.
+또한, http://jindo.nhncorp.com/eg/[버전]/ 을 통해 버전별 API 문서를 제공한다.
 
 ## Usage
 - egjs의 `dist/lib`에 있는 라이브러리(jquery.js, jquery.easing.js, hammer.js)를 script의 src로 추가한다.
