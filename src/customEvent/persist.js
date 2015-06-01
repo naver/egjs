@@ -1,13 +1,12 @@
-// debug
 eg.module("persist",[jQuery, window, document],function($, global, doc){
 	"use strict";
-	// debug
 	/**
 	* Support persist event in jQuery
 	* @ko jQuery custom persist 이벤트 지원
 	* @name jQuery#persist
 	* @event
-	* @param {Object} e.state state info to be restored
+	* @param {Event} e event <ko>이벤트 객체</ko>
+	* @param {Object} e.state state info to be restored <ko>복원되어야 하는 상태의 정보</ko>
 	* @example
 	$(window).on("persist",function(e){
 		// restore state
@@ -63,8 +62,8 @@ eg.module("persist",[jQuery, window, document],function($, global, doc){
 	* Saves state and returns current state.
 	* @ko 인자로 넘긴 현재 상태정보를 저장하고, 저장되어있는 현재 상태 객체를 반환한다.
 	* @method jQuery.persist
-    * @param {Object} state state info to be restored
-	* @return {Object} state info to be restored
+    * @param {Object} state State object to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체</ko>
+	* @return {Object} state Stored state object <ko>복원을 위해 저장되어있는 상태 객체</ko>
 	* @example
 	$("a").on("click",function(e){
 		e.preventdefault()	
@@ -97,7 +96,7 @@ eg.module("persist",[jQuery, window, document],function($, global, doc){
 			e.state = clone(history.state);
 		}
 	};
-	// debug
+	
 	return {
 		"isPersisted": isPersisted,
 		"isBackForwardNavigated": isBackForwardNavigated,
@@ -107,4 +106,3 @@ eg.module("persist",[jQuery, window, document],function($, global, doc){
 		"persist": $.persist
 	};
 });
-// debug
