@@ -1,4 +1,4 @@
-eg.module("rotate",[jQuery, eg, window, document],function($, ns, global, doc){
+eg.module("rotate",[window.jQuery, eg, window, document],function($, ns, global, doc){
     "use strict";
     /**
      * @namespace jQuery
@@ -11,7 +11,7 @@ eg.module("rotate",[jQuery, eg, window, document],function($, ns, global, doc){
      * @name jQuery#rotate
      * @event
      * @param {Event} e event
-     * @param {Boolean} e.isVertical vertical
+     * @param {Boolean} e.isVertical vertical <ko>수직여부</ko>
      * @example
      * $(window).on("rotate",function(e){
      *      e.isVertical;
