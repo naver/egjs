@@ -18,7 +18,7 @@ http://jindo.nhncorp.com/eg/dist/[버전]/eg.js
  - 제품버전
 ```
 http://jindo.nhncorp.com/eg/dist/[버전]/eg.min.js
-``
+```
 
 ## Browser Support
 `jQuery 1.7 이상`에서 egjs를 사용하실수 있습니다.
