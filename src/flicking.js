@@ -69,6 +69,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				panelEffect : $.easing.easeOutQuint, // $.easing function for panel change animation
 				defaultIndex : 0			// initial panel index to be shown
 			}, options);
+
 			var padding = this.options.previewPadding,
 				supportHint = window.CSS && window.CSS.supports && window.CSS.supports("will-change", "transform");
 
@@ -103,7 +104,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				useHint : this.options.hwAccelerable && supportHint,
 				dirData : []
 			};
-
 
 			$([[ "RIGHT", "LEFT" ], [ "DOWN", "UP" ]][ +!this.options.horizontal ]).each( $.proxy( function(i,v) {
 				this._conf.dirData.push(ns[ "DIRECTION_"+ v ]);
@@ -412,11 +412,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			pos[posIndex] = Math.max(holdPos - panelWidth, Math.min(holdPos + panelWidth, pos[posIndex]));
 			touch.destPos[posIndex] = pos[posIndex] = Math.round(pos[posIndex] / panelWidth) * panelWidth;
 
-			// when reach to the last panel
-			/*if(pos[0] >= this._mcInst.options.max[0]) {
-				this._mcInst.options.max[0] += panelWidth;
-			}*/
-
 			/**
 			 * When touch ends
 			 * @ko 터치가 종료될 때 발생되는 이벤트
@@ -701,7 +696,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				panel.index = index;
 
 				coords = this._getDataByDirection([ panel.size * ( next ? 1 : -1 ), 0 ]);
-				this._mcInst.setBy(coords[0], coords[1], duration);
+				this._mcInst.setBy( coords[0], coords[1], typeof duration === "number" ? duration : this.options.duration );
 				this._arrangePanels(true);
 			}
 		},
@@ -808,7 +803,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
 		 */
 		next : function(duration) {
-			this._movePanel(this._conf.dirData[0], duration || this.options.duration);
+			this._movePanel( this._conf.dirData[0], duration );
 		},
 
 		/**
@@ -818,7 +813,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
 		 */
 		prev : function(duration) {
-			this._movePanel(this._conf.dirData[1], duration || this.options.duration);
+			this._movePanel( this._conf.dirData[1], duration );
 		},
 
 		/**
@@ -863,7 +858,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			} else {
 				panel.index = no;
 				coords = this._getDataByDirection([ panel.size * indexToMove, 0 ]);
-				this._mcInst.setTo(coords[0], coords[1], duration || this.options.duration);
+				this._mcInst.setTo( coords[0], coords[1], typeof duration === "number" ? duration : this.options.duration );
 			}
 		},
 
