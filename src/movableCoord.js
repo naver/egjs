@@ -119,7 +119,6 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				if(e.isFirst) {
 					// apply options each
 					this._subOptions = subOptions;
-					this._status.interrupted = subOptions.interruptable;
 					this._status.curHammer = hammer;
 					this._panstart(e);
 				}
@@ -192,7 +191,6 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				return;
 			}
 			!this._subOptions.interruptable && (this._status.interrupted = true);
-
 			var pos = this._pos;
 			this._grab();
 			/**
@@ -255,14 +253,12 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				e.srcEvent.stopPropagation();
 			}
 			e.preventSystemEvent = prevent;
-			pos = [ this._status.moveDistance[0], this._status.moveDistance[1] ];
+			pos[0] = this._status.moveDistance[0], pos[1] = this._status.moveDistance[1];
 			pos = this._getCircularPos(pos, min, max);
-
 			// from outside to inside
 			if (this._status.grabOutside && !this._isOutside(pos, min, max)) {
 				this._status.grabOutside = false;
 			}
-
 			// when move pointer is holded outside
 			if (this._status.grabOutside) {
 				tn = min[0]-out[3], tx = max[0]+out[1], tv = pos[0];
@@ -439,7 +435,6 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				isCircular = this._isCircular(circular, destPos, min, max),
 				animationParam;
 			this._isOutToOut(pos, destPos, min, max) && (destPos = pos);
-
 			duration = duration || Math.min( Infinity,
 				this._getDurationFromPos( [ Math.abs(destPos[0]-pos[0]), Math.abs(destPos[1]-pos[1]) ] ) );
 
@@ -452,7 +447,9 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 					callback && callback();
 				}, this);
 
-			if (!duration) { return done(false); }
+			if (!duration) {
+				return done(false);
+			}
 
 			// prepare animation parameters
 			animationParam = {

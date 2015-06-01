@@ -451,15 +451,14 @@ eg.cancelAnimationFrame(timerId);
 
 });
 
-// debug
 eg.module("persist",[jQuery, window, document],function($, global, doc){
-// debug
-	/**
+/**
 	* Support persist event in jQuery
 	* @ko jQuery custom persist 이벤트 지원
 	* @name jQuery#persist
 	* @event
-	* @param {Object} e.state state info to be restored
+	* @param {Event} e event <ko>이벤트 객체</ko>
+	* @param {Object} e.state state info to be restored <ko>복원되어야 하는 상태의 정보</ko>
 	* @example
 	$(window).on("persist",function(e){
 		// restore state
@@ -515,8 +514,8 @@ eg.module("persist",[jQuery, window, document],function($, global, doc){
 	* Saves state and returns current state.
 	* @ko 인자로 넘긴 현재 상태정보를 저장하고, 저장되어있는 현재 상태 객체를 반환한다.
 	* @method jQuery.persist
-    * @param {Object} state state info to be restored
-	* @return {Object} state info to be restored
+    * @param {Object} state State object to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체</ko>
+	* @return {Object} state Stored state object <ko>복원을 위해 저장되어있는 상태 객체</ko>
 	* @example
 	$("a").on("click",function(e){
 		e.preventdefault()	
@@ -549,7 +548,7 @@ eg.module("persist",[jQuery, window, document],function($, global, doc){
 			e.state = clone(history.state);
 		}
 	};
-	// debug
+	
 	return {
 		"isPersisted": isPersisted,
 		"isBackForwardNavigated": isBackForwardNavigated,
@@ -559,7 +558,6 @@ eg.module("persist",[jQuery, window, document],function($, global, doc){
 		"persist": $.persist
 	};
 });
-// debug
 eg.module("rotate",[window.jQuery, eg, window, document],function($, ns, global, doc){
 /**
      * @namespace jQuery
@@ -1172,7 +1170,6 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 	 *
 	 * @param {Function} [options.easing a easing=easing.easeOutQuint] Function of the jQuery Easing Plugin <ko>jQuery Easing 플러그인 함수</ko>
 	 * @param {Number} [options.deceleration=0.0006] deceleration This value can be altered to change the momentum animation duration. higher numbers make the animation shorter. <ko>감속계수. 높을값이 주어질수록 애니메이션의 동작 시간이 짧아진다.</ko>
-	 * @param {Number} [options.interruptable=true] interruptable This value can be enabled to interrupt cycle of the animation event. <ko>이 값이  true이면, 애니메이션의 이벤트 사이클을 중단할수 있다.</ko>
 	 * @see Hammerjs {@link http://hammerjs.github.io}
 	 * @see jQuery Easing Plugin {@link http://gsgd.co.uk/sandbox/jquery/easing}
 	 */
@@ -1185,16 +1182,15 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				margin : [0,0,0,0],
 				circular : [false, false, false, false],
 				easing : $.easing.easeOutQuint,
-				deceleration : 0.0006,
-				interruptable : true
+				deceleration : 0.0006
 			};
 			this._reviseOptions(options);
 			this._status = {
-				grabOutside : false,
-				curHammer : null,
-				moveDistance : null,
-				animating : null,
-				interrupted : this.options.interruptable
+				grabOutside : false,	// check whether user's action started on outside
+				curHammer : null,		// current hammer instance
+				moveDistance : null,	// a position of the first user's action
+				animating : null,		// animation infomation
+				interrupted : false		//  check whether the animation event was interrupted
 			};
 			this._hammers = {};
 			this._pos = [ this.options.min[0], this.options.min[1] ];
@@ -1214,6 +1210,8 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		 * @param {Number} [options.scale.1=1] y-scale <ko>y축 배율</ko>
 		 * @param {Number} [options.thresholdAngle=45] The threshold angle about direction which range is 0~90 <ko>방향에 대한 임계각 (0~90)</ko>
 		 * @param {Number} [options.maximumSpeed=Infinity] The maximum speed. <ko>최대 좌표 변환 속도 (px/ms)</ko>
+		 * @param {Number} [options.interruptable=true] interruptable This value can be enabled to interrupt cycle of the animation event. <ko>이 값이  true이면, 애니메이션의 이벤트 사이클을 중단할수 있다.</ko>
+
 		 * @return {Boolean}
 		 */
 		bind : function(el, options) {
@@ -1223,7 +1221,8 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 					direction : ns.DIRECTION_ALL,
 					scale : [ 1, 1 ],
 					thresholdAngle : 45,
-					maximumSpeed : Infinity
+					maximumSpeed : Infinity,
+					interruptable : true
 				};
 			$.extend(subOptions, options);
 
@@ -1320,11 +1319,10 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 
 		// panstart event handler
 		_panstart : function(e) {
-			if(!this.options.interruptable && this._status.interrupted) {
+			if(!this._subOptions.interruptable && this._status.interrupted) {
 				return;
 			}
-			!this.options.interruptable && (this._status.interrupted = true);
-
+			!this._subOptions.interruptable && (this._status.interrupted = true);
 			var pos = this._pos;
 			this._grab();
 			/**
@@ -1387,14 +1385,12 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				e.srcEvent.stopPropagation();
 			}
 			e.preventSystemEvent = prevent;
-			pos = [ this._status.moveDistance[0], this._status.moveDistance[1] ];
+			pos[0] = this._status.moveDistance[0], pos[1] = this._status.moveDistance[1];
 			pos = this._getCircularPos(pos, min, max);
-
 			// from outside to inside
 			if (this._status.grabOutside && !this._isOutside(pos, min, max)) {
 				this._status.grabOutside = false;
 			}
-
 			// when move pointer is holded outside
 			if (this._status.grabOutside) {
 				tn = min[0]-out[3], tx = max[0]+out[1], tv = pos[0];
@@ -1446,7 +1442,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 
 		_isInterrupting : function() {
 			// when interruptable is 'true', return value is always 'true'.
-			return this.options.interruptable ? true : this._status.interrupted;
+			return this._subOptions.interruptable || this._status.interrupted;
 		},
 
 		// get user's direction
@@ -1571,7 +1567,6 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				isCircular = this._isCircular(circular, destPos, min, max),
 				animationParam;
 			this._isOutToOut(pos, destPos, min, max) && (destPos = pos);
-
 			duration = duration || Math.min( Infinity,
 				this._getDurationFromPos( [ Math.abs(destPos[0]-pos[0]), Math.abs(destPos[1]-pos[1]) ] ) );
 
@@ -1584,7 +1579,9 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 					callback && callback();
 				}, this);
 
-			if (!duration) { return done(false); }
+			if (!duration) {
+				return done(false);
+			}
 
 			// prepare animation parameters
 			animationParam = {
@@ -1861,7 +1858,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				panelEffect : $.easing.easeOutQuint, // $.easing function for panel change animation
 				defaultIndex : 0			// initial panel index to be shown
 			}, options);
-
 			var padding = this.options.previewPadding,
 				supportHint = window.CSS && window.CSS.supports && window.CSS.supports("will-change", "transform");
 
@@ -1897,9 +1893,10 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				dirData : []
 			};
 
-			$.each([ [ "RIGHT", "LEFT" ], [ "DOWN", "UP" ] ][ +!this.options.horizontal ], $.proxy(function(v) {
+
+			$([[ "RIGHT", "LEFT" ], [ "DOWN", "UP" ]][ +!this.options.horizontal ]).each( $.proxy( function(i,v) {
 				this._conf.dirData.push(ns[ "DIRECTION_"+ v ]);
-			},this));
+			}, this ) );
 
 			this._build();
 			this._bindEvents();
@@ -1956,7 +1953,8 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			}).bind(this._wrapper, {
 				scale : this._getDataByDirection( [ -1, 0 ] ),
 				direction : ns[ "DIRECTION_"+ ( horizontal ? "HORIZONTAL" : "VERTICAL" ) ],
-				maximumSpeed : options.duration
+				maximumSpeed : options.duration,
+				interruptable : false
 			});
 
 			this._setDefaultPanel(options.defaultIndex);
@@ -2150,7 +2148,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 */
 		_changeHandler : function(e) {
 			var pos = e.pos;
-
 			this._setPointerEvents(e);  // for "click" bug
 
 			/**
