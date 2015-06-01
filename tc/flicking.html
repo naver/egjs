@@ -1,0 +1,377 @@
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
+<title>Flicking - QA</title>
+<style>
+body {font-family:'Noto Sans',sans-serif}
+
+.flick{width:100%;height:50px;background-color:grey}
+.eg-flick-container > div { height:100%;float:left;display:block }
+.eg-flick-panel p {margin:0;font-size:2.0em;text-align:center}
+
+.vertical{height:130px}
+.vertical p{font-size:2.3em;margin-top:36px}
+
+button{
+    border-radius: 30px;
+    padding: 0 10px;
+	  margin: 5px;
+    height: 30px;
+    font-size: 15px;
+    font-weight: bold;
+    border: black 3px solid;
+}
+
+.log{border:solid 1px #000; }
+#log1{padding:5px;height:25px;}
+#log2{height:130px;overflow-y:scroll;}
+.red{color:red}
+</style>
+<script src="../bower_components/jquery/jquery.js"></script>
+<script src="../bower_components/jquery.easing/js/jquery.easing.js"></script>
+<script src="../bower_components/hammer.js/hammer.js"></script>
+<script src="../src/module.js"></script>
+<script src="../src/eg.js"></script>
+<script src="../src/customEvent/persist.js"></script>
+<script src="../src/customEvent/rotate.js"></script>
+<script src="../src/customEvent/scrollEnd.js"></script>
+<script src="../src/hook/css.js"></script>
+<script src="../src/class.js"></script>
+<script src="../src/component.js"></script>
+<script src="../src/movableCoord.js"></script>
+<script src="../src/flicking.js"></script>
+</head>
+<body>
+		▪ <a href="/collection/ArxyLK/" target="_top">Checkout more Flicking demos in action!</a>
+
+	<h1>Full variation of flicking demo</h1>
+
+	<h2>A. Horizontal direction</h2>
+
+1) Non-Circular :
+<div id="mflick1" class="flick">
+	<div style="background-color:#CC66CC">
+		<p>Layer 0</p>
+	</div>
+	<div style="background-color:#66cccc">
+		<p>Layer 1</p>
+	</div>
+	<div style="background-color:#ffc000">
+		<p>Layer 2</p>
+	</div>
+</div><br>
+
+2) Circular :
+<div id="mflick2" class="flick">
+	<div id="item1" style="background-color:#CC66CC">
+		<p>Layer 0</p>
+	</div>
+	<div id="item2" style="background-color:#66cccc">
+		<p>Layer 1</p>
+	</div>
+	<div id="item3" style="background-color:#ffc000">
+		<p>Layer 2</p>
+	</div>
+</div><br>
+
+<div id="mflick2-1" class="flick">
+	<div style="background-color:#CC66CC">
+		<p>Layer 0</p>
+	</div>
+</div><br>
+
+3) Preview & circular :
+<div id="mflick3" class="flick">
+	<div class="p0" style="background-color:#CC66CC">
+		<p>Layer 0</p>
+	</div>
+	<div class="p1" style="background-color:#66cccc">
+		<p>Layer 1</p>
+	</div>
+	<div class="p2" style="background-color:#ffc000">
+		<p>Layer 2</p>
+	</div>
+	<div class="p3" style="background-color:green">
+		<p>Layer 3</p>
+	</div>
+	<div class="p4" style="background-color:maroon">
+		<p>Layer 4</p>
+	</div>
+</div><br>
+
+<div id="mflick3-1" class="flick">
+	<div style="background-color:#CC66CC">
+		<p>Layer 0</p>
+	</div>
+	<div style="background-color:#66cccc">
+		<p>Layer 1</p>
+	</div>
+	<div style="background-color:green">
+		<p>Layer 2</p>
+	</div>
+	<div style="background-color:maroon">
+		<p>Layer 3</p>
+	</div>
+	<div style="background-color:#ffc000">
+		<p>Layer 4</p>
+	</div>
+	<div style="background-color:red">
+		<p>Layer 5</p>
+	</div>
+</div>
+
+	<hr style="margin-top:50px;margin-bottom:50px;width:90%">
+
+	<h2>B. Vertical direction</h2>
+
+1) Non-Circular :
+<div id="vflick1" class="flick vertical">
+	<div style="background-color:#CC66CC">
+		<p>Layer 0</p>
+	</div>
+	<div style="background-color:#66cccc">
+		<p>Layer 1</p>
+	</div>
+	<div style="background-color:#ffc000">
+		<p>Layer 2</p>
+	</div>
+</div><br>
+
+2) Circular :
+<div id="vflick2" class="flick vertical">
+	<div style="background-color:#CC66CC">
+		<p>Layer 0</p>
+	</div>
+	<div style="background-color:#66cccc">
+		<p>Layer 1</p>
+	</div>
+	<div style="background-color:#ffc000">
+		<p>Layer 2</p>
+	</div>
+</div><br>
+
+<div id="vflick2-1" class="flick vertical">
+	<div style="background-color:#CC66CC">
+		<p>Layer 0</p>
+	</div>
+</div><br>
+
+3) Preview & circular :
+<div id="vflick3" class="flick vertical">
+	<div class="p0" style="background-color:#CC66CC">
+		<p>Layer 0</p>
+	</div>
+	<div class="p1" style="background-color:#66cccc">
+		<p>Layer 1</p>
+	</div>
+	<div class="p2" style="background-color:#ffc000">
+		<p>Layer 2</p>
+	</div>
+	<div class="p3" style="background-color:green">
+		<p>Layer 3</p>
+	</div>
+	<div class="p4" style="background-color:maroon">
+		<p>Layer 4</p>
+	</div>
+</div><br>
+
+<div id="vflick3-1" class="flick vertical">
+	<div style="background-color:#CC66CC">
+		<p>Layer 0</p>
+	</div>
+	<div style="background-color:#66cccc">
+		<p>Layer 1</p>
+	</div>
+	<div style="background-color:green">
+		<p>Layer 2</p>
+	</div>
+	<div style="background-color:maroon">
+		<p>Layer 3</p>
+	</div>
+	<div style="background-color:#ffc000">
+		<p>Layer 4</p>
+	</div>
+	<div style="background-color:red">
+		<p>Layer 5</p>
+	</div>
+</div>
+
+<hr style="margin-top:50px;margin-bottom:50px;width:90%">
+
+<h2>C. Using Methods / Custom Events</h2>
+
+<div id="mflick5" class="flick">
+	<div style="background-color:#CC66CC">
+		<p>Layer 0</p>
+	</div>
+	<div style="background-color:#66cccc">
+		<p>Layer 1</p>
+	</div>
+	<div style="background-color:green">
+		<p>Layer 2</p>
+	</div>
+	<div style="background-color:maroon">
+		<p>Layer 3</p>
+	</div>
+	<div style="background-color:#ffc000">
+		<p>Layer 4</p>
+	</div>
+	<div style="background-color:red">
+		<p>Layer 5</p>
+  </div>
+</div><br>
+
+	<h4>1) Methods :</h4>
+	<p>
+		<button onclick="f5.prev()">prev()</button> <button onclick="f5.next()">next()</button> /
+
+		<input type="number" id="panel_no" style="width:50px"  min=0 value=0>
+		<button onclick="f5.moveTo(~~$('#panel_no').val())">moveTo(num)</button>
+	</p>
+	<p>
+		<button onclick='methodLog(this,f5.getIndex())'>getIndex()</button>
+		<button onclick='methodLog(this,f5.getIndex(true))'>getIndex(physical)</button>
+
+		<button onclick='methodLog(this,f5.getElement())'>getElement()</button>
+		<button onclick='methodLog(this,f5.getNextElement())'>getNextElement()</button>
+		<button onclick='methodLog(this,f5.getNextElement())'>getNextIndex()</button>
+		<button onclick='methodLog(this,f5.getNextElement(true))'>getNextIndex(physical)</button>
+		<button onclick='methodLog(this,f5.getAllElements())'>getAllElements()</button>
+		<button onclick='methodLog(this,f5.getPrevElement())'>getPrevElement()</button>
+		<button onclick='methodLog(this,f5.getPrevIndex())'>getPrevIndex()</button>
+		<button onclick='methodLog(this,f5.getPrevIndex(true))'>getPrevIndex(physical)</button>
+		<button onclick='methodLog(this,f5.getTotalCount())'>getTotalCount()</button>
+		<button onclick='methodLog(this,f5.getTotalCount(true))'>getTotalCount(physical)</button>
+		<button onclick='methodLog(this,f5.isPlaying())'>isPlaying()</button>
+		<button onclick='f5.resize()'>resize()</button>
+	</p>
+
+	<div id="log1" class='log'></div>
+
+	<h4>2) Custom Events Log :</h4>
+	<div id='log2' class='log'></div>
+	<button onclick=elLog2.html('') style='margin-top:10px;width:200px'>clear log</button>
+<script>
+// Horizontal direction flicking
+var f1 = new eg.Flicking("#mflick1", {
+	duration : 300,
+	hwAccelerable : false,
+	threshold : 70
+});
+
+var f2 = new eg.Flicking($("#mflick2"), {
+	duration : 300,
+	circular : true,
+	defaultIndex : 1
+});
+
+var f2a = new eg.Flicking($("#mflick2-1"), {
+	duration : 300,
+	circular : true
+});
+
+var f3 = new eg.Flicking($("#mflick3"), {
+	duration : 300,
+	circular : true,
+	previewPadding : [ 40, 70 ],
+	defaultIndex : 3
+});
+
+var f3a = new eg.Flicking($("#mflick3-1"), {
+	duration : 300,
+	circular : true,
+	previewPadding : 80
+});
+
+// Vertical direction flicking
+var vf1 = new eg.Flicking("#vflick1", {
+	duration : 300,
+	hwAccelerable : false,
+	threshold : 30,
+	horizontal : false
+});
+
+var vf2 = new eg.Flicking($("#vflick2"), {
+	duration : 300,
+	circular : true,
+	defaultIndex : 1,
+	circular : true,
+	horizontal : false
+});
+
+var vf2a = new eg.Flicking($("#vflick2-1"), {
+	duration : 300,
+	circular : true,
+	horizontal : false
+});
+
+var vf3 = new eg.Flicking($("#vflick3"), {
+	duration : 300,
+	circular : true,
+	previewPadding : [ 20, 10 ],
+	horizontal : false,
+	defaultIndex : 3
+});
+
+var vf3a = new eg.Flicking($("#vflick3-1"), {
+	duration : 300
+	//,defaultIndex : 2
+	,circular : true,
+	previewPadding : 10,
+	horizontal : false
+});
+
+var elLog1 = $("#log1"), elLog2 = $('#log2'), i = 1;
+
+function methodLog(el, v) {
+	var arr = [];
+
+	if(typeof v == "object") {
+		v.each(function(i) { arr.push($(this).find("p").html()); })
+	} else {
+		arr = [ v ];
+	}
+
+	elLog1.html(el.innerHTML +" ==> "+ arr.join(", "));
+}
+
+function getDirection(dir) {
+	console.log(dir);
+	switch(dir) {
+		case eg.DIRECTION_RIGHT :
+			return "→";
+		case eg.DIRECTION_LEFT :
+			return "←";
+		case eg.DIRECTION_UP :
+			return "↑";
+		case eg.DIRECTION_DOWN :
+			return "↓";
+	}
+}
+
+function log(e) {
+	var direction = getDirection(e.direction),
+	     msg = [ i++, "<span class=red>"+ e.eventType +"</span>", direction, e.no ].join(" : ");
+
+	elLog2.html( msg +"<br>" + elLog2.html());
+}
+
+var f5 = new eg.Flicking($("#mflick5"), {
+	duration : 0,
+	threshold : 50,
+	circular : true
+}).on({
+	touchStart : log,
+	touchMove : log,
+	touchEnd : log,
+	flickStart : log,
+  flick : log,
+	flickEnd : log,
+	flickStart : log,
+	beforeRestore : log,
+	restore : log
+});
+</script>
+</body>
+</html>

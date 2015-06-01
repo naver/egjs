@@ -69,7 +69,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				panelEffect : $.easing.easeOutQuint, // $.easing function for panel change animation
 				defaultIndex : 0			// initial panel index to be shown
 			}, options);
-
 			var padding = this.options.previewPadding,
 				supportHint = window.CSS && window.CSS.supports && window.CSS.supports("will-change", "transform");
 
@@ -105,9 +104,10 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				dirData : []
 			};
 
-			$.each([ [ "RIGHT", "LEFT" ], [ "DOWN", "UP" ] ][ +!this.options.horizontal ], $.proxy(function(v) {
+
+			$([[ "RIGHT", "LEFT" ], [ "DOWN", "UP" ]][ +!this.options.horizontal ]).each( $.proxy( function(i,v) {
 				this._conf.dirData.push(ns[ "DIRECTION_"+ v ]);
-			},this));
+			}, this ) );
 
 			this._build();
 			this._bindEvents();
@@ -164,7 +164,8 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			}).bind(this._wrapper, {
 				scale : this._getDataByDirection( [ -1, 0 ] ),
 				direction : ns[ "DIRECTION_"+ ( horizontal ? "HORIZONTAL" : "VERTICAL" ) ],
-				maximumSpeed : options.duration
+				maximumSpeed : options.duration,
+				interruptable : false
 			});
 
 			this._setDefaultPanel(options.defaultIndex);
@@ -358,7 +359,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 */
 		_changeHandler : function(e) {
 			var pos = e.pos;
-
 			this._setPointerEvents(e);  // for "click" bug
 
 			/**

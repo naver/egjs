@@ -5,5 +5,9 @@ sample/
 report
 temp
 *.log
+*.iml
 doc
-sample/
+.idea/
+dist/evergreen.js
+dist/evergreen.min.js
+
