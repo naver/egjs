@@ -400,7 +400,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 					destPos : destPos,
 					hammerEvent : e || {}
 				};
-			if (!isBounce) {
+			if (!isBounce && e) {	// check whether user's action
 				/**
 				 * When an area was released
 				 * @ko 스크린에서 사용자가 손을 떼었을 때
