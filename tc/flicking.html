@@ -3,10 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
 <title>Flicking - QA</title>
-<link href='http://fonts.googleapis.com/css?family=Noto+Sans' rel='stylesheet' type='text/css'>
 <style>
-body {font-family:'Noto Sans',sans-serif}
-
 .flick{height:50px;background-color:grey}
 .eg-flick-container > div { height:100%;float:left;display:block }
 .eg-flick-panel p {margin:0;font-size:2.0em;text-align:center}
@@ -17,16 +14,16 @@ body {font-family:'Noto Sans',sans-serif}
 button{
     border-radius: 30px;
     padding: 0 10px;
-	  margin: 5px;
+	margin: 5px;
     height: 30px;
     font-size: 15px;
     font-weight: bold;
     border: black 3px solid;
 }
 
-.log{border:solid 1px #000; }
+.log{border:solid 1px #000 }
 #log1{padding:5px;height:25px;}
-#log2{height:130px;overflow-y:scroll;}
+#log2{width:99%;height:130px}
 .red{color:red}
 </style>
 <script src="../bower_components/jquery/jquery.js"></script>
@@ -223,7 +220,8 @@ button{
   </div>
 </div><br>
 
-	<h4>1) Methods :</h4>
+<h4>1) Methods : <button onclick="$('#methods').toggle();">+</button></h4>
+<div id="methods">
 	<p>
 		<button onclick="f5.prev()">prev()</button> <button onclick="f5.next()">next()</button> /
 
@@ -249,10 +247,13 @@ button{
 	</p>
 
 	<div id="log1" class='log'></div>
-
+</div>
+<div id="custom_events">
 	<h4>2) Custom Events Log :</h4>
-	<div id='log2' class='log'></div>
+	<textarea id='log2' class='log'></textarea>
 	<button onclick=elLog2.html('') style='margin-top:10px;width:200px'>clear log</button>
+</div>
+
 <script>
 // Horizontal direction flicking
 var f1 = new eg.Flicking("#mflick1", {
@@ -338,7 +339,6 @@ function methodLog(el, v) {
 }
 
 function getDirection(dir) {
-	console.log(dir);
 	switch(dir) {
 		case eg.DIRECTION_RIGHT :
 			return "→";
@@ -353,9 +353,9 @@ function getDirection(dir) {
 
 function log(e) {
 	var direction = getDirection(e.direction),
-	     msg = [ i++, "<span class=red>"+ e.eventType +"</span>", direction, e.no ].join(" : ");
+	     msg = [ i++, e.eventType, direction, e.no ].join(" : ");
 
-	elLog2.html( msg +"<br>" + elLog2.html());
+	elLog2.text( msg +"\n" + elLog2.text());
 }
 
 var f5 = new eg.Flicking($("#mflick5"), {
@@ -367,7 +367,7 @@ var f5 = new eg.Flicking($("#mflick5"), {
 	touchMove : log,
 	touchEnd : log,
 	flickStart : log,
-  flick : log,
+  	flick : log,
 	flickEnd : log,
 	flickStart : log,
 	beforeRestore : log,
