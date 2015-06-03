@@ -451,7 +451,7 @@ eg.cancelAnimationFrame(timerId);
 
 });
 
-eg.module("persist",[jQuery, window, document],function($, global, doc){
+eg.module("persist", [jQuery, window, document], function($, global, doc){
 /**
 	* Support persist event in jQuery
 	* @ko jQuery custom persist 이벤트 지원
@@ -469,19 +469,16 @@ eg.module("persist",[jQuery, window, document],function($, global, doc){
 			document.scrollTo(e.state.scrollTop);
 	});
 	*/
-	var history = global.history;
-	var location = global.location;
-	var hasReplaceState = "replaceState" in history;
-
+	var history = global.history,
+	location = global.location,
+	hasReplaceState = "replaceState" in history,
+	hasStateProperty = "state" in history;
+	
 	function onPageshow(e) {
-		if (isPersisted(e.originalEvent)) {
-			reset();
+		if(!isPersisted(e.originalEvent) && isBackForwardNavigated()) {
+			$(global).trigger("persist");
 		} else {
-			if (isBackForwardNavigated() && history.state) {
-				$(global).trigger("persist");
-			} else {
-				reset();
-			}
+			reset();
 		}
 	}
 	/*
@@ -497,14 +494,14 @@ eg.module("persist",[jQuery, window, document],function($, global, doc){
 
 	function isBackForwardNavigated() {
 		var wp = global.performance;
-		return !(wp && wp.navigation && (wp.navigation.type === wp.navigation.TYPE_NAVIGATE || wp.navigation.type === wp.navigation.TYPE_RELOAD));
+		return (wp && wp.navigation && (wp.navigation.type === wp.navigation.TYPE_BACK_FORWARD));
 	}
 	/*
 	 * flush current history state
 	 */
 
 	function reset() {
-		hasReplaceState && history.replaceState(null, doc.title, location.href);
+		history.replaceState(null, doc.title, location.href);
 	}
 
 	function clone(state) {
@@ -531,23 +528,27 @@ eg.module("persist",[jQuery, window, document],function($, global, doc){
 		location.href = this.attr("href");
 	});
 	*/
-	$.persist = function(state) {
-		if (hasReplaceState && state) {
-			history.replaceState(state, doc.title, location.href);
-		}
-		return clone(history.state);
-	};
-	$.event.special.persist = {
-		setup: function() {
-			$(global).on("pageshow", onPageshow);
-		},
-		teardown: function() {
-			$(global).off("pageshow", onPageshow);
-		},
-		trigger: function(e) {
-			e.state = clone(history.state);
-		}
-	};
+	if(hasReplaceState && hasStateProperty) {
+		$.persist = function(state) {
+			if(state) {
+				history.replaceState(state, doc.title, location.href);
+			}
+			return clone(history.state);		
+		};
+		$.event.special.persist = {
+			setup: function() {
+				$(global).on("pageshow", onPageshow);
+			},
+			teardown: function() {
+				$(global).off("pageshow", onPageshow);
+			},
+			trigger: function(e) {
+				e.state = clone(history.state);
+			}
+		};			
+	} else {
+		$.persist = function() {};
+	}
 	
 	return {
 		"isPersisted": isPersisted,
@@ -1303,6 +1304,8 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			if (circular[3] && pos[0] < min[0]) { // left
 				pos[0] = (pos[0] - min[0]) % (max[0] - min[0] + 1) + max[0];
 			}
+			pos[0] = +pos[0].toFixed(5), pos[1] = +pos[1].toFixed(5);
+
 			return pos;
 		},
 
@@ -1641,15 +1644,17 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		// animation frame (0~1)
 		_frame : function(param) {
 			var curTime = new Date() - param.startTime,
-				per = Math.min(1, curTime / param.duration),
 				easingPer = this.options.easing(null, curTime, 0, 1, param.duration),
 				pos = [ param.depaPos[0], param.depaPos[1] ];
+			easingPer = easingPer >= 1 ? 1 : easingPer;
+
+
 			for (var i = 0; i <2 ; i++) {
 			    (pos[i] !== param.destPos[i]) && (pos[i] += (param.destPos[i] - pos[i]) * easingPer);
 			}
 			pos = this._getCircularPos(pos);
 			this._triggerChange(pos, false);
-			return per;
+			return easingPer;
 		},
 
 		// set up 'css' expression
@@ -1900,7 +1905,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				dirData : []
 			};
 
-			$([[ "RIGHT", "LEFT" ], [ "DOWN", "UP" ]][ +!this.options.horizontal ]).each( $.proxy( function(i,v) {
+			$([[ "LEFT", "RIGHT" ], [ "DOWN", "UP" ]][ +!this.options.horizontal ]).each( $.proxy( function(i,v) {
 				this._conf.dirData.push(ns[ "DIRECTION_"+ v ]);
 			}, this ) );
 
@@ -2199,13 +2204,13 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				pos = e.destPos,
 				posIndex = +!this.options.horizontal,
 				holdPos = touch.holdPos[posIndex],
-				panelWidth = this._conf.panel.size;
+				panelSize = this._conf.panel.size;
 
 			touch.distance = e.depaPos[posIndex] - touch.holdPos[posIndex];
 			touch.direction = this._conf.dirData[ +!Boolean(touch.holdPos[posIndex] < e.depaPos[posIndex]) ];
 
-			pos[posIndex] = Math.max(holdPos - panelWidth, Math.min(holdPos + panelWidth, pos[posIndex]));
-			touch.destPos[posIndex] = pos[posIndex] = Math.round(pos[posIndex] / panelWidth) * panelWidth;
+			pos[posIndex] = Math.max(holdPos - panelSize, Math.min(holdPos, pos[posIndex]));
+			touch.destPos[posIndex] = pos[posIndex] = Math.round(pos[posIndex] / panelSize) * panelSize;
 
 			/**
 			 * When touch ends
@@ -2239,12 +2244,16 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		_animationStartHandler : function(e) {
 			var panel = this._conf.panel,
 				direction = this._conf.touch.direction,
-				dirData = this._conf.dirData;
+				dirData = this._conf.dirData,
+				movable = this._isMovable();
 
 			panel.animating = true;
 			e.duration = this.options.duration;
 
-			if(this._isMovable()) {
+			movable && (panel.index += direction === dirData[0] ? 1 : -1);
+			e.destPos[ +!this.options.horizontal ] = panel.size * panel.index;
+
+			if(movable) {
 				/**
 				 * Before panel changes
 				 * @ko 플리킹이 시작되기 전에 발생하는 이벤트
@@ -2267,9 +2276,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 					depaPos : e.depaPos,
 					destPos : e.destPos
 				});
-
-				panel.index += direction === dirData[0] ? 1 : -1;
-				e.destPos[ +!this.options.horizontal ] = panel.size * panel.index;
 
 				this._setPanelNo(true);
 				panel.changed = true;
