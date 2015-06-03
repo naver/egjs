@@ -23,14 +23,10 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 	hasStateProperty = "state" in history;
 	
 	function onPageshow(e) {
-		if (isPersisted(e.originalEvent)) {
-			reset();
+		if(!isPersisted(e.originalEvent) && isBackForwardNavigated()) {
+			$(global).trigger("persist");
 		} else {
-			if (isBackForwardNavigated()) {
-				$(global).trigger("persist");
-			} else {
-				reset();
-			}
+			reset();
 		}
 	}
 	/*
