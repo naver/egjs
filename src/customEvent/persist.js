@@ -53,7 +53,7 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 	 */
 
 	function reset() {
-		hasReplaceState && history.replaceState(null, doc.title, location.href);
+		history.replaceState(null, doc.title, location.href);
 	}
 
 	function clone(state) {
