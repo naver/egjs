@@ -105,7 +105,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				dirData : []
 			};
 
-			$([[ "RIGHT", "LEFT" ], [ "DOWN", "UP" ]][ +!this.options.horizontal ]).each( $.proxy( function(i,v) {
+			$([[ "LEFT", "RIGHT" ], [ "DOWN", "UP" ]][ +!this.options.horizontal ]).each( $.proxy( function(i,v) {
 				this._conf.dirData.push(ns[ "DIRECTION_"+ v ]);
 			}, this ) );
 
@@ -404,13 +404,13 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				pos = e.destPos,
 				posIndex = +!this.options.horizontal,
 				holdPos = touch.holdPos[posIndex],
-				panelWidth = this._conf.panel.size;
+				panelSize = this._conf.panel.size;
 
 			touch.distance = e.depaPos[posIndex] - touch.holdPos[posIndex];
 			touch.direction = this._conf.dirData[ +!Boolean(touch.holdPos[posIndex] < e.depaPos[posIndex]) ];
 
-			pos[posIndex] = Math.max(holdPos - panelWidth, Math.min(holdPos + panelWidth, pos[posIndex]));
-			touch.destPos[posIndex] = pos[posIndex] = Math.round(pos[posIndex] / panelWidth) * panelWidth;
+			pos[posIndex] = Math.max(holdPos - panelSize, Math.min(holdPos, pos[posIndex]));
+			touch.destPos[posIndex] = pos[posIndex] = Math.round(pos[posIndex] / panelSize) * panelSize;
 
 			/**
 			 * When touch ends
@@ -444,12 +444,16 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		_animationStartHandler : function(e) {
 			var panel = this._conf.panel,
 				direction = this._conf.touch.direction,
-				dirData = this._conf.dirData;
+				dirData = this._conf.dirData,
+				movable = this._isMovable();
 
 			panel.animating = true;
 			e.duration = this.options.duration;
 
-			if(this._isMovable()) {
+			movable && (panel.index += direction === dirData[0] ? 1 : -1);
+			e.destPos[ +!this.options.horizontal ] = panel.size * panel.index;
+
+			if(movable) {
 				/**
 				 * Before panel changes
 				 * @ko 플리킹이 시작되기 전에 발생하는 이벤트
@@ -472,9 +476,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 					depaPos : e.depaPos,
 					destPos : e.destPos
 				});
-
-				panel.index += direction === dirData[0] ? 1 : -1;
-				e.destPos[ +!this.options.horizontal ] = panel.size * panel.index;
 
 				this._setPanelNo(true);
 				panel.changed = true;
