@@ -1,4 +1,4 @@
-eg.module("persist",[jQuery, window, document],function($, global, doc){
+eg.module("persist", [jQuery, window, document], function($, global, doc){
 	"use strict";
 	/**
 	* Support persist event in jQuery
@@ -17,15 +17,16 @@ eg.module("persist",[jQuery, window, document],function($, global, doc){
 			document.scrollTo(e.state.scrollTop);
 	});
 	*/
-	var history = global.history;
-	var location = global.location;
-	var hasReplaceState = "replaceState" in history;
-
+	var history = global.history,
+	location = global.location,
+	hasReplaceState = "replaceState" in history,
+	hasStateProperty = "state" in history;
+	
 	function onPageshow(e) {
 		if (isPersisted(e.originalEvent)) {
 			reset();
 		} else {
-			if (isBackForwardNavigated() && history.state) {
+			if (isBackForwardNavigated() && hasStateProperty) {
 				$(global).trigger("persist");
 			} else {
 				reset();
@@ -45,7 +46,7 @@ eg.module("persist",[jQuery, window, document],function($, global, doc){
 
 	function isBackForwardNavigated() {
 		var wp = global.performance;
-		return !(wp && wp.navigation && (wp.navigation.type === wp.navigation.TYPE_NAVIGATE || wp.navigation.type === wp.navigation.TYPE_RELOAD));
+		return (wp && wp.navigation && (wp.navigation.type === wp.navigation.TYPE_BACK_FORWARD));
 	}
 	/*
 	 * flush current history state
@@ -80,7 +81,7 @@ eg.module("persist",[jQuery, window, document],function($, global, doc){
 	});
 	*/
 	$.persist = function(state) {
-		if (hasReplaceState && state) {
+		if (hasReplaceState && hasStateProperty && state) {
 			history.replaceState(state, doc.title, location.href);
 		}
 		return clone(history.state);
