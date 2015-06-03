@@ -26,7 +26,7 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 		if (isPersisted(e.originalEvent)) {
 			reset();
 		} else {
-			if (isBackForwardNavigated() && hasStateProperty) {
+			if (isBackForwardNavigated()) {
 				$(global).trigger("persist");
 			} else {
 				reset();
@@ -80,23 +80,27 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 		location.href = this.attr("href");
 	});
 	*/
-	$.persist = function(state) {
-		if (hasReplaceState && hasStateProperty && state) {
-			history.replaceState(state, doc.title, location.href);
-		}
-		return clone(history.state);
-	};
-	$.event.special.persist = {
-		setup: function() {
-			$(global).on("pageshow", onPageshow);
-		},
-		teardown: function() {
-			$(global).off("pageshow", onPageshow);
-		},
-		trigger: function(e) {
-			e.state = clone(history.state);
-		}
-	};
+	if(hasReplaceState && hasStateProperty) {
+		$.persist = function(state) {
+			if(state) {
+				history.replaceState(state, doc.title, location.href);
+			}
+			return clone(history.state);		
+		};
+		$.event.special.persist = {
+			setup: function() {
+				$(global).on("pageshow", onPageshow);
+			},
+			teardown: function() {
+				$(global).off("pageshow", onPageshow);
+			},
+			trigger: function(e) {
+				e.state = clone(history.state);
+			}
+		};			
+	} else {
+		$.persist = function() {};
+	}
 	
 	return {
 		"isPersisted": isPersisted,
