@@ -299,6 +299,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			// console.log(e.velocityX, e.velocityY, e.deltaX, e.deltaY);
 			!(direction & ns.DIRECTION_HORIZONTAL) && (vX = 0);
 			!(direction & ns.DIRECTION_VERTICAL) && (vY = 0);
+
 			this._animateBy(
 				this._getNextOffsetPos( [
 					vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
@@ -433,10 +434,10 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				circular = this.options.circular,
 				destPos = param.destPos,
 				isCircular = this._isCircular(circular, destPos, min, max),
-				animationParam;
+				animationParam, distance;
 			this._isOutToOut(pos, destPos, min, max) && (destPos = pos);
-			duration = duration || Math.min( Infinity,
-				this._getDurationFromPos( [ Math.abs(destPos[0]-pos[0]), Math.abs(destPos[1]-pos[1]) ] ) );
+			distance = [ Math.abs(destPos[0]-pos[0]), Math.abs(destPos[1]-pos[1]) ];
+			duration = duration || Math.min( Infinity, this._getDurationFromPos(distance) );
 
 			var	done = $.proxy(function(isNext) {
 					this._status.animating = null;
@@ -447,8 +448,8 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 					callback && callback();
 				}, this);
 
-			if (!duration) {
-				return done(false);
+			if (distance[0] === 0 && distance[1] === 0) {
+				return done(!isBounce);
 			}
 
 			// prepare animation parameters
@@ -489,14 +490,19 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			this._status.animating = animationParam;
 
 			if (retTrigger) {
-				// console.error("depaPos", pos, "depaPos",destPos, "duration", duration, "ms");
-				var info = this._status.animating,
-					self = this;
-				(function loop() {
-					self._raf=null;
-					if (self._frame(info) >= 1) { return done(true); } // animationEnd
-					self._raf = ns.requestAnimationFrame(loop);
-				})();
+				if(duration) {
+					// console.error("depaPos", pos, "depaPos",destPos, "duration", duration, "ms");
+					var info = this._status.animating,
+						self = this;
+					(function loop() {
+						self._raf=null;
+						if (self._frame(info) >= 1) { return done(true); } // animationEnd
+						self._raf = ns.requestAnimationFrame(loop);
+					})();
+				} else {
+					this._triggerChange(animationParam.destPos, false);
+					this.trigger("animationEnd");
+				}
 			}
 		},
 

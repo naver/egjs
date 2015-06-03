@@ -39,7 +39,7 @@
 <script src="../src/movableCoord.js"></script>
 </head>
 <body>
-	<div id="content">
+  <div id="content">
     <div class="block" style="left:0px; top: 0px;"></div>
     <div class="block" style="left:0px; top: 100px;"></div>
     <div class="block" style="left:0px; top: 200px;"></div>
@@ -63,7 +63,17 @@ var inst = new eg.MovableCoord({
   bounce : 20,
   deceleration : 0.0024
 }).on({
+  "animationStart" : function(evt) {
+    console.warn("animationStart", evt.duration, evt.isBounce);
+  },
+  "animationEnd" : function(evt) {
+    console.warn("animationEnd");
+  },
+  "hold" : function(evt) {
+    console.warn("hold", evt.pos);
+  },
   "release" : function(evt) {
+    console.warn("release");
     var horz = Math.round(evt.destPos[0] / 100);
     var vert = Math.round(evt.destPos[1] / 100);
     var more = mores[vert] || 0;
@@ -79,7 +89,8 @@ var inst = new eg.MovableCoord({
   },
   "change" : function(evt) {
     var pos = evt.pos;
-      $content.css("-webkit-transform", eg.translate(-pos[0] + 'px',-pos[1] + "px", useHW));
+    evt.holding ? console.log("change",pos) :  console.log("animation-change",pos);
+      $content.css("transform", eg.translate(-pos[0] + 'px',-pos[1] + "px", useHW));
   }
 });
 
