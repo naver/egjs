@@ -509,15 +509,15 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		// animation frame (0~1)
 		_frame : function(param) {
 			var curTime = new Date() - param.startTime,
-				per = Math.min(1, curTime / param.duration),
 				easingPer = this.options.easing(null, curTime, 0, 1, param.duration),
 				pos = [ param.depaPos[0], param.depaPos[1] ];
+			easingPer = easingPer >= 1 ? 1 : easingPer;
 			for (var i = 0; i <2 ; i++) {
 			    (pos[i] !== param.destPos[i]) && (pos[i] += (param.destPos[i] - pos[i]) * easingPer);
 			}
 			pos = this._getCircularPos(pos);
 			this._triggerChange(pos, false);
-			return per;
+			return easingPer;
 		},
 
 		// set up 'css' expression
