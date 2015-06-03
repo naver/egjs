@@ -1304,6 +1304,8 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			if (circular[3] && pos[0] < min[0]) { // left
 				pos[0] = (pos[0] - min[0]) % (max[0] - min[0] + 1) + max[0];
 			}
+			pos[0] = +pos[0].toFixed(5), pos[1] = +pos[1].toFixed(5);
+
 			return pos;
 		},
 
@@ -1645,6 +1647,8 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				easingPer = this.options.easing(null, curTime, 0, 1, param.duration),
 				pos = [ param.depaPos[0], param.depaPos[1] ];
 			easingPer = easingPer >= 1 ? 1 : easingPer;
+
+
 			for (var i = 0; i <2 ; i++) {
 			    (pos[i] !== param.destPos[i]) && (pos[i] += (param.destPos[i] - pos[i]) * easingPer);
 			}
