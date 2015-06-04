@@ -60,8 +60,8 @@ eg.module("css",[window.jQuery, document],function($, doc){
             vendorProp = vendorPrefix + upperProp;
 
         $.cssHooks[upperProp] = $.cssHooks[vendorPrefix.toLowerCase() + upperProp] = $.cssHooks[prop] = {
-            get: function( elem ){
-                return $.css( elem, vendorProp );
+            get: function( elem ,computed){
+                return computed ? $.css( elem, vendorProp.replace(/^ms/, "Ms") ) : elem.style[vendorProp];
             },
             set: function( elem, value ){
                 elem.style[vendorProp] = value;
