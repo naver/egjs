@@ -231,6 +231,32 @@ asyncTest("setTo : check events flow", function() {
 	},200);
 
 });
+
+asyncTest("setTo : check events flow when duration is '0'", function() {
+	var firedChangeEvent = false;
+	// Given
+	this.inst.on("change", function(e) {
+		firedChangeEvent = true;
+	}).on("release", function(e) {
+		ok(false, "must not fired 'release' event");
+	}).on("hold", function(e) {
+		ok(false, "must not fired 'hold' event");
+	}).on("animationStart", function(e) {
+		ok(false, "must not fired 'animationStart' event");
+	}).on("animationEnd", function(e) {
+		ok(false, "must not fired 'animationEnd' event");
+	})
+	// When
+	this.inst.setTo(200, 200, 0);
+
+	// Then
+	setTimeout(function() {
+		ok(firedChangeEvent, "fired 'change' event");
+		start();
+	},200);
+
+});
+
 test("setBy", function() {
 	// Given
 	// When
