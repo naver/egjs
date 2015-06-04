@@ -1440,7 +1440,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 					vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
 					vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
 				], this._subOptions.maximumSpeed ),
-			this._animationEnd, false, null, e);
+			this._animationEnd, false, this._subOptions.maximumSpeed, e);
 			this._status.moveDistance = null;
 		},
 
@@ -1476,7 +1476,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		},
 
 		_getNextOffsetPos : function(speeds, maximumSpeed) {
-			var normalSpeed = Math.min(maximumSpeed || Infinity, Math.sqrt(speeds[0]*speeds[0]+speeds[1]*speeds[1])),
+			var normalSpeed = Math.min(maximumSpeed, Infinity, Math.sqrt(speeds[0]*speeds[0]+speeds[1]*speeds[1])),
 				duration = Math.abs(normalSpeed / -this.options.deceleration);
 			return [
 				speeds[0]/2 * duration,
@@ -1572,8 +1572,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				animationParam, distance;
 			this._isOutToOut(pos, destPos, min, max) && (destPos = pos);
 			distance = [ Math.abs(destPos[0]-pos[0]), Math.abs(destPos[1]-pos[1]) ];
-			duration = duration || Math.min( Infinity, this._getDurationFromPos(distance) );
-
+			duration = Math.min(duration, Infinity, this._getDurationFromPos(distance) );
 			var	done = $.proxy(function(isNext) {
 					this._status.animating = null;
 					pos[0] = Math.round(destPos[0]);
@@ -1623,7 +1622,6 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			animationParam.depaPos = pos;
 			animationParam.startTime = new Date().getTime();
 			this._status.animating = animationParam;
-
 			if (retTrigger) {
 				if(duration) {
 					// console.error("depaPos", pos, "depaPos",destPos, "duration", duration, "ms");
@@ -1636,7 +1634,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 					})();
 				} else {
 					this._triggerChange(animationParam.destPos, false);
-					this.trigger("animationEnd");
+					done(!isBounce);
 				}
 			}
 		},
