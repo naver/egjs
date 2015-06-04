@@ -22,7 +22,7 @@ button{
 }
 
 .log{border:solid 1px #000 }
-#log1{padding:5px;height:25px;}
+#log1{padding:5px;height:45px;}
 #log2{width:99%;height:130px}
 .red{color:red}
 </style>
@@ -40,9 +40,7 @@ button{
 <script src="../src/movableCoord.js"></script>
 <script src="../src/flicking.js"></script>
 </head>
-<body>
-		▪ <a href="/collection/ArxyLK/" target="_top">Checkout more Flicking demos in action!</a>
-
+<body style="display:none">
 	<h1>Full variation of flicking demo</h1>
 
 	<h2>A. Horizontal direction</h2>
@@ -255,75 +253,6 @@ button{
 </div>
 
 <script>
-// Horizontal direction flicking
-var f1 = new eg.Flicking("#mflick1", {
-	duration : 300,
-	hwAccelerable : false,
-	threshold : 70
-});
-
-var f2 = new eg.Flicking($("#mflick2"), {
-	duration : 300,
-	circular : true,
-	defaultIndex : 1
-});
-
-var f2a = new eg.Flicking($("#mflick2-1"), {
-	duration : 300,
-	circular : true
-});
-
-var f3 = new eg.Flicking($("#mflick3"), {
-	duration : 300,
-	circular : true,
-	previewPadding : [ 40, 70 ],
-	defaultIndex : 3
-});
-
-var f3a = new eg.Flicking($("#mflick3-1"), {
-	duration : 300,
-	circular : true,
-	previewPadding : 80
-});
-
-// Vertical direction flicking
-var vf1 = new eg.Flicking("#vflick1", {
-	duration : 300,
-	hwAccelerable : false,
-	threshold : 30,
-	horizontal : false
-});
-
-var vf2 = new eg.Flicking($("#vflick2"), {
-	duration : 300,
-	circular : true,
-	defaultIndex : 1,
-	circular : true,
-	horizontal : false
-});
-
-var vf2a = new eg.Flicking($("#vflick2-1"), {
-	duration : 300,
-	circular : true,
-	horizontal : false
-});
-
-var vf3 = new eg.Flicking($("#vflick3"), {
-	duration : 300,
-	circular : true,
-	previewPadding : [ 20, 10 ],
-	horizontal : false,
-	defaultIndex : 3
-});
-
-var vf3a = new eg.Flicking($("#vflick3-1"), {
-	duration : 300
-	//,defaultIndex : 2
-	,circular : true,
-	previewPadding : 10,
-	horizontal : false
-});
-
 var elLog1 = $("#log1"), elLog2 = $('#log2'), i = 1;
 
 function methodLog(el, v) {
@@ -353,26 +282,99 @@ function getDirection(dir) {
 
 function log(e) {
 	var direction = getDirection(e.direction),
-	     msg = [ i++, e.eventType, direction, e.no ].join(" : ");
+		 msg = [ i++, e.eventType, direction, e.no ].join(" : ");
 
 	elLog2.text( msg +"\n" + elLog2.text());
 }
 
-var f5 = new eg.Flicking($("#mflick5"), {
-	duration : 0,
-	threshold : 50,
-	circular : true
-}).on({
-	touchStart : log,
-	touchMove : log,
-	touchEnd : log,
-	flickStart : log,
-  	flick : log,
-	flickEnd : log,
-	flickStart : log,
-	beforeRestore : log,
-	restore : log
-});
+setTimeout(function() {
+	document.body.style.display = "";
+
+	// Horizontal direction flicking
+	f1 = new eg.Flicking("#mflick1", {
+		duration : 300,
+		hwAccelerable : false,
+		threshold : 70
+	});
+
+	f2 = new eg.Flicking($("#mflick2"), {
+		duration : 300,
+		circular : true,
+		defaultIndex : 1
+	});
+
+	f2a = new eg.Flicking($("#mflick2-1"), {
+		duration : 300,
+		circular : true
+	});
+
+	f3 = new eg.Flicking($("#mflick3"), {
+		duration : 300,
+		circular : true,
+		previewPadding : [ 40, 70 ],
+		defaultIndex : 3
+	});
+
+	f3a = new eg.Flicking($("#mflick3-1"), {
+		duration : 300,
+		circular : true,
+		previewPadding : 80
+	});
+
+	// Vertical direction flicking
+	vf1 = new eg.Flicking("#vflick1", {
+		duration : 300,
+		hwAccelerable : false,
+		threshold : 30,
+		horizontal : false
+	});
+
+	vf2 = new eg.Flicking($("#vflick2"), {
+		duration : 300,
+		circular : true,
+		defaultIndex : 1,
+		circular : true,
+		horizontal : false
+	});
+
+	vf2a = new eg.Flicking($("#vflick2-1"), {
+		duration : 300,
+		circular : true,
+		horizontal : false
+	});
+
+	vf3 = new eg.Flicking($("#vflick3"), {
+		duration : 300,
+		circular : true,
+		previewPadding : [ 20, 10 ],
+		horizontal : false,
+		defaultIndex : 3
+	});
+
+	vf3a = new eg.Flicking($("#vflick3-1"), {
+		duration : 300
+		//,defaultIndex : 2
+		,circular : true,
+		previewPadding : 10,
+		horizontal : false
+	});
+
+	f5 = new eg.Flicking($("#mflick5"), {
+		duration : 0,
+		threshold : 50,
+		circular : true
+	}).on({
+		touchStart : log,
+		touchMove : log,
+		touchEnd : log,
+		flickStart : log,
+		flick : log,
+		flickEnd : log,
+		flickStart : log,
+		beforeRestore : log,
+		restore : log
+	});
+}, 500);
 </script>
 </body>
 </html>
