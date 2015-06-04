@@ -1366,7 +1366,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				prevent  = false;
 
 			// not support offset properties in Hammerjs - start
-			var prevInput = this._status.curHammer.session.prevInput || {};
+			var prevInput = this._status.curHammer.session.prevInput;
 			if(prevInput) {
 			    e.offsetX = e.deltaX - prevInput.deltaX;
 			    e.offsetY = e.deltaY - prevInput.deltaY;
