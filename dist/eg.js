@@ -1176,7 +1176,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 	 * @param {Boolean} [options.circular.3=false] The circular left range <ko>left 순환 영역</ko>
 	 *
 	 * @param {Function} [options.easing a easing=easing.easeOutQuint] Function of the jQuery Easing Plugin <ko>jQuery Easing 플러그인 함수</ko>
-	 *  @param {Number} [options.maximumDuration=Infinity] The maximum speed. <ko>최대 좌표 변환 속도 (px/ms)</ko>
+	 * @param {Number} [options.maximumDuration=Infinity] The maximum duration. <ko>최대 좌표 이동 시간</ko>
 	 * @param {Number} [options.deceleration=0.0006] deceleration This value can be altered to change the momentum animation duration. higher numbers make the animation shorter. <ko>감속계수. 높을값이 주어질수록 애니메이션의 동작 시간이 짧아진다.</ko>
 	 * @see Hammerjs {@link http://hammerjs.github.io}
 	 * @see jQuery Easing Plugin {@link http://gsgd.co.uk/sandbox/jquery/easing}
@@ -1445,8 +1445,8 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				this._getNextOffsetPos( [
 					vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
 					vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
-				], this.options.maximumDuration ),
-			this._animationEnd, false, this.options.maximumDuration, e);
+				] ),
+			this._animationEnd, false, null, e);
 			this._status.moveDistance = null;
 		},
 
@@ -1481,8 +1481,8 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			] , $.proxy(this.trigger, this, "animationEnd"), true);
 		},
 
-		_getNextOffsetPos : function(speeds, maximumDuration) {
-			var normalSpeed = Math.min(maximumDuration, Infinity, Math.sqrt(speeds[0]*speeds[0]+speeds[1]*speeds[1])),
+		_getNextOffsetPos : function(speeds) {
+			var normalSpeed = Math.sqrt(speeds[0]*speeds[0]+speeds[1]*speeds[1]),
 				duration = Math.abs(normalSpeed / -this.options.deceleration);
 			return [
 				speeds[0]/2 * duration,
@@ -1577,7 +1577,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				destPos = this._isOutToOut(pos, param.destPos, min, max) ? pos : param.destPos,
 				distance = [ Math.abs(destPos[0]-pos[0]), Math.abs(destPos[1]-pos[1]) ],
 				animationParam;
-			duration = duration !== Infinity && typeof duration !== "undefined" ? duration : Math.min(typeof duration === "number" ? duration : Infinity, this._getDurationFromPos(distance) );
+			duration = duration == null ? this._getDurationFromPos(distance) : duration;
 			duration = this.options.maximumDuration > duration ? duration : this.options.maximumDuration;
 
 			var	done = $.proxy(function(isNext) {

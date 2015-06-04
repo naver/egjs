@@ -306,8 +306,8 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				this._getNextOffsetPos( [
 					vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
 					vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
-				], this.options.maximumDuration ),
-			this._animationEnd, false, this.options.maximumDuration, e);
+				] ),
+			this._animationEnd, false, null, e);
 			this._status.moveDistance = null;
 		},
 
@@ -342,8 +342,8 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			] , $.proxy(this.trigger, this, "animationEnd"), true);
 		},
 
-		_getNextOffsetPos : function(speeds, maximumDuration) {
-			var normalSpeed = Math.min(maximumDuration, Infinity, Math.sqrt(speeds[0]*speeds[0]+speeds[1]*speeds[1])),
+		_getNextOffsetPos : function(speeds) {
+			var normalSpeed = Math.sqrt(speeds[0]*speeds[0]+speeds[1]*speeds[1]),
 				duration = Math.abs(normalSpeed / -this.options.deceleration);
 			return [
 				speeds[0]/2 * duration,
@@ -438,7 +438,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				destPos = this._isOutToOut(pos, param.destPos, min, max) ? pos : param.destPos,
 				distance = [ Math.abs(destPos[0]-pos[0]), Math.abs(destPos[1]-pos[1]) ],
 				animationParam;
-			duration = duration !== Infinity && typeof duration !== "undefined" ? duration : Math.min(typeof duration === "number" ? duration : Infinity, this._getDurationFromPos(distance) );
+			duration = duration == null ? this._getDurationFromPos(distance) : duration;
 			duration = this.options.maximumDuration > duration ? duration : this.options.maximumDuration;
 
 			var	done = $.proxy(function(isNext) {
