@@ -1478,7 +1478,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			this._animateTo( [
 				Math.min(max[0], Math.max(min[0], pos[0])),
 				Math.min(max[1], Math.max(min[1], pos[1]))
-			] , $.proxy(this.trigger, this, "animationEnd"), true);
+			] , $.proxy(this.trigger, this, "animationEnd"), true, null);
 		},
 
 		_getNextOffsetPos : function(speeds) {
@@ -1577,7 +1577,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				destPos = this._isOutToOut(pos, param.destPos, min, max) ? pos : param.destPos,
 				distance = [ Math.abs(destPos[0]-pos[0]), Math.abs(destPos[1]-pos[1]) ],
 				animationParam;
-			duration = duration == null ? this._getDurationFromPos(distance) : duration;
+			duration = duration === null ? this._getDurationFromPos(distance) : duration;
 			duration = this.options.maximumDuration > duration ? duration : this.options.maximumDuration;
 
 			var	done = $.proxy(function(isNext) {
