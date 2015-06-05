@@ -57,11 +57,12 @@ eg.module("css",[window.jQuery, document],function($, doc){
 
     var setCssHooks = function( prop ) {
         var upperProp = prop.charAt(0).toUpperCase() + prop.slice(1),
-            vendorProp = vendorPrefix + upperProp;
+            vendorProp = vendorPrefix + upperProp,
+            getVendorProp = vendorPrefix === "ms" ? "Ms" + upperProp : vendorProp;
 
         $.cssHooks[upperProp] = $.cssHooks[vendorPrefix.toLowerCase() + upperProp] = $.cssHooks[prop] = {
-            get: function( elem ){
-                return $.css( elem, vendorProp );
+            get: function( elem ,computed){
+                return computed ? $.css( elem, getVendorProp ) : elem.style[vendorProp];
             },
             set: function( elem, value ){
                 elem.style[vendorProp] = value;
