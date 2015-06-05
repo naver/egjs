@@ -200,62 +200,9 @@ asyncTest("setTo : check 'change' event", function() {
 		start();
 	})
 	// When
-	this.inst.setTo(0, 200);
+	this.inst.setTo(0, 200, 0);
 });
 
-asyncTest("setTo : check events flow", function() {
-	var firedChangeEvent = false,
-		firedAnimationStartEvent = 0,
-		firedAnimationEndEvent = 0;
-	// Given
-	this.inst.on("change", function(e) {
-		firedChangeEvent = true;
-	}).on("release", function(e) {
-		ok(false, "must not fired 'release' event");
-	}).on("hold", function(e) {
-		ok(false, "must not fired 'hold' event");
-	}).on("animationStart", function(e) {
-		firedAnimationStartEvent++;
-	}).on("animationEnd", function(e) {
-		firedAnimationEndEvent++;
-	})
-	// When
-	this.inst.setTo(200, 200, 100);
-
-	// Then
-	setTimeout(function() {
-		ok(firedChangeEvent, "fired 'change' event");
-		equal(firedAnimationStartEvent, 1, "fired 'animationStart' event");
-		equal(firedAnimationEndEvent, 1, "fired 'animationEnd' event");
-		start();
-	},200);
-
-});
-
-asyncTest("setTo : check events flow when duration is '0'", function() {
-	var firedChangeEvent = false;
-	// Given
-	this.inst.on("change", function(e) {
-		firedChangeEvent = true;
-	}).on("release", function(e) {
-		ok(false, "must not fired 'release' event");
-	}).on("hold", function(e) {
-		ok(false, "must not fired 'hold' event");
-	}).on("animationStart", function(e) {
-		ok(false, "must not fired 'animationStart' event");
-	}).on("animationEnd", function(e) {
-		ok(false, "must not fired 'animationEnd' event");
-	})
-	// When
-	this.inst.setTo(200, 200, 0);
-
-	// Then
-	setTimeout(function() {
-		ok(firedChangeEvent, "fired 'change' event");
-		start();
-	},200);
-
-});
 
 test("setBy", function() {
 	// Given
@@ -289,6 +236,83 @@ asyncTest("setBy : check a 'change' event", function() {
 	this.inst.setBy(-10, -10);
 });
 
+
+module("movableCoord setTo duration Test", {
+	setup : function() {
+		var self=this;
+		this.firedChangeEvent = false;
+		this.firedAnimationStartEvent = 0;
+		this.firedAnimationEndEvent = 0;
+
+		this.inst = new eg.MovableCoord( {
+			min : [ 0, 0 ],
+			max : [ 300, 400 ],
+			bounce : 100,
+			margin : 0,
+			circular : false,
+			maximumDuration : 200
+		}).on("change", function(e) {
+			self.firedChangeEvent = true;
+		}).on("release", function(e) {
+			ok(false, "must not fired 'release' event");
+		}).on("hold", function(e) {
+			ok(false, "must not fired 'hold' event");
+		}).on("animationStart", function(e) {
+			self.firedAnimationStartEvent++;
+		}).on("animationEnd", function(e) {
+			self.firedAnimationEndEvent++;
+		});
+
+	},
+	teardown : function() {
+		this.inst.destroy();
+		this.inst = null;
+	}
+});
+asyncTest("setTo : check event flow when maximumDuration(200ms) is bigger than a duration of setTo", function() {
+	// Given
+	var self = this;
+	// When
+	this.inst.setTo(200, 200, 100);
+
+	// Then
+	setTimeout(function() {
+		ok(self.firedChangeEvent, "fired 'change' event");
+		equal(self.firedAnimationStartEvent, 1, "fired 'animationStart' event");
+		equal(self.firedAnimationEndEvent, 1, "fired 'animationEnd' event");
+		start();
+	},150);
+});
+
+asyncTest("setTo : check event flow when a duration of setTo is bigger than maximumDuration(200ms)", function() {
+	// Given
+	var self = this;
+
+	// When
+	this.inst.setTo(200, 200, 3000);
+
+	// Then
+	setTimeout(function() {
+		ok(self.firedChangeEvent, "fired 'change' event");
+		equal(self.firedAnimationStartEvent, 1, "fired 'animationStart' event");
+		equal(self.firedAnimationEndEvent, 1, "fired 'animationEnd' event");
+		start();
+	},250);
+});
+
+asyncTest("setTo : check event flow when a duration of setTo is '0'", function() {
+	// Given
+	var self = this;
+
+	// When
+	this.inst.setTo(200, 200, 0);
+
+	// Then
+	ok(self.firedChangeEvent, "fired 'change' event");
+	equal(self.firedAnimationStartEvent, 0, "not fired 'animationStart' event");
+	equal(self.firedAnimationEndEvent, 0, "not fired 'animationEnd' event");
+	start();
+});
 
 module("movableCoord event Test", {
 	setup : function() {
