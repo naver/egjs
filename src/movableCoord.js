@@ -104,6 +104,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			return this;
 		},
 		_createHammer : function(el, subOptions) {
+			try {
 			// create Hammer
 			var hammer = new HM.Manager(el, {
 					recognizers : [
@@ -126,6 +127,9 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			.on("panstart panmove", $.proxy(this._panmove,this))
 			.on("panend", $.proxy(this._panend,this));
 			return hammer;
+			} catch(e) {
+				console.log(e);
+			}
 		},
 		/**
 		 * Dettach a element to an use for the movableCoord.
