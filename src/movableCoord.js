@@ -128,7 +128,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			.on("panend", $.proxy(this._panend,this));
 			return hammer;
 			} catch(e) {
-				console.log(e);
+				// console.log(e);
 			}
 		},
 		/**
