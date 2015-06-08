@@ -102,7 +102,9 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				clickBug : ns._hasClickBug(),
 				useLayerHack : this.options.hwAccelerable && !supportHint,
 				useHint : this.options.hwAccelerable && supportHint,
-				dirData : []
+				dirData : [],
+				indexToMove : 0,
+				triggerFlickEvent : true
 			};
 
 			$([[ "LEFT", "RIGHT" ], [ "DOWN", "UP" ]][ +!this.options.horizontal ]).each( $.proxy( function(i,v) {
@@ -164,7 +166,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			}).bind(this._wrapper, {
 				scale : this._getDataByDirection( [ -1, 0 ] ),
 				direction : ns[ "DIRECTION_"+ ( horizontal ? "HORIZONTAL" : "VERTICAL" ) ],
-				maximumSpeed : options.duration,
 				interruptable : false
 			});
 
@@ -231,17 +232,17 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 					coords = [ -(panel.size * index), 0];
 
 					this._setTranslate(coords);
-					this._mcInst.setTo( Math.abs(coords[0]), Math.abs(coords[1]) );
+					this._setMovableCoord("setTo", [ Math.abs(coords[0]), Math.abs(coords[1]) ] );
 				}
 			}
 		},
 
 		/**
 		 * Arrange panels' position
-		 * @param {Boolean} recycle
-		 * @param {Number} no - number of panels to arrange
+		 * @param {Boolean} sort Need to sort panel's position
+		 * @param {Number} indexToMove Number to move from current position (negative: left, positive: right)
 		 */
-		_arrangePanels : function(recycle, no) {
+		_arrangePanels : function(sort, indexToMove) {
 			var panel = this._conf.panel,
 				touch = this._conf.touch,
 				dirData = this._conf.dirData,
@@ -249,28 +250,48 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				coords;
 
 			if(this.options.circular) {
-				// move elements according direction
-				if(recycle) {
-					if(typeof no !== "undefined") {
-						touch.direction = dirData[ +!Boolean(no > 0) ];
-					}
+				// when arranging panels, set flag to not trigger flick custom event
+				this._conf.triggerFlickEvent = false;
 
-					this._arrangePanelPosition(touch.direction, no);
+				// move elements according direction
+				if(sort) {
+					indexToMove && ( touch.direction = dirData[ +!Boolean(indexToMove > 0) ] );
+					this._arrangePanelPosition(touch.direction, indexToMove);
 				}
 
 				// set index for base element's position
 				panel.index = this._getBasePositionIndex();
-				coords = this._getDataByDirection([ panel.size * panel.index, 0 ]);
 
-				this._mcInst.setTo(coords[0], coords[1]);
+				// arrange MovableCoord's coord position
+				this._conf.triggerFlickEvent = !!this._setMovableCoord( "setTo", [ panel.size * panel.index, 0 ], true );
 			}
 
-			// set each panel's position
+			// set each panel's position in DOM
 			panel.list.each(
 				$.proxy(function(i, v) {
 					coords = this._getDataByDirection([ (100 * i) +"%", 0 ]);
 					$(v).css("transform", ns.translate(coords[0], coords[1], hwAccelerable));
 				},this));
+		},
+
+		/**
+		 * Set MovableCoord coord value
+		 * @param {String} method
+		 * @param {Array} coord
+		 * @param {Boolean} isDirVal
+		 * @param {Number} duration
+		 * @return {Object} MovableCoord instance
+		 */
+		_setMovableCoord : function(method, coord, isDirVal, duration) {
+			var type = typeof duration;
+
+			if( type !== "undefined" ) {
+				duration = type === "number" ? duration : this.options.duration;
+			}
+
+			isDirVal && this._getDataByDirection(coord);
+
+			return this._mcInst[ method ]( coord[0], coord[1], duration );
 		},
 
 		/**
@@ -300,11 +321,11 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		/**
 		 * Move nodes
 		 * @param {Boolean} diretion
-		 * @param {Number} times
+		 * @param {Number} indexToMove
 		 */
-		_arrangePanelPosition : function(direction, times) {
+		_arrangePanelPosition : function(direction, indexToMove) {
 			var next = direction === this._conf.dirData[0];
-			this._movePanelPosition( Math.abs(times || 1), next );
+			this._movePanelPosition( Math.abs(indexToMove || 1), next );
 		},
 
 		/**
@@ -391,9 +412,8 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			 * @param {Number} param.pos.0 Departure x-coordinate <ko>x 좌표</ko>
 			 * @param {Number} param.pos.1 Departure y-coordinate <ko>y 좌표</ko>
 			 */
-			if(this._triggerEvent(e.holding ? "touchMove" : "flick", { pos : e.pos })) {
-				this._setTranslate([ -pos[ +!this.options.horizontal ], 0 ]);
-			}
+			this._setTranslate([ -pos[ +!this.options.horizontal ], 0 ]);
+			this._conf.triggerFlickEvent && this._triggerEvent(e.holding ? "touchMove" : "flick", { pos : e.pos });
 		},
 
 		/**
@@ -442,18 +462,17 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * 'animationStart' event handler
 		 */
 		_animationStartHandler : function(e) {
-			var panel = this._conf.panel,
-				direction = this._conf.touch.direction,
-				dirData = this._conf.dirData,
-				movable = this._isMovable();
+			var panel = this._conf.panel;
 
 			panel.animating = true;
-			e.duration = this.options.duration;
 
-			movable && (panel.index += direction === dirData[0] ? 1 : -1);
-			e.destPos[ +!this.options.horizontal ] = panel.size * panel.index;
+			//@TODO 사용자 옵션 값을 사용할 수 있도록 설정 필요
+			//e.duration = this.options.duration;
 
-			if(movable) {
+			this._setPhaseValue("start");
+			e.destPos[ +!this.options.horizontal ] = panel.size * ( panel.index + this._conf.indexToMove );
+
+			if(this._isMovable()) {
 				/**
 				 * Before panel changes
 				 * @ko 플리킹이 시작되기 전에 발생하는 이벤트
@@ -476,9 +495,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 					depaPos : e.depaPos,
 					destPos : e.destPos
 				});
-
-				this._setPanelNo(true);
-				panel.changed = true;
 
 			} else {
 				/**
@@ -512,16 +528,9 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * 'animationEnd' event handler
 		 */
 		_animationEndHandler : function() {
-			// adjust panel coordination
 			var panel = this._conf.panel;
 
-			this._setTranslate([ -panel.size * panel.index, 0 ]);
-
-			if(this.options.circular && panel.changed) {
-				this._arrangePanels(true);
-				this._setPanelNo();
-			}
-
+			this._setPhaseValue("end");
 			this._setHint(panel.animating = false);
 
 			/**
@@ -556,18 +565,36 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		},
 
 		/**
-		 * Set the logical panel index number
-		 * @param {Boolean} move - set to increment or decrement
+		 * Set value when panel changes
+		 * @param {String} phase - [start|end]
 		 */
-		_setPanelNo : function(move) {
+		_setPhaseValue : function(phase) {
+			var panel = this._conf.panel;
+
+			if( ~phase.indexOf("start") && ( panel.changed = this._isMovable() ) ) {
+				this._conf.indexToMove === 0 && this._setPanelNo();
+			}
+
+			if( ~phase.indexOf("end") ) {
+				if(this.options.circular && panel.changed) {
+					this._arrangePanels(true, this._conf.indexToMove);
+				}
+
+				this._setTranslate([ -panel.size * panel.index, 0 ]);
+				this._conf.indexToMove = 0;
+			}
+		},
+
+		/**
+		 * Set the logical panel index number
+		 */
+		_setPanelNo : function() {
 			var panel = this._conf.panel,
 				count = panel.origCount - 1,
-				direction = this._conf.touch.direction,
-				dirData = this._conf.dirData;
+				num = this._conf.touch.direction === this._conf.dirData[0] ? 1 : -1;
 
-			if(move) {
-				panel.no += direction === dirData[0] ? 1 : -1;
-			}
+			panel.index += num;
+			panel.no += num;
 
 			if(panel.no > count) {
 				panel.no = 0;
@@ -581,8 +608,18 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * @param {Event} e
 		 */
 		_setPointerEvents : function(e) {
-			if(this._conf.clickBug) {
-				this._container.css("pointerEvents", e && e.holding && e.hammerEvent.preventSystemEvent ? "none" : "auto");
+			var pointer, val;
+
+			if( this._conf.clickBug ) {
+				pointer = this._container.css("pointerEvents");
+
+				if( e && e.holding && e.hammerEvent.preventSystemEvent && pointer !== "none" ) {
+					val = "none";
+				} else if( !e && pointer !== "auto" ) {
+					val = "auto";
+				}
+
+				val && this._container.css("pointerEvents", val);
 			}
 		},
 
@@ -681,24 +718,31 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		},
 
 		/**
+		 * Set value to force move panels when duration is 0
+		 * @param {Boolean} next
+		 */
+		_setValueToMove : function( next ) {
+			this._conf.touch.distance = this.options.threshold + 1;
+			this._conf.touch.direction = this._conf.dirData[ +!next ];
+		},
+
+		/**
 		 * Move panel to the given direction
-		 * @param {Boolean} direction
+		 * @param {Boolean} next
 		 * @param {Number} duration
 		 */
-		_movePanel : function(direction, duration) {
-			var panel = this._conf.panel,
-				next = direction === this._conf.dirData[0],
-				index = this[ next ? "getNextIndex" : "getPrevIndex" ](),
-				coords;
+		_movePanel : function(next, duration) {
+			var panel = this._conf.panel;
 
-			if(index != null) {
-				this._conf.touch.direction = direction;
-				this._setPanelNo(true);
-				panel.index = index;
+			if(panel.animating) {
+				return;
+			}
 
-				coords = this._getDataByDirection([ panel.size * ( next ? 1 : -1 ), 0 ]);
-				this._mcInst.setBy( coords[0], coords[1], typeof duration === "number" ? duration : this.options.duration );
-				this._arrangePanels(true);
+			this._setValueToMove(next);
+
+			if( this.options.circular || this[ next ? "getNextIndex" : "getPrevIndex" ]() != null ) {
+				this._setMovableCoord("setBy", [ panel.size * ( next ? 1 : -1 ), 0 ], true, duration);
+				duration === 0 && this._setPhaseValue("startend");
 			}
 		},
 
@@ -804,7 +848,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
 		 */
 		next : function(duration) {
-			this._movePanel( this._conf.dirData[0], duration );
+			this._movePanel( true, duration );
 		},
 
 		/**
@@ -814,7 +858,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
 		 */
 		prev : function(duration) {
-			this._movePanel( this._conf.dirData[1], duration );
+			this._movePanel( false, duration );
 		},
 
 		/**
@@ -828,11 +872,13 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			var panel = this._conf.panel,
 				currentIndex = panel.index,
 				indexToMove = 0,
-				movableCount, coords;
+				movableCount, movable;
 
-			if(typeof no !== "number" || no >= panel.origCount || no === panel.no) {
+			if(typeof no !== "number" || no >= panel.origCount || no === panel.no || panel.animating) {
 				return;
 			}
+
+			movable = this.options.circular || no >= 0 && no < panel.origCount;
 
 			if(this.options.circular) {
 				// real panel count which can be moved on each(left(up)/right(down)) sides
@@ -854,13 +900,16 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				}
 
 				panel.no = no;
-				this._arrangePanels(true, indexToMove);
+				this._conf.indexToMove = indexToMove;
+				this._setValueToMove( indexToMove > 0 );
+				this._setMovableCoord("setBy", [ panel.size * indexToMove, 0 ], true, duration);
 
-			} else {
-				panel.index = no;
-				coords = this._getDataByDirection([ panel.size * indexToMove, 0 ]);
-				this._mcInst.setTo( coords[0], coords[1], typeof duration === "number" ? duration : this.options.duration );
+			} else if(movable) {
+				panel.no = panel.index = no;
+				this._setMovableCoord("setTo", [ panel.size * no, 0 ], true, duration);
 			}
+
+			movable && duration === 0 && this._setPhaseValue("startend");
 		},
 
 		/**
@@ -878,7 +927,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			panel.list.css("width", width);
 
 			// adjust the position of current panel
-			this._mcInst.setTo(width * panel.index, 0).options.max = maxCoords;
+			this._setMovableCoord("setTo", [ width * panel.index, 0 ]).options.max = maxCoords;
 		}
 	});
 });
