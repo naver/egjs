@@ -99,7 +99,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 					direction : null	// touch direction
 				},
 				customEvent : {},		// for custom event return value
-				clickBug : ns._hasClickBug(),
 				useLayerHack : this.options.hwAccelerable && !supportHint,
 				useHint : this.options.hwAccelerable && supportHint,
 				dirData : [],
@@ -110,6 +109,9 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			$([[ "LEFT", "RIGHT" ], [ "DOWN", "UP" ]][ +!this.options.horizontal ]).each( $.proxy( function(i,v) {
 				this._conf.dirData.push(ns[ "DIRECTION_"+ v ]);
 			}, this ) );
+
+			!ns._hasClickBug() && ( this._setPointerEvents = function(){} );
+			!this._conf.useHint && ( this._setHint = function(){} );
 
 			this._build();
 			this._bindEvents();
@@ -287,6 +289,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 
 			if( type !== "undefined" ) {
 				duration = type === "number" ? duration : this.options.duration;
+				duration > 0 && this._setHint(true);
 			}
 
 			isDirVal && this._getDataByDirection(coord);
@@ -300,11 +303,9 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * @param {Boolean} set
 		 */
 		_setHint : function(set) {
-			if(this._conf.useHint) {
-				var value = set ? "transform" : "";
-				this._container.css("willChange", value);
-				this._conf.panel.list.css("willChange", value);
-			}
+			var value = set ? "transform" : "";
+			this._container.css("willChange", value);
+			this._conf.panel.list.css("willChange", value);
 		},
 
 		/**
@@ -414,8 +415,8 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			 * @param {Number} param.pos.0 Departure x-coordinate <ko>x 좌표</ko>
 			 * @param {Number} param.pos.1 Departure y-coordinate <ko>y 좌표</ko>
 			 */
-			this._conf.triggerFlickEvent && (eventRes = this._triggerEvent(e.holding ? "touchMove" : "flick", { pos : e.pos }));
-			(eventRes || eventRes === null) && this._setTranslate([ -pos[ +!this.options.horizontal ], 0 ]);
+			this._conf.triggerFlickEvent && ( eventRes = this._triggerEvent( e.holding ? "touchMove" : "flick", { pos : e.pos } ) );
+			( eventRes || eventRes === null ) && this._setTranslate( [ -pos[ +!this.options.horizontal ], 0 ] );
 		},
 
 		/**
@@ -608,19 +609,15 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * @param {Event} e
 		 */
 		_setPointerEvents : function(e) {
-			var pointer, val;
+			var pointer = this._container.css("pointerEvents"), val;
 
-			if( this._conf.clickBug ) {
-				pointer = this._container.css("pointerEvents");
-
-				if( e && e.holding && e.hammerEvent.preventSystemEvent && pointer !== "none" ) {
-					val = "none";
-				} else if( !e && pointer !== "auto" ) {
-					val = "auto";
-				}
-
-				val && this._container.css("pointerEvents", val);
+			if( e && e.holding && e.hammerEvent.preventSystemEvent && pointer !== "none" ) {
+				val = "none";
+			} else if( !e && pointer !== "auto" ) {
+				val = "auto";
 			}
+
+			val && this._container.css("pointerEvents", val);
 		},
 
 		/**
