@@ -379,7 +379,9 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * 'change' event handler
 		 */
 		_changeHandler : function(e) {
-			var pos = e.pos;
+			var pos = e.pos,
+				eventRes = null;
+
 			this._setPointerEvents(e);  // for "click" bug
 
 			/**
@@ -412,8 +414,8 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			 * @param {Number} param.pos.0 Departure x-coordinate <ko>x 좌표</ko>
 			 * @param {Number} param.pos.1 Departure y-coordinate <ko>y 좌표</ko>
 			 */
-			this._setTranslate([ -pos[ +!this.options.horizontal ], 0 ]);
-			this._conf.triggerFlickEvent && this._triggerEvent(e.holding ? "touchMove" : "flick", { pos : e.pos });
+			this._conf.triggerFlickEvent && (eventRes = this._triggerEvent(e.holding ? "touchMove" : "flick", { pos : e.pos }));
+			(eventRes || eventRes === null) && this._setTranslate([ -pos[ +!this.options.horizontal ], 0 ]);
 		},
 
 		/**
@@ -465,8 +467,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			var panel = this._conf.panel;
 
 			panel.animating = true;
-
-			//@TODO 사용자 옵션 값을 사용할 수 있도록 설정 필요
 			//e.duration = this.options.duration;
 
 			this._setPhaseValue("start");
