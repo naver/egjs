@@ -100,7 +100,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				},
 				customEvent : {},		// for custom event return value
 				useLayerHack : this.options.hwAccelerable && !supportHint,
-				useHint : this.options.hwAccelerable && supportHint,
 				dirData : [],
 				indexToMove : 0,
 				triggerFlickEvent : true
@@ -111,7 +110,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			}, this ) );
 
 			!ns._hasClickBug() && ( this._setPointerEvents = function(){} );
-			!this._conf.useHint && ( this._setHint = function(){} );
+			!(this.options.hwAccelerable && supportHint) && ( this._setHint = function(){} );
 
 			this._build();
 			this._bindEvents();
