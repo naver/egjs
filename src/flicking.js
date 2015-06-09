@@ -738,7 +738,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 
 			if( this.options.circular || this[ next ? "getNextIndex" : "getPrevIndex" ]() != null ) {
 				this._setMovableCoord("setBy", [ panel.size * ( next ? 1 : -1 ), 0 ], true, duration);
-				duration === 0 && this._setPhaseValue("startend");
+				!duration && this._setPhaseValue("startend");
 			}
 		},
 
@@ -905,7 +905,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				this._setMovableCoord("setTo", [ panel.size * no, 0 ], true, duration);
 			}
 
-			movable && duration === 0 && this._setPhaseValue("startend");
+			movable && !duration && this._setPhaseValue("startend");
 		},
 
 		/**
