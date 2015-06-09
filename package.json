@@ -1,6 +1,6 @@
 {
   "name": "egjs",
-  "version": "0.0.1",
+  "version": "0.0.1-snapshot",
   "description": "jQuery기반의 컴포넌트",
   "outputname": "eg",
   "main": "dist/eg.js",
