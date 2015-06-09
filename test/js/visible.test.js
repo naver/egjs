@@ -173,6 +173,7 @@ test("When a iscroll position was changed", function() {
 	// When
 	this.inst.check();
 	this.inst.on("change", function(e) {
+
 		visibleLength = e.visible.length;
 		invisibleLength = e.invisible.length;
 	});
@@ -180,5 +181,85 @@ test("When a iscroll position was changed", function() {
 	this.inst.check();
 	// Then
 	equal(visibleLength, 5, "visible element length (5)");
-	equal(invisibleLength, 7, "invisible element length (7)");
+	equal(invisibleLength, 6, "invisible element length (6)");
+});
+
+
+module("Visible Test when unsupported getElementsByClassName", {
+	setup : function() {
+		// make list
+		var html =[];
+		for(var i=0; i<100; i++) {
+			html.push("<li class='list check_document_visible'>#");
+			html.push(i+1);
+			html.push("</li>");
+		}
+		$("#unsupportClassName").html(html.join(""));
+
+		this.boxheight = $("#unsupportClassName li").first().height();
+
+		// copy original method
+		this.originalReviseElements = eg.Visible.prototype._reviseElements;
+		this.originalRefresh = eg.Visible.prototype.refresh;
+		
+		this.inst = new eg.Visible( {
+			wrapper : document,
+			targetClass : "check_document_visible"
+		});
+
+		// replace method for test
+		this.inst._supportElementsByClassName = false;
+		this.inst._reviseElements = this.originalReviseElements;
+		this.inst.refresh = this.originalRefresh;
+		this.inst.refresh();
+	},
+	teardown : function() {
+		window.scrollTo(0,0);
+		$("#unsupportClassName").empty();
+		this.inst.destroy();
+		this.inst = null;
+	}
+});
+
+
+
+asyncTest("check a visible/invisible status", function() {
+	// Given
+	var boxheight = this.boxheight;
+	var length = Math.ceil(document.documentElement.clientHeight/boxheight);
+	if(document.documentElement.clientHeight%boxheight === 0) {
+		length++;
+	}
+	// When
+	this.inst.options.expandSize = 0;
+	this.inst.on("change", function(e) {
+		// Then
+		equal(e.invisible.length, 0 , "no invisible");
+		equal(e.visible.length, length , "check a count of the visible elements");
+		start();
+	});
+	this.inst.check();
+});
+
+test("When a scroll position of the window was changed", function() {
+	// Given
+	var i, el,
+		invisible = [],
+		visible = [];
+
+	// When
+	this.inst.check(-1);
+	this.inst.options.expandSize = 0;
+	this.inst.on("change", function(e) {
+		// visible 22~27
+		visible = e.visible;
+		// invisible 1~5
+		invisible = e.invisible;
+	});
+	window.scrollTo(0,300);
+	this.inst.check();
+
+	// Then
+	equal(visible.length, 6, "visible element length (6)");
+	equal(invisible.length, 5, "invisible element length (5)");
 });

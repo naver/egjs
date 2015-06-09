@@ -2774,6 +2774,7 @@ eg.module("visible",[window.jQuery, eg],function($, ns){
 		},
 
 		_check : function() {
+			
 			var expandSize = parseInt(this.options.expandSize,10),
 				wrapper = this._wrapper,
 				visibles = [],
@@ -2795,7 +2796,7 @@ eg.module("visible",[window.jQuery, eg],function($, ns){
 			area.right += expandSize;
 
 			for(var i= this._targets.length-1, target, targetArea, after, before; target=this._targets[i] ; i--) {
-				targetArea=target.getBoundingClientRect();
+				targetArea = target.getBoundingClientRect();
 				if(this._reviseElements(target,i)){
 					before = !!target.__VISIBLE__;
 					target.__VISIBLE__ = after = !(
