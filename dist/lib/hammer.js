@@ -287,10 +287,10 @@ function uniqueArray(src, key, sort) {
  * @param {Object} obj
  * @param {String} property
  * @returns {String|Undefined} prefixed
- */
+ */ 
 function prefixed(obj, property) {
     var prefix, prop;
-    var camelProp = property[0].toUpperCase() + property.slice(1);
+    var camelProp = property.charAt(0).toUpperCase() + property.slice(1);
 
     var i = 0;
     while (i < VENDOR_PREFIXES.length) {

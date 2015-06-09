@@ -96,14 +96,10 @@ button:focus {
 }
 </style>
 <script src="../bower_components/jquery/jquery.js"></script>
-<script src="../bower_components/jquery.easing/js/jquery.easing.js"></script>
-<script src="../bower_components/hammer.js/hammer.js"></script>
-<script src="../bower_components/iscroll/build/iscroll.js"></script>
 <script src="../src/module.js"></script>
 <script src="../src/eg.js"></script>
 <script src="../src/customEvent/persist.js"></script>
 <script src="../src/customEvent/rotate.js"></script>
-<script src="../src/customEvent/scrollEnd.js"></script>
 <script src="../src/hook/css.js"></script>
 </head>
 <body>
@@ -164,9 +160,9 @@ function NewsLoader(baseElId) {
 	this.$LoadBtn= $("button", this.$baseEl);
 
 	// 더보기 버튼을 눌러 더 많은 코멘트 보여주기
-	this.$LoadBtn.on("click", this._appendNews.bind(this));
+	this.$LoadBtn.on("click", $.proxy(this._appendNews, this));
 
-	$(window).on("persist", function(e){
+	$(window).on("persist", $.proxy(function(e){
 	    // @todo 서비스 개발자 : persist메소드를 통해 저장한 데이터 꺼내서 화면 복원하기
 		var state = e.state;
 		if(state[this.baseId]) {
@@ -177,13 +173,13 @@ function NewsLoader(baseElId) {
 				window.scrollTo(0, state[this.baseId].scrollTop);
 			}
 		}
-	}.bind(this));
+	},this));
 
 	// delegate 사용시, delegate영역이 클릭시 하이라이트 되는 이슈 대응 코드
 	this.$ListContainer.addClass("NO_TAP_HIGHLIGHT");
 
 	// 페이지 이동이 되는 대상의 부모를 delegate으로 지정
-	this.$ListContainer.on("click", "a", function(e){
+	this.$ListContainer.on("click", "a", $.proxy(function(e){
 	    /*
 	     * @todo 서비스 개발자 : persist메소드를 통해 화면 복원에 필요한 데이터를 저장한다.
 	     * 복원에 필요한 정보 scroll 위치, javascript 객체, HTML String 등을 저장한다.
@@ -191,7 +187,7 @@ function NewsLoader(baseElId) {
 		var state = $.persist() || {};
 		state[this.baseId].scrollTop = document.body.scrollTop;
 		$.persist(state);
-	}.bind(this));
+	},this));
 
 }
 

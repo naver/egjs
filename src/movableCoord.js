@@ -37,6 +37,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 	 * @param {Boolean} [options.circular.3=false] The circular left range <ko>left 순환 영역</ko>
 	 *
 	 * @param {Function} [options.easing a easing=easing.easeOutQuint] Function of the jQuery Easing Plugin <ko>jQuery Easing 플러그인 함수</ko>
+	 * @param {Number} [options.maximumDuration=Infinity] The maximum duration. <ko>최대 좌표 이동 시간</ko>
 	 * @param {Number} [options.deceleration=0.0006] deceleration This value can be altered to change the momentum animation duration. higher numbers make the animation shorter. <ko>감속계수. 높을값이 주어질수록 애니메이션의 동작 시간이 짧아진다.</ko>
 	 * @see Hammerjs {@link http://hammerjs.github.io}
 	 * @see jQuery Easing Plugin {@link http://gsgd.co.uk/sandbox/jquery/easing}
@@ -50,6 +51,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				margin : [0,0,0,0],
 				circular : [false, false, false, false],
 				easing : $.easing.easeOutQuint,
+				maximumDuration : Infinity,
 				deceleration : 0.0006
 			};
 			this._reviseOptions(options);
@@ -57,7 +59,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				grabOutside : false,	// check whether user's action started on outside
 				curHammer : null,		// current hammer instance
 				moveDistance : null,	// a position of the first user's action
-				animating : null,		// animation infomation
+				animationParam : null,		// animation infomation
 				interrupted : false		//  check whether the animation event was interrupted
 			};
 			this._hammers = {};
@@ -77,7 +79,6 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		 * @param {Number} [options.scale.0=1] x-scale <ko>x축 배율</ko>
 		 * @param {Number} [options.scale.1=1] y-scale <ko>y축 배율</ko>
 		 * @param {Number} [options.thresholdAngle=45] The threshold angle about direction which range is 0~90 <ko>방향에 대한 임계각 (0~90)</ko>
-		 * @param {Number} [options.maximumSpeed=Infinity] The maximum speed. <ko>최대 좌표 변환 속도 (px/ms)</ko>
 		 * @param {Number} [options.interruptable=true] interruptable This value can be enabled to interrupt cycle of the animation event. <ko>이 값이  true이면, 애니메이션의 이벤트 사이클을 중단할수 있다.</ko>
 
 		 * @return {Boolean}
@@ -89,7 +90,6 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 					direction : ns.DIRECTION_ALL,
 					scale : [ 1, 1 ],
 					thresholdAngle : 45,
-					maximumSpeed : Infinity,
 					interruptable : true
 				};
 			$.extend(subOptions, options);
@@ -104,6 +104,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			return this;
 		},
 		_createHammer : function(el, subOptions) {
+			try {
 			// create Hammer
 			var hammer = new HM.Manager(el, {
 					recognizers : [
@@ -126,6 +127,9 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			.on("panstart panmove", $.proxy(this._panmove,this))
 			.on("panend", $.proxy(this._panend,this));
 			return hammer;
+			} catch(e) {
+				// console.log(e);
+			}
 		},
 		/**
 		 * Dettach a element to an use for the movableCoord.
@@ -145,10 +149,10 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		},
 
 		_grab : function() {
-			if(this._status.animating) {
+			if(this._status.animationParam) {
 				this._pos = this._getCircularPos(this._pos);
 				this._triggerChange(this._pos, true);
-				this._status.animating = null;
+				this._status.animationParam = null;
 				this._raf && ns.cancelAnimationFrame(this._raf);
 				this._raf = null;
 			}
@@ -171,6 +175,8 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			if (circular[3] && pos[0] < min[0]) { // left
 				pos[0] = (pos[0] - min[0]) % (max[0] - min[0] + 1) + max[0];
 			}
+			pos[0] = +pos[0].toFixed(5), pos[1] = +pos[1].toFixed(5);
+
 			return pos;
 		},
 
@@ -231,7 +237,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				prevent  = false;
 
 			// not support offset properties in Hammerjs - start
-			var prevInput = this._status.curHammer.session.prevInput || {};
+			var prevInput = this._status.curHammer.session.prevInput;
 			if(prevInput) {
 			    e.offsetX = e.deltaX - prevInput.deltaX;
 			    e.offsetY = e.deltaY - prevInput.deltaY;
@@ -299,11 +305,12 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			// console.log(e.velocityX, e.velocityY, e.deltaX, e.deltaY);
 			!(direction & ns.DIRECTION_HORIZONTAL) && (vX = 0);
 			!(direction & ns.DIRECTION_VERTICAL) && (vY = 0);
+
 			this._animateBy(
 				this._getNextOffsetPos( [
 					vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
 					vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
-				], this._subOptions.maximumSpeed ),
+				] ),
 			this._animationEnd, false, null, e);
 			this._status.moveDistance = null;
 		},
@@ -336,11 +343,11 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			this._animateTo( [
 				Math.min(max[0], Math.max(min[0], pos[0])),
 				Math.min(max[1], Math.max(min[1], pos[1]))
-			] , $.proxy(this.trigger, this, "animationEnd"), true);
+			] , $.proxy(this.trigger, this, "animationEnd"), true, null);
 		},
 
-		_getNextOffsetPos : function(speeds, maximumSpeed) {
-			var normalSpeed = Math.min(maximumSpeed || Infinity, Math.sqrt(speeds[0]*speeds[0]+speeds[1]*speeds[1])),
+		_getNextOffsetPos : function(speeds) {
+			var normalSpeed = Math.sqrt(speeds[0]*speeds[0]+speeds[1]*speeds[1]),
 				duration = Math.abs(normalSpeed / -this.options.deceleration);
 			return [
 				speeds[0]/2 * duration,
@@ -431,24 +438,24 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				min = this.options.min,
 				max = this.options.max,
 				circular = this.options.circular,
-				destPos = param.destPos,
-				isCircular = this._isCircular(circular, destPos, min, max),
+				isCircular = this._isCircular(circular, param.destPos, min, max),
+				destPos = this._isOutToOut(pos, param.destPos, min, max) ? pos : param.destPos,
+				distance = [ Math.abs(destPos[0]-pos[0]), Math.abs(destPos[1]-pos[1]) ],
 				animationParam;
-			this._isOutToOut(pos, destPos, min, max) && (destPos = pos);
-			duration = duration || Math.min( Infinity,
-				this._getDurationFromPos( [ Math.abs(destPos[0]-pos[0]), Math.abs(destPos[1]-pos[1]) ] ) );
+			duration = duration === null ? this._getDurationFromPos(distance) : duration;
+			duration = this.options.maximumDuration > duration ? duration : this.options.maximumDuration;
 
 			var	done = $.proxy(function(isNext) {
-					this._status.animating = null;
+					this._status.animationParam = null;
 					pos[0] = Math.round(destPos[0]);
 					pos[1] = Math.round(destPos[1]);
 					pos = this._getCircularPos(pos, min, max, circular);
 					!isNext && (this._status.interrupted = false);
-					callback && callback();
+					callback();
 				}, this);
 
-			if (!duration) {
-				return done(false);
+			if (distance[0] === 0 && distance[1] === 0) {
+				return done(!isBounce);
 			}
 
 			// prepare animation parameters
@@ -486,32 +493,37 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			}
 			animationParam.depaPos = pos;
 			animationParam.startTime = new Date().getTime();
-			this._status.animating = animationParam;
-
+			this._status.animationParam = animationParam;
 			if (retTrigger) {
-				// console.error("depaPos", pos, "depaPos",destPos, "duration", duration, "ms");
-				var info = this._status.animating,
-					self = this;
-				(function loop() {
-					self._raf=null;
-					if (self._frame(info) >= 1) { return done(true); } // animationEnd
-					self._raf = ns.requestAnimationFrame(loop);
-				})();
+				if(animationParam.duration) {
+					// console.error("depaPos", pos, "depaPos",destPos, "duration", duration, "ms");
+					var info = this._status.animationParam,
+						self = this;
+					(function loop() {
+						self._raf = null;
+						if (self._frame(info) >= 1) { return done(true); } // animationEnd
+						self._raf = ns.requestAnimationFrame(loop);
+					})();
+				} else {
+					this._triggerChange(animationParam.destPos, false);
+					done(!isBounce);
+				}
 			}
 		},
 
 		// animation frame (0~1)
 		_frame : function(param) {
 			var curTime = new Date() - param.startTime,
-				per = Math.min(1, curTime / param.duration),
 				easingPer = this.options.easing(null, curTime, 0, 1, param.duration),
 				pos = [ param.depaPos[0], param.depaPos[1] ];
+			easingPer = easingPer >= 1 ? 1 : easingPer;
+
 			for (var i = 0; i <2 ; i++) {
 			    (pos[i] !== param.destPos[i]) && (pos[i] += (param.destPos[i] - pos[i]) * easingPer);
 			}
 			pos = this._getCircularPos(pos);
 			this._triggerChange(pos, false);
-			return per;
+			return easingPer;
 		},
 
 		// set up 'css' expression

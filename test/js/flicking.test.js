@@ -32,7 +32,7 @@ test("Option: circular", function() {
 	this.inst = new eg.Flicking($("#mflick1"));
 
 	// When
-	this.inst.moveTo(this.inst._conf.panel.origCount - 1);
+	this.inst.moveTo(this.inst._conf.panel.origCount - 1,0);
 
 	// Then
 	equal(this.inst.getElement().next().length, 0, "Is not circular?");
@@ -42,7 +42,7 @@ test("Option: circular", function() {
 	this.inst = new eg.Flicking($("#mflick2"), { circular : true });
 
 	// When
-	this.inst.moveTo(this.inst._conf.panel.origCount - 1);
+	this.inst.moveTo(this.inst._conf.panel.origCount - 1,0);
 
 	// Then
 	ok(this.inst.getNextElement(), "Is circular?");
@@ -59,7 +59,7 @@ test("Option: circular", function() {
 	this.inst = new eg.Flicking($("#mflick3"), { circular : true, horizontal : false });
 
 	// When
-	this.inst.moveTo(this.inst._conf.panel.origCount - 1);
+	this.inst.moveTo(this.inst._conf.panel.origCount - 1,0);
 
 	// Then
 	ok(this.inst.getNextElement(), "Is circular?");
@@ -311,7 +311,7 @@ test("Method: getNextIndex()", function() {
 	deepEqual(index, this.inst.getIndex() + 1, "Is the next index of current?");
 
 	// When
-	this.inst.moveTo(this.inst._conf.panel.count - 1);  // move to last
+	this.inst.moveTo(this.inst._conf.panel.count - 1,0);  // move to last
 	index = this.inst.getNextIndex();
 
 	// Then
@@ -355,14 +355,14 @@ test("Method: getPrevIndex()", function() {
 	deepEqual(index, this.inst._conf.panel.count - 1, "Previous index of first, should be "+ (this.inst._conf.panel.count - 1));
 
 	// When
-	this.inst.moveTo(2);  // move to second
+	this.inst.moveTo(2,0);  // move to second
 	index = this.inst.getPrevIndex();
 
 	// Then
 	deepEqual(index, this.inst.getIndex() - 1, "Is the previous index of current?");
 
 	// When
-	this.inst.moveTo(0);  // move to the first
+	this.inst.moveTo(0,0);  // move to the first
 	index = this.inst.getPrevIndex(true);
 
 	// Then
@@ -445,7 +445,7 @@ test("Method: next()", function() {
 	var nextElement = this.inst.getNextElement();
 
 	// When
-	this.inst.next();
+	this.inst.next(0);
 	var element = this.inst.getElement(),
 		value = (this.inst._getBasePositionIndex() * 100) +"%";
 
@@ -453,6 +453,30 @@ test("Method: next()", function() {
 	// Then
 	deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to next panel correctly?");
 	deepEqual(element[0], nextElement[0], "The next element is what expected?");
+});
+
+asyncTest("Method: next() - Animation", function() {
+	// Given
+	this.inst = new eg.Flicking($("#mflick2-1"), {
+		circular : true
+	});
+
+	var nextElement = this.inst.getNextElement();
+
+	// When
+	this.inst.next(300);
+
+	setTimeout($.proxy(function() {
+		var element = this.inst.getElement(),
+			value = (this.inst._getBasePositionIndex() * 100) +"%";
+
+		// When
+		// Then
+		deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to next panel correctly?");
+		deepEqual(element[0], nextElement[0], "The next element is what expected?");
+
+		start();
+	}, this),500);
 });
 
 test("Method: prev()", function() {
@@ -464,13 +488,36 @@ test("Method: prev()", function() {
 	var prevElement = this.inst.getPrevElement();
 
 	// When
-	this.inst.prev();
+	this.inst.prev(0);
 	var element = this.inst.getElement(),
 		value = (this.inst._getBasePositionIndex() * 100) +"%";
 
 	// Then
 	deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to previous panel correctly?");
 	deepEqual(element.html(), prevElement.html(), "The previous element is what expected?");
+});
+
+asyncTest("Method: prev() - Animation", function() {
+	// Given
+	this.inst = new eg.Flicking($("#mflick2-1"), {
+		circular : true
+	});
+
+	var prevElement = this.inst.getPrevElement();
+
+	// When
+	this.inst.prev(300);
+
+	setTimeout($.proxy(function() {
+		var element = this.inst.getElement(),
+			value = (this.inst._getBasePositionIndex() * 100) +"%";
+
+		// Then
+		deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to previous panel correctly?");
+		deepEqual(element.html(), prevElement.html(), "The previous element is what expected?");
+
+		start();
+	}, this),500);
 });
 
 test("Method: moveTo()", function() {
@@ -482,13 +529,13 @@ test("Method: moveTo()", function() {
 		value = (count - 1) * 100;
 
 	// When
-	this.inst.moveTo(count - 1);  // move to last
+	this.inst.moveTo(count - 1,0);  // move to last
 
    	// Then
    	equal($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Moved to last panel?");
 
 	// When
-	this.inst.moveTo(0);  // move to first
+	this.inst.moveTo(0,0);  // move to first
 
 	// Then
 	ok($getTransformValue(this.inst.getElement()).match(/0%/), "Moved to first panel?");
@@ -507,7 +554,7 @@ test("Method: moveTo()", function() {
 	var index = count - 1;
 	value = (this.inst._getBasePositionIndex() * 100) +"%";
 
-	this.inst.moveTo(index);  // move to last
+	this.inst.moveTo(index,0);  // move to last
 
 	// Then
 	equal(count - 1, this.inst._conf.panel.no, "Panel number indicate last panel number?");
@@ -515,19 +562,83 @@ test("Method: moveTo()", function() {
 	ok(this.inst.getElement().html().indexOf("Layer "+ (count - 1)), "Moved correctly?");
 
 	// When
-	this.inst.moveTo(0);  // move to first
+	this.inst.moveTo(0,0);  // move to first
 
 	equal(this.inst._conf.panel.no, 0, "Panel number indicate first panel number?");
 	deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
 	ok(this.inst.getElement().html().indexOf("Layer 0"), "Moved correctly?");
 
 	// When
-	this.inst.moveTo(2);  // move to third
+	this.inst.moveTo(2,0);  // move to third
 
 	equal(this.inst._conf.panel.no, 2, "Panel number indicate correct panel number?");
 	deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
 	ok(this.inst.getElement().html().indexOf("Layer 2"), "Moved correctly?");
 });
+
+asyncTest("Method: moveTo() - Animation #1", function() {
+	// Given
+	this.inst = new eg.Flicking($("#mflick1"));
+
+	var count = this.inst._conf.panel.count,
+		panelSize = this.inst._conf.panel.size,
+		value = (count - 1) * 100;
+
+	// When
+	this.inst.moveTo(count - 1,0, 500);  // move to last
+
+	setTimeout($.proxy(function() {
+		// Then
+		equal($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Moved to last panel?");
+		start();
+	}, this),500);
+});
+
+asyncTest("Method: moveTo() - Animation #2", function() {
+	// Given
+	this.inst = new eg.Flicking($("#mflick3"), {
+		circular : true
+	});
+
+	count = this.inst._conf.panel.count,
+	panelSize = this.inst._conf.panel.size;
+
+	// When
+	var index = count - 1;
+	value = (this.inst._getBasePositionIndex() * 100) +"%";
+
+	this.inst.moveTo(index,300);  // move to last
+
+	setTimeout($.proxy(function() {
+		// Then
+		equal(count - 1, this.inst._conf.panel.no, "Panel number indicate last panel number?");
+		deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
+		ok(this.inst.getElement().html().indexOf("Layer "+ (count - 1)), "Moved correctly?");
+
+		start();
+	}, this),500);
+});
+
+asyncTest("Method: moveTo() - Animation #3", function() {
+	// Given
+	this.inst = new eg.Flicking($("#mflick3"), {
+		circular : true
+	});
+
+	var value = (this.inst._getBasePositionIndex() * 100) +"%";
+
+	this.inst.moveTo(2,300);  // move to last
+
+	setTimeout($.proxy(function() {
+		// Then
+		equal(this.inst._conf.panel.no, 2, "Panel number indicate second panel number?");
+		deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
+		ok(this.inst.getElement().html().indexOf("Layer 2"), "Moved correctly?");
+
+		start();
+	}, this),500);
+});
+
 
 test("Method: resize()", function() {
 	// Given

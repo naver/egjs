@@ -1,4 +1,4 @@
-eg.module("persist",[jQuery, window, document],function($, global, doc){
+eg.module("persist", [jQuery, window, document], function($, global, doc){
 	"use strict";
 	/**
 	* Support persist event in jQuery
@@ -17,19 +17,16 @@ eg.module("persist",[jQuery, window, document],function($, global, doc){
 			document.scrollTo(e.state.scrollTop);
 	});
 	*/
-	var history = global.history;
-	var location = global.location;
-	var hasReplaceState = "replaceState" in history;
-
+	var history = global.history,
+	location = global.location,
+	hasReplaceState = "replaceState" in history,
+	hasStateProperty = "state" in history;
+	
 	function onPageshow(e) {
-		if (isPersisted(e.originalEvent)) {
-			reset();
+		if(!isPersisted(e.originalEvent) && isBackForwardNavigated()) {
+			$(global).trigger("persist");
 		} else {
-			if (isBackForwardNavigated() && history.state) {
-				$(global).trigger("persist");
-			} else {
-				reset();
-			}
+			reset();
 		}
 	}
 	/*
@@ -45,14 +42,14 @@ eg.module("persist",[jQuery, window, document],function($, global, doc){
 
 	function isBackForwardNavigated() {
 		var wp = global.performance;
-		return !(wp && wp.navigation && (wp.navigation.type === wp.navigation.TYPE_NAVIGATE || wp.navigation.type === wp.navigation.TYPE_RELOAD));
+		return (wp && wp.navigation && (wp.navigation.type === wp.navigation.TYPE_BACK_FORWARD));
 	}
 	/*
 	 * flush current history state
 	 */
 
 	function reset() {
-		hasReplaceState && history.replaceState(null, doc.title, location.href);
+		history.replaceState(null, doc.title, location.href);
 	}
 
 	function clone(state) {
@@ -79,23 +76,27 @@ eg.module("persist",[jQuery, window, document],function($, global, doc){
 		location.href = this.attr("href");
 	});
 	*/
-	$.persist = function(state) {
-		if (hasReplaceState && state) {
-			history.replaceState(state, doc.title, location.href);
-		}
-		return clone(history.state);
-	};
-	$.event.special.persist = {
-		setup: function() {
-			$(global).on("pageshow", onPageshow);
-		},
-		teardown: function() {
-			$(global).off("pageshow", onPageshow);
-		},
-		trigger: function(e) {
-			e.state = clone(history.state);
-		}
-	};
+	if(hasReplaceState && hasStateProperty) {
+		$.persist = function(state) {
+			if(state) {
+				history.replaceState(state, doc.title, location.href);
+			}
+			return clone(history.state);		
+		};
+		$.event.special.persist = {
+			setup: function() {
+				$(global).on("pageshow", onPageshow);
+			},
+			teardown: function() {
+				$(global).off("pageshow", onPageshow);
+			},
+			trigger: function(e) {
+				e.state = clone(history.state);
+			}
+		};			
+	} else {
+		$.persist = function() {};
+	}
 	
 	return {
 		"isPersisted": isPersisted,

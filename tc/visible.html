@@ -84,7 +84,7 @@ hr {
   margin:0 0 20px;
 }
 
-#view { height:200px; overflow:auto; padding:0px; }
+#view { height:200px; overflow:hidden; padding:0px; }
 
 #view span { border:1px solid #aaa; padding:2px; border-radius:5px; }
 #view .list {
@@ -122,19 +122,16 @@ input {
 }
 </style>
 <script src="../bower_components/jquery/jquery.js"></script>
-<script src="../bower_components/jquery.easing/js/jquery.easing.js"></script>
-<script src="../bower_components/hammer.js/hammer.js"></script>
 <script src="../bower_components/iscroll/build/iscroll.js"></script>
 <script src="../src/module.js"></script>
 <script src="../src/eg.js"></script>
-<script src="../src/customEvent/persist.js"></script>
-<script src="../src/customEvent/rotate.js"></script>
 <script src="../src/customEvent/scrollEnd.js"></script>
 <script src="../src/hook/css.js"></script>
 <script src="../src/class.js"></script>
 <script src="../src/component.js"></script>
 <script src="../src/visible.js"></script>
 </head>
+
 <body>
 	<div id="view">
 		<div>
@@ -338,10 +335,14 @@ $(function() {
       $(e.invisible).removeClass("visible");
   });
 
+try {
   // using iscroll
   new IScroll("#view").on("scrollEnd", function(e) {
     visible.check(200);
   });
+} catch(e) {
+  //console.log(e);
+}
 
   // init check
   visible.check();

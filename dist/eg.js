@@ -49,13 +49,20 @@ eg.module("css",[window.jQuery, document],function($, doc){
         }
     })();
 
+    // ie7, 8 - transform and transition not support
+    // ie9 - transition not support
+     if(!vendorPrefix) {
+        return;
+    }
+
     var setCssHooks = function( prop ) {
         var upperProp = prop.charAt(0).toUpperCase() + prop.slice(1),
-            vendorProp = vendorPrefix + upperProp;
+            vendorProp = vendorPrefix + upperProp,
+            getVendorProp = vendorPrefix === "ms" ? "Ms" + upperProp : vendorProp;
 
         $.cssHooks[upperProp] = $.cssHooks[vendorPrefix.toLowerCase() + upperProp] = $.cssHooks[prop] = {
-            get: function( elem ){
-                return $.css( elem, vendorProp );
+            get: function( elem ,computed){
+                return computed ? $.css( elem, getVendorProp ) : elem.style[vendorProp];
             },
             set: function( elem, value ){
                 elem.style[vendorProp] = value;
@@ -73,7 +80,6 @@ eg.module("css",[window.jQuery, document],function($, doc){
     };
 
 });
-
 eg.module("eg",[window.jQuery, eg, window],function($, ns, global){
 	// redefine requestAnimationFrame and cancelAnimationFrame
 	// @todo change to jindo 'timer.js'
@@ -451,7 +457,7 @@ eg.cancelAnimationFrame(timerId);
 
 });
 
-eg.module("persist",[jQuery, window, document],function($, global, doc){
+eg.module("persist", [jQuery, window, document], function($, global, doc){
 /**
 	* Support persist event in jQuery
 	* @ko jQuery custom persist 이벤트 지원
@@ -469,19 +475,16 @@ eg.module("persist",[jQuery, window, document],function($, global, doc){
 			document.scrollTo(e.state.scrollTop);
 	});
 	*/
-	var history = global.history;
-	var location = global.location;
-	var hasReplaceState = "replaceState" in history;
-
+	var history = global.history,
+	location = global.location,
+	hasReplaceState = "replaceState" in history,
+	hasStateProperty = "state" in history;
+	
 	function onPageshow(e) {
-		if (isPersisted(e.originalEvent)) {
-			reset();
+		if(!isPersisted(e.originalEvent) && isBackForwardNavigated()) {
+			$(global).trigger("persist");
 		} else {
-			if (isBackForwardNavigated() && history.state) {
-				$(global).trigger("persist");
-			} else {
-				reset();
-			}
+			reset();
 		}
 	}
 	/*
@@ -497,14 +500,14 @@ eg.module("persist",[jQuery, window, document],function($, global, doc){
 
 	function isBackForwardNavigated() {
 		var wp = global.performance;
-		return !(wp && wp.navigation && (wp.navigation.type === wp.navigation.TYPE_NAVIGATE || wp.navigation.type === wp.navigation.TYPE_RELOAD));
+		return (wp && wp.navigation && (wp.navigation.type === wp.navigation.TYPE_BACK_FORWARD));
 	}
 	/*
 	 * flush current history state
 	 */
 
 	function reset() {
-		hasReplaceState && history.replaceState(null, doc.title, location.href);
+		history.replaceState(null, doc.title, location.href);
 	}
 
 	function clone(state) {
@@ -531,23 +534,27 @@ eg.module("persist",[jQuery, window, document],function($, global, doc){
 		location.href = this.attr("href");
 	});
 	*/
-	$.persist = function(state) {
-		if (hasReplaceState && state) {
-			history.replaceState(state, doc.title, location.href);
-		}
-		return clone(history.state);
-	};
-	$.event.special.persist = {
-		setup: function() {
-			$(global).on("pageshow", onPageshow);
-		},
-		teardown: function() {
-			$(global).off("pageshow", onPageshow);
-		},
-		trigger: function(e) {
-			e.state = clone(history.state);
-		}
-	};
+	if(hasReplaceState && hasStateProperty) {
+		$.persist = function(state) {
+			if(state) {
+				history.replaceState(state, doc.title, location.href);
+			}
+			return clone(history.state);		
+		};
+		$.event.special.persist = {
+			setup: function() {
+				$(global).on("pageshow", onPageshow);
+			},
+			teardown: function() {
+				$(global).off("pageshow", onPageshow);
+			},
+			trigger: function(e) {
+				e.state = clone(history.state);
+			}
+		};			
+	} else {
+		$.persist = function() {};
+	}
 	
 	return {
 		"isPersisted": isPersisted,
@@ -1169,6 +1176,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 	 * @param {Boolean} [options.circular.3=false] The circular left range <ko>left 순환 영역</ko>
 	 *
 	 * @param {Function} [options.easing a easing=easing.easeOutQuint] Function of the jQuery Easing Plugin <ko>jQuery Easing 플러그인 함수</ko>
+	 * @param {Number} [options.maximumDuration=Infinity] The maximum duration. <ko>최대 좌표 이동 시간</ko>
 	 * @param {Number} [options.deceleration=0.0006] deceleration This value can be altered to change the momentum animation duration. higher numbers make the animation shorter. <ko>감속계수. 높을값이 주어질수록 애니메이션의 동작 시간이 짧아진다.</ko>
 	 * @see Hammerjs {@link http://hammerjs.github.io}
 	 * @see jQuery Easing Plugin {@link http://gsgd.co.uk/sandbox/jquery/easing}
@@ -1182,6 +1190,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				margin : [0,0,0,0],
 				circular : [false, false, false, false],
 				easing : $.easing.easeOutQuint,
+				maximumDuration : Infinity,
 				deceleration : 0.0006
 			};
 			this._reviseOptions(options);
@@ -1189,7 +1198,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				grabOutside : false,	// check whether user's action started on outside
 				curHammer : null,		// current hammer instance
 				moveDistance : null,	// a position of the first user's action
-				animating : null,		// animation infomation
+				animationParam : null,		// animation infomation
 				interrupted : false		//  check whether the animation event was interrupted
 			};
 			this._hammers = {};
@@ -1209,7 +1218,6 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		 * @param {Number} [options.scale.0=1] x-scale <ko>x축 배율</ko>
 		 * @param {Number} [options.scale.1=1] y-scale <ko>y축 배율</ko>
 		 * @param {Number} [options.thresholdAngle=45] The threshold angle about direction which range is 0~90 <ko>방향에 대한 임계각 (0~90)</ko>
-		 * @param {Number} [options.maximumSpeed=Infinity] The maximum speed. <ko>최대 좌표 변환 속도 (px/ms)</ko>
 		 * @param {Number} [options.interruptable=true] interruptable This value can be enabled to interrupt cycle of the animation event. <ko>이 값이  true이면, 애니메이션의 이벤트 사이클을 중단할수 있다.</ko>
 
 		 * @return {Boolean}
@@ -1221,7 +1229,6 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 					direction : ns.DIRECTION_ALL,
 					scale : [ 1, 1 ],
 					thresholdAngle : 45,
-					maximumSpeed : Infinity,
 					interruptable : true
 				};
 			$.extend(subOptions, options);
@@ -1236,6 +1243,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			return this;
 		},
 		_createHammer : function(el, subOptions) {
+			try {
 			// create Hammer
 			var hammer = new HM.Manager(el, {
 					recognizers : [
@@ -1258,6 +1266,9 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			.on("panstart panmove", $.proxy(this._panmove,this))
 			.on("panend", $.proxy(this._panend,this));
 			return hammer;
+			} catch(e) {
+				// console.log(e);
+			}
 		},
 		/**
 		 * Dettach a element to an use for the movableCoord.
@@ -1277,10 +1288,10 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		},
 
 		_grab : function() {
-			if(this._status.animating) {
+			if(this._status.animationParam) {
 				this._pos = this._getCircularPos(this._pos);
 				this._triggerChange(this._pos, true);
-				this._status.animating = null;
+				this._status.animationParam = null;
 				this._raf && ns.cancelAnimationFrame(this._raf);
 				this._raf = null;
 			}
@@ -1303,6 +1314,8 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			if (circular[3] && pos[0] < min[0]) { // left
 				pos[0] = (pos[0] - min[0]) % (max[0] - min[0] + 1) + max[0];
 			}
+			pos[0] = +pos[0].toFixed(5), pos[1] = +pos[1].toFixed(5);
+
 			return pos;
 		},
 
@@ -1363,7 +1376,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				prevent  = false;
 
 			// not support offset properties in Hammerjs - start
-			var prevInput = this._status.curHammer.session.prevInput || {};
+			var prevInput = this._status.curHammer.session.prevInput;
 			if(prevInput) {
 			    e.offsetX = e.deltaX - prevInput.deltaX;
 			    e.offsetY = e.deltaY - prevInput.deltaY;
@@ -1431,11 +1444,12 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			// console.log(e.velocityX, e.velocityY, e.deltaX, e.deltaY);
 			!(direction & ns.DIRECTION_HORIZONTAL) && (vX = 0);
 			!(direction & ns.DIRECTION_VERTICAL) && (vY = 0);
+
 			this._animateBy(
 				this._getNextOffsetPos( [
 					vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
 					vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
-				], this._subOptions.maximumSpeed ),
+				] ),
 			this._animationEnd, false, null, e);
 			this._status.moveDistance = null;
 		},
@@ -1468,11 +1482,11 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			this._animateTo( [
 				Math.min(max[0], Math.max(min[0], pos[0])),
 				Math.min(max[1], Math.max(min[1], pos[1]))
-			] , $.proxy(this.trigger, this, "animationEnd"), true);
+			] , $.proxy(this.trigger, this, "animationEnd"), true, null);
 		},
 
-		_getNextOffsetPos : function(speeds, maximumSpeed) {
-			var normalSpeed = Math.min(maximumSpeed || Infinity, Math.sqrt(speeds[0]*speeds[0]+speeds[1]*speeds[1])),
+		_getNextOffsetPos : function(speeds) {
+			var normalSpeed = Math.sqrt(speeds[0]*speeds[0]+speeds[1]*speeds[1]),
 				duration = Math.abs(normalSpeed / -this.options.deceleration);
 			return [
 				speeds[0]/2 * duration,
@@ -1563,24 +1577,24 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				min = this.options.min,
 				max = this.options.max,
 				circular = this.options.circular,
-				destPos = param.destPos,
-				isCircular = this._isCircular(circular, destPos, min, max),
+				isCircular = this._isCircular(circular, param.destPos, min, max),
+				destPos = this._isOutToOut(pos, param.destPos, min, max) ? pos : param.destPos,
+				distance = [ Math.abs(destPos[0]-pos[0]), Math.abs(destPos[1]-pos[1]) ],
 				animationParam;
-			this._isOutToOut(pos, destPos, min, max) && (destPos = pos);
-			duration = duration || Math.min( Infinity,
-				this._getDurationFromPos( [ Math.abs(destPos[0]-pos[0]), Math.abs(destPos[1]-pos[1]) ] ) );
+			duration = duration === null ? this._getDurationFromPos(distance) : duration;
+			duration = this.options.maximumDuration > duration ? duration : this.options.maximumDuration;
 
 			var	done = $.proxy(function(isNext) {
-					this._status.animating = null;
+					this._status.animationParam = null;
 					pos[0] = Math.round(destPos[0]);
 					pos[1] = Math.round(destPos[1]);
 					pos = this._getCircularPos(pos, min, max, circular);
 					!isNext && (this._status.interrupted = false);
-					callback && callback();
+					callback();
 				}, this);
 
-			if (!duration) {
-				return done(false);
+			if (distance[0] === 0 && distance[1] === 0) {
+				return done(!isBounce);
 			}
 
 			// prepare animation parameters
@@ -1618,32 +1632,37 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			}
 			animationParam.depaPos = pos;
 			animationParam.startTime = new Date().getTime();
-			this._status.animating = animationParam;
-
+			this._status.animationParam = animationParam;
 			if (retTrigger) {
-				// console.error("depaPos", pos, "depaPos",destPos, "duration", duration, "ms");
-				var info = this._status.animating,
-					self = this;
-				(function loop() {
-					self._raf=null;
-					if (self._frame(info) >= 1) { return done(true); } // animationEnd
-					self._raf = ns.requestAnimationFrame(loop);
-				})();
+				if(animationParam.duration) {
+					// console.error("depaPos", pos, "depaPos",destPos, "duration", duration, "ms");
+					var info = this._status.animationParam,
+						self = this;
+					(function loop() {
+						self._raf = null;
+						if (self._frame(info) >= 1) { return done(true); } // animationEnd
+						self._raf = ns.requestAnimationFrame(loop);
+					})();
+				} else {
+					this._triggerChange(animationParam.destPos, false);
+					done(!isBounce);
+				}
 			}
 		},
 
 		// animation frame (0~1)
 		_frame : function(param) {
 			var curTime = new Date() - param.startTime,
-				per = Math.min(1, curTime / param.duration),
 				easingPer = this.options.easing(null, curTime, 0, 1, param.duration),
 				pos = [ param.depaPos[0], param.depaPos[1] ];
+			easingPer = easingPer >= 1 ? 1 : easingPer;
+
 			for (var i = 0; i <2 ; i++) {
 			    (pos[i] !== param.destPos[i]) && (pos[i] += (param.destPos[i] - pos[i]) * easingPer);
 			}
 			pos = this._getCircularPos(pos);
 			this._triggerChange(pos, false);
-			return per;
+			return easingPer;
 		},
 
 		// set up 'css' expression
@@ -1888,15 +1907,18 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 					direction : null	// touch direction
 				},
 				customEvent : {},		// for custom event return value
-				clickBug : ns._hasClickBug(),
 				useLayerHack : this.options.hwAccelerable && !supportHint,
-				useHint : this.options.hwAccelerable && supportHint,
-				dirData : []
+				dirData : [],
+				indexToMove : 0,
+				triggerFlickEvent : true
 			};
 
-			$([[ "RIGHT", "LEFT" ], [ "DOWN", "UP" ]][ +!this.options.horizontal ]).each( $.proxy( function(i,v) {
+			$([[ "LEFT", "RIGHT" ], [ "DOWN", "UP" ]][ +!this.options.horizontal ]).each( $.proxy( function(i,v) {
 				this._conf.dirData.push(ns[ "DIRECTION_"+ v ]);
 			}, this ) );
+
+			!ns._hasClickBug() && ( this._setPointerEvents = function(){} );
+			!(this.options.hwAccelerable && supportHint) && ( this._setHint = function(){} );
 
 			this._build();
 			this._bindEvents();
@@ -1953,7 +1975,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			}).bind(this._wrapper, {
 				scale : this._getDataByDirection( [ -1, 0 ] ),
 				direction : ns[ "DIRECTION_"+ ( horizontal ? "HORIZONTAL" : "VERTICAL" ) ],
-				maximumSpeed : options.duration,
 				interruptable : false
 			});
 
@@ -2020,17 +2041,17 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 					coords = [ -(panel.size * index), 0];
 
 					this._setTranslate(coords);
-					this._mcInst.setTo( Math.abs(coords[0]), Math.abs(coords[1]) );
+					this._setMovableCoord("setTo", [ Math.abs(coords[0]), Math.abs(coords[1]) ] );
 				}
 			}
 		},
 
 		/**
 		 * Arrange panels' position
-		 * @param {Boolean} recycle
-		 * @param {Number} no - number of panels to arrange
+		 * @param {Boolean} sort Need to sort panel's position
+		 * @param {Number} indexToMove Number to move from current position (negative: left, positive: right)
 		 */
-		_arrangePanels : function(recycle, no) {
+		_arrangePanels : function(sort, indexToMove) {
 			var panel = this._conf.panel,
 				touch = this._conf.touch,
 				dirData = this._conf.dirData,
@@ -2038,23 +2059,23 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				coords;
 
 			if(this.options.circular) {
-				// move elements according direction
-				if(recycle) {
-					if(typeof no !== "undefined") {
-						touch.direction = dirData[ +!Boolean(no > 0) ];
-					}
+				// when arranging panels, set flag to not trigger flick custom event
+				this._conf.triggerFlickEvent = false;
 
-					this._arrangePanelPosition(touch.direction, no);
+				// move elements according direction
+				if(sort) {
+					indexToMove && ( touch.direction = dirData[ +!Boolean(indexToMove > 0) ] );
+					this._arrangePanelPosition(touch.direction, indexToMove);
 				}
 
 				// set index for base element's position
 				panel.index = this._getBasePositionIndex();
-				coords = this._getDataByDirection([ panel.size * panel.index, 0 ]);
 
-				this._mcInst.setTo(coords[0], coords[1]);
+				// arrange MovableCoord's coord position
+				this._conf.triggerFlickEvent = !!this._setMovableCoord( "setTo", [ panel.size * panel.index, 0 ], true );
 			}
 
-			// set each panel's position
+			// set each panel's position in DOM
 			panel.list.each(
 				$.proxy(function(i, v) {
 					coords = this._getDataByDirection([ (100 * i) +"%", 0 ]);
@@ -2063,16 +2084,35 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		},
 
 		/**
+		 * Set MovableCoord coord value
+		 * @param {String} method
+		 * @param {Array} coord
+		 * @param {Boolean} isDirVal
+		 * @param {Number} duration
+		 * @return {Object} MovableCoord instance
+		 */
+		_setMovableCoord : function(method, coord, isDirVal, duration) {
+			var type = typeof duration;
+
+			if( type !== "undefined" ) {
+				duration = type === "number" ? duration : this.options.duration;
+				duration > 0 && this._setHint(true);
+			}
+
+			isDirVal && this._getDataByDirection(coord);
+
+			return this._mcInst[ method ]( coord[0], coord[1], duration );
+		},
+
+		/**
 		 * Set hint for browser to decide efficient way of doing transform changes(or animation)
 		 * https://dev.opera.com/articles/css-will-change-property/
 		 * @param {Boolean} set
 		 */
 		_setHint : function(set) {
-			if(this._conf.useHint) {
-				var value = set ? "transform" : "";
-				this._container.css("willChange", value);
-				this._conf.panel.list.css("willChange", value);
-			}
+			var value = set ? "transform" : "";
+			this._container.css("willChange", value);
+			this._conf.panel.list.css("willChange", value);
 		},
 
 		/**
@@ -2089,11 +2129,11 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		/**
 		 * Move nodes
 		 * @param {Boolean} diretion
-		 * @param {Number} times
+		 * @param {Number} indexToMove
 		 */
-		_arrangePanelPosition : function(direction, times) {
+		_arrangePanelPosition : function(direction, indexToMove) {
 			var next = direction === this._conf.dirData[0];
-			this._movePanelPosition( Math.abs(times || 1), next );
+			this._movePanelPosition( Math.abs(indexToMove || 1), next );
 		},
 
 		/**
@@ -2147,7 +2187,9 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * 'change' event handler
 		 */
 		_changeHandler : function(e) {
-			var pos = e.pos;
+			var pos = e.pos,
+				eventRes = null;
+
 			this._setPointerEvents(e);  // for "click" bug
 
 			/**
@@ -2180,9 +2222,8 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			 * @param {Number} param.pos.0 Departure x-coordinate <ko>x 좌표</ko>
 			 * @param {Number} param.pos.1 Departure y-coordinate <ko>y 좌표</ko>
 			 */
-			if(this._triggerEvent(e.holding ? "touchMove" : "flick", { pos : e.pos })) {
-				this._setTranslate([ -pos[ +!this.options.horizontal ], 0 ]);
-			}
+			this._conf.triggerFlickEvent && ( eventRes = this._triggerEvent( e.holding ? "touchMove" : "flick", { pos : e.pos } ) );
+			( eventRes || eventRes === null ) && this._setTranslate( [ -pos[ +!this.options.horizontal ], 0 ] );
 		},
 
 		/**
@@ -2193,13 +2234,13 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				pos = e.destPos,
 				posIndex = +!this.options.horizontal,
 				holdPos = touch.holdPos[posIndex],
-				panelWidth = this._conf.panel.size;
+				panelSize = this._conf.panel.size;
 
 			touch.distance = e.depaPos[posIndex] - touch.holdPos[posIndex];
 			touch.direction = this._conf.dirData[ +!Boolean(touch.holdPos[posIndex] < e.depaPos[posIndex]) ];
 
-			pos[posIndex] = Math.max(holdPos - panelWidth, Math.min(holdPos + panelWidth, pos[posIndex]));
-			touch.destPos[posIndex] = pos[posIndex] = Math.round(pos[posIndex] / panelWidth) * panelWidth;
+			pos[posIndex] = Math.max(holdPos - panelSize, Math.min(holdPos, pos[posIndex]));
+			touch.destPos[posIndex] = pos[posIndex] = Math.round(pos[posIndex] / panelSize) * panelSize;
 
 			/**
 			 * When touch ends
@@ -2231,12 +2272,13 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * 'animationStart' event handler
 		 */
 		_animationStartHandler : function(e) {
-			var panel = this._conf.panel,
-				direction = this._conf.touch.direction,
-				dirData = this._conf.dirData;
+			var panel = this._conf.panel;
 
 			panel.animating = true;
-			e.duration = this.options.duration;
+			//e.duration = this.options.duration;
+
+			this._setPhaseValue("start");
+			e.destPos[ +!this.options.horizontal ] = panel.size * ( panel.index + this._conf.indexToMove );
 
 			if(this._isMovable()) {
 				/**
@@ -2261,12 +2303,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 					depaPos : e.depaPos,
 					destPos : e.destPos
 				});
-
-				panel.index += direction === dirData[0] ? 1 : -1;
-				e.destPos[ +!this.options.horizontal ] = panel.size * panel.index;
-
-				this._setPanelNo(true);
-				panel.changed = true;
 
 			} else {
 				/**
@@ -2300,16 +2336,9 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * 'animationEnd' event handler
 		 */
 		_animationEndHandler : function() {
-			// adjust panel coordination
 			var panel = this._conf.panel;
 
-			this._setTranslate([ -panel.size * panel.index, 0 ]);
-
-			if(this.options.circular && panel.changed) {
-				this._arrangePanels(true);
-				this._setPanelNo();
-			}
-
+			this._setPhaseValue("end");
 			this._setHint(panel.animating = false);
 
 			/**
@@ -2344,18 +2373,36 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		},
 
 		/**
-		 * Set the logical panel index number
-		 * @param {Boolean} move - set to increment or decrement
+		 * Set value when panel changes
+		 * @param {String} phase - [start|end]
 		 */
-		_setPanelNo : function(move) {
+		_setPhaseValue : function(phase) {
+			var panel = this._conf.panel;
+
+			if( ~phase.indexOf("start") && ( panel.changed = this._isMovable() ) ) {
+				this._conf.indexToMove === 0 && this._setPanelNo();
+			}
+
+			if( ~phase.indexOf("end") ) {
+				if(this.options.circular && panel.changed) {
+					this._arrangePanels(true, this._conf.indexToMove);
+				}
+
+				this._setTranslate([ -panel.size * panel.index, 0 ]);
+				this._conf.indexToMove = 0;
+			}
+		},
+
+		/**
+		 * Set the logical panel index number
+		 */
+		_setPanelNo : function() {
 			var panel = this._conf.panel,
 				count = panel.origCount - 1,
-				direction = this._conf.touch.direction,
-				dirData = this._conf.dirData;
+				num = this._conf.touch.direction === this._conf.dirData[0] ? 1 : -1;
 
-			if(move) {
-				panel.no += direction === dirData[0] ? 1 : -1;
-			}
+			panel.index += num;
+			panel.no += num;
 
 			if(panel.no > count) {
 				panel.no = 0;
@@ -2369,9 +2416,15 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * @param {Event} e
 		 */
 		_setPointerEvents : function(e) {
-			if(this._conf.clickBug) {
-				this._container.css("pointerEvents", e && e.holding && e.hammerEvent.preventSystemEvent ? "none" : "auto");
+			var pointer = this._container.css("pointerEvents"), val;
+
+			if( e && e.holding && e.hammerEvent.preventSystemEvent && pointer !== "none" ) {
+				val = "none";
+			} else if( !e && pointer !== "auto" ) {
+				val = "auto";
 			}
+
+			val && this._container.css("pointerEvents", val);
 		},
 
 		/**
@@ -2469,24 +2522,31 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		},
 
 		/**
+		 * Set value to force move panels when duration is 0
+		 * @param {Boolean} next
+		 */
+		_setValueToMove : function( next ) {
+			this._conf.touch.distance = this.options.threshold + 1;
+			this._conf.touch.direction = this._conf.dirData[ +!next ];
+		},
+
+		/**
 		 * Move panel to the given direction
-		 * @param {Boolean} direction
+		 * @param {Boolean} next
 		 * @param {Number} duration
 		 */
-		_movePanel : function(direction, duration) {
-			var panel = this._conf.panel,
-				next = direction === this._conf.dirData[0],
-				index = this[ next ? "getNextIndex" : "getPrevIndex" ](),
-				coords;
+		_movePanel : function(next, duration) {
+			var panel = this._conf.panel;
 
-			if(index != null) {
-				this._conf.touch.direction = direction;
-				this._setPanelNo(true);
-				panel.index = index;
+			if(panel.animating) {
+				return;
+			}
 
-				coords = this._getDataByDirection([ panel.size * ( next ? 1 : -1 ), 0 ]);
-				this._mcInst.setBy( coords[0], coords[1], typeof duration === "number" ? duration : this.options.duration );
-				this._arrangePanels(true);
+			this._setValueToMove(next);
+
+			if( this.options.circular || this[ next ? "getNextIndex" : "getPrevIndex" ]() != null ) {
+				this._setMovableCoord("setBy", [ panel.size * ( next ? 1 : -1 ), 0 ], true, duration);
+				duration === 0 && this._setPhaseValue("startend");
 			}
 		},
 
@@ -2592,7 +2652,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
 		 */
 		next : function(duration) {
-			this._movePanel( this._conf.dirData[0], duration );
+			this._movePanel( true, duration );
 		},
 
 		/**
@@ -2602,7 +2662,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
 		 */
 		prev : function(duration) {
-			this._movePanel( this._conf.dirData[1], duration );
+			this._movePanel( false, duration );
 		},
 
 		/**
@@ -2616,11 +2676,13 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			var panel = this._conf.panel,
 				currentIndex = panel.index,
 				indexToMove = 0,
-				movableCount, coords;
+				movableCount, movable;
 
-			if(typeof no !== "number" || no >= panel.origCount || no === panel.no) {
+			if(typeof no !== "number" || no >= panel.origCount || no === panel.no || panel.animating) {
 				return;
 			}
+
+			movable = this.options.circular || no >= 0 && no < panel.origCount;
 
 			if(this.options.circular) {
 				// real panel count which can be moved on each(left(up)/right(down)) sides
@@ -2642,13 +2704,16 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				}
 
 				panel.no = no;
-				this._arrangePanels(true, indexToMove);
+				this._conf.indexToMove = indexToMove;
+				this._setValueToMove( indexToMove > 0 );
+				this._setMovableCoord("setBy", [ panel.size * indexToMove, 0 ], true, duration);
 
-			} else {
-				panel.index = no;
-				coords = this._getDataByDirection([ panel.size * indexToMove, 0 ]);
-				this._mcInst.setTo( coords[0], coords[1], typeof duration === "number" ? duration : this.options.duration );
+			} else if(movable) {
+				panel.no = panel.index = no;
+				this._setMovableCoord("setTo", [ panel.size * no, 0 ], true, duration);
 			}
+
+			movable && duration === 0 && this._setPhaseValue("startend");
 		},
 
 		/**
@@ -2666,7 +2731,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			panel.list.css("width", width);
 
 			// adjust the position of current panel
-			this._mcInst.setTo(width * panel.index, 0).options.max = maxCoords;
+			this._setMovableCoord("setTo", [ width * panel.index, 0 ]).options.max = maxCoords;
 		}
 	});
 });

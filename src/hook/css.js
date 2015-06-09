@@ -35,13 +35,20 @@ eg.module("css",[window.jQuery, document],function($, doc){
         }
     })();
 
+    // ie7, 8 - transform and transition not support
+    // ie9 - transition not support
+     if(!vendorPrefix) {
+        return;
+    }
+
     var setCssHooks = function( prop ) {
         var upperProp = prop.charAt(0).toUpperCase() + prop.slice(1),
-            vendorProp = vendorPrefix + upperProp;
+            vendorProp = vendorPrefix + upperProp,
+            getVendorProp = vendorPrefix === "ms" ? "Ms" + upperProp : vendorProp;
 
         $.cssHooks[upperProp] = $.cssHooks[vendorPrefix.toLowerCase() + upperProp] = $.cssHooks[prop] = {
-            get: function( elem ){
-                return $.css( elem, vendorProp );
+            get: function( elem ,computed){
+                return computed ? $.css( elem, getVendorProp ) : elem.style[vendorProp];
             },
             set: function( elem, value ){
                 elem.style[vendorProp] = value;

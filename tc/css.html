@@ -7,14 +7,8 @@
 #el {font-size:20pt}
 </style>
 <script src="../bower_components/jquery/jquery.js"></script>
-<script src="../bower_components/jquery.easing/js/jquery.easing.js"></script>
-<script src="../bower_components/hammer.js/hammer.js"></script>
-<script src="../bower_components/iscroll/build/iscroll.js"></script>
 <script src="../src/module.js"></script>
 <script src="../src/eg.js"></script>
-<script src="../src/customEvent/persist.js"></script>
-<script src="../src/customEvent/rotate.js"></script>
-<script src="../src/customEvent/scrollEnd.js"></script>
 <script src="../src/hook/css.js"></script>
 </head>
 <body>
@@ -29,10 +23,15 @@
     });
 
     var arrData = [];
+
     setTimeout(function(){
-        arrData.push($("#el").css("transitionDuration"));
-        arrData.push($("#el").css("transform"));
-        $("#detail").html(arrData.join("</br>"));
+        try {
+            arrData.push($("#el").css("transitionDuration"));
+            arrData.push($("#el").css("transform"));
+            $("#detail").html(arrData.join("</br>"));
+        } catch(e) {
+            // console.log(e);
+        }
     }, 1500)
 })
 
