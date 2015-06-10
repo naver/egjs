@@ -60,7 +60,6 @@ module.exports = function(grunt) {
 			}
 		},
 		qunit : {
-
 			options : {
 				timeout : 10000,
 				"--web-security": "no",
@@ -71,7 +70,10 @@ module.exports = function(grunt) {
 					htmlReport: "report",
 					coberturaReport: "report",
 					linesThresholdPct: 0
-				}
+				},
+				page : {
+	                viewportSize : { width: 320, height: 667 }
+	            }
 			}
 		},
 		watch : {
@@ -94,7 +96,6 @@ module.exports = function(grunt) {
 				}
 		}
 	});
-
 	grunt.registerTask("test", function() {
 		var eachfile = Array.prototype.slice.apply(arguments);
 		if(eachfile.length) {
