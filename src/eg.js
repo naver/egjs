@@ -23,7 +23,7 @@ eg.module("eg",[window.jQuery, eg, window],function($, ns, global){
 		caf = global.clearTimeout;
 	}
 
-	function cacheResult(scope,name,param,defaultValue){
+	function resultCache(scope,name,param,defaultValue){
 		var method = scope.hook[name];
 		if(method){
 			defaultValue = method.apply(scope,param);
@@ -145,7 +145,7 @@ eg.hook.agent = function(agent) {
 				}
 			};
 			info = this._checkWebview(info, ua);
-			return cacheResult(this,"agent",[info],info);
+			return resultCache(this,"agent",[info],info);
 		},
 
 		// Check Webview
@@ -224,7 +224,7 @@ eg.hook.isHWAccelerable = function(defalutVal,agent) {
 						/SHW-|SHV-|GT-|SCH-|SGH-|SPH-|LG-F160|LG-F100|LG-F180|LG-F200|EK-|IM-A|LG-F240|LG-F260/.test(useragent) &&
 						!/SHW-M420|SHW-M200|GT-S7562/.test(useragent));
 			}
-			return cacheResult(this,"isHWAccelerable",[result,agent],result);
+			return resultCache(this,"isHWAccelerable",[result,agent],result);
 		},
 
 		/**
@@ -269,7 +269,7 @@ eg.hook.isTransitional = function(defaultVal, agent) {
 						break;
 				}
 			}
-			return cacheResult(this,"isTransitional",[result,agent],result);
+			return resultCache(this,"isTransitional",[result,agent],result);
 		},
 
 		// 1. user press one position on screen.
@@ -279,7 +279,7 @@ eg.hook.isTransitional = function(defaultVal, agent) {
 			var agent = this.agent(),
 				result = "ios" === agent.os.name;
 
-			return cacheResult(this,"_hasClickBug",[result, agent],result);
+			return resultCache(this,"_hasClickBug",[result, agent],result);
 		},
 
 		/*
