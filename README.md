@@ -29,7 +29,8 @@ http://jindo.nhncorp.com/eg/dist/[버전]/eg.min.js
 - 컴포넌트별 지원범위가 다를수 있으며, 사용시 API 문서를 참조한다.
 
 ## 의존 라이브러리
-|jQuery|jquery.easing|hammer.js|
+|[jQuery](https://jquery.com/)|[jquery.easing](https://github.com/gdsmith/jquery.easing)|[hammer.js](http://hammerjs.github.io/)|
+|---|---|---|
 |1.7.0+ |1.3.1+|2.0.4+|
 
 ## Demo 
