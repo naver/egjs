@@ -28,6 +28,10 @@ http://jindo.nhncorp.com/eg/dist/[버전]/eg.min.js
 |10+|최신|최신|최신|7+|2.3+ (3.x는 제외)|최신|최신|
 - 컴포넌트별 지원범위가 다를수 있으며, 사용시 API 문서를 참조한다.
 
+## 의존 라이브러리
+|jQuery|jquery.easing|hammer.js|
+|1.7.0+ |1.3.1+|2.0.4+|
+
 ## Demo 
 http://codepen.io/egjs/
 
