@@ -1,6 +1,4 @@
 eg.module("eg",[window.jQuery, eg, window],function($, ns, global){
-	// redefine requestAnimationFrame and cancelAnimationFrame
-	// @todo change to jindo 'timer.js'
 	var raf = global.requestAnimationFrame || global.webkitRequestAnimationFrame || global.mozRequestAnimationFrame|| global.msRequestAnimationFrame;
 	var caf = global.cancelAnimationFrame || global.webkitCancelAnimationFrame|| global.mozCancelAnimationFrame|| global.msCancelAnimationFrame;
 
@@ -23,6 +21,17 @@ eg.module("eg",[window.jQuery, eg, window],function($, ns, global){
 	} else if(!(raf&&caf)){
 		raf = function(callback) { return global.setTimeout(callback, 16); };
 		caf = global.clearTimeout;
+	}
+
+	function resultCache(scope,name,param,defaultValue){
+		var method = scope.hook[name];
+		if(method){
+			defaultValue = method.apply(scope,param);
+		}
+		scope[name] = function () {
+			return defaultValue;
+		}
+		return defaultValue;
 	}
 
 	/**
@@ -136,13 +145,7 @@ eg.hook.agent = function(agent) {
 				}
 			};
 			info = this._checkWebview(info, ua);
-			info = this.hook.agent  ? this.hook.agent(info) : info;
-			this.agent = function(){
-				return info;
-			};
-
-			return info;
-
+			return resultCache(this,"agent",[info],info);
 		},
 
 		// Check Webview
@@ -221,11 +224,7 @@ eg.hook.isHWAccelerable = function(defalutVal,agent) {
 						/SHW-|SHV-|GT-|SCH-|SGH-|SPH-|LG-F160|LG-F100|LG-F180|LG-F200|EK-|IM-A|LG-F240|LG-F260/.test(useragent) &&
 						!/SHW-M420|SHW-M200|GT-S7562/.test(useragent));
 			}
-			result = this.hook.isHWAccelerable ? this.hook.isHWAccelerable(result,agent) : result;
-			this.isHWAccelerable = function(){
-				return result;
-			};
-			return result;
+			return resultCache(this,"isHWAccelerable",[result,agent],result);
 		},
 
 		/**
@@ -270,11 +269,7 @@ eg.hook.isTransitional = function(defaultVal, agent) {
 						break;
 				}
 			}
-			result = this.hook.isTransitional ? this.hook.isTransitional(result,agent) : result;
-			this.isTransitional = function(){
-				return result;
-			};
-			return result;
+			return resultCache(this,"isTransitional",[result,agent],result);
 		},
 
 		// 1. user press one position on screen.
@@ -283,11 +278,8 @@ eg.hook.isTransitional = function(defaultVal, agent) {
 		_hasClickBug : function() {
 			var agent = this.agent(),
 				result = "ios" === agent.os.name;
-			result = this.hook._hasClickBug ? this.hook._hasClickBug(result, agent) : result;
-			this._hasClickBug = function(){
-				return result;
-			};
-			return result;
+
+			return resultCache(this,"_hasClickBug",[result, agent],result);
 		},
 
 		/*
