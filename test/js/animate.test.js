@@ -1,13 +1,12 @@
 module("Absolute animate Test", {
 	beforeEach : function() {
-		this.transform = $.support["transform"];
 		this.egAnimate = eg.invoke("animate",[jQuery,window]);
 		this.$el1 = $("#box1");
 		this.$el2 = $("#box2");
 	},
 	afterEach : function() {
-		this.$el1.css(this.transform, "none");
-		this.$el2.css(this.transform, "none");
+		this.$el1.css("transform", "none");
+		this.$el2.css("transform", "none");
 	}
 });
 
@@ -17,7 +16,10 @@ var ABSOLUTE_CASE = [
 	{title : "translate(100px, 10px)", css : "translate(100px, 10px)", transform: "translate(100px, 10px)"},
 	{title : "matrix(.5, .433, -.5, 1.033, 50, -10)", css : "matrix(.5, .433, -.5, 1.033, 50, -10)", transform: "matrix(.5, .433, -.5, 1.033, 50, -10)"},
 	{title : "rotate(45deg) translate(38px)", css : "rotate(45deg) translate(38px)", transform: "rotate(45deg) translate(38px)"},
-	{title : "rotate&translate&skew&scale&matrix", css : "rotate(45deg) translateY(-68px) skewX(-30deg) scale(1.2) matrix(.5, .433, -.5, 1.033, 50, -10)", transform: "rotate(45deg) translateY(-68px) skewX(-30deg) scale(1.2) matrix(.5, .433, -.5, 1.033, 50, -10)"}
+	{title : "multiplex transform: rotate & translate & skew & scale & matrix", css : "rotate(45deg) translateY(-68px) skewX(-30deg) scale(1.2) matrix(.5, .433, -.5, 1.033, 50, -10)", transform: "rotate(45deg) translateY(-68px) skewX(-30deg) scale(1.2) matrix(.5, .433, -.5, 1.033, 50, -10)"},
+	{title : "translate(50%, 100%)", css : "translate(60px, 120px)", transform: "translate(50%, 100%)"},
+	{title : "translate(20, 100%)", css : "translate(20px, 120px)", transform: "translate(20, 100%)"},
+	{title : "translate(25%, 100px)", css : "translate(30px, 100px)", transform: "translate(25%, 100px)"}
 ];
 
 $.each(ABSOLUTE_CASE, function(i, val) {
@@ -26,27 +28,26 @@ $.each(ABSOLUTE_CASE, function(i, val) {
 
 	test(val.title, function(assert) {
 		var done = assert.async(),
-			self = this,
-			trsf = self.transform;
+			self = this;
 
 		//When
 		this.$el1
-			.css(trsf, val.css);
+			.css("transform", val.css);
 
 		this.$el2
 			.animate({"transform" : val.transform}, function() {
 				//Then
-				var t1 = self.egAnimate.toMatrix(val.css),
-					t2 = self.egAnimate.toMatrix(self.$el2.css(self.transform));
+				var expected = self.egAnimate.toMatrix(val.css),
+					actual = self.egAnimate.toMatrix(self.$el2.css("transform"));
 
 				// Ignore very tiny difference. 
 				// Because output matrixes can be different with input matrixes.) 
-				$.each(t1[1], function(i) {
-					t1[1][i] = parseFloat(t1[1][i]).toFixed(3);
-					t2[1][i] = parseFloat(t2[1][i]).toFixed(3);
+				$.each(expected[1], function(i) {
+					expected[1][i] = parseFloat(expected[1][i]).toFixed(3);
+					actual[1][i] = parseFloat(actual[1][i]).toFixed(3);
 				});
 
-				equal(t1[1].toString(), t2[1].toString());
+				equal(actual[1].toString(), expected[1].toString());
 				// setTimeout(function() {
 				done();	
 				// }, 1000);
@@ -61,8 +62,6 @@ $.each(ABSOLUTE_CASE, function(i, val) {
  * 
  */
 if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
-	var relativeTestCount = 0;
-
 	module("Relative animate Test", {
 		beforeEach : function() {
 			this.egAnimate = eg.invoke("animate",[jQuery,window]);
@@ -76,18 +75,18 @@ if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
 		{title : "+=translate(0, 100px)", css : "translate(100px, 100px)", transform: "+=translate(0, 100px)"},
 		{title : "+=translate(100, 100)", css : "translate(200px, 200px)", transform: "+=translate(100, 100)"},
 		{title : "+=scale(2) translate(-100, -100)", css : "scale(2) translate(0px, 0px)", transform: "+=scale(2) translate(-100, -100)"},
-		{title : "+=scale(0.5) rotate(30deg)", css : "rotate(30deg)", transform: "+=scale(0.5) rotate(30deg)"}	
+		{title : "+=scale(0.5) rotate(30deg)", css : "rotate(30deg)", transform: "+=scale(0.5) rotate(30deg)"},
+		{title : "+=rotate(-30deg) translate(10px, 50%)", css : "translate(10px, 60px)", transform: "+=rotate(-30deg) translate(10px, 50%)"}	
 	];
 
-	$.each(RELATIVE_CASE, function(i, val) {
+	$.each( RELATIVE_CASE, function(i, val) {
 		//Given
 		var $el1 = $("#box1"),
-			$el2 = $("#box2"),
-			trsf = $.support["transform"];
+			$el2 = $("#box2");
 
-		var initialTransform = "translate(100px, 0px)";
-		$el1.css(trsf, initialTransform);
-		$el2.css(trsf, initialTransform);
+		var initialTransform = "none";
+		$el1.css("transform", initialTransform);
+		$el2.css("transform", initialTransform);
 
 		//RELATIVE_CASE
 		test(val.title, function(assert) {
@@ -96,14 +95,14 @@ if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
 
 			//When
 			$el1
-				.css(trsf, val.css);
+				.css("transform", val.css);
 
 			$el2
 				.animate({"transform" : val.transform},
 					function() {
 						//Then
 						var expected = self.egAnimate.toMatrix(val.css),
-						 	result = self.egAnimate.toMatrix($el2.css(trsf));
+						 	result = self.egAnimate.toMatrix($el2.css("transform"));
 
 						// Ignore very tiny difference. 
 						// Because output matrixes can be different with input matrixes.) 
@@ -141,16 +140,16 @@ var ANI_3D_CASE = [
  */
 if (navigator.userAgent.indexOf("PhantomJS") == -1) {
 	ANI_3D_CASE.push({title : "+=translate(0px, 100px)", css : "translate3d(100px, 200px, 100px)", transform: "+=translate(0px, 100px)"});
+	ANI_3D_CASE.push({title : "translate3d(100%, 200px, 0)", css : "translate3d(120px, 200px, 0)", transform: "translate3d(100%, 200px, 0)"});
 }
 
-$.each(ANI_3D_CASE, function(i, val) {
+$.each( ANI_3D_CASE, function(i, val) {
 	//Given
 	var $el1 = $("#box1"),
-		$el2 = $("#box2"),
-		trsf = $.support["transform"];
+		$el2 = $("#box2");
 	
-	$el1.css(trsf, "none");
-	$el2.css(trsf, "none");
+	$el1.css("transform", "none");
+	$el2.css("transform", "none");
 
 	//RELATIVE_CASE
 	test(val.title, function(assert) {
@@ -159,14 +158,14 @@ $.each(ANI_3D_CASE, function(i, val) {
 
 		//When
 		$el1
-			.css( trsf, val.css );
+			.css( "transform", val.css );
 
 		$el2
 			.animate({"transform" : val.transform},
 				function() {
 					//Then
 					var t1 = self.egAnimate.toMatrix(val.css),
-					 	t2 = self.egAnimate.toMatrix($el2.css(trsf));
+					 	t2 = self.egAnimate.toMatrix($el2.css("transform"));
 
 					if (t1[1].length < t2[1].length) {
 						t1 = self.egAnimate.toMatrix3d(t1);

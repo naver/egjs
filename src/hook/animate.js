@@ -15,28 +15,8 @@ eg.module("animate",[window.jQuery, window],function($, global){
      * 		.animate({"transform" : "+=translate3d(150px,10%,-20px) rotate(20deg) scale3d(2, 4.2, 1)"} , 3000);
      * @see {@link http://api.jquery.com/animate/}
      */
-	var div = document.createElement("div"),
-		divStyle = div.style,
-		suffix = "Transform",
-		testProperties = [
-			"O" + suffix,
-			"ms" + suffix,
-			"Webkit" + suffix,
-			"Moz" + suffix
-		],
-		i = testProperties.length,
-		supportProperty,
-		supportFloat32Array = "Float32Array" in window,
+	var supportFloat32Array = "Float32Array" in window,
 		CSSMatrix = global.WebKitCSSMatrix || global.MSCSSMatrix || global.OCSSMatrix || global.MozMatrix || global.CSSMatrix;
-
-	//test different vendor prefixes of these properties
-	while ( i-- ) {
-		if ( testProperties[i] in divStyle ) {
-			$.support["transform"] = supportProperty = testProperties[i];
-			$.support["transformOrigin"] = supportProperty + "Origin";
-			continue;
-		}
-	}
 
 	/*
 	 * Utility functions : matrix and toRadian is copied from transform2d 
@@ -206,7 +186,13 @@ eg.module("animate",[window.jQuery, window],function($, global){
 	}
 
 	/**
-	 * _unit 에 값을 변경
+	 * Parse a transform atom value.
+	 * 
+	 * "30px" --> {num:30, unit:'px'}
+	 *
+	 * Because calculation of string number is heavy, 
+	 * In advance, convert a string number to a float number with an unit for the use of transformByPos,
+	 * which is called very frequently. 
 	 */
 	function toParsedFloat(val) {
 		var m = val.match(/(-*[\d|\.]+)(px|deg|rad)*/);
@@ -359,7 +345,7 @@ eg.module("animate",[window.jQuery, window],function($, global){
 
 	$.fx.step.transform = function(fx) {
 		fx.rateFn = fx.rateFn || rateFn( fx.elem, fx.start, fx.end );
-		$.style( fx.elem, supportProperty, fx.rateFn(fx.pos) );
+		$.style( fx.elem, "transform", fx.rateFn(fx.pos) );
 	};
 
 	// All of this interfaces are functions for unit testing.
