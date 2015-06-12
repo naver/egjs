@@ -12,13 +12,13 @@ naver-bower install egjs
 egjs는 http://jindo.nhncorp.com/eg/dist/latest 을 통해 최신 egjs를 다운 받을수 있습니다.
 
  - 개발버전
-http://jindo.nhncorp.com/eg/dist/latest/eg.js
+http://jindo.nhncorp.com/eg/dist/latest/eg.js  
 버전별 다운로드는 다음과 같이 다운로드 하시면 됩니다.
 ```
 http://jindo.nhncorp.com/eg/dist/[버전]/eg.js
 ```
  - 제품버전
-http://jindo.nhncorp.com/eg/dist/latest/eg.min.js
+http://jindo.nhncorp.com/eg/dist/latest/eg.min.js  
 버전별 다운로드는 다음과 같이 다운로드 하시면 됩니다.
 ```
 http://jindo.nhncorp.com/eg/dist/[버전]/eg.min.js
