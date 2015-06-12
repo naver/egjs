@@ -1,11 +1,11 @@
 module("Absolute animate Test", {
-	setup : function() {
+	beforeEach : function() {
 		this.transform = $.support["transform"];
 		this.egAnimate = eg.invoke("animate",[jQuery,window]);
 		this.$el1 = $("#box1");
 		this.$el2 = $("#box2");
 	},
-	teardown : function() {
+	afterEach : function() {
 		this.$el1.css(this.transform, "none");
 		this.$el2.css(this.transform, "none");
 	}
@@ -26,17 +26,18 @@ $.each(ABSOLUTE_CASE, function(i, val) {
 
 	test(val.title, function(assert) {
 		var done = assert.async(),
-			_this = this;
+			self = this,
+			trsf = self.transform;
 
 		//When
 		this.$el1
-			.css({"transform" : val.css});
+			.css(trsf, val.css);
 
 		this.$el2
 			.animate({"transform" : val.transform}, function() {
 				//Then
-				var t1 = _this.egAnimate.toMatrix(val.css),
-					t2 = _this.egAnimate.toMatrix(_this.$el2.css(_this.transform));
+				var t1 = self.egAnimate.toMatrix(val.css),
+					t2 = self.egAnimate.toMatrix(self.$el2.css(self.transform));
 
 				// Ignore very tiny difference. 
 				// Because output matrixes can be different with input matrixes.) 
@@ -46,7 +47,10 @@ $.each(ABSOLUTE_CASE, function(i, val) {
 				});
 
 				equal(t1[1].toString(), t2[1].toString());
+				// setTimeout(function() {
 				done();	
+				// }, 1000);
+				
 			});
 	});
 });
@@ -57,11 +61,13 @@ $.each(ABSOLUTE_CASE, function(i, val) {
  * 
  */
 if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
+	var relativeTestCount = 0;
+
 	module("Relative animate Test", {
-		setup : function() {
+		beforeEach : function() {
 			this.egAnimate = eg.invoke("animate",[jQuery,window]);
 		},
-		teardown : function() {
+		afterEach : function() {
 		}
 	});
 
@@ -78,35 +84,38 @@ if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
 		var $el1 = $("#box1"),
 			$el2 = $("#box2"),
 			trsf = $.support["transform"];
-		
-		$el1.css(trsf, "none");
-		$el2.css(trsf, "none");
+
+		var initialTransform = "translate(100px, 0px)";
+		$el1.css(trsf, initialTransform);
+		$el2.css(trsf, initialTransform);
 
 		//RELATIVE_CASE
 		test(val.title, function(assert) {
 			var done = assert.async(),
-				_this = this;
+				self = this;
 
 			//When
 			$el1
-				.css({"transform" : val.css});
+				.css(trsf, val.css);
 
 			$el2
 				.animate({"transform" : val.transform},
 					function() {
 						//Then
-						var t1 = _this.egAnimate.toMatrix(val.css),
-						 	t2 = _this.egAnimate.toMatrix($el2.css(trsf));
+						var expected = self.egAnimate.toMatrix(val.css),
+						 	result = self.egAnimate.toMatrix($el2.css(trsf));
 
 						// Ignore very tiny difference. 
 						// Because output matrixes can be different with input matrixes.) 
-						$.each(t1[1], function(i) {
-							t1[1][i] = parseFloat(t1[1][i]).toFixed(3);
-							t2[1][i] = parseFloat(t2[1][i]).toFixed(3);
+						$.each(expected[1], function(i) {
+							expected[1][i] = parseFloat(expected[1][i]).toFixed(3);
+							result[1][i] = parseFloat(result[1][i]).toFixed(3);
 						});
 
-						equal(t1[1].toString(), t2[1].toString());
-						done();	
+						equal(result[1].toString(), expected[1].toString());
+						//setTimeout(function() {
+							done();	
+						//}, 500);
 					}	
 				);
 		});
@@ -114,10 +123,10 @@ if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
 }
 
 module("3d animate Test", {
-	setup : function() {
+	beforeEach : function() {
 		this.egAnimate = eg.invoke("animate",[jQuery,window]);
 	},
-	teardown : function() {
+	afterEach : function() {
 	}
 });
 
@@ -146,23 +155,23 @@ $.each(ANI_3D_CASE, function(i, val) {
 	//RELATIVE_CASE
 	test(val.title, function(assert) {
 		var done = assert.async(),
-			_this = this;
+			self = this;
 
 		//When
 		$el1
-			.css({"transform" : val.css});
+			.css( trsf, val.css );
 
 		$el2
 			.animate({"transform" : val.transform},
 				function() {
 					//Then
-					var t1 = _this.egAnimate.toMatrix(val.css),
-					 	t2 = _this.egAnimate.toMatrix($el2.css(trsf));
+					var t1 = self.egAnimate.toMatrix(val.css),
+					 	t2 = self.egAnimate.toMatrix($el2.css(trsf));
 
 					if (t1[1].length < t2[1].length) {
-						t1 = _this.egAnimate.toMatrix3d(t1);
+						t1 = self.egAnimate.toMatrix3d(t1);
 					} else if (t1[1].length > t2[1].length) {
-						t2 = _this.egAnimate.toMatrix3d(t2);
+						t2 = self.egAnimate.toMatrix3d(t2);
 					}
 
 					// Ignore very tiny difference. 

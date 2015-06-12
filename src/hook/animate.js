@@ -1,4 +1,4 @@
-eg.module("animate",[jQuery, window],function($, global){
+eg.module("animate",[window.jQuery, window],function($, global){
     /**
      * Extends jQuery animate in order to use 'transform' property.
      * @ko jQuery animate 사용시 transform을 사용할 수 있도록 확장한 animate 메소드
@@ -15,7 +15,7 @@ eg.module("animate",[jQuery, window],function($, global){
      * 		.animate({"transform" : "+=translate3d(150px,10%,-20px) rotate(20deg) scale3d(2, 4.2, 1)"} , 3000);
      * @see {@link http://api.jquery.com/animate/}
      */
-var div = document.createElement("div"),
+	var div = document.createElement("div"),
 		divStyle = div.style,
 		suffix = "Transform",
 		testProperties = [
@@ -39,10 +39,10 @@ var div = document.createElement("div"),
 	}
 
 	/*
-	 * Utility functions
+	 * Utility functions : matrix and toRadian is copied from transform2d 
 	 */
 	// turns a transform string into its "matrix(A,B,C,D,X,Y)" form (as an array, though)
-	function _matrix( transform ) {
+	function matrix( transform ) {
 		transform = transform.split(")");
 		var trim = $.trim,
 			i = -1,
@@ -142,30 +142,11 @@ var div = document.createElement("div"),
 				parseFloat(value);
 	}
 
-	// Multiply matrix (For the use of First Edition)
-	// function _multiplyMatrices(prev, curr) {
-	//     var rslt = [];
-
-	// 	for (var i = 0, len = prev.length; i < len; i++) {
-	// 		prev[i] = parseFloat(prev[i]);
-	// 		curr[i] = parseFloat(curr[i]);
-	// 	}
-
-	// 	rslt[0] = prev[0] * curr[0] + prev[2] * curr[1];
-	// 	rslt[1] = prev[1] * curr[0] + prev[3] * curr[1];
-	// 	rslt[2] = prev[0] * curr[2] + prev[2] * curr[3];
-	// 	rslt[3] = prev[1] * curr[2] + prev[3] * curr[3];
-	// 	rslt[4] = prev[0] * curr[4] + prev[2] * curr[5] + prev[4];
-	// 	rslt[5] = prev[1] * curr[4] + prev[3] * curr[5] + prev[5];
-
-	//     return rslt;
-	// }
-
 	/**
 	 * Get a 'px' converted value if it has a %.
 	 * Otherwise it returns value appened with 'px'.
 	 */
-	function _getConverted( val, base ) {
+	function getConverted( val, base ) {
 		var ret = val,
 			num = val.match(/([0-9]*)%/);
 
@@ -178,7 +159,7 @@ var div = document.createElement("div"),
 		return ret;
 	}
 
-	function _correctUnit(transform, width, height) {
+	function correctUnit(transform, width, height) {
 		var m, ret = "",
 			arr = transform.split(")");
 
@@ -194,10 +175,10 @@ var div = document.createElement("div"),
 				} else {
 					switch ( m[2] ) {
 					case "X":
-						name = m[1] + "(" + _getConverted( m[3], width );
+						name = m[1] + "(" + getConverted( m[3], width );
 						break;
 					case "Y":
-						name = m[1] + "(" +  _getConverted( m[3], height );
+						name = m[1] + "(" +  getConverted( m[3], height );
 						break;
 					case "Z":
 						//Meaningless. Do nothing
@@ -207,7 +188,7 @@ var div = document.createElement("div"),
 							bases = [width, height, 100];
 
 						for (var k = 0, l = nums.length; k < l; k++ ) {
-							nums[k] = _getConverted( nums[k], bases[k] );
+							nums[k] = getConverted( nums[k], bases[k] );
 						}
 						name = m[1] + "(" + nums.join(",");
 						break;
@@ -224,25 +205,27 @@ var div = document.createElement("div"),
 		return ret;
 	}
 
-	function _getTransformFunction(transform) {
-		var splitted = transform.split(")"),
-			list = [], unit = [];
-
-		function toFloat(val) {
-			var m = val.match(/(-*[\d|\.]+)(px|deg|rad)*/);
-			if ( m && m.length >= 1 ) {
-				m[2] && (unit[i] = m[2]);
-				return parseFloat(m[1]);
-			}
+	/**
+	 * _unit 에 값을 변경
+	 */
+	function toParsedFloat(val) {
+		var m = val.match(/(-*[\d|\.]+)(px|deg|rad)*/);
+		if ( m && m.length >= 1 ) {
+			return { "num" : parseFloat(m[1]), "unit" : m[2]};
 		}
+	}
+
+	function getTransformGenerateFunction(transform) {
+		var splitted = transform.split(")"),
+			list = [];
 
 		for ( var i = 0, len = splitted.length - 1; i < len; i++) {
-			var parsed = _parseStyle( splitted[i] );
-			parsed[1] = $.map(parsed[1], toFloat);
+			var parsed = parseStyle( splitted[i] );
+
+			parsed[1] = $.map(parsed[1], toParsedFloat);
 			list.push(parsed);
 		}
 
-		//
 		return function transformByPos(pos) {
 			var transform = "", defaultVal = 0;
 
@@ -252,8 +235,9 @@ var div = document.createElement("div"),
 				}
 
 				var valStr = $.map(list[i][1], function(value) {
-					defaultVal === 1 && (value = value - 1);
-					return ( defaultVal + value * pos ) + ( unit[i] || "" );
+					var val = value.num;
+					defaultVal === 1 && (val = val - 1);
+					return ( defaultVal + val * pos ) + ( value.unit || "" );
 				}).join(",");
 
 				transform += list[i][0] + "(" + valStr + ") ";
@@ -269,30 +253,20 @@ var div = document.createElement("div"),
 			start, end;
 
 		// Convert translate unit to 'px'.
-		endTf = _correctUnit(endTf, $el.width(), $el.height());
+		endTf = correctUnit(endTf, $el.width(), $el.height());
 
-		// // Matrix converting (First Edition)
-		// start = _toMatrix(startTf);
-		// end = _toMatrix(endTf);
-
-		// // Relative Position Calculate
-		// if ( isRelative ) {
-		// 	end[1] = _multiplyMatrices(start[1], end[1]);
-		// }
-
-		// Second Edition
 		if ( isRelative ) {
 			start = (!startTf || startTf === "none") ? "matrix(1, 0, 0, 1, 0, 0)" : startTf;
-			end = _getTransformFunction(endTf);
+			end = getTransformGenerateFunction(endTf);
 		} else {
-			start = _toMatrix(startTf);
-			end = _toMatrix(endTf);
+			start = toMatrix(startTf);
+			end = toMatrix(endTf);
 
 			//If the type of matrix is not equal, then match to matrix3d
 			if (start[1].length < end[1].length) {
-				start = _toMatrix3d(start);
+				start = toMatrix3d(start);
 			} else if (start[1].length > end[1].length) {
-				end = _toMatrix3d(end);
+				end = toMatrix3d(end);
 			}
 		}
 
@@ -301,11 +275,12 @@ var div = document.createElement("div"),
 
 			if ( isRelative ) {
 				// This means a muliply between a matrix and a transform.
-				return start + end( pos );
+				ret = start + end( pos );
+				return ret;
 			}
 
 			if(pos === 1) {
-				ret = _data2String(end);
+				ret = data2String(end);
 			} else {
 				for(var i = 0, s, e, l = start[1].length; i < l; i++) {
 					s = parseFloat( start[1][i] );
@@ -313,7 +288,7 @@ var div = document.createElement("div"),
 					result.push( s + ( e- s ) * pos );
 				}
 
-				ret = _data2String([ start[0], result ]);	
+				ret = data2String([ start[0], result ]);	
 			}
 
 			return ret;
@@ -325,28 +300,28 @@ var div = document.createElement("div"),
 	 * {translate : [100, 0]} --> translate(100px, 0)
 	 * {matrix : [1, 0, 1, 0, 100, 0]} --> matrix(1, 0, 1, 0, 100, 0)
 	 */
-	function _data2String(property) {
+	function data2String(property) {
 		var name,tmp = [];
-		if(Array.isArray(property)) {
+		if($.isArray(property)) {
 			name = property[0];
-			return name + "(" + property[1].join(_unit(name) + ",") + _unit(name) + ")";
+			return name + "(" + property[1].join(unit(name) + ",") + unit(name) + ")";
 		} else {
 			for(name in property) {
 				property.hasOwnProperty(name) && tmp.push(name);
 			}
 
-			return tmp.map(function(v) {
-				return v + "(" +  property[v] + _unit(v) + ")";
+			return $.map(tmp, function(v) {
+				return v + "(" +  property[v] + unit(v) + ")";
 			}).join(" ");
 		}
 	}
 
-	function _unit(name) {
-		return /translate/.test(name) ? "px" : (/rotate/.test(name) ? "deg" : "");
+	function unit(name) {
+		return name.indexOf("translate") >= 0 ? "px" : name.indexOf("rotate") >= 0 ? "deg" : "";
 	}
 
 	// [ "translate" , [ "10", "20"] ]
-	function _parseStyle(property) {
+	function parseStyle(property) {
 		var m = property.match(/(\b\w+?)\((\s*[^\)]+)/),
 			name, value, result = ["",""];
 
@@ -361,19 +336,19 @@ var div = document.createElement("div"),
 		return result;
 	}
 
-	function _toMatrix(transform) {
+	function toMatrix(transform) {
 		if( !transform || transform === "none" ) {
-			return ["matrix" , [ "1", "0","0","1","0","0"] ];
+			return ["matrix" , [ "1", "0", "0", "1", "0", "0"] ];
 		}
 
-		return CSSMatrix ? _parseStyle(new CSSMatrix(transform).toString()) : ["matrix", _matrix(transform)];
+		return CSSMatrix ? parseStyle(new CSSMatrix(transform).toString()) : ["matrix", matrix(transform)];
 	}
 
-	function _toMatrix3d(matrix) {
+	function toMatrix3d(matrix) {
 		var name = matrix[0],
 			val = matrix[1];
 		
-		if("matrix3d" === name) { 
+		if("matrix3d" === name) {
 			return matrix; 
 		}
 		// matrix(a, b, c, d, tx, ty) is a shorthand for matrix3d(a, b, 0, 0, c, d, 0, 0, 0, 0, 1, 0, tx, ty, 0, 1)
@@ -383,15 +358,13 @@ var div = document.createElement("div"),
 	}
 
 	$.fx.step.transform = function(fx) {
-		var elem = fx.elem;
-		fx.$el = fx.$el || $(elem);
-		fx._rateFn = fx._rateFn || rateFn(elem, fx.start, fx.end);
-		fx.$el.css(supportProperty, fx._rateFn(fx.pos));
+		fx.rateFn = fx.rateFn || rateFn( fx.elem, fx.start, fx.end );
+		$.style( fx.elem, supportProperty, fx.rateFn(fx.pos) );
 	};
 
 	// All of this interfaces are functions for unit testing.
 	return {
-		toMatrix : _toMatrix,
-		toMatrix3d : _toMatrix3d
+		toMatrix : toMatrix,
+		toMatrix3d : toMatrix3d
 	};
 });
