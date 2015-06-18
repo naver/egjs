@@ -1,4 +1,4 @@
-/*! egjs - v0.0.1
+/*! egjs - v0.0.1-snapshot
 * Copyright (c) 2015 ; Licensed LGPL v2 */
 "use strict";
 (function(global){
@@ -118,7 +118,7 @@ eg.module("eg",[window.jQuery, eg, window],function($, ns, global){
 		 * @description version infomation
 		 * @ko 버전 정보
 	     */
-		VERSION : "0.0.1",
+		VERSION : "0.0.1-snapshot",
 		hook : {
 			// isHWAccelerable : null,
 			// isTransitional 	: null,
@@ -475,44 +475,84 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 			document.scrollTo(e.state.scrollTop);
 	});
 	*/
-	var history = global.history,
+	var wp = global.performance,
+	history = global.history,
 	location = global.location,
+	JSON = global.JSON,
+	
+	isBackForwardNavigated = (wp && wp.navigation && (wp.navigation.type === wp.navigation.TYPE_BACK_FORWARD)),
+	isPersisted,
 	hasReplaceState = "replaceState" in history,
 	hasStateProperty = "state" in history;
 	
+
+	/*
+	 * If page is persisted(bfCache hit) return true else return false.
+	 */
+	isPersisted = function(e) {
+		var _isPersisted;
+		if(e !== undefined) {
+			_isPersisted = !!e.persisted;
+			isPersisted = function() {
+				return _isPersisted;
+			};
+			return _isPersisted;
+		}	
+	};
+	
 	function onPageshow(e) {
-		if(!isPersisted(e.originalEvent) && isBackForwardNavigated()) {
+		if(!isPersisted(e.originalEvent) && isBackForwardNavigated) {
 			$(global).trigger("persist");
 		} else {
 			reset();
 		}
 	}
-	/*
-	 * If page is persisted(bfCache hit) return true else return false.
-	 */
 
-	function isPersisted(e) {
-		return !!e.persisted;
-	}
-	/*
-	 * If current page navigated by browser back or forward button, returns true else returns false.
-	 */
-
-	function isBackForwardNavigated() {
-		var wp = global.performance;
-		return (wp && wp.navigation && (wp.navigation.type === wp.navigation.TYPE_BACK_FORWARD));
-	}
+	 
 	/*
 	 * flush current history state
 	 */
 
 	function reset() {
-		history.replaceState(null, doc.title, location.href);
+		setState(null);
 	}
 
 	function clone(state) {
 		return (state === null) ? null : $.extend(true, {}, state);
 	}
+
+	/*
+	 * Getter for state
+	 */	
+	function getState() {
+		if(hasStateProperty && hasReplaceState) {
+			return clone(history.state);
+		} else {
+			var stateStr = sessionStorage.getItem("persist");
+			if(stateStr) {
+				if(stateStr === "null") {
+					return null;	
+				} else {
+					return JSON.parse(stateStr);
+				}
+			}	
+			return undefined;			
+		}		
+	}
+	
+	/*
+	 * Setter for state
+	 */
+	function setState(state) {
+		if(hasStateProperty && hasReplaceState) {
+			history.replaceState(state, doc.title, location.href);
+		} else {
+			if((state && typeof state === "object") || state === null) {
+				sessionStorage.setItem("persist", JSON.stringify(state));
+			}
+		}	
+	}
+	
 	/**
 	* Saves state and returns current state.
 	* @ko 인자로 넘긴 현재 상태정보를 저장하고, 저장되어있는 현재 상태 객체를 반환한다.
@@ -534,27 +574,42 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 		location.href = this.attr("href");
 	});
 	*/
-	if(hasReplaceState && hasStateProperty) {
-		$.persist = function(state) {
-			if(state) {
-				history.replaceState(state, doc.title, location.href);
+	$.persist = function(state) {
+		if(state) {
+			setState(state);
+		}			
+		return getState();
+	};
+
+	/**
+	* Restore state with callback function
+	* @ko 인자로 받은 상태복원함수에 상태객체를 인자로 전달하여 호출한다.
+	* @method jQuery.restore
+    * @param {Function} state state info to be restored
+	* @example
+	$.restore(
+		$.proxy(function(state) {
+			if( state && state.newsList ) {
+				this.oFlicker.goto(state.newsList.pageIndex);
 			}
-			return clone(history.state);		
-		};
-		$.event.special.persist = {
-			setup: function() {
-				$(global).on("pageshow", onPageshow);
-			},
-			teardown: function() {
-				$(global).off("pageshow", onPageshow);
-			},
-			trigger: function(e) {
-				e.state = clone(history.state);
-			}
-		};			
-	} else {
-		$.persist = function() {};
-	}
+		}, this)
+	);
+	*/
+	$.restore = function(callback) {
+		callback(this._getState());
+	};
+		
+	$.event.special.persist = {
+		setup: function() {
+			$(global).on("pageshow", onPageshow);
+		},
+		teardown: function() {
+			$(global).off("pageshow", onPageshow);
+		},
+		trigger: function(e) {
+			e.state = clone(history.state);
+		}
+	};
 	
 	return {
 		"isPersisted": isPersisted,
@@ -562,6 +617,8 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 		"onPageshow": onPageshow,
 		"reset": reset,
 		"clone": clone,
+		"getState": getState,
+		"setState": setState,
 		"persist": $.persist
 	};
 });

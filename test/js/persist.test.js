@@ -8,7 +8,8 @@ module("persist", {
 			location: {
 				href: ""
 			},
-			history: new History()
+			history: new History(),
+			JSON: JSON
 		};
 		this.fakeEvent = {};
 		this.data = {
@@ -33,83 +34,6 @@ module("persist", {
 	}
 });
 
-test("isPersisted : When persisted property of pageshow event supported", function() {
-	// Given
-	this.fakeEvent = {
-		"persisted": true
-	};
-
-	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
-	
-	// When
-	var isPersisted = method.isPersisted(this.fakeEvent);
-	
-	// Then
-	equal(isPersisted, true);
-	
-	// Given
-	this.fakeEvent = {
-		"persisted": false
-	};
-
-	// When
-	isPersisted = method.isPersisted(this.fakeEvent);
-		
-	// Then
-	equal(isPersisted, false);
-});
-
-test("isPersisted : When persisted property of pageshow event not supported", function() {
-	// Given
-	this.fakeEvent = {};
-	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
-	
-	// When
-	var isPersisted = method.isPersisted(this.fakeEvent);
-	
-	// Then
-	equal(isPersisted, false);
-});
-
-test("isBackForwardNavigated", function() {
-	// Given
-	this.fakeWindow.performance = {};
-	this.fakeWindow.performance.navigation = {
-		TYPE_BACK_FORWARD: 2,
-		TYPE_NAVIGATE: 0,
-		TYPE_RELOAD: 1,
-		TYPE_RESERVED: 255
-	};
-	this.fakeWindow.performance.navigation.type = 0;
-	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
-	
-	// When
-	var isBackForwardNavigated = method.isBackForwardNavigated();
-
-	// Then
-	equal(isBackForwardNavigated, false);
-	
-	// Given
-	this.fakeWindow.performance.navigation.type = 1;
-	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
-
-	// When
-	isBackForwardNavigated = method.isBackForwardNavigated();
-		
-	// Then
-	equal(isBackForwardNavigated, false);
-	
-	// Given
-	this.fakeWindow.performance.navigation.type = 2;
-	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
-	
-	// When
-	isBackForwardNavigated = method.isBackForwardNavigated();
-	
-	// Then
-	equal(isBackForwardNavigated, true);
-});
-
 test("reset", function() {
 	// When
 	this.method.reset();
@@ -130,19 +54,6 @@ test("persist : save state data, get state data", function() {
 	
 	// Then
 	notEqual(clonedState, this.data);
-});
-
-test("onPageshow : when bfCache hits, _reset method must be executed.", function() {
-	// When : pageshow 이벤트가 호출되면 연동된 persist 이벤트가 호출되고 핸들러인 _onPageshow 가 실행된다.
-	$(this.fakeWindow).trigger({
-		type: "pageshow",
-		originalEvent: {
-			persisted: true
-		}
-	});
-	
-	// Then
-	equal(this.method.persist(), null);
 });
 
 test("onPageshow : when bfCache miss and not BF navigated, _reset method must be executed.", function() {
@@ -201,9 +112,17 @@ test("clone: null in, null out", function() {
 	equal(clonedData, null);
 });
 
+test("getState, setState: getter, setter of state", function() {
+	// When
+	this.method.setState(this.data);
+	var clonedData = this.method.getState();
+	
+	// Then
+	deepEqual(clonedData, this.data);
+});
+
 test("onPageshow : when bfCache miss and BF navigated, persist event must be triggered.", function(assert) {
 	// Given  
-	var done = assert.async();
 	this.fakeWindow.performance = {};
 	this.fakeWindow.performance.navigation = {
 		TYPE_BACK_FORWARD: 2,
@@ -229,9 +148,5 @@ test("onPageshow : when bfCache miss and BF navigated, persist event must be tri
 	});
 	
 	// Then	
-	setTimeout(function() {
-		deepEqual(restoredState, clonedData);
-		done();
-	});
-
+	deepEqual(restoredState, clonedData);
 });
