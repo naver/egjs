@@ -129,6 +129,7 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 		"clone": clone,
 		"getState": getState,
 		"setState": setState,
-		"persist": $.persist
+		"persist": $.persist,
+		"persisted" : $.persisted
 	};
 });
