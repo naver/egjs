@@ -141,6 +141,8 @@ var ANI_3D_CASE = [
 if (navigator.userAgent.indexOf("PhantomJS") == -1) {
 	ANI_3D_CASE.push({title : "+=translate(0px, 100px)", css : "translate3d(100px, 200px, 100px)", transform: "+=translate(0px, 100px)"});
 	ANI_3D_CASE.push({title : "translate3d(100%, 200px, 0)", css : "translate3d(120px, 200px, 0)", transform: "translate3d(100%, 200px, 0)"});
+	ANI_3D_CASE.push({title : "translate3d(0, 0, 0)", css : "translate3d(0, 0, 0)", transform: "translate3d(0, 0, 0)"});
+	ANI_3D_CASE.push({title : "+=scale(2) translate3d(-100, -100, 100)", css : "scale(2) translate3d(-100px, -100px, 100px)", transform: "+=scale(2) translate3d(-100, -100, 100)"});
 }
 
 $.each( ANI_3D_CASE, function(i, val) {
