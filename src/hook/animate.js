@@ -234,12 +234,11 @@ eg.module("animate",[window.jQuery, window],function($, global){
 	}
 
 	function rateFn(element, startTf, endTf) {
-		var $el = $(element),
-			isRelative = endTf.indexOf( "+=" ) >= 0,
+		var isRelative = endTf.indexOf( "+=" ) >= 0,
 			start, end;
 
 		// Convert translate unit to 'px'.
-		endTf = correctUnit(endTf, $el.width(), $el.height());
+		endTf = correctUnit(endTf, parseFloat( $.css( element, "width" ) ) || 0, parseFloat( $.css( element, "height") ) || 0);
 
 		if ( isRelative ) {
 			start = (!startTf || startTf === "none") ? "matrix(1, 0, 0, 1, 0, 0)" : startTf;
