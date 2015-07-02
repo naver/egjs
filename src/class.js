@@ -48,10 +48,10 @@ eg.module("class",[eg],function(ns){
 	 	})
 	 */
 
-	ns.Class.extend = function(hasOwnProperty, def) {
+	ns.Class.extend = function(superClass, def) {
 		var extendClass = function extendClass() {
 			// Call a parent constructor
-			hasOwnProperty.apply(this, arguments);
+			superClass.apply(this, arguments);
 
 			// Call a child constructor
 			if (typeof def.construct === "function") {
@@ -60,7 +60,7 @@ eg.module("class",[eg],function(ns){
 		};
 
 		var ExtProto = function() {};
-		ExtProto.prototype = hasOwnProperty.prototype;
+		ExtProto.prototype = superClass.prototype;
 		//extendClass.$super = oSuperClass.prototype; //'super' is supported not yet.
 
 		var extProto = new ExtProto();
