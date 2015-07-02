@@ -30,7 +30,7 @@ eg.module("eg",[window.jQuery, eg, window],function($, ns, global){
 		}
 		scope[name] = function () {
 			return defaultValue;
-		}
+		};
 		return defaultValue;
 	}
 
@@ -313,7 +313,7 @@ eg.cancelAnimationFrame(timerId);
 
 	// Regist method to eg.
 	for(var i in eg){
-		eg.hasOwnProperty(i) && (ns[i] = eg[i]);
+		ns[i] = eg[i];
 	}
 
 	/**
