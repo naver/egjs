@@ -8,6 +8,4 @@ temp
 *.iml
 doc
 .idea/
-dist/evergreen.js
-dist/evergreen.min.js
-
+dist/
