@@ -8,7 +8,7 @@ eg.module("class",[eg],function(ns){
 	 * @ko Class는 어플리케이션을 객체지향 프로그래밍 방식으로 구현하는데 사용합니다.
 	 * @class
 	 * @name eg.Class
-	 * @param {Object} oDef Class definition of object literal type. <ko>리터럴 형태의 클래스 정의부</ko>
+	 * @param {Object} def Class definition of object literal type. <ko>리터럴 형태의 클래스 정의부</ko>
 	 * @example
 	 	var Some = eg.Class({
 	 		//Class initialize
@@ -23,14 +23,14 @@ eg.module("class",[eg],function(ns){
 	 	var some = new Some(5);
 	 	some.sumVal(5);//10
 	 */
-    ns.Class = function(oDef) {
+    ns.Class = function(def) {
 		var typeClass = function typeClass() {
-			if (typeof oDef.construct === "function") {
-				oDef.construct.apply(this, arguments);
+			if (typeof def.construct === "function") {
+				def.construct.apply(this, arguments);
 			}
 		};
 
-		typeClass.prototype = oDef;
+		typeClass.prototype = def;
 		typeClass.prototype.constructor = typeClass;
 		return typeClass;
 	};
@@ -40,7 +40,7 @@ eg.module("class",[eg],function(ns){
 	 * @static
 	 * @method eg.Class.extend
 	 * @param {eg.Class} oSuperClass Super class. <ko>상속하려는 클래스</ko>
-	 * @param {Object} oDef Class definition of object literal type. <ko>리터럴 형태의 클래스 정의부</ko>
+	 * @param {Object} def Class definition of object literal type. <ko>리터럴 형태의 클래스 정의부</ko>
 	 * @return {Class}
 	 * @example
 	 	var Some = eg.Class.extend(eg.Component,{
@@ -48,29 +48,27 @@ eg.module("class",[eg],function(ns){
 	 	})
 	 */
 
-	ns.Class.extend = function(oSuperClass, oDef) {
+	ns.Class.extend = function(superClass, def) {
 		var extendClass = function extendClass() {
 			// Call a parent constructor
-			oSuperClass.apply(this, arguments);
+			superClass.apply(this, arguments);
 
 			// Call a child constructor
-			if (typeof oDef.construct === "function") {
-				oDef.construct.apply(this, arguments);
+			if (typeof def.construct === "function") {
+				def.construct.apply(this, arguments);
 			}
 		};
 
 		var ExtProto = function() {};
-		ExtProto.prototype = oSuperClass.prototype;
+		ExtProto.prototype = superClass.prototype;
 		//extendClass.$super = oSuperClass.prototype; //'super' is supported not yet.
 
-		var oExtProto = new ExtProto();
-		for (var i in oDef) {
-			if (oDef.hasOwnProperty(i)) {
-				oExtProto[i] = oDef[i];
-			}
+		var extProto = new ExtProto();
+		for (var i in def) {
+			extProto[i] = def[i];
 		}
-		oExtProto.constructor = extendClass;
-		extendClass.prototype = oExtProto;
+		extProto.constructor = extendClass;
+		extendClass.prototype = extProto;
 
 		return extendClass;
 	};

@@ -657,10 +657,8 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		destroy : function() {
 			this.off();
 			for(var p in this._hammers) {
-				if(this._hammers.hasOwnProperty(p)) {
-					this._hammers[p].destroy();
-					this._hammers[p] = null;
-				}
+				this._hammers[p].destroy();
+				this._hammers[p] = null;
 			}
 		}
 	});

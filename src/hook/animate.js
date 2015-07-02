@@ -292,7 +292,7 @@ eg.module("animate",[window.jQuery, window],function($, global){
 			return name + "(" + property[1].join(unit(name) + ",") + unit(name) + ")";
 		} else {
 			for(name in property) {
-				property.hasOwnProperty(name) && tmp.push(name);
+				tmp.push(name);
 			}
 
 			return $.map(tmp, function(v) {

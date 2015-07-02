@@ -139,9 +139,7 @@ eg.module("component",[eg],function(ns){
 				} else {
 					var eventHash = eventName;
 					for (var i in eventHash){
-						if(eventHash.hasOwnProperty(i)) {
-							this.off(i, eventHash[i]);
-						}
+						this.off(i, eventHash[i]);
 					}
 					return this;
 				}
