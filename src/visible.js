@@ -118,6 +118,9 @@ eg.module("visible",[window.jQuery, eg],function($, ns){
 			} else {
 				area = wrapper.getBoundingClientRect();
 			}
+			// Error Fix: Cannot set property top of #<ClientRect> which has only a getter
+			area = $.extend({}, area);
+			
 			area.top -= expandSize;
 			area.left -= expandSize;
 			area.bottom += expandSize;
