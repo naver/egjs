@@ -21,36 +21,23 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 	history = global.history,
 	location = global.location,
 	JSON = global.JSON,
-	
-	isBackForwardNavigated = (wp && wp.navigation && (wp.navigation.type === wp.navigation.TYPE_BACK_FORWARD)),
-	isPersisted,
+	CONST_PERSIST = "___persist___",
+	$global = $(global),
+	isPersisted = $global.attr(CONST_PERSIST) === true,
+	// In case of IE8, TYPE_BACK_FORWARD is undefined.
+	isBackForwardNavigated = (wp && wp.navigation && (wp.navigation.type === (wp.navigation.TYPE_BACK_FORWARD || 2) )),
 	hasReplaceState = "replaceState" in history,
 	hasStateProperty = "state" in history;
-	
 
-	/*
-	 * If page is persisted(bfCache hit) return true else return false.
-	 */
-	isPersisted = function(e) {
-		var _isPersisted;
-		if(e !== undefined) {
-			_isPersisted = !!e.persisted;
-			isPersisted = function() {
-				return _isPersisted;
-			};
-			return _isPersisted;
-		}	
-	};
-	
 	function onPageshow(e) {
-		if(!isPersisted(e.originalEvent) && isBackForwardNavigated) {
-			$(global).trigger("persist");
+		isPersisted = isPersisted || ( e.originalEvent && e.originalEvent.persisted );
+		if(!isPersisted && isBackForwardNavigated) {
+			$global.trigger("persist");
 		} else {
 			reset();
 		}
 	}
 
-	 
 	/*
 	 * flush current history state
 	 */
@@ -70,15 +57,9 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 		if(hasStateProperty && hasReplaceState) {
 			return clone(history.state);
 		} else {
-			var stateStr = sessionStorage.getItem("persist");
-			if(stateStr) {
-				if(stateStr === "null") {
-					return null;	
-				} else {
-					return JSON.parse(stateStr);
-				}
-			}	
-			return undefined;			
+			var stateStr = sessionStorage.getItem(CONST_PERSIST);
+			// Note2 (4.3) return value is null
+			return (stateStr && stateStr.length > 0) ? JSON.parse(sessionStorage.getItem(CONST_PERSIST)) : null;		
 		}		
 	}
 	
@@ -89,10 +70,13 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 		if(hasStateProperty && hasReplaceState) {
 			history.replaceState(state, doc.title, location.href);
 		} else {
-			if((state && typeof state === "object") || state === null) {
-				sessionStorage.setItem("persist", JSON.stringify(state));
+			if(state) {
+				sessionStorage.setItem(CONST_PERSIST, JSON.stringify(state));
+			} else {
+				sessionStorage.removeItem(CONST_PERSIST);
 			}
 		}	
+		state ? $global.attr(CONST_PERSIST, true) : $global.attr(CONST_PERSIST, null);
 	}
 	
 	/**
@@ -122,31 +106,16 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 		}			
 		return getState();
 	};
+	
+	// in case of reload
+	!isBackForwardNavigated && reset(); 
 
-	/**
-	* Restore state with callback function
-	* @ko 인자로 받은 상태복원함수에 상태객체를 인자로 전달하여 호출한다.
-	* @method jQuery.restore
-    * @param {Function} state state info to be restored
-	* @example
-	$.restore(
-		$.proxy(function(state) {
-			if( state && state.newsList ) {
-				this.oFlicker.goto(state.newsList.pageIndex);
-			}
-		}, this)
-	);
-	*/
-	$.restore = function(callback) {
-		callback(this._getState());
-	};
-		
 	$.event.special.persist = {
 		setup: function() {
-			$(global).on("pageshow", onPageshow);
+			$global.on("pageshow", onPageshow);
 		},
 		teardown: function() {
-			$(global).off("pageshow", onPageshow);
+			$global.off("pageshow", onPageshow);
 		},
 		trigger: function(e) {
 			e.state = clone(history.state);
@@ -154,13 +123,13 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 	};
 	
 	return {
-		"isPersisted": isPersisted,
 		"isBackForwardNavigated": isBackForwardNavigated,
 		"onPageshow": onPageshow,
 		"reset": reset,
 		"clone": clone,
 		"getState": getState,
 		"setState": setState,
-		"persist": $.persist
+		"persist": $.persist,
+		"persisted" : $.persisted
 	};
 });

@@ -65,9 +65,35 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 		TYPE_RELOAD: 1,
 		TYPE_RESERVED: 255
 	};
-	this.fakeWindow.performance.navigation.type = 0;
+	
+	// When
+	this.fakeWindow.performance.navigation.type = 2;
+	this.fakeWindow.history.state = this.data;
 	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 	
+	// Then
+	deepEqual(method.persist(), this.data);
+
+	// When
+	$(this.fakeWindow).trigger({
+		type: "pageshow",
+		originalEvent: {
+			persisted: false
+		}
+	});
+	
+	// Then
+	deepEqual(method.persist(), this.data);
+
+
+	// When
+	this.fakeWindow.performance.navigation.type = 0;
+	this.fakeWindow.history.state = this.data;
+	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
+
+	// Then
+	equal(method.persist(), null);
+
 	// When
 	$(this.fakeWindow).trigger({
 		type: "pageshow",
@@ -79,9 +105,14 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 	// Then
 	equal(method.persist(), null);
 	
-	// Given 
+
+	// When
 	this.fakeWindow.performance.navigation.type = 1;
+	this.fakeWindow.history.state = this.data;
 	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
+	
+	// Then
+	equal(method.persist(), null);
 
 	// When
 	$(this.fakeWindow).trigger({
