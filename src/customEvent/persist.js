@@ -71,7 +71,7 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 			history.replaceState(state, doc.title, location.href);
 		} else {
 			if(state) {
-				typeof state === "object" && sessionStorage.setItem(CONST_PERSIST, JSON.stringify(state));
+				sessionStorage.setItem(CONST_PERSIST, JSON.stringify(state));
 			} else {
 				sessionStorage.removeItem(CONST_PERSIST);
 			}
