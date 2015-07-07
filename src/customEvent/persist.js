@@ -24,6 +24,15 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 	CONST_PERSIST = "___persist___",
 	$global = $(global),
 	isPersisted = $global.attr(CONST_PERSIST) === true,
+	storage = (function() {
+		if("sessionStorage" in global) {
+			var tmpKey = "__tmp__" + CONST_PERSIST;
+			sessionStorage.setItem(tmpKey, CONST_PERSIST);
+			return sessionStorage.getItem(tmpKey) === CONST_PERSIST ? sessionStorage :  localStorage;
+		} else {
+			return localStorage;
+		}
+	})(),
 	// In case of IE8, TYPE_BACK_FORWARD is undefined.
 	isBackForwardNavigated = (wp && wp.navigation && (wp.navigation.type === (wp.navigation.TYPE_BACK_FORWARD || 2) )),
 	hasReplaceState = "replaceState" in history,
@@ -41,7 +50,6 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 	/*
 	 * flush current history state
 	 */
-
 	function reset() {
 		setState(null);
 	}
@@ -57,9 +65,9 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 		if(hasStateProperty && hasReplaceState) {
 			return clone(history.state);
 		} else {
-			var stateStr = localStorage.getItem(location.href + CONST_PERSIST);
+			var stateStr = storage.getItem(location.href + CONST_PERSIST);
 			// Note2 (4.3) return value is null
-			return (stateStr && stateStr.length > 0) ? JSON.parse(stateStr) : null;		
+			return (stateStr && stateStr.length > 0) ? JSON.parse(storage.getItem(location.href + CONST_PERSIST)) : null;		
 		}		
 	}
 	
@@ -71,9 +79,9 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 			history.replaceState(state, doc.title, location.href);
 		} else {
 			if(state) {
-				localStorage.setItem(location.href + CONST_PERSIST, JSON.stringify(state));
+				storage.setItem(location.href + CONST_PERSIST, JSON.stringify(state));
 			} else {
-				localStorage.removeItem(location.href + CONST_PERSIST);
+				storage.removeItem(location.href  + CONST_PERSIST);
 			}
 		}	
 		state ? $global.attr(CONST_PERSIST, true) : $global.attr(CONST_PERSIST, null);
@@ -129,7 +137,6 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 		"clone": clone,
 		"getState": getState,
 		"setState": setState,
-		"persist": $.persist,
-		"persisted" : $.persisted
+		"persist": $.persist
 	};
 });
