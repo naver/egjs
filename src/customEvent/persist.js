@@ -57,9 +57,9 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 		if(hasStateProperty && hasReplaceState) {
 			return clone(history.state);
 		} else {
-			var stateStr = sessionStorage.getItem(CONST_PERSIST);
+			var stateStr = localStorage.getItem(location.href + CONST_PERSIST);
 			// Note2 (4.3) return value is null
-			return (stateStr && stateStr.length > 0) ? JSON.parse(sessionStorage.getItem(CONST_PERSIST)) : null;		
+			return (stateStr && stateStr.length > 0) ? JSON.parse(stateStr) : null;		
 		}		
 	}
 	
@@ -71,9 +71,9 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 			history.replaceState(state, doc.title, location.href);
 		} else {
 			if(state) {
-				sessionStorage.setItem(CONST_PERSIST, JSON.stringify(state));
+				localStorage.setItem(location.href + CONST_PERSIST, JSON.stringify(state));
 			} else {
-				sessionStorage.removeItem(CONST_PERSIST);
+				localStorage.removeItem(location.href + CONST_PERSIST);
 			}
 		}	
 		state ? $global.attr(CONST_PERSIST, true) : $global.attr(CONST_PERSIST, null);
