@@ -36,7 +36,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 	 * @param {Boolean} [options.circular.2=false] The circular bottom range <ko>bottom 순환 영역</ko>
 	 * @param {Boolean} [options.circular.3=false] The circular left range <ko>left 순환 영역</ko>
 	 *
-	 * @param {Function} [options.easing a easing=easing.easeOutQuint] Function of the jQuery Easing Plugin <ko>jQuery Easing 플러그인 함수</ko>
+	 * @param {Function} [options.easing a easing=easing.easeOutQuint] Function of the jQuery Easing Plugin. If you want to use another easing function then should be import jQuery easing library. <ko>jQuery Easing 플러그인 함수. 다른 easing 함수를 사용하고 싶다면, jQuery easing 라이브러리를 삽입해야 한다.</ko>
 	 * @param {Number} [options.maximumDuration=Infinity] The maximum duration. <ko>최대 좌표 이동 시간</ko>
 	 * @param {Number} [options.deceleration=0.0006] deceleration This value can be altered to change the momentum animation duration. higher numbers make the animation shorter. <ko>감속계수. 높을값이 주어질수록 애니메이션의 동작 시간이 짧아진다.</ko>
 	 * @see Hammerjs {@link http://hammerjs.github.io}
@@ -50,7 +50,9 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				bounce : [10, 10, 10, 10],
 				margin : [0,0,0,0],
 				circular : [false, false, false, false],
-				easing : $.easing.easeOutQuint,
+				easing : function easeOutQuint(x, t, b, c, d) {
+					return c*((t=t/d-1)*t*t*t*t + 1) + b;
+				},
 				maximumDuration : Infinity,
 				deceleration : 0.0006
 			};
