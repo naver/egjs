@@ -24,19 +24,26 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 	CONST_PERSIST = "___persist___",
 	$global = $(global),
 	isPersisted = $global.attr(CONST_PERSIST) === true,
-	storage = (function() {
-		if("sessionStorage" in global) {
-			var tmpKey = "__tmp__" + CONST_PERSIST;
-			sessionStorage.setItem(tmpKey, CONST_PERSIST);
-			return sessionStorage.getItem(tmpKey) === CONST_PERSIST ? sessionStorage :  localStorage;
-		} else {
-			return localStorage;
-		}
-	})(),
 	// In case of IE8, TYPE_BACK_FORWARD is undefined.
 	isBackForwardNavigated = (wp && wp.navigation && (wp.navigation.type === (wp.navigation.TYPE_BACK_FORWARD || 2) )),
-	hasReplaceState = "replaceState" in history,
-	hasStateProperty = "state" in history;
+	isSupportState = "replaceState" in history && "state" in history,
+	storage = (function() {
+		if(isSupportState) {
+			return { 
+				getItem : $.noop,
+				setItem : $.noop,
+				removeItem : $.noop
+			};
+		} else {
+			if("sessionStorage" in global) {
+				var tmpKey = "__tmp__" + CONST_PERSIST;
+				sessionStorage.setItem(tmpKey, CONST_PERSIST);
+				return sessionStorage.getItem(tmpKey) === CONST_PERSIST ? sessionStorage :  localStorage;
+			} else {
+				return localStorage;
+			}
+		}
+	})();
 
 	function onPageshow(e) {
 		isPersisted = isPersisted || ( e.originalEvent && e.originalEvent.persisted );
@@ -62,12 +69,12 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 	 * Getter for state
 	 */	
 	function getState() {
-		if(hasStateProperty && hasReplaceState) {
+		if(isSupportState) {
 			return clone(history.state);
 		} else {
 			var stateStr = storage.getItem(location.href + CONST_PERSIST);
 			// Note2 (4.3) return value is null
-			return (stateStr && stateStr.length > 0) ? JSON.parse(storage.getItem(location.href + CONST_PERSIST)) : null;		
+			return (stateStr && stateStr.length > 0) ? JSON.parse(stateStr) : null;
 		}		
 	}
 	
@@ -75,7 +82,7 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 	 * Setter for state
 	 */
 	function setState(state) {
-		if(hasStateProperty && hasReplaceState) {
+		if(isSupportState) {
 			history.replaceState(state, doc.title, location.href);
 		} else {
 			if(state) {
