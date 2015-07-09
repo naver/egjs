@@ -28,13 +28,7 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 	isBackForwardNavigated = (wp && wp.navigation && (wp.navigation.type === (wp.navigation.TYPE_BACK_FORWARD || 2) )),
 	isSupportState = "replaceState" in history && "state" in history,
 	storage = (function() {
-		if(isSupportState) {
-			return { 
-				getItem : $.noop,
-				setItem : $.noop,
-				removeItem : $.noop
-			};
-		} else {
+		if(!isSupportState) {
 			if("sessionStorage" in global) {
 				var tmpKey = "__tmp__" + CONST_PERSIST;
 				sessionStorage.setItem(tmpKey, CONST_PERSIST);
