@@ -41,6 +41,7 @@ eg.module("css",[window.jQuery, document],function($, doc){
         return;
     }
 
+    // If "ms" using "Ms" property in the get function
     var setCssHooks = function( prop ) {
         var upperProp = prop.charAt(0).toUpperCase() + prop.slice(1),
             vendorProp = vendorPrefix + upperProp,
