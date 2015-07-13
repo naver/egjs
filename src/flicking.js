@@ -202,10 +202,11 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 */
 		_movePanelPosition : function(count, append) {
 			var panel = this._conf.panel,
-				list = panel.list, listToMove;
+				list = panel.list.toArray(),
+				listToMove;
 
-			listToMove = list.splice(append ? 0 : panel.count - count, count);
-			this._conf.panel.list = $(append ? $.merge(list, listToMove) : $.merge(listToMove, list));
+			listToMove = list.splice( append ? 0 : panel.count - count, count );
+			panel.list = $( append ? list.concat( listToMove ) : listToMove.concat( list ) );
 		},
 
 		/**
@@ -916,7 +917,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		resize : function() {
 			var panel = this._conf.panel,
 				width = panel.size = this._wrapper.width(),
-				maxCoords = [ width * (panel.count - 1), 0 ];
+				maxCoords = [ width * panel.count, 0 ];
 
 			// resize panel and parent elements
 			this._container.width(maxCoords[0]);

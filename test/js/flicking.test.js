@@ -662,6 +662,7 @@ test("Method: resize()", function() {
 
 	// Then
 	deepEqual(this.inst._conf.panel.size, element.width(), "The panel width should be same as current wrapper element");
+	deepEqual(this.inst._container.width(), this.inst._conf.panel.count * this.inst._conf.panel.size, "The panel container width should be same as current panels element total width");
 	notDeepEqual(coordMax, this.inst._mcInst.options.max, "Should be updated MovableCoord's 'max' options value");
 });
 
