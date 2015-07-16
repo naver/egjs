@@ -30,7 +30,7 @@ eg.module("eg",[window.jQuery, eg, window],function($, ns, global){
 		}
 		scope[name] = function () {
 			return defaultValue;
-		}
+		};
 		return defaultValue;
 	}
 
