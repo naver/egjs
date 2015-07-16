@@ -9,7 +9,16 @@ module("persist", {
 				href: ""
 			},
 			history: new History(),
-			JSON: JSON
+			JSON: JSON,
+			performance : {
+					navigation : {
+						TYPE_BACK_FORWARD: 2,
+						TYPE_NAVIGATE: 0,
+						TYPE_RELOAD: 1,
+						TYPE_RESERVED: 255,
+						type : 0
+					}
+			}
 		};
 		this.fakeEvent = {};
 		this.data = {
@@ -17,7 +26,7 @@ module("persist", {
 		};
 		
 		this.method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
-		
+		this.GLOBALKEY = this.method.GLOBALKEY;
 		/*
 		 *	 Mock History Object
 		*/
@@ -51,27 +60,33 @@ test("persist : save state data, get state data", function() {
 	
 	// When
 	var clonedState = this.method.persist(this.data);
-	
 	// Then
 	notEqual(clonedState, this.data);
+	deepEqual(clonedState, this.data);
+});
+
+test("persist : save state data by key, get state data by key", function() {
+	// When
+	var state = this.method.persist("TESTKEY");
+	
+	// Then
+	equal(state, null);
+	
+	// When
+	var clonedState = this.method.persist("TESTKEY", this.data);
+
+	// Then
+	notEqual(clonedState, this.data);
+	deepEqual(clonedState, this.data);
 });
 
 test("onPageshow : when bfCache miss and not BF navigated, _reset method must be executed.", function() {
 	// Given  
-	this.fakeWindow.performance = {};
-	this.fakeWindow.performance.navigation = {
-		TYPE_BACK_FORWARD: 2,
-		TYPE_NAVIGATE: 0,
-		TYPE_RELOAD: 1,
-		TYPE_RESERVED: 255
-	};
-	
-	// When
-	this.fakeWindow.performance.navigation.type = 2;
-	this.fakeWindow.history.state = this.data;
+	var ht = {};
+	ht[this.GLOBALKEY] = this.data;
+	this.fakeWindow.performance.navigation.type = 2;	// navigation
+	this.fakeWindow.history.state = JSON.stringify(ht);
 	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
-	
-	// Then
 	deepEqual(method.persist(), this.data);
 
 	// When
@@ -81,18 +96,18 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 			persisted: false
 		}
 	});
-	
+
 	// Then
 	deepEqual(method.persist(), this.data);
 
 
 	// When
-	this.fakeWindow.performance.navigation.type = 0;
-	this.fakeWindow.history.state = this.data;
+	this.fakeWindow.performance.navigation.type = 0;	// enter url...
+	this.fakeWindow.history.state = JSON.stringify(ht);
 	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 
 	// Then
-	equal(method.persist(), null);
+	equal(method.persist(), null);	// must reset
 
 	// When
 	$(this.fakeWindow).trigger({
@@ -108,7 +123,7 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 
 	// When
 	this.fakeWindow.performance.navigation.type = 1;
-	this.fakeWindow.history.state = this.data;
+	this.fakeWindow.history.state = JSON.stringify(ht);
 	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 	
 	// Then
@@ -126,23 +141,6 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 	equal(method.persist(), null);
 });
 
-test("clone: new Object but same key and values", function() {
-	// When
-	var clonedData = this.method.clone(this.data);
-	
-	// Then
-	notEqual(clonedData, this.data);
-	deepEqual(clonedData, this.data);
-});
-
-test("clone: null in, null out", function() {
-	// When
-	var clonedData = this.method.clone(null);
-	
-	// Then
-	equal(clonedData, null);
-});
-
 test("getState, setState: getter, setter of state", function() {
 	// When
 	this.method.setState(this.data);
@@ -151,6 +149,7 @@ test("getState, setState: getter, setter of state", function() {
 	// Then
 	deepEqual(clonedData, this.data);
 });
+
 
 test("onPageshow : when bfCache miss and BF navigated, persist event must be triggered.", function(assert) {
 	// Given  
@@ -180,4 +179,4 @@ test("onPageshow : when bfCache miss and BF navigated, persist event must be tri
 	
 	// Then	
 	deepEqual(restoredState, clonedData);
-});
+ });
