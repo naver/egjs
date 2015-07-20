@@ -150,7 +150,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			sizeValue[temp] += "px";
 
 			temp = "width:"+ sizeValue[0] +";height:"+ sizeValue[1] + (!horizontal ? ";top:"+ padding[0] +"px;" : ";");
-			this._container = children.wrapAll("<div class='"+ prefix +"-container' style='position:relative;"+ temp +"' />").parent();
+			this._container = children.wrapAll("<div class='"+ prefix +"-container' style='position:relative;z-index:2000;"+ temp +"' />").parent();
 
 			if(this._addClonePanels()) {
 				panelCount = panel.count = ( panel.list = this._container.children() ).length;
