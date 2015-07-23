@@ -1,14 +1,16 @@
 
 var cssPrefixes = [ "Webkit", "Moz" , "O" , "ms" ];
+var jQueryVer = jQuery.fn.jquery;
 
 module("css", {
   setup : function() {
-
     this.fakeDocument = {
         head : {
             style : {}
         }
-    }
+    };
+
+    jQuery.fn.jquery = jQueryVer;
 
     jQuery.cssHooks = {};
   },
@@ -34,8 +36,34 @@ test("When is not jQuery.cssHooks", function() {
     equal(method, false);
 });
 
+
+test("jQuery version 1.8 or later", function() {
+    // Given
+    jQuery.fn.jquery = "1.8";
+    var method = eg.invoke("css",[jQuery]);
+
+    // When
+
+    //Then
+    equal(method, undefined);
+});
+
+
+test("transform and transition not support", function() {
+    // Given
+    jQuery.cssHooks = {};
+    this.fakeDocument.head.style = {};
+    var method = eg.invoke("css",[jQuery, this.fakeDocument]);
+
+    // When
+
+    //Then
+    equal(method, undefined);
+});
+
+
 cssPrefixes.forEach(function(v,i) {
-    test("vendor check : "+ v, function() {
+    test("check with the vendor documnet.head : "+ v, function() {
         // Given
         jQuery.cssHooks = {};
         this.fakeDocument.head.style[v+"Transition"] = "";
@@ -49,7 +77,28 @@ cssPrefixes.forEach(function(v,i) {
 });
 
 cssPrefixes.forEach(function(v,i) {
-    test("css propertie in jQuery.cssHooks : "+ v, function() {
+    test("check the vendor does not support documnet.head : "+ v, function() {
+        // Given
+        jQuery.cssHooks = {};
+        this.fakeDocument = {};
+        this.fakeDocument.getElementsByTagName = function(n){
+            var retVal = {};
+            retVal["style"] = {};
+            retVal["style"][v + "Transition"] = "";
+            return [retVal];
+        };
+        var method = eg.invoke("css",[jQuery, this.fakeDocument]);
+
+        // When
+
+        //Then
+        equal(method.vendorPrefix, v);
+    });
+});
+
+
+cssPrefixes.forEach(function(v,i) {
+    test("css property in jQuery.cssHooks : "+ v, function() {
         // Given
         this.fakeDocument.head.style[v+"Transition"] = "";
         var method = eg.invoke("css",[jQuery, this.fakeDocument]);
@@ -62,6 +111,17 @@ cssPrefixes.forEach(function(v,i) {
     });
 });
 
+test("When not computed ", function() {
+    // Given
+    var method = eg.invoke("css",[jQuery, document]);
+
+    // When
+    $("#prefixId").css("transform", "translate(100px, 0px)");
+
+    //Then
+    var returnValue = $.style($("#prefixId").get(0), "transform");
+    equal(returnValue, "translate(100px, 0px)");
+});
 
 test("transform property set/get", function() {
     // Given
