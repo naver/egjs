@@ -22,6 +22,7 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 	location = global.location,
 	JSON = global.JSON,
 	CONST_PERSIST = "___persist___",
+	GLOBAL_KEY = "KEY" + CONST_PERSIST,
 	$global = $(global),
 	isPersisted = $global.attr(CONST_PERSIST) === true,
 	// In case of IE8, TYPE_BACK_FORWARD is undefined.
@@ -55,21 +56,21 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 		setState(null);
 	}
 
-	function clone(state) {
-		return (state === null) ? null : $.extend(true, {}, state);
-	}
-
 	/*
 	 * Getter for state
 	 */	
 	function getState() {
 		if(isSupportState) {
-			return clone(history.state);
+			return JSON.parse(history.state) || {};
 		} else {
 			var stateStr = storage.getItem(location.href + CONST_PERSIST);
 			// Note2 (4.3) return value is null
-			return (stateStr && stateStr.length > 0) ? JSON.parse(stateStr) : null;
+			return (stateStr && stateStr.length > 0) ? JSON.parse(stateStr) : {};
 		}		
+	}
+
+	function getStateByKey(key) {
+		return getState()[key];
 	}
 	
 	/*
@@ -77,7 +78,7 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 	 */
 	function setState(state) {
 		if(isSupportState) {
-			history.replaceState(state, doc.title, location.href);
+			history.replaceState(JSON.stringify(state), doc.title, location.href);
 		} else {
 			if(state) {
 				storage.setItem(location.href + CONST_PERSIST, JSON.stringify(state));
@@ -87,33 +88,76 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 		}	
 		state ? $global.attr(CONST_PERSIST, true) : $global.attr(CONST_PERSIST, null);
 	}
+
+	function setStateByKey(key, data) {
+		var beforeData = getState();
+		beforeData[key] = data;
+		setState(beforeData);
+	}
 	
 	/**
 	* Saves state and returns current state.
-	* @ko 인자로 넘긴 현재 상태정보를 저장하고, 저장되어있는 현재 상태 객체를 반환한다.
+	* @ko 인자로 넘긴 현재 상태정보를 저장한다.
 	* @method jQuery.persist
     * @param {Object} state State object to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체</ko>
+	* @example
+	$("a").on("click",function(e){
+		e.preventdefault()	
+
+		// save state
+		$.persist(state);
+	});
+	*/
+	/**
+	* Saves state and returns current state.
+	* @ko 인자로 넘긴 현재 상태정보를 반환한다.
+	* @method jQuery.persist
 	* @return {Object} state Stored state object <ko>복원을 위해 저장되어있는 상태 객체</ko>
 	* @example
 	$("a").on("click",function(e){
 		e.preventdefault()	
 		// get state
 		var state = $.persist();
-		
-		// update state
-		state.scrollTop = document.scrollTop;
-		
+	});
+	*/
+	/**
+	* Saves state and returns current state.
+	* @ko 인자로 넘긴 현재 상태정보를 저장한다.
+	* @method jQuery.persist
+    * @param {String} key State key to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체의 키</ko>
+    * @param {String} state State object to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체</ko>
+	* @return {Object} state Stored state object <ko>복원을 위해 저장되어있는 상태 객체</ko>
+	* @example
+	$("a").on("click",function(e){
+		e.preventdefault()	
 		// save state
-		$.persist(state);
-		
-		location.href = this.attr("href");
+		$.persist("KEY",state);
+	});
+	*/
+	/**
+	* Saves state and returns current state.
+	* @ko 인자로 넘긴 현재 상태정보를 반환한다.
+	* @method jQuery.persist
+	* @param {String} key State key to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체의 키</ko>
+	* @return {Object} state Stored state object <ko>복원을 위해 저장되어있는 상태 객체</ko>
+	* @example
+	$("a").on("click",function(e){
+		e.preventdefault()	
+		// get state
+		var state = $.persist("KEY");
 	});
 	*/
 	$.persist = function(state) {
-		if(state) {
-			setState(state);
-		}			
-		return getState();
+		var key,data;
+		if(typeof state === "string") {
+			key = state;
+			data = arguments.length === 2 ? arguments[1] : null;
+		} else {
+			key = GLOBAL_KEY;
+			data = arguments.length === 1 ? state : null;
+		}
+		data && setStateByKey(key, data);
+		return getStateByKey(key);
 	};
 	
 	// in case of reload
@@ -127,7 +171,8 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 			$global.off("pageshow", onPageshow);
 		},
 		trigger: function(e) {
-			e.state = clone(history.state);
+			//If you use 'persist' event, you can get global-key only!
+			e.state = getStateByKey(GLOBAL_KEY);
 		}
 	};
 	
@@ -135,9 +180,9 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 		"isBackForwardNavigated": isBackForwardNavigated,
 		"onPageshow": onPageshow,
 		"reset": reset,
-		"clone": clone,
 		"getState": getState,
 		"setState": setState,
-		"persist": $.persist
+		"persist": $.persist,
+		"GLOBALKEY" : GLOBAL_KEY
 	};
 });
