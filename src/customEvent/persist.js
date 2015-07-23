@@ -61,17 +61,16 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 	 */	
 	function getState() {
 		if(isSupportState) {
-			return JSON.parse(history.state);
+			return JSON.parse(history.state) || {};
 		} else {
 			var stateStr = storage.getItem(location.href + CONST_PERSIST);
 			// Note2 (4.3) return value is null
-			return (stateStr && stateStr.length > 0) ? JSON.parse(stateStr) : null;
+			return (stateStr && stateStr.length > 0) ? JSON.parse(stateStr) : {};
 		}		
 	}
 
 	function getStateByKey(key) {
-		var beforeData = getState();
-		return beforeData ? beforeData[key] : null;
+		return getState()[key];
 	}
 	
 	/*
@@ -92,10 +91,6 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 
 	function setStateByKey(key, data) {
 		var beforeData = getState();
-		if(!beforeData) {
-			beforeData = {};
-			beforeData[GLOBAL_KEY] = null;
-		}
 		beforeData[key] = data;
 		setState(beforeData);
 	}
@@ -161,10 +156,7 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 			key = GLOBAL_KEY;
 			data = arguments.length === 1 ? state : null;
 		}
-
-		if(data) {
-			setStateByKey(key, data);
-		}			
+		data && setStateByKey(key, data);
 		return getStateByKey(key);
 	};
 	
@@ -179,7 +171,7 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 			$global.off("pageshow", onPageshow);
 		},
 		trigger: function(e) {
-			//@todo 이벤트 방식일 경우, global로만 나옴.
+			//If you use 'persist' event, you can get global-key only!
 			e.state = getStateByKey(GLOBAL_KEY);
 		}
 	};
