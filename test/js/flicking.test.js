@@ -644,26 +644,31 @@ test("Method: resize()", function() {
 	// Given
 	var element = $("#mflick1"),
 		width = element.width(),
-		panelWidth, coordMax;
+		panel, oldCoordMax, maxWidth;
 
-	this.inst = new eg.Flicking(element);
+	this.inst = new eg.Flicking(element, {
+		defaultIndex: 2
+	});
 
-	panelWidth = this.inst._conf.panel.size;
+	panel = this.inst._conf.panel;
 	coordMax = this.inst._mcInst.options.max;
 
 	// When
 	element.width(width + 50);
 
 	// Then
-	notDeepEqual(panelWidth, element.width(), "The panel width is less than the current wrapper size");
+	notDeepEqual(panel.size, element.width(), "The panel width is less than the current wrapper size");
 
 	// When
 	this.inst.resize();
+	maxWidth = panel.size * ( panel.count - 1 );
 
 	// Then
-	deepEqual(this.inst._conf.panel.size, element.width(), "The panel width should be same as current wrapper element");
-	deepEqual(this.inst._container.width(), this.inst._conf.panel.count * this.inst._conf.panel.size, "The panel container width should be same as current panels element total width");
-	notDeepEqual(coordMax, this.inst._mcInst.options.max, "Should be updated MovableCoord's 'max' options value");
+	equal($getTransformValue(this.inst._container, true), maxWidth, "Current container element is in right position?");
+	deepEqual(maxWidth, this.inst._mcInst.options.max[0], "Max coord value has been set correctly?");
+	deepEqual(panel.size, element.width(), "The panel width should be same as current wrapper element");
+	deepEqual(this.inst._container.width(), panel.count * panel.size, "The panel container width should be same as current panels element total width");
+	notDeepEqual(oldCoordMax, this.inst._mcInst.options.max, "Should be updated MovableCoord's 'max' options value");
 });
 
 asyncTest("Custom events #1 - When changes panel normally", function() {
