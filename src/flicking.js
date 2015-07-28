@@ -917,14 +917,15 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		resize : function() {
 			var panel = this._conf.panel,
 				width = panel.size = this._wrapper.width(),
-				maxCoords = [ width * panel.count, 0 ];
+				maxCoords = [ width * ( panel.count - 1 ), 0 ];
 
 			// resize panel and parent elements
-			this._container.width(maxCoords[0]);
-			panel.list.css("width", width);
+			this._container.width( maxCoords[0] + width );
+			panel.list.css( "width", width );
 
 			// adjust the position of current panel
-			this._setMovableCoord("setTo", [ width * panel.index, 0 ]).options.max = maxCoords;
+			this._mcInst.options.max = maxCoords;
+			this._setMovableCoord( "setTo", [ width * panel.index, 0 ] );
 		}
 	});
 });
