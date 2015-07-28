@@ -644,14 +644,14 @@ test("Method: resize()", function() {
 	// Given
 	var element = $("#mflick1"),
 		width = element.width(),
-		panel, oldCoordMax, maxWidth;
+		panel, oldCoordMax, maxPosX;
 
 	this.inst = new eg.Flicking(element, {
 		defaultIndex: 2
 	});
 
 	panel = this.inst._conf.panel;
-	coordMax = this.inst._mcInst.options.max;
+	oldCoordMax = this.inst._mcInst.options.max;
 
 	// When
 	element.width(width + 50);
@@ -661,11 +661,11 @@ test("Method: resize()", function() {
 
 	// When
 	this.inst.resize();
-	maxWidth = panel.size * ( panel.count - 1 );
+	maxPosX = panel.size * ( panel.count - 1 );
 
 	// Then
-	equal($getTransformValue(this.inst._container, true), maxWidth, "Current container element is in right position?");
-	deepEqual(maxWidth, this.inst._mcInst.options.max[0], "Max coord value has been set correctly?");
+	equal($getTransformValue(this.inst._container, true), maxPosX, "Current container element is in right position?");
+	deepEqual(maxPosX, this.inst._mcInst.options.max[0], "Max coord value has been set correctly?");
 	deepEqual(panel.size, element.width(), "The panel width should be same as current wrapper element");
 	deepEqual(this.inst._container.width(), panel.count * panel.size, "The panel container width should be same as current panels element total width");
 	notDeepEqual(oldCoordMax, this.inst._mcInst.options.max, "Should be updated MovableCoord's 'max' options value");
