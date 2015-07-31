@@ -404,6 +404,8 @@ asyncTest("fast movement test (velocity)", function() {
 			} else {
 				equal(e.holding, true, "holding value was 'true' after animationStart event");
 			}
+			equal(this._pos[0], e.pos[0], "event x-pos must equal x-pos of the object");
+			equal(this._pos[1], e.pos[1], "event y-pos must equal y-pos of the object");
 			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"release" : function(e) {
@@ -542,6 +544,8 @@ asyncTest("interrupt test when user's action is fast", function() {
 			} else {
 				equal(e.holding, true, "holding value was 'true' after animation event");
 			}
+			equal(this._pos[0], e.pos[0], "event x-pos must equal x-pos of the object");
+			equal(this._pos[1], e.pos[1], "event y-pos must equal y-pos of the object");
 			equal(this._status.interrupted, true, "interrupted property is 'true'");
 		},
 		"release" : function(e) {
@@ -645,6 +649,23 @@ asyncTest("interrupt test when stop method was called in 'animationStart' event"
     	});
 });
 
+
+module("movableCoord event Test", {
+	setup : function() {
+		this.inst = new eg.MovableCoord( {
+			min : [ 0, 0 ],
+			max : [ 300, 400 ],
+			bounce : 100,
+			margin : 0,
+			circular : false
+		});
+	},
+	teardown : function() {
+		this.inst.destroy();
+		this.inst = null;
+	}
+});
+
 test("check user's direction", function() {
 	//Given
 	// When
@@ -672,4 +693,91 @@ test("check user's direction", function() {
 	equal(this.inst._getDirection(160), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
 	equal(this.inst._getDirection(161), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
 	equal(this.inst._getDirection(180), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+});
+
+
+asyncTest("movement direction test (DIRECTION_ALL)", function() {
+	//Given
+	var el = $("#area").get(0);
+
+	this.inst.on( {
+		"release" : function(e) {
+			equal(e.depaPos[0], 10)
+			equal(e.depaPos[1], 10)
+			equal(this._pos[0], 10)
+			equal(this._pos[1], 10)
+		}
+	});
+	this.inst.bind(el, {
+		direction : eg.DIRECTION_ALL
+	});
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [0, 0],
+            deltaX: 10,
+            deltaY: 10,
+            duration: 2000,
+            easing: "linear"
+	}, function() {
+		start();
+    	});
+});
+
+
+asyncTest("movement direction test (DIRECTION_HORIZONTAL)", function() {
+	//Given
+	var el = $("#area").get(0);
+
+	this.inst.on( {
+		"release" : function(e) {
+			equal(e.depaPos[0], 10)
+			equal(e.depaPos[1], 0)
+			equal(this._pos[0], 10)
+			equal(this._pos[1], 0)
+		}
+	});
+	this.inst.bind(el, {
+		direction : eg.DIRECTION_HORIZONTAL
+	});
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [0, 0],
+            deltaX: 10,
+            deltaY: 10,
+            duration: 2000,
+            easing: "linear"
+	}, function() {
+		start();
+    	});
+});
+
+
+asyncTest("movement direction test (DIRECTION_VERTICAL)", function() {
+	//Given
+	var el = $("#area").get(0);
+
+	this.inst.on( {
+		"release" : function(e) {
+			equal(e.depaPos[0], 0)
+			equal(e.depaPos[1], 10)
+			equal(this._pos[0], 0)
+			equal(this._pos[1], 10)
+		}
+	});
+	this.inst.bind(el, {
+		direction : eg.DIRECTION_VERTICAL
+	});
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [0, 0],
+            deltaX: 3,
+            deltaY: 10,
+            duration: 2000,
+            easing: "linear"
+	}, function() {
+		start();
+    	});
 });

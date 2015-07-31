@@ -247,12 +247,11 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			    e.offsetX = e.offsetY = 0;
 			}
 			// not support offset properties in Hammerjs - end
-
- 			if((userDirection & ns.DIRECTION_HORIZONTAL) && (direction & ns.DIRECTION_HORIZONTAL)) {
+ 			if( direction === ns.DIRECTION_ALL || (userDirection & ns.DIRECTION_HORIZONTAL) && (direction & ns.DIRECTION_HORIZONTAL) ) {
 				this._status.moveDistance[0] += (e.offsetX * scale[0]);
 	              	prevent = true;
 			}
-			if((userDirection & ns.DIRECTION_VERTICAL) && (direction & ns.DIRECTION_VERTICAL)) {
+			if( direction === ns.DIRECTION_ALL || (userDirection & ns.DIRECTION_VERTICAL) && (direction & ns.DIRECTION_VERTICAL) ) {
 			     this._status.moveDistance[1] += (e.offsetY * scale[1]);
 			     prevent = true;
 			}
@@ -260,6 +259,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				e.srcEvent.preventDefault();
 				e.srcEvent.stopPropagation();
 			}
+
 			e.preventSystemEvent = prevent;
 			pos[0] = this._status.moveDistance[0], pos[1] = this._status.moveDistance[1];
 			pos = this._getCircularPos(pos, min, max);
@@ -566,6 +566,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			 * @param {Object} param.hammerEvent Hammerjs event. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자의 액션에 대한 hammerjs 이벤트 정보</ko>
 			 *
 			 */
+			this._pos = [ pos[0], pos[1] ];
 			this.trigger("change", {
 				pos : [ pos[0], pos[1] ],
 				holding : holding,
