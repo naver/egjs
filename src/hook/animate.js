@@ -322,11 +322,25 @@ eg.module("animate",[window.jQuery, window],function($, global){
 	}
 
 	function toMatrix(transform) {
+		var retMatrix = [];
+
 		if( !transform || transform === "none" ) {
 			return ["matrix" , [ "1", "0", "0", "1", "0", "0"] ];
 		}
 
-		return CSSMatrix ? parseStyle(new CSSMatrix(transform).toString()) : ["matrix", matrix(transform)];
+		retMatrix = CSSMatrix ? parseStyle(new CSSMatrix(transform).toString()) : ["matrix", matrix(transform)];
+
+		/**
+		 * Make an unintended 2d matrix to 3d matrix.
+		 *
+		 * WebkitCSSMatrix changes 'transform3d' style to '2d matix' if it is judged as needless.
+		 * But generally, Developers would intend 3d transform by force for a HW Accelation. eg. translate3d(a, b, 0)
+		 */
+		if (transform.indexOf("3d") >= 0 && retMatrix[0].indexOf("3d") < 0) {
+			retMatrix = toMatrix3d(retMatrix);
+		}
+
+		return retMatrix;
 	}
 
 	function toMatrix3d(matrix) {

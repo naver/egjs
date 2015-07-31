@@ -121,70 +121,92 @@ if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
 	});
 }
 
-module("3d animate Test", {
-	beforeEach : function() {
-		this.egAnimate = eg.invoke("animate",[jQuery,window]);
-	},
-	afterEach : function() {
+if (navigator.userAgent.indexOf("WebKit") >= 0) {
+	module("3d animate Test", {
+		beforeEach : function() {
+			this.egAnimate = eg.invoke("animate",[jQuery,window]);
+		},
+		afterEach : function() {
+		}
+	});
+
+	var ANI_3D_CASE = [
+		{title : "translate3d(100px, 100px, 100px)", css : "translate3d(100px, 100px, 100px)", transform: "translate3d(100px, 100px, 100px)"}
+	];
+
+	/**
+	 * On PhantomJS, 'Relative animate Test' case cannot be tested.
+	 * Because jQuery cannot get a start matrix which is latest position.
+	 * 
+	 */
+	if (navigator.userAgent.indexOf("PhantomJS") == -1) {
+		ANI_3D_CASE.push({title : "+=translate(0px, 100px)", css : "translate3d(100px, 200px, 100px)", transform: "+=translate(0px, 100px)"});
+		ANI_3D_CASE.push({title : "translate3d(100%, 200px, 0)", css : "translate3d(120px, 200px, 0)", transform: "translate3d(100%, 200px, 0)"});
+		ANI_3D_CASE.push({title : "translate3d(0, 0, 0)", css : "translate3d(0, 0, 0)", transform: "translate3d(0, 0, 0)"});
+		ANI_3D_CASE.push({title : "+=scale(2) translate3d(-100, -100, 100)", css : "scale(2) translate3d(-100px, -100px, 100px)", transform: "+=scale(2) translate3d(-100, -100, 100)"});
 	}
-});
 
-var ANI_3D_CASE = [
-	{title : "translate3d(100px, 100px, 100px)", css : "translate3d(100px, 100px, 100px)", transform: "translate3d(100px, 100px, 100px)"}
-];
+	$.each( ANI_3D_CASE, function(i, val) {
+		//Given
+		var $el1 = $("#box1"),
+			$el2 = $("#box2");
+		
+		$el1.css("transform", "none");
+		$el2.css("transform", "none");
 
-/**
- * On PhantomJS, 'Relative animate Test' case cannot be tested.
- * Because jQuery cannot get a start matrix which is latest position.
- * 
- */
-if (navigator.userAgent.indexOf("PhantomJS") == -1) {
-	ANI_3D_CASE.push({title : "+=translate(0px, 100px)", css : "translate3d(100px, 200px, 100px)", transform: "+=translate(0px, 100px)"});
-	ANI_3D_CASE.push({title : "translate3d(100%, 200px, 0)", css : "translate3d(120px, 200px, 0)", transform: "translate3d(100%, 200px, 0)"});
-	ANI_3D_CASE.push({title : "translate3d(0, 0, 0)", css : "translate3d(0, 0, 0)", transform: "translate3d(0, 0, 0)"});
-	ANI_3D_CASE.push({title : "+=scale(2) translate3d(-100, -100, 100)", css : "scale(2) translate3d(-100px, -100px, 100px)", transform: "+=scale(2) translate3d(-100, -100, 100)"});
-}
+		//RELATIVE_CASE
+		test(val.title, function(assert) {
+			var done = assert.async(),
+				self = this;
 
-$.each( ANI_3D_CASE, function(i, val) {
-	//Given
-	var $el1 = $("#box1"),
+			//When
+			$el1
+				.css( "transform", val.css );
+
+			$el2
+				.animate({"transform" : val.transform},
+					function() {
+						//Then
+						var t1 = self.egAnimate.toMatrix(val.css),
+						 	t2 = self.egAnimate.toMatrix($el2.css("transform"));
+
+						if (t1[1].length < t2[1].length) {
+							t1 = self.egAnimate.toMatrix3d(t1);
+						} else if (t1[1].length > t2[1].length) {
+							t2 = self.egAnimate.toMatrix3d(t2);
+						}
+
+						// Ignore very tiny difference. 
+						// Because output matrixes can be different with input matrixes.) 
+						$.each(t1[1], function(i) {
+							t1[1][i] = parseFloat(t1[1][i]).toFixed(3);
+							t2[1][i] = parseFloat(t2[1][i]).toFixed(3);
+						});
+
+						equal(t1[1].toString(), t2[1].toString());
+						done();	
+					}	
+				);
+		});
+	});
+
+	test("Unintended 2d converting is prevented", function(assert) {
+		var transformString = "translate3d(0, 0, 0)",
+			done = assert.async(),
+			$el1, $el2, convertedStyle;
+
+		//Given
+		$el1 = $("#box1"),
 		$el2 = $("#box2");
-	
-	$el1.css("transform", "none");
-	$el2.css("transform", "none");
-
-	//RELATIVE_CASE
-	test(val.title, function(assert) {
-		var done = assert.async(),
-			self = this;
+		$el1.css("transform", transformString);// This code is needless but matches style of other test.($el1, $el2 pair matching)
 
 		//When
-		$el1
-			.css( "transform", val.css );
-
-		$el2
-			.animate({"transform" : val.transform},
-				function() {
-					//Then
-					var t1 = self.egAnimate.toMatrix(val.css),
-					 	t2 = self.egAnimate.toMatrix($el2.css("transform"));
-
-					if (t1[1].length < t2[1].length) {
-						t1 = self.egAnimate.toMatrix3d(t1);
-					} else if (t1[1].length > t2[1].length) {
-						t2 = self.egAnimate.toMatrix3d(t2);
-					}
-
-					// Ignore very tiny difference. 
-					// Because output matrixes can be different with input matrixes.) 
-					$.each(t1[1], function(i) {
-						t1[1][i] = parseFloat(t1[1][i]).toFixed(3);
-						t2[1][i] = parseFloat(t2[1][i]).toFixed(3);
-					});
-
-					equal(t1[1].toString(), t2[1].toString());
-					done();	
-				}	
-			);
+		$el2.animate({"transform": transformString}, function() {
+			//Then
+			convertedStyle = $("#box2")[0].style.cssText;
+			ok(convertedStyle.indexOf("matrix3d") >= 0);
+			done();
+		});
 	});
-});
+}
+
