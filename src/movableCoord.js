@@ -50,9 +50,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				bounce : [10, 10, 10, 10],
 				margin : [0,0,0,0],
 				circular : [false, false, false, false],
-				easing : function easeOutQuint(x, t, b, c, d) {
-					return c*((t=t/d-1)*t*t*t*t + 1) + b;
-				},
+				easing : $.easing.easeOutQuint,
 				maximumDuration : Infinity,
 				deceleration : 0.0006
 			};
@@ -275,7 +273,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				pos[1] = tv>tx?tx:(tv<tn?tn:tv);
 			} else {	// when start pointer is holded inside
 				// get a initialization slop value to prevent smooth animation.
-				var initSlope = this._isInEasing ? easing(null, 0.9999 , 0, 1, 1) / 0.9999 : easing(null, 0.0001 , 0, 1, 1) / 0.0001;
+				var initSlope = this._isInEasing(easing) ? easing(null, 0.9999 , 0, 1, 1) / 0.9999 : easing(null, 0.00001 , 0, 1, 1) / 0.00001;
 				if (pos[1] < min[1]) { // up
 					tv = (min[1]-pos[1])/(out[0]*initSlope);
 					pos[1] = min[1]-easing(null, tv>1?1:tv , 0, 1, 1)* out[0];
