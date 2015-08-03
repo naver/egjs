@@ -214,10 +214,10 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			 *
 			 */
 			this.trigger("hold", {
-				pos : [ pos[0], pos[1] ],
+				pos : pos.concat(),
 				hammerEvent : e
 			});
-			this._status.moveDistance = [ pos[0], pos[1] ];
+			this._status.moveDistance = pos.concat();
 			this._status.grabOutside = this._isOutside(pos, this.options.min, this.options.max);
 		},
 
@@ -405,7 +405,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			var pos = this._pos,
 				destPos = this._getPointOfIntersection(pos, absPos),
 				param = {
-					depaPos : [ pos[0], pos[1] ],
+					depaPos : pos.concat(),
 					destPos : destPos,
 					hammerEvent : e || {}
 				};
@@ -463,7 +463,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			// prepare animation parameters
 			animationParam = {
 				duration : duration,
-				depaPos : [ pos[0], pos[1] ],
+				depaPos : pos.concat(),
 				destPos : destPos,
 				isBounce : isBounce,
 				isCircular : isCircular,
@@ -566,9 +566,9 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			 * @param {Object} param.hammerEvent Hammerjs event. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자의 액션에 대한 hammerjs 이벤트 정보</ko>
 			 *
 			 */
-			this._pos = [ pos[0], pos[1] ];
+			this._pos = pos.concat();
 			this.trigger("change", {
-				pos : [ pos[0], pos[1] ],
+				pos : pos.concat(),
 				holding : holding,
 				hammerEvent : e || { }
 			});
@@ -584,7 +584,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		 * @return {Number} pos.1 y position
 		 */
 		get : function() {
-			return [ this._pos[0],this._pos[1] ];
+			return this._pos.concat();
 		},
 
 		/**
@@ -600,7 +600,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		 */
 		setTo : function(x, y, duration) {
 			this._grab();
-			var pos = [ this._pos[0], this._pos[1] ],
+			var pos = this._pos.concat(),
 				circular = this.options.circular,
 				min = this.options.min,
 				max = this.options.max;
