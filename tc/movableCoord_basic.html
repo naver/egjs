@@ -1,0 +1,81 @@
+<html lang="en"><head>
+<title>MovableCoord - QA</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
+<style>
+#area {
+  position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;
+  box-sizing:content-box; z-index:9;
+}
+
+#dot {
+  position:absolute; background-color:#f00; width:9px; height:9px;
+  left:0; top:0; color:#000; margin:-4px; border-radius:100%;
+}
+
+#hmove {
+  position:relative; border:5px solid #888; background-color:yellowgreen;
+  width:300px; height:80px;
+}
+
+#vmove {
+  position:relative; border:5px solid #888; background-color:skyblue;
+  width:80px; height:400px; left:310px; top:-500px;
+}
+</style>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-shim.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-sham.js"></script> -->
+<script src="../bower_components/jquery/jquery.js"></script>
+<script src="../bower_components/hammer.js/hammer.js"></script>
+<script src="../src/module.js"></script>
+<script src="../src/eg.js"></script>
+<script src="../src/customEvent/persist.js"></script>
+<script src="../src/customEvent/rotate.js"></script>
+<script src="../src/customEvent/scrollEnd.js"></script>
+<script src="../src/hook/css.js"></script>
+<script src="../src/class.js"></script>
+<script src="../src/component.js"></script>
+<script src="../src/movableCoord.js"></script>
+</head>
+<body>
+  <div id="area">
+    <div id="dot"></div>
+  </div>
+  <div id="hmove"></div>
+  <div id="vmove"></div>
+
+<script>
+var $dot = $("#dot"),
+  useHW = eg.isHWAccelerable(),
+  inst = new eg.MovableCoord({
+    min : [ 0, 0 ],
+    max : [ 300, 400 ],
+    bounce : 100,
+    deceleration : 0.0024
+  }).on({
+
+    "change" : function(evt) {
+      var pos = evt.pos;
+      $dot.css("-webkit-transform", eg.translate( pos[0]+ "px", pos[1]+ "px", useHW));
+      console.log(evt.pos[0]);
+    }
+  });
+
+inst.bind("#area", {
+  direction : eg.DIRECTION_ALL,
+  scale : [ 1, 1],
+  maximumSpeed : 50
+}).
+bind("#hmove", {
+  direction : eg.DIRECTION_HORIZONTAL,
+  maximumSpeed : 50
+}).
+bind("#vmove", {
+  direction : eg.DIRECTION_VERTICAL,
+  maximumSpeed : 50
+});
+
+inst.setTo(200,200);
+</script>  
+</body>
+</html>
