@@ -365,4 +365,9 @@ eg.cancelAnimationFrame(timerId);
        */
 	ns.DIRECTION_ALL = ns.DIRECTION_HORIZONTAL | ns.DIRECTION_VERTICAL;
 
+	$.extend($.easing, {
+		easeOutQuint: function (x, t, b, c, d) {
+			return c*((t=t/d-1)*t*t*t*t + 1) + b;
+		}
+	});
 });
