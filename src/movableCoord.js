@@ -40,6 +40,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 	 * @param {Number} [options.maximumDuration=Infinity] The maximum duration. <ko>최대 좌표 이동 시간</ko>
 	 * @param {Number} [options.deceleration=0.0006] deceleration This value can be altered to change the momentum animation duration. higher numbers make the animation shorter. <ko>감속계수. 높을값이 주어질수록 애니메이션의 동작 시간이 짧아진다.</ko>
 	 * @see Hammerjs {@link http://hammerjs.github.io}
+	 * @see There is usability issue due to default css properties ({@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}) of the Hammerjs. Therefore, movableCoord removes css properties. <ko>Hammerjs의 기본 CSS 속성({@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}) 으로 인해 사용성 이슈가 있다. 따라서, movableCoord는 hammerjs의 기본 CSS 속성을 제거하였다.</ko>
 	 * @see jQuery Easing Plugin {@link http://gsgd.co.uk/sandbox/jquery/easing}
 	 */
 	ns.MovableCoord = ns.Class.extend(ns.Component,{
@@ -117,6 +118,8 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 								}
 							]
 						],
+						// css properties were removed due to usablility issue
+						// http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html
 						cssProps : {}
 					});
 				return hammer.on("hammer.input", $.proxy(function(e) {
