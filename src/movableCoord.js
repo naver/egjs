@@ -67,6 +67,8 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			this._subOptions = {};
 			this._raf = null;
 			this._animationEnd = $.proxy(this._animationEnd, this);	// for caching
+			this._panmove = $.proxy(this._panmove, this);	// for caching
+			this._panend = $.proxy(this._panend, this);	// for caching
 		},
 		/**
 		 * Attach a element to an use for the movableCoord.
@@ -105,28 +107,28 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		},
 		_createHammer : function(el, subOptions) {
 			try {
-			// create Hammer
-			var hammer = new HM.Manager(el, {
-					recognizers : [
-						[
-							HM.Pan, {
-								direction: subOptions.direction,
-								threshold: 0
-							}
-						]
-					]
-				});
-			hammer.on("hammer.input", $.proxy(function(e) {
-				if(e.isFirst) {
-					// apply options each
-					this._subOptions = subOptions;
-					this._status.curHammer = hammer;
-					this._panstart(e);
-				}
-			},this))
-			.on("panstart panmove", $.proxy(this._panmove,this))
-			.on("panend", $.proxy(this._panend,this));
-			return hammer;
+				// create Hammer
+				var hammer = new HM.Manager(el, {
+						recognizers : [
+							[
+								HM.Pan, {
+									direction: subOptions.direction,
+									threshold: 0
+								}
+							]
+						],
+						cssProps : {}
+					});
+				return hammer.on("hammer.input", $.proxy(function(e) {
+					if(e.isFirst) {
+						// apply options each
+						this._subOptions = subOptions;
+						this._status.curHammer = hammer;
+						this._panstart(e);
+					}
+				},this))
+				.on("panstart panmove", this._panmove)
+				.on("panend", this._panend);
 			} catch(e) {
 				// console.log(e);
 			}
@@ -245,11 +247,11 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			    e.offsetX = e.offsetY = 0;
 			}
 			// not support offset properties in Hammerjs - end
- 			if( direction === ns.DIRECTION_ALL || (userDirection & ns.DIRECTION_HORIZONTAL) && (direction & ns.DIRECTION_HORIZONTAL) ) {
+ 			if( direction === ns.DIRECTION_ALL || ( direction & ns.DIRECTION_HORIZONTAL && userDirection & ns.DIRECTION_HORIZONTAL) ) {
 				this._status.moveDistance[0] += (e.offsetX * scale[0]);
 	              	prevent = true;
 			}
-			if( direction === ns.DIRECTION_ALL || (userDirection & ns.DIRECTION_VERTICAL) && (direction & ns.DIRECTION_VERTICAL) ) {
+			if( direction === ns.DIRECTION_ALL || ( direction & ns.DIRECTION_VERTICAL && userDirection & ns.DIRECTION_VERTICAL) ) {
 			     this._status.moveDistance[1] += (e.offsetY * scale[1]);
 			     prevent = true;
 			}
