@@ -9,7 +9,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 	 *
 	 * @param {HTMLElement|String|jQuery} element wrapper element <ko>기준 요소</ko>
 	 * @param {Object} options
-	 * @param {Function} [options.effect=easing.linear] jQuery Easing Plugin function <ko>jQuery Easing 플러그인 함수</ko>
 	 * @param {Boolean} [options.hwAccelerable=eg.isHWAccelerable()] Force to use HW compositing <ko>하드웨어 가속 사용여부</ko>
 	 * @param {String} [options.prefix=eg-flick] Prefix string for flicking elements <ko>요소에 설정될 접두사</ko>
 	 * @param {Number} [options.deceleration=0.0006] Deceleration this value can be altered to change the momentum animation duration. higher numbers make the animation shorter
@@ -18,12 +17,13 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 	 * @param {Number|Array} [options.previewPadding=[0,0]] Padding value to display previous and next panels. If set array value the order is left(up) to right(down) <ko>이전과 다음 패널을 출력하는 프리뷰 형태에 사용되는 padding 값. 배열 형태로 지정시 좌측(상단), 우측(하단) 순서로 지정</ko>
 	 * @param {Number} [options.threshold=40] Threshold pixels to move panels in prev/next direction <ko>다음 패널로 이동되기 위한 임계치 픽셀</ko>
 	 * @param {Number} [options.duration=100] Duration time of panel change animation in milliseconds <ko>패널 이동 애니메이션 진행시간(ms) 값</ko>
-	 * @param {Function} [options.panelEffect=easing.easeOutQuint] Function of the jQuery Easing Plugin <ko>jQuery Easing 플러그인 함수</ko>
+	 * @param {Function} [options.panelEffect=easeOutQuint] easing function which is used on panel move animation<ko>패널 간의 이동 애니메이션에 사용되는 effect easing 함수</ko>
 	 * @param {Number} [options.defaultIndex=0] Default panel index to show in first time <ko>초기에 출력할 패널 인덱스</ko>
 	 *
 	 * @codepen {"id":"rVOpPK", "ko":"플리킹 기본 예제", "en":"Flicking default example", "collectionId":"ArxyLK", "height" : 403}
 	 *
 	 * @see jQuery Easing Plugin {@link http://gsgd.co.uk/sandbox/jquery/easing}
+	 * @see Easing Functions Cheat Sheet {@link http://easings.net/}
 	 * @example
 	 	<!-- HTML -->
 		<div id="mflick">
@@ -57,7 +57,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			this._wrapper = $(element);
 
 			$.extend(this.options = {
-				effect : $.easing.linear,	// $.easing functions for animation
 				hwAccelerable : ns.isHWAccelerable(),  // check weather hw acceleration is available
 				prefix : "eg-flick",		// prefix value of class name
 				deceleration : 0.0006,		// deceleration value
@@ -66,7 +65,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				previewPadding : [ 0, 0 ],	// preview padding value in left(up) to right(down) order. In this mode at least 5 panels are required.
 				threshold : 40,				// the distance pixel threshold value for change panel
 				duration : 100,				// duration ms for animation
-				panelEffect : $.easing.easeOutQuint, // $.easing function for panel change animation
+				panelEffect : $.easing.easeOutQuint,  // $.easing function for panel change animation
 				defaultIndex : 0			// initial panel index to be shown
 			}, options);
 
