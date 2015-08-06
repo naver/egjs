@@ -201,7 +201,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			if(!this._subOptions.interruptable && this._status.interrupted) {
 				return;
 			}
-			!this._subOptions.interruptable && (this._status.interrupted = true);
+			this._preventInterrupt();
 			var pos = this._pos;
 			this._grab();
 			/**
@@ -455,7 +455,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 					pos[0] = Math.round(destPos[0]);
 					pos[1] = Math.round(destPos[1]);
 					pos = this._getCircularPos(pos, min, max, circular);
-					!isNext && (this._status.interrupted = false);
+					!isNext && this._allowInterrupt();
 					callback();
 				}, this);
 
@@ -602,6 +602,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		 * @return {Instance}
 		 */
 		setTo : function(x, y, duration) {
+			this._preventInterrupt();
 			this._grab();
 			var pos = this._pos.concat(),
 				circular = this.options.circular,
@@ -624,6 +625,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			} else {
 				this._pos = this._getCircularPos( [ x, y ] );
 				this._triggerChange(this._pos, false);
+				this._allowInterrupt();
 			}
 			return this;
 		},
@@ -653,6 +655,14 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				}
 			}
 			return false;
+		},
+
+		_preventInterrupt : function() {
+			!this._subOptions.interruptable && (this._status.interrupted = true);
+		},
+
+		_allowInterrupt : function() {
+			!this._subOptions.interruptable && (this._status.interrupted = false);
 		},
 
 		/**

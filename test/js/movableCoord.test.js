@@ -649,6 +649,66 @@ asyncTest("interrupt test when stop method was called in 'animationStart' event"
     	});
 });
 
+test("interrupt test when 'setTo' method is called : duration = 0", function() {
+	//Given
+	var el = $("#area").get(0);
+	equal(this.inst._status.interrupted, false, "init value is 'false'");
+	this.inst.on( {
+		"change" : function(e) {
+			equal(this._status.interrupted, true, "interrupted property is 'true'");
+		}
+	});
+	this.inst.bind(el, {
+		interruptable : false
+	});
+	
+	// When
+	this.inst.setTo(200,200);
+
+	// Then
+	equal(this.inst._status.interrupted, false, "interrupted property is 'false'");
+
+	// When
+	this.inst.setTo(100,100);
+
+	// Then
+	equal(this.inst._status.interrupted, false, "interrupted property is 'false'");
+});
+
+
+asyncTest("interrupt test when 'setTo' method is called : duration = 100", function() {
+	//Given
+	var el = $("#area").get(0);
+	equal(this.inst._status.interrupted, false, "init value is 'false'");
+	this.inst.on( {
+		"change" : function(e) {
+			equal(this._status.interrupted, true, "interrupted property is 'true'");
+		},
+		"animationStart" : function(e) {
+			equal(this._status.interrupted, true, "interrupted property is 'true'");
+		},
+		"animationEnd" : function(e) {
+			equal(this._status.interrupted, false, "interrupted property is 'false'");
+		}
+	});
+	this.inst.bind(el, {
+		interruptable : false
+	});
+	
+	// When
+	var self = this;
+	this.inst.setTo(200,200,100);
+	setTimeout(function() {
+		// Then
+		equal(self.inst._status.interrupted, false, "interrupted property is 'false'");
+		self.inst.setTo(100,0,100);
+		setTimeout(function() {
+			// Then
+			equal(self.inst._status.interrupted, false, "interrupted property is 'false'");
+			start();
+		},150);
+	},150);
+});
 
 module("movableCoord event Test", {
 	setup : function() {
