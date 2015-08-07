@@ -91,7 +91,7 @@ eg.module("component",[eg],function(ns){
 			});
 		 */
 		on : function(eventName, handlerToAttach) {
-			if(typeof eventName === "object" && typeof handlerToAttach === "undefined") {
+			if (typeof handlerToAttach === "undefined") {
 				var eventHash = eventName, i;
 				for(i in eventHash){
 					this.on(i, eventHash[i]);
