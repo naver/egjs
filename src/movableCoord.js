@@ -61,7 +61,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				curHammer : null,		// current hammer instance
 				moveDistance : null,	// a position of the first user's action
 				animationParam : null,		// animation infomation
-				interrupted : false		//  check whether the animation event was interrupted
+				prevented : false		//  check whether the animation event was prevented
 			};
 			this._hammers = {};
 			this._pos = [ this.options.min[0], this.options.min[1] ];
@@ -198,7 +198,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 
 		// panstart event handler
 		_panstart : function(e) {
-			if(!this._subOptions.interruptable && this._status.interrupted) {
+			if(!this._subOptions.interruptable && this._status.prevented) {
 				return;
 			}
 			this._preventInterrupt();
@@ -322,7 +322,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 
 		_isInterrupting : function() {
 			// when interruptable is 'true', return value is always 'true'.
-			return this._subOptions.interruptable || this._status.interrupted;
+			return this._subOptions.interruptable || this._status.prevented;
 		},
 
 		// get user's direction
@@ -658,11 +658,11 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		},
 
 		_preventInterrupt : function() {
-			!this._subOptions.interruptable && (this._status.interrupted = true);
+			!this._subOptions.interruptable && (this._status.prevented = true);
 		},
 
 		_allowInterrupt : function() {
-			!this._subOptions.interruptable && (this._status.interrupted = false);
+			!this._subOptions.interruptable && (this._status.prevented = false);
 		},
 
 		/**

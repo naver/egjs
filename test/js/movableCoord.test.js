@@ -530,13 +530,13 @@ asyncTest("interrupt test when user's action is fast", function() {
 	var firedRelease = 0;
 	var firedAnimationStart = 0;
 	var firedAnimationEnd = 0;
-	equal(this.inst._status.interrupted, false, "init value is 'false'");
+	equal(this.inst._status.prevented, false, "init value is 'false'");
 	this.inst.on( {
 		"hold" : function(e) {
 			firedHold++;
 			deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
 			equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
-			equal(this._status.interrupted, true, "interrupted property is 'true'");
+			equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"change" : function(e) {
 			if(firedAnimationStart) {
@@ -546,22 +546,22 @@ asyncTest("interrupt test when user's action is fast", function() {
 			}
 			equal(this._pos[0], e.pos[0], "event x-pos must equal x-pos of the object");
 			equal(this._pos[1], e.pos[1], "event y-pos must equal y-pos of the object");
-			equal(this._status.interrupted, true, "interrupted property is 'true'");
+			equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"release" : function(e) {
 			firedRelease++;
 			ok(true, "fire 'release' event");
-			equal(this._status.interrupted, true, "interrupted property is 'true'");
+			equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"animationStart" : function(e) {
 			firedAnimationStart++;
 			ok(true, "fire 'animationStart' event");
-			equal(this._status.interrupted, true, "interrupted property is 'true'");
+			equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"animationEnd" : function(e) {
 			firedAnimationEnd++;
 			ok(true, "fire 'animationEnd' event");
-			equal(this._status.interrupted, false, "interrupted property is 'false'");
+			equal(this._status.prevented, false, "prevented property is 'false'");
 		}
 	});
 	this.inst.bind(el, {
@@ -595,7 +595,7 @@ asyncTest("interrupt test when stop method was called in 'animationStart' event"
 	var firedRelease = 0;
 	var firedAnimationStart = 0;
 	var firedAnimationEnd = 0;
-	equal(this.inst._status.interrupted, false, "init value is 'false'");
+	equal(this.inst._status.prevented, false, "init value is 'false'");
 	this.inst.on( {
 		"change" : function(e) {
 			if(firedAnimationStart) {
@@ -603,12 +603,12 @@ asyncTest("interrupt test when stop method was called in 'animationStart' event"
 			} else {
 				equal(e.holding, true, "holding value was 'true' after animation event");
 			}
-			equal(this._status.interrupted, true, "interrupted property is 'true'");
+			equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"release" : function(e) {
 			firedRelease++;
 			ok(true, "fire 'release' event");
-			equal(this._status.interrupted, true, "interrupted property is 'true'");
+			equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"animationStart" : function(e) {
 			firedAnimationStart++;
@@ -618,12 +618,12 @@ asyncTest("interrupt test when stop method was called in 'animationStart' event"
 				e.done();
 			}, e.duration);
 			ok(true, "fire 'animation' event");
-			equal(this._status.interrupted, true, "interrupted property is 'true'");
+			equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"animationEnd" : function(e) {
 			firedAnimationEnd++;
 			ok(true, "fire 'animationEnd' event");
-			equal(this._status.interrupted, false, "interrupted property is 'false'");
+			equal(this._status.prevented, false, "prevented property is 'false'");
 		}
 	});
 	this.inst.bind(el, {
@@ -652,10 +652,10 @@ asyncTest("interrupt test when stop method was called in 'animationStart' event"
 test("interrupt test when 'setTo' method is called : duration = 0", function() {
 	//Given
 	var el = $("#area").get(0);
-	equal(this.inst._status.interrupted, false, "init value is 'false'");
+	equal(this.inst._status.prevented, false, "init value is 'false'");
 	this.inst.on( {
 		"change" : function(e) {
-			equal(this._status.interrupted, true, "interrupted property is 'true'");
+			equal(this._status.prevented, true, "prevented property is 'true'");
 		}
 	});
 	this.inst.bind(el, {
@@ -666,29 +666,29 @@ test("interrupt test when 'setTo' method is called : duration = 0", function() {
 	this.inst.setTo(200,200);
 
 	// Then
-	equal(this.inst._status.interrupted, false, "interrupted property is 'false'");
+	equal(this.inst._status.prevented, false, "prevented property is 'false'");
 
 	// When
 	this.inst.setTo(100,100);
 
 	// Then
-	equal(this.inst._status.interrupted, false, "interrupted property is 'false'");
+	equal(this.inst._status.prevented, false, "prevented property is 'false'");
 });
 
 
 asyncTest("interrupt test when 'setTo' method is called : duration = 100", function() {
 	//Given
 	var el = $("#area").get(0);
-	equal(this.inst._status.interrupted, false, "init value is 'false'");
+	equal(this.inst._status.prevented, false, "init value is 'false'");
 	this.inst.on( {
 		"change" : function(e) {
-			equal(this._status.interrupted, true, "interrupted property is 'true'");
+			equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"animationStart" : function(e) {
-			equal(this._status.interrupted, true, "interrupted property is 'true'");
+			equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"animationEnd" : function(e) {
-			equal(this._status.interrupted, false, "interrupted property is 'false'");
+			equal(this._status.prevented, false, "prevented property is 'false'");
 		}
 	});
 	this.inst.bind(el, {
@@ -700,11 +700,11 @@ asyncTest("interrupt test when 'setTo' method is called : duration = 100", funct
 	this.inst.setTo(200,200,100);
 	setTimeout(function() {
 		// Then
-		equal(self.inst._status.interrupted, false, "interrupted property is 'false'");
+		equal(self.inst._status.prevented, false, "prevented property is 'false'");
 		self.inst.setTo(100,0,100);
 		setTimeout(function() {
 			// Then
-			equal(self.inst._status.interrupted, false, "interrupted property is 'false'");
+			equal(self.inst._status.prevented, false, "prevented property is 'false'");
 			start();
 		},150);
 	},150);
