@@ -77,19 +77,28 @@ li.prepend {
 <script src="../bower_components/fizzy-ui-utils/utils.js"></script>
 <script src="../bower_components/outlayer/item.js"></script>
 <script src="../bower_components/outlayer/outlayer.js"></script>
+<<<<<<< HEAD
 <script src="../src/class.js"></script>
 <script src="../src/component.js"></script>
+=======
+>>>>>>> feat(InfiniteGrid) : create InfiniteGrid
 <script src="../src/infiniteGrid.js"></script>
 </head>
 <body>
 <div id="controler">
   <button class="append">append</button>
+<<<<<<< HEAD
   <button class="prepend">prepend</button>
   <button class="fit">fit</button>
   <button class="layout">layout</button><br>
   <button class="clear">clear</button>
   <button class="getTopElement">getTopElement</button>
   <button class="getBottomElement">getBottomElement</button>
+=======
+  <button class="prepend">prepend</button><br>
+  <button class="fit">fit</button>
+  <button class="layout">layout</button>
+>>>>>>> feat(InfiniteGrid) : create InfiniteGrid
 </div>
   <ul id="grid">
     <li class="item">
@@ -113,7 +122,12 @@ li.prepend {
   </ul>
 <script>
 oinst = new eg.InfiniteGrid("#grid", {
+<<<<<<< HEAD
     itemSelector : ".item"
+=======
+  itemSelector : ".item",
+  // isInitLayout : false
+>>>>>>> feat(InfiniteGrid) : create InfiniteGrid
 });
 var HTML = '<li class="item"><div>테스트1</div></li><li class="item"><div>테스트2</div></li><li class="item"><div>테스트3</div></li><li class="item"><div>테스트4</div></li><li class="item"><div>테스트5</div></li><li class="item"><div>테스트6</div></li><li class="item"><div>테스트7</div></li>';
 
@@ -138,6 +152,7 @@ $("#controler").click(function(e) {
     oinst._fit(true);
   } else if ($el.hasClass("layout")) {
     oinst.layout();
+<<<<<<< HEAD
   } else if ($el.hasClass("clear")) {
     oinst.clear();
   } else if ($el.hasClass("getTopElement")) {
@@ -156,6 +171,8 @@ $("#controler").click(function(e) {
         .animate({
             "fontSize" : "1em"
         });
+=======
+>>>>>>> feat(InfiniteGrid) : create InfiniteGrid
   }
 });
 </script>  

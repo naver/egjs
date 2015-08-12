@@ -103,7 +103,6 @@ eg.module("visible", [window.jQuery, eg], function($, ns) {
 			}
 			return this._reviseElements(target, i);
 		},
-<<<<<<< HEAD
 		_check: function() {
 			var expandSize = parseInt(this.options.expandSize, 10);
 			var wrapper = this._$wrapper;
@@ -111,17 +110,6 @@ eg.module("visible", [window.jQuery, eg], function($, ns) {
 			var invisibles = [];
 			var area = null;
 			if (!wrapper.nodeType || wrapper.nodeType !== 1) {
-=======
-
-		_check : function() {
-
-			var expandSize = parseInt(this.options.expandSize,10),
-				wrapper = this._$wrapper,
-				visibles = [],
-				invisibles = [],
-				area = null;
-			if(!wrapper.nodeType || wrapper.nodeType !== 1) {
->>>>>>> Merge branch 'infiniteGrid' of http://yobi.navercorp.com/Front-End/egjs into infiniteGridService
 				area = {
 					top: 0,
 					left: 0,

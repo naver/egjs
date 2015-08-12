@@ -51,7 +51,7 @@ asyncTest("check a append after a initialization (there aren't children)", funct
 	// Given
 	var $el = getContent("append");
 	this.inst = new eg.InfiniteGrid("#nochildren_grid");
-	
+
 	// When
 	equal(this.inst.isProcessing(), false, "idel");
 	this.inst.on("layoutComplete",function(e) {
@@ -102,6 +102,7 @@ asyncTest("check a append module with groupkey", function() {
 		groupkey = 0,
 		beforeItemsCount = 0,
 		group = {};
+
 	this.inst = new eg.InfiniteGrid("#nochildren_grid", {
 		"count" : 18
 	});
@@ -126,6 +127,7 @@ asyncTest("check a append module with groupkey", function() {
 		equal(this.core.$element.children().length, this.core.items.length, "a number of elements(DOM) -> " + this.core.items.length);
 		if(addCount++ < 10) {
 			this.append(getContent("append"), ++groupkey);
+
 		} else {
 			start();
 		}
@@ -160,7 +162,7 @@ asyncTest("check a prepend module", function() {
 			equal(this.isRecycling(), true, "recycle mode");
 			equal(this.core.items.length, 18, "a number of elements are always 18");
 			equal(this.core.$element.children().length, 18, "a number of elements(DOM) are always 18");
-			
+
 			if(addCount++ < 10) {
 				if(this.prepend(getContent("prepend")) == 0) {
 					start();
@@ -196,7 +198,7 @@ asyncTest("check a prepend module with groupkey", function() {
 		"count" : 40
 	});
 
-	// When 
+	// When
 	this.inst.on("layoutComplete",function(e) {
 		if(addCount++ <10) {
 			group[groupkey] = e.target.length;
@@ -295,7 +297,7 @@ asyncTest("restore status", function() {
 	this.inst.on("layoutComplete",function(e) {
 		var properties = getProperties(this);
 		var beforeStatus = this.getStatus();
-		
+
 		// Then
 		equal(beforeStatus.html, this.core.$element.html(), "check html");
 		equal(beforeStatus.cssText, this.core.element.style.cssText, "check cssText");
@@ -394,7 +396,7 @@ asyncTest("check a count of remove contents", function() {
 	// Then
 	equal(this.inst._removedContent, 0, "content is 0 from markup");
 	equal(this.inst.isRecycling(), false, "elements are lacked");
-	
+
 
 	//When
 	this.inst.on("layoutComplete",function(e) {
