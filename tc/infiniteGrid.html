@@ -1,0 +1,141 @@
+<html lang="en"><head>
+<title>InfiniteGrid</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
+<style>
+html,body {
+height:100%;
+}
+
+body,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,table,th,td,form,fieldset,legend,input,textarea,button,select {
+margin:0;
+padding:0;
+}
+
+body,input,textarea,select,button,table {
+font-family:Helvetica Neue,AppleSDGothicNeo,sans-serif;
+font-size:14px;
+line-height:1.25em;
+}
+
+body {
+position:relative;
+width:100%;
+}
+
+img,fieldset {
+border:0;
+}
+
+ul,ol {
+list-style:none;
+}
+li {
+  width : 30%;
+  
+}
+
+li div {
+    margin:10px;
+    border:1px solid red;
+    background-color:#eee;
+}
+
+li.append {
+   background-color:#797;
+}
+li.prepend {
+   background-color:#333;
+}
+#controler {
+  position:fixed; 
+  z-index:2000;
+  bottom:0px; 
+  left :0px;
+  background-color: #efefef;
+  padding : 20px;
+}
+#grid {
+  border : 1px solid blue;
+}
+</style>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-shim.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-sham.js"></script> -->
+<script src="../bower_components/jquery/jquery.js"></script>
+<script src="../src/module.js"></script>
+<script src="../src/eg.js"></script>
+<!-- <script src="../src/customEvent/scrollEnd.js"></script> -->
+<script src="../src/hook/css.js"></script>
+<script src="../src/class.js"></script>
+<script src="../src/component.js"></script>
+<script src="../bower_components/get-style-property/get-style-property.js"></script>
+<script src="../bower_components/get-size/get-size.js"></script>
+<script src="../bower_components/matches-selector/matches-selector.js"></script>
+<script src="../bower_components/eventEmitter/EventEmitter.js"></script>
+<script src="../bower_components/eventie/eventie.js"></script>
+<script src="../bower_components/doc-ready/doc-ready.js"></script>
+<script src="../bower_components/fizzy-ui-utils/utils.js"></script>
+<script src="../bower_components/outlayer/item.js"></script>
+<script src="../bower_components/outlayer/outlayer.js"></script>
+<script src="../src/infiniteGrid.js"></script>
+</head>
+<body>
+<div id="controler">
+  <button class="append">append</button>
+  <button class="prepend">prepend</button><br>
+  <button class="fit">fit</button>
+  <button class="layout">layout</button>
+</div>
+  <ul id="grid">
+    <li class="item">
+      <div>테스트1</div>
+    </li>
+    <li class="item">
+      <div>테스트2</div>
+    </li>
+    <li class="item">
+      <div>테스트3</div>
+    </li>
+    <li class="item">
+      <div>테스트4</div>
+    </li>
+    <li class="item">
+      <div>테스트5</div>
+    </li>
+    <li class="item">
+      <div>테스트6</div>
+    </li>  
+  </ul>
+<script>
+oinst = new eg.InfiniteGrid("#grid", {
+  itemSelector : ".item",
+  // isInitLayout : false
+});
+var HTML = '<li class="item"><div>테스트1</div></li><li class="item"><div>테스트2</div></li><li class="item"><div>테스트3</div></li><li class="item"><div>테스트4</div></li><li class="item"><div>테스트5</div></li><li class="item"><div>테스트6</div></li><li class="item"><div>테스트7</div></li>';
+
+$("#controler").click(function(e) {
+  var $el = $(e.target),
+    $elements = null;
+  if ($el.hasClass("append")) {
+    $elements = $(HTML);
+    $elements.addClass("append").find("div").height(function() {
+      var val = parseInt(Math.random() * 100,10);
+      return val < 40 ? 40 : val;
+    });
+    oinst.append($elements );
+  } else if ($el.hasClass("prepend")) {
+    $elements = $(HTML);
+    $elements.addClass("prepend").find("div").height(function() {
+      var val = parseInt(Math.random() * 100,10);
+      return val < 40 ? 40 : val;
+    })
+    oinst.prepend($elements);
+  } else if ($el.hasClass("fit")) {
+    oinst._fit(true);
+  } else if ($el.hasClass("layout")) {
+    oinst.layout();
+  }
+});
+</script>  
+</body>
+</html>

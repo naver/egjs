@@ -72,8 +72,8 @@ module.exports = function(grunt) {
 					linesThresholdPct: 0
 				},
 				page : {
-	                viewportSize : { width: 320, height: 667 }
-	            }
+		                viewportSize : { width: 320, height: 667 }
+		            }
 			}
 		},
 		testee : {
