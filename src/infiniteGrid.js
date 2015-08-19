@@ -186,7 +186,7 @@ eg.module("infiniteGrid",[window.jQuery, eg, window.Outlayer],function($, ns, Ou
 		_updateCols : function(isAppend) {
 			var col = isAppend ? this._appendCols : this._prependCols,
 				items = this._getColItems(isAppend),
-				base = this.isFitted || isAppend ? 0 : this._getMinY();
+				base = this._isFitted || isAppend ? 0 : this._getMinY();
 			for(var i=0, len = col.length; i < len; i++) {
 				col[i] = items[i].position.y + ( isAppend ? items[i].size.outerHeight : - base);
 			}

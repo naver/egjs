@@ -187,3 +187,4 @@ test("restore status", function() {
 //@todo group append/prepend 테스트
 //@todo prepend count값에 대한 테스트
 //@todo equalSize에 대한 테스트 
+//@todo _updateCol에 대한 별도 테스트
