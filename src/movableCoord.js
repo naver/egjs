@@ -61,7 +61,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				curHammer : null,		// current hammer instance
 				moveDistance : null,	// a position of the first user's action
 				animationParam : null,		// animation infomation
-				interrupted : false		//  check whether the animation event was interrupted
+				prevented : false		//  check whether the animation event was prevented
 			};
 			this._hammers = {};
 			this._pos = [ this.options.min[0], this.options.min[1] ];
@@ -198,10 +198,10 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 
 		// panstart event handler
 		_panstart : function(e) {
-			if(!this._subOptions.interruptable && this._status.interrupted) {
+			if(!this._subOptions.interruptable && this._status.prevented) {
 				return;
 			}
-			!this._subOptions.interruptable && (this._status.interrupted = true);
+			this._setInterrupt(true);
 			var pos = this._pos;
 			this._grab();
 			/**
@@ -322,7 +322,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 
 		_isInterrupting : function() {
 			// when interruptable is 'true', return value is always 'true'.
-			return this._subOptions.interruptable || this._status.interrupted;
+			return this._subOptions.interruptable || this._status.prevented;
 		},
 
 		// get user's direction
@@ -455,7 +455,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 					pos[0] = Math.round(destPos[0]);
 					pos[1] = Math.round(destPos[1]);
 					pos = this._getCircularPos(pos, min, max, circular);
-					!isNext && (this._status.interrupted = false);
+					!isNext && this._setInterrupt(false);
 					callback();
 				}, this);
 
@@ -602,6 +602,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		 * @return {Instance}
 		 */
 		setTo : function(x, y, duration) {
+			this._setInterrupt(true);
 			this._grab();
 			var pos = this._pos.concat(),
 				circular = this.options.circular,
@@ -624,6 +625,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			} else {
 				this._pos = this._getCircularPos( [ x, y ] );
 				this._triggerChange(this._pos, false);
+				this._setInterrupt(false);
 			}
 			return this;
 		},
@@ -653,6 +655,10 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				}
 			}
 			return false;
+		},
+
+		_setInterrupt : function(prevented) {
+			!this._subOptions.interruptable && (this._status.prevented = prevented);
 		},
 
 		/**
