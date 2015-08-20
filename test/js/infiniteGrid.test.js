@@ -23,15 +23,14 @@ module("infiniteGrid Test", {
 
 
 asyncTest("check a initialization (there are children)", function() {
-	// 
 	// Given
 	this.inst = new eg.InfiniteGrid("#grid", {
 		"isInitLayout" : false,
 	});
 	this.inst.on("layoutComplete",function(e) {
 		// Then
-		equal(e.length, 6, "a number of elements are 6");
-		equal(this.items.length, 6, "a number of elements are 6");
+		equal(e.target.length, 6, "a number of elements are 6");
+		equal(this.core.items.length, 6, "a number of elements are 6");
 		equal(this.isProcessing(), false, "idel in layoutComplete");
 		start();
 	});
@@ -43,7 +42,6 @@ asyncTest("check a initialization (there are children)", function() {
 	this.inst.layout();
 });
 
-
 asyncTest("check a initialization (there aren't children)", function() {
 	// Given
 	this.inst = new eg.InfiniteGrid("#nochildren_grid", {
@@ -51,7 +49,7 @@ asyncTest("check a initialization (there aren't children)", function() {
 	});
 	this.inst.on("layoutComplete",function(e) {
 		// Then
-		equal(e.length, 0, "a number of elements are 0");
+		equal(e.target.length, 0, "a number of elements are 0");
 		equal(this.isProcessing(), false, "idel in layoutComplete");
 		start();
 	});
@@ -76,19 +74,19 @@ asyncTest("check a append module", function() {
 		// Then
 		equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
 		if(this.isRecycling()) {
-			equal(this.items.length, 18, "a number of elements are always 18");
+			equal(this.core.items.length, 18, "a number of elements are always 18");
 		} else {
-			equal(beforeItemsCount + e.length, this.items.length, "item added " + e.length);
-			beforeItemsCount = this.items.length;
+			equal(beforeItemsCount + e.target.length, this.core.items.length, "item added " + e.target.length);
+			beforeItemsCount = this.core.items.length;
 		}
-		equal(this.$element.children().length, this.items.length, "a number of elements(DOM) -> " + this.items.length);
+		equal(this.core.$element.children().length, this.core.items.length, "a number of elements(DOM) -> " + this.core.items.length);
 		if(addCount++ < 10) {
 			this.append(getContent("append",5));
 		} else {
 			start();
 		}
 	});
-	beforeItemsCount = this.inst.items.length;
+	beforeItemsCount = this.inst.core.items.length;
 	this.inst.append(getContent("append"));
 });
 
@@ -107,26 +105,26 @@ asyncTest("check a append module with groupkey", function() {
 	this.inst.on("layoutComplete",function(e) {
 		// Then
 		equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
-		group[groupkey] = e.length;
+		group[groupkey] = e.target.length;
 		if(this.isRecycling()) {
 			var groupRange = this.getGroupRange();
 			var total = 0;
 			for(var i=groupRange[0]; i<=groupRange[1]; i++) {
 				total += group[i];
 			}
-			equal(this.items.length, total, "a number of elements are " + total);
+			equal(this.core.items.length, total, "a number of elements are " + total);
 		} else {
-			equal(beforeItemsCount + e.length, this.items.length, "item added " + e.length);
-			beforeItemsCount = this.items.length;
+			equal(beforeItemsCount + e.target.length, this.core.items.length, "item added " + e.target.length);
+			beforeItemsCount = this.core.items.length;
 		}
-		equal(this.$element.children().length, this.items.length, "a number of elements(DOM) -> " + this.items.length);
+		equal(this.core.$element.children().length, this.core.items.length, "a number of elements(DOM) -> " + this.core.items.length);
 		if(addCount++ < 10) {
 			this.append(getContent("append"), ++groupkey);
 		} else {
 			start();
 		}
 	});
-	beforeItemsCount = this.inst.items.length;
+	beforeItemsCount = this.inst.core.items.length;
 	this.inst.append(getContent("append"), groupkey);
 });
 
@@ -140,8 +138,8 @@ asyncTest("check a prepend module", function() {
 	// When
 	this.inst.prepend(getContent("prepend"));
 	// Then
-	equal(this.inst.items.length, 0, "a number of elements are always 0");
-	equal(this.inst.$element.children().length, 0, "a number of elements(DOM) are always 0");
+	equal(this.inst.core.items.length, 0, "a number of elements are always 0");
+	equal(this.inst.core.$element.children().length, 0, "a number of elements(DOM) are always 0");
 
 	// When
 	this.inst.append(getContent("append",20));
@@ -149,8 +147,8 @@ asyncTest("check a prepend module", function() {
 		// Then
 		equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
 		equal(this.isRecycling(), true, "elements are enough");
-		equal(this.items.length, 18, "a number of elements are always 18");
-		equal(this.$element.children().length, 18, "a number of elements(DOM) are always 18");
+		equal(this.core.items.length, 18, "a number of elements are always 18");
+		equal(this.core.$element.children().length, 18, "a number of elements(DOM) are always 18");
 		
 		if(addCount++ < 10) {
 			this.prepend(getContent("prepend"));
@@ -178,15 +176,15 @@ asyncTest("check a prepend module with groupkey", function() {
 	this.inst.on("layoutComplete",function(e) {
 		// Then
 		equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
-		group[groupkey] = e.length;
+		group[groupkey] = e.target.length;
 		if(this.isRecycling()) {
 			var groupRange = this.getGroupRange();
 			var total = 0;
 			for(var i=groupRange[1]; i>=groupRange[0]; i--) {
 				total += group[i];
 			}
-			equal(this.items.length, total, "a number of elements are " + total);
-			equal(this.$element.children().length, this.items.length, "a number of elements(DOM) -> " + this.items.length);
+			equal(this.core.items.length, total, "a number of elements are " + total);
+			equal(this.core.$element.children().length, this.core.items.length, "a number of elements(DOM) -> " + this.core.items.length);
 		}
 
 		if(addCount++ < 10) {
@@ -195,12 +193,21 @@ asyncTest("check a prepend module with groupkey", function() {
 			start();
 		}
 	});
-	beforeItemsCount = this.inst.items.length;
+	beforeItemsCount = this.inst.core.items.length;
 	this.inst.prepend(getContent("prepend"), groupkey);
 });
 
 test("restore status", function() {
-	var self = this, $el;
+	var $el,
+		getProperties = function(target) {
+			var data=[];
+			for(var p in target) {
+			    if(target.hasOwnProperty(p) && /^_/.test(p)) {
+			        data.push(p);
+			    }
+			}
+			return data;
+		};
 	// Given
 	this.inst = new eg.InfiniteGrid("#grid", {
 		"count" : 18
@@ -208,21 +215,24 @@ test("restore status", function() {
 
 	// When
 	this.inst.append(getContent("append",50));
-	
+	var properties = getProperties(this.inst);
 	var beforeStatus = this.inst.getStatus();
 	
 	// Then
-	equal(beforeStatus.html, this.inst.$element.html(), "check html");
-	equal(beforeStatus.cssText, this.inst.element.style.cssText, "check cssText");
-	beforeStatus.data.items.forEach(function(v,i,a) {
-		deepEqual(v.position, self.inst.items[i].position, "check html and position information");
-		deepEqual(v.size, self.inst.items[i].size,"check html and size information");
-	});
-	deepEqual(beforeStatus.data._appendCols, this.inst._appendCols, "check appendCol info");
-	deepEqual(beforeStatus.data._prependCols, this.inst._prependCols, "check appendCol info");
-	deepEqual(beforeStatus.data.columnWidth, this.inst.columnWidth, "check columnWidth info");
-	deepEqual(beforeStatus.data.size, this.inst.size, "check size info");
-	deepEqual(beforeStatus.data.options, this.inst.options, "check options info");
+	equal(beforeStatus.html, this.inst.core.$element.html(), "check html");
+	equal(beforeStatus.cssText, this.inst.core.element.style.cssText, "check cssText");
+	beforeStatus.core.items.forEach(function(v,i,a) {
+		deepEqual(v.position, this.inst.core.items[i].position, "check html and position information");
+		deepEqual(v.size, this.inst.core.items[i].size,"check html and size information");
+	}, this);
+	deepEqual(beforeStatus.core._appendCols, this.inst.core._appendCols, "check appendCol info");
+	deepEqual(beforeStatus.core._prependCols, this.inst.core._prependCols, "check appendCol info");
+	deepEqual(beforeStatus.core.columnWidth, this.inst.core.columnWidth, "check columnWidth info");
+	deepEqual(beforeStatus.core.size, this.inst.core.size, "check size info");
+	deepEqual(beforeStatus.core.options, this.inst.core.options, "check options info");
+	properties.forEach(function(v,i,a) {
+		equal(this.inst[v], beforeStatus.data[v], "check infiniteGrid properties " + v	);
+	}, this);
 
 	// Given
 	this.inst.destroy();
@@ -234,24 +244,59 @@ test("restore status", function() {
 	this.inst.setStatus(beforeStatus);
 
 	// Then
-	equal(this.inst.element.style.cssText, beforeStatus.cssText, "check cssText");
-	this.inst.items.forEach(function(v,i,a) {
-		deepEqual(v.position, beforeStatus.data.items[i].position, "check html and position information");
-		deepEqual(v.size, beforeStatus.data.items[i].size,"check html and size information");
+	equal(this.inst.core.element.style.cssText, beforeStatus.cssText, "check cssText");
+	this.inst.core.items.forEach(function(v,i,a) {
+		deepEqual(v.position, beforeStatus.core.items[i].position, "check html and position information");
+		deepEqual(v.size, beforeStatus.core.items[i].size,"check html and size information");
 		$el = $(v.element);
 		deepEqual(v.position, {
 			"x" : parseInt($el.css("left"),10),
 			"y" : parseInt($el.css("top"),10)
 		}, "check html and position information");
 	});
-	deepEqual(this.inst._appendCols, beforeStatus.data._appendCols, "check appendCol info");
-	deepEqual(this.inst._prependCols, beforeStatus.data._prependCols, "check appendCol info");
-	deepEqual(this.inst.columnWidth, beforeStatus.data.columnWidth, "check columnWidth info");
-	deepEqual(this.inst.size, beforeStatus.data.size, "check size info");
-	deepEqual(this.inst.options, beforeStatus.data.options, "check options info");
+	deepEqual(this.inst.core._appendCols, beforeStatus.core._appendCols, "check appendCol info");
+	deepEqual(this.inst.core._prependCols, beforeStatus.core._prependCols, "check appendCol info");
+	deepEqual(this.inst.core.columnWidth, beforeStatus.core.columnWidth, "check columnWidth info");
+	deepEqual(this.inst.core.size, beforeStatus.core.size, "check size info");
+	deepEqual(this.inst.core.options, beforeStatus.core.options, "check options info");
+	properties.forEach(function(v,i,a) {
+		equal(this.inst[v], beforeStatus.data[v], "check infiniteGrid properties " + v	);
+	}, this);
 });
 
+asyncTest("check a clear", function() {
+	// Given
+	var beforeClear = true;
+	this.inst = new eg.InfiniteGrid("#grid", {
+		"isInitLayout" : false,
+	});
+	this.inst.on("layoutComplete",function(e) {
+		// Then
+		if(beforeClear) {
+			equal(this.isProcessing(), false, "idel in layoutComplete");
+			equal(e.target.length, 6, "a number of elements are 6");
+			equal(this.core.items.length, 6, "a number of elements are 6");
+			equal(this.core.$element.children().length, 6, "a number of DOM are 6");
+			beforeClear = false;
+			this.clear();
+		} else {
+			equal(e.target.length, 0, "a number of elements are 0");
+			equal(this.core.items.length, 0, "a number of elements are 0");
+			equal(this.core.$element.children().length, 0, "a number of DOM are 0");
+			equal(this._addType, null, "addType is null");
+			equal(this._isFitted, true, "isFitted is true");
+			equal(this._contentCount, 0, "a number of contentCount are 0");
+			start();
+		}
+	});
+	// When
+	// Then
+	equal(this.inst.isProcessing(), false, "idel");
+
+	// When
+	this.inst.layout();
+});
 
 //@todo prepend count값에 대한 테스트
 //@todo equalSize에 대한 테스트 
-//@todo _updateCol에 대한 별도 테스트
+//@todo updateCol에 대한 별도 테스트

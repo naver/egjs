@@ -77,6 +77,8 @@ li.prepend {
 <script src="../bower_components/fizzy-ui-utils/utils.js"></script>
 <script src="../bower_components/outlayer/item.js"></script>
 <script src="../bower_components/outlayer/outlayer.js"></script>
+<script src="../src/class.js"></script>
+<script src="../src/component.js"></script>
 <script src="../src/infiniteGrid.js"></script>
 </head>
 <body>
@@ -85,6 +87,7 @@ li.prepend {
   <button class="prepend">prepend</button><br>
   <button class="fit">fit</button>
   <button class="layout">layout</button>
+  <button class="clear">clear</button>
 </div>
   <ul id="grid">
     <li class="item">
@@ -134,6 +137,8 @@ $("#controler").click(function(e) {
     oinst._fit(true);
   } else if ($el.hasClass("layout")) {
     oinst.layout();
+  } else if ($el.hasClass("clear")) {
+    oinst.clear();
   }
 });
 </script>  
