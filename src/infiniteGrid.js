@@ -233,16 +233,18 @@ eg.module("infiniteGrid",[window.jQuery, eg, window.Outlayer],function($, ns, Ou
 			// 	return;
 			// }
 			var targets, idx, diff = this.items.length + addtional - this.options.count;
+			// console.info("cur-tot", this.items.length ,"diff", diff, "andditional", addtional);
 			if(diff <= 0 || (idx = this._getDelimiterIndex(isTop, diff)) < 0 ) {
 				return;
 			}
+			// console.warn("_adjustRange", idx, this.getGroupRange(), "+" , addtional)
 			if(isTop) {
-				targets = this.items.slice(0,idx+1);
-				this.items = this.items.slice(idx+1);
+				targets = this.items.slice(0,idx);
+				this.items = this.items.slice(idx);
 				this._isFitted = false;
 			} else {
-				targets = this.items.slice(idx+1);
-				this.items = this.items.slice(0, idx+1);
+				targets = this.items.slice(idx);
+				this.items = this.items.slice(0, idx);
 			}
 			// @todo improve performance
 			for(var i=0, item, len=targets.length; i < len; i++) {
@@ -266,11 +268,11 @@ eg.module("infiniteGrid",[window.jQuery, eg, window.Outlayer],function($, ns, Ou
 				return -1;
 			}
 						
-			var	i,
-				idx = 0,
-				baseIdx = isTop ? removeCount-1 : len-removeCount-1,
-				targetIdx = baseIdx + isTop ? 1 : -1,
+			var	i, idx = 0,
+				baseIdx = isTop ? removeCount-1 : len-removeCount,
+				targetIdx = baseIdx + (isTop ? 1 : -1),
 				groupKey = this.items[baseIdx].groupKey;
+			// console.info("_getDelimiterIndex", "baseIdx", baseIdx, "targetIdx", targetIdx, "removeCount",removeCount,groupKey);
 			if(groupKey != null && groupKey === this.items[targetIdx].groupKey) {
 				if(isTop) {
 					for(i=baseIdx; i>0; i--) {
@@ -278,8 +280,7 @@ eg.module("infiniteGrid",[window.jQuery, eg, window.Outlayer],function($, ns, Ou
 							break;
 						}
 					}
-					idx =  i === 0 ? -1 : i;
-					// idx > 0 && console.info(this.items[idx].groupKey, this.items[idx+1].groupKey);
+					idx =  i === 0 ? -1 : i+1;
 				} else {
 					for(i=baseIdx; i<len; i++) {
 						if(groupKey !== this.items[i].groupKey) {
@@ -287,10 +288,9 @@ eg.module("infiniteGrid",[window.jQuery, eg, window.Outlayer],function($, ns, Ou
 						}
 					}
 					idx = i === len ? -1 : i;
-					// idx > 0 && console.info(this.items[idx-1].groupKey, this.items[idx].groupKey);
 				}
 			} else {
-				idx = baseIdx;
+				idx = isTop? targetIdx : baseIdx;
 			}
 			return idx;
 		},

@@ -1,12 +1,9 @@
-var HTML = '<li class="item"><div>테스트1</div></li><li class="item"><div>테스트2</div></li><li class="item"><div>테스트3</div></li><li class="item"><div>테스트4</div></li><li class="item"><div>테스트5</div></li><li class="item">';
+var HTML = '<li class="item"><div>테스트</div></li>';
 var getContent = function(className, x) {
 	var s = "";
-	if(x) {
-		for(var i=0; i<x; i++) {
-			s+= HTML;
-		}
-	} else {
-		s = HTML;
+	x = x || ( (parseInt(Math.random() * 100) % 10) +1 ) ;
+	for(var i=0; i<x; i++) {
+		s+= HTML;
 	}
 	return $(s).addClass(className).find("div").height(function() {
 		var val = parseInt(Math.random() * 100,10);
@@ -68,7 +65,8 @@ asyncTest("check a initialization (there aren't children)", function() {
 
 asyncTest("check a append module", function() {
 	// Given
-	var addCount = 0;
+	var addCount = 0,
+		beforeItemsCount = 0;
 	this.inst = new eg.InfiniteGrid("#nochildren_grid", {
 		"count" : 18
 	});
@@ -77,24 +75,59 @@ asyncTest("check a append module", function() {
 	this.inst.on("layoutComplete",function(e) {
 		// Then
 		equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
-		equal(e.length, 5, "appended elements are 5");
-		if(addCount++ < 3) {
-			equal(this.isRecycling(), false, "elements are lacked");
-			equal(this.items.length, 5 * addCount, "a number of elements are " + (5 * addCount));
-			equal(this.$element.children().length, 5 * addCount, "a number of elements(DOM) are " + (5 * addCount));
-
-		} else {
-			equal(this.isRecycling(), true, "elements are enough");
+		if(this.isRecycling()) {
 			equal(this.items.length, 18, "a number of elements are always 18");
-			equal(this.$element.children().length, 18, "a number of elements(DOM) are always 18");
+		} else {
+			equal(beforeItemsCount + e.length, this.items.length, "item added " + e.length);
+			beforeItemsCount = this.items.length;
 		}
-		if(addCount < 10) {
-			this.append(getContent("append"));
+		equal(this.$element.children().length, this.items.length, "a number of elements(DOM) -> " + this.items.length);
+		if(addCount++ < 10) {
+			this.append(getContent("append",5));
 		} else {
 			start();
 		}
 	});
+	beforeItemsCount = this.inst.items.length;
 	this.inst.append(getContent("append"));
+});
+
+
+asyncTest("check a append module with groupkey", function() {
+	// Given
+	var addCount = 0,
+		groupkey = 0,
+		beforeItemsCount = 0,
+		group = {};
+	this.inst = new eg.InfiniteGrid("#nochildren_grid", {
+		"count" : 18
+	});
+
+	// When
+	this.inst.on("layoutComplete",function(e) {
+		// Then
+		equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
+		group[groupkey] = e.length;
+		if(this.isRecycling()) {
+			var groupRange = this.getGroupRange();
+			var total = 0;
+			for(var i=groupRange[0]; i<=groupRange[1]; i++) {
+				total += group[i];
+			}
+			equal(this.items.length, total, "a number of elements are " + total);
+		} else {
+			equal(beforeItemsCount + e.length, this.items.length, "item added " + e.length);
+			beforeItemsCount = this.items.length;
+		}
+		equal(this.$element.children().length, this.items.length, "a number of elements(DOM) -> " + this.items.length);
+		if(addCount++ < 10) {
+			this.append(getContent("append"), ++groupkey);
+		} else {
+			start();
+		}
+	});
+	beforeItemsCount = this.inst.items.length;
+	this.inst.append(getContent("append"), groupkey);
 });
 
 asyncTest("check a prepend module", function() {
@@ -111,11 +144,10 @@ asyncTest("check a prepend module", function() {
 	equal(this.inst.$element.children().length, 0, "a number of elements(DOM) are always 0");
 
 	// When
-	this.inst.append(getContent("append",4));
+	this.inst.append(getContent("append",20));
 	this.inst.on("layoutComplete",function(e) {
 		// Then
 		equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
-		equal(e.length, 5, "prepended elements are 5");
 		equal(this.isRecycling(), true, "elements are enough");
 		equal(this.items.length, 18, "a number of elements are always 18");
 		equal(this.$element.children().length, 18, "a number of elements(DOM) are always 18");
@@ -127,9 +159,45 @@ asyncTest("check a prepend module", function() {
 		}
 	});
 	this.inst.prepend(getContent("prepend"));
-
 });
 
+
+asyncTest("check a prepend module with groupkey", function() {
+	var addCount = 0,
+		groupkey = 10,
+		beforeItemsCount = 0,
+		group = {};
+	// Given
+	this.inst = new eg.InfiniteGrid("#nochildren_grid", {
+		"count" : 18
+	});
+
+	// When
+	this.inst.append(getContent("append",20),groupkey--);
+	group[10] = 20;
+	this.inst.on("layoutComplete",function(e) {
+		// Then
+		equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
+		group[groupkey] = e.length;
+		if(this.isRecycling()) {
+			var groupRange = this.getGroupRange();
+			var total = 0;
+			for(var i=groupRange[1]; i>=groupRange[0]; i--) {
+				total += group[i];
+			}
+			equal(this.items.length, total, "a number of elements are " + total);
+			equal(this.$element.children().length, this.items.length, "a number of elements(DOM) -> " + this.items.length);
+		}
+
+		if(addCount++ < 10) {
+			this.prepend(getContent("prepend"), --groupkey);
+		} else {
+			start();
+		}
+	});
+	beforeItemsCount = this.inst.items.length;
+	this.inst.prepend(getContent("prepend"), groupkey);
+});
 
 test("restore status", function() {
 	var self = this, $el;
@@ -139,7 +207,7 @@ test("restore status", function() {
 	});
 
 	// When
-	this.inst.append(getContent("append",10));
+	this.inst.append(getContent("append",50));
 	
 	var beforeStatus = this.inst.getStatus();
 	
@@ -184,7 +252,6 @@ test("restore status", function() {
 });
 
 
-//@todo group append/prepend 테스트
 //@todo prepend count값에 대한 테스트
 //@todo equalSize에 대한 테스트 
 //@todo _updateCol에 대한 별도 테스트
