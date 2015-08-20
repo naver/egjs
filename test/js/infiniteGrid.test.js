@@ -85,6 +85,7 @@ asyncTest("check a append module", function() {
 			beforeItemsCount = this.core.items.length;
 		}
 		equal(this.core.$element.children().length, this.core.items.length, "a number of elements(DOM) -> " + this.core.items.length);
+
 		if(addCount++ < 10) {
 			this.append(getContent("append",5));
 		} else {
@@ -125,6 +126,7 @@ asyncTest("check a append module with groupkey", function() {
 			beforeItemsCount = this.core.items.length;
 		}
 		equal(this.core.$element.children().length, this.core.items.length, "a number of elements(DOM) -> " + this.core.items.length);
+
 		if(addCount++ < 10) {
 			this.append(getContent("append"), ++groupkey);
 
@@ -193,6 +195,7 @@ asyncTest("check a prepend module with groupkey", function() {
 		groupkey = 0,
 		groupInfo = {},
 		group = {};
+
 	// Given
 	this.inst = new eg.InfiniteGrid("#nochildren_grid", {
 		"count" : 40
@@ -212,6 +215,7 @@ asyncTest("check a prepend module with groupkey", function() {
 			prependTest(this);
 		}
 	});
+
 	// Then
 	this.inst.append(getContent("append",20),groupkey++);
 
