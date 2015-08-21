@@ -5,10 +5,12 @@ var getContent = function(className, x) {
 	for(var i=0; i<x; i++) {
 		s+= HTML;
 	}
-	return $(s).addClass(className).find("div").height(function() {
+	var $el = $(s);
+	$el.addClass(className).find("div").height(function() {
 		var val = parseInt(Math.random() * 100,10);
 		return val < 40 ? 40 : val;
 	}); 
+	return $el;
 };
 
 module("infiniteGrid Test", {
@@ -73,6 +75,8 @@ asyncTest("check a append module", function() {
 	this.inst.on("layoutComplete",function(e) {
 		// Then
 		equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
+		equal(e.isAppend, true, "append type");
+		equal(e.distance, 0, "check distance");
 		if(this.isRecycling()) {
 			equal(this.core.items.length, 18, "a number of elements are always 18");
 		} else {
@@ -105,9 +109,10 @@ asyncTest("check a append module with groupkey", function() {
 	this.inst.on("layoutComplete",function(e) {
 		// Then
 		equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
+		equal(e.isAppend, true, "append type");
 		group[groupkey] = e.target.length;
 		if(this.isRecycling()) {
-			var groupRange = this.getGroupRange();
+			var groupRange = this.getGroupKeyRange();
 			var total = 0;
 			for(var i=groupRange[0]; i<=groupRange[1]; i++) {
 				total += group[i];
@@ -129,7 +134,8 @@ asyncTest("check a append module with groupkey", function() {
 });
 
 asyncTest("check a prepend module", function() {
-	var addCount = 0;
+	var addCount = 0,
+		beforeItem = null;
 	// Given
 	this.inst = new eg.InfiniteGrid("#nochildren_grid", {
 		"count" : 18
@@ -145,13 +151,18 @@ asyncTest("check a prepend module", function() {
 	this.inst.append(getContent("append",20));
 	this.inst.on("layoutComplete",function(e) {
 		// Then
+		beforeItem = this.core.items[e.target.length];
 		equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
-		equal(this.isRecycling(), true, "elements are enough");
+		equal(e.isAppend, false, "prepend type");
+		equal(e.distance, beforeItem.position.y, "check distance");
+		equal(this.isRecycling(), true, "recycle mode");
 		equal(this.core.items.length, 18, "a number of elements are always 18");
 		equal(this.core.$element.children().length, 18, "a number of elements(DOM) are always 18");
 		
 		if(addCount++ < 10) {
-			this.prepend(getContent("prepend"));
+			if(this.prepend(getContent("prepend")) == 0) {
+				start();
+			}
 		} else {
 			start();
 		}
@@ -176,9 +187,10 @@ asyncTest("check a prepend module with groupkey", function() {
 	this.inst.on("layoutComplete",function(e) {
 		// Then
 		equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
+		equal(e.isAppend, false, "prepend type");
 		group[groupkey] = e.target.length;
 		if(this.isRecycling()) {
-			var groupRange = this.getGroupRange();
+			var groupRange = this.getGroupKeyRange();
 			var total = 0;
 			for(var i=groupRange[1]; i>=groupRange[0]; i--) {
 				total += group[i];
@@ -188,7 +200,9 @@ asyncTest("check a prepend module with groupkey", function() {
 		}
 
 		if(addCount++ < 10) {
-			this.prepend(getContent("prepend"), --groupkey);
+			if(this.prepend(getContent("prepend"), --groupkey) == 0) {
+				start();
+			}
 		} else {
 			start();
 		}
@@ -297,6 +311,85 @@ asyncTest("check a clear", function() {
 	this.inst.layout();
 });
 
-//@todo prepend count값에 대한 테스트
-//@todo equalSize에 대한 테스트 
-//@todo updateCol에 대한 별도 테스트
+
+test("check a count of contents", function() {
+	// Given
+	// When
+	this.inst = new eg.InfiniteGrid("#grid", {
+		"count" : 18
+	});
+
+	// Then
+	equal(this.inst._contentCount, 6, "content is 6 from markup");
+	equal(this.inst.isRecycling(), false, "elements are lacked");
+	
+	//When
+	this.inst.append(getContent("append",10));
+
+	// Then
+	equal(this.inst._contentCount, 16, "content is 16 from api");
+	equal(this.inst.isRecycling(), false, "elements are lacked");
+
+	//When
+	this.inst.prepend(getContent("prepend",10));
+	
+	// Then
+	equal(this.inst._contentCount, 16, "prepend is ignored when isRecycling is false");
+	equal(this.inst.isRecycling(), false, "elements are lacked");
+
+	//When
+	this.inst.append(getContent("append",10));
+	
+	// Then
+	equal(this.inst._contentCount, 26, "content is 26 from api");
+	equal(this.inst.isRecycling(), true, "recycle mode");
+
+	//When
+	this.inst.prepend(getContent("prepend",10));
+	
+	// Then
+	equal(this.inst._contentCount, 16, "content removed 16");
+	equal(this.inst.isRecycling(), true, "recycle mode");
+
+	//When
+	this.inst.prepend(getContent("prepend",10));
+	
+	// Then
+	equal(this.inst._contentCount, 6, "content removed");
+	equal(this.inst.isRecycling(), true, "recycle mode");
+
+	//When
+	this.inst.append(getContent("append",10));
+	
+	// Then
+	equal(this.inst._contentCount, 16, "content is 16 from api");
+	equal(this.inst.isRecycling(), true, "recycle mode");
+
+	//When
+	this.inst.prepend(getContent("prepend",15));
+	
+	// Then
+	equal(this.inst._contentCount, 1, "content removed");
+	equal(this.inst.isRecycling(), true, "recycle mode");
+
+	// When
+	this.inst.prepend(getContent("prepend",15));
+	
+	// Then
+	equal(this.inst._contentCount, 0, "content removed");
+	equal(this.inst.isRecycling(), true, "recycle mode");
+
+	// When
+	this.inst.prepend(getContent("prepend",15));
+	
+	// Then
+	equal(this.inst._contentCount, 0, "content removed");
+	equal(this.inst.isRecycling(), true, "recycle mode");
+	
+	//When
+	this.inst.append(getContent("append",20));
+	
+	// Then
+	equal(this.inst._contentCount, 20, "content is 26 from api");
+	equal(this.inst.isRecycling(), true, "recycle mode");
+});
