@@ -96,15 +96,18 @@ eg.module("infiniteGrid",[window.jQuery, eg, window.Outlayer],function($, ns, Ou
 		_getColumnWidth : function() {
 			if(!this.columnWidth) {
 				var el = this.items[0] && this.items[0].element,
-					size = el && 
+					size;
+				if(el) {
 					/* jshint ignore:start */
-					getSize(el) ||
+					size = getSize(el);
 					/* jshint ignore:end */
-					{
+				} else {
+					size = {
 						outerWidth : 0,
 						outerHeight : 0
 					};
-				this.options.isEqualSize && (this._equalItemSize = $.extend({}, size));
+				}
+				this.options.isEqualSize && (this._equalItemSize = size);
 				this.columnWidth = size.outerWidth || this.size.outerWidth;
 			}
 			return this.columnWidth;
@@ -223,11 +226,11 @@ eg.module("infiniteGrid",[window.jQuery, eg, window.Outlayer],function($, ns, Ou
 		},
 		// check if element is appending or prepending
 		isProcessing : function() {
-			return !!this._isProcessing;
+			return this._isProcessing;
 		},
 		// check if elements are recycling
 		isRecycling : function() {
-			return this.core.options.count > 0 && !!this._isRecycling;
+			return this.core.options.count > 0 && this._isRecycling;
 		},
 		// return page key range [0, 20]
 		getGroupKeyRange : function() {
