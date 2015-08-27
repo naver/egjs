@@ -96,25 +96,26 @@ eg.hook.agent = function(agent) {
 		agent : function(useragent){
 			ua = useragent || navigator.userAgent;
 
-			var osMatch = /(iPhone |iPad )?OS ([\d|_]+)/.exec(ua) ||
+			var osMatch = /(Windows Phone) ([\d|\.]+)/.exec(ua) ||
+					/(iPhone |iPad )?OS ([\d|_]+)/.exec(ua) ||
 					/(Android) ([\w.]+)/.exec(ua) ||
 					/(Windows NT) ([\d|\.]+)/.exec(ua) ||
-					/(Windows Phone) ([\d|\.]+)/.exec(ua) ||
 					/(Windows) ([\w|\.]+)/.exec(ua) ||
 					/(Mac OS X)( ([\w.]+))?/.exec(ua) ||
 					[],
 				browserMatch = /(Chrome|CriOS|Firefox)[\s\/]([\w.]+)/.exec(ua) ||
-					/(MSIE|Trident)[\/\s]([\d.]+)/.exec(ua) ||
+					/(MSIE|IEMobile)[\/\s]([\d.]+)/.exec(ua) ||
+					/(Trident)[\/\s]([\d.]+)/.exec(ua) ||
 					/(PhantomJS)\/([\d.]+)/.exec(ua) ||
 					[];
 
 			// os
 			if(osMatch.length >= 3) {
-				if(/iPhone|iPad/.test(ua)) {
-					osMatch[1] = "ios";
-				} else if(ua.indexOf("Win") !== -1) {
+				if(ua.indexOf("Win") !== -1) {
 					osMatch[1] = "window";
 					osMatch[2] = osMatch[2] === "2000" ? "5.0" : osMatch[2]; // for window 2000
+				} else if(/iPhone|iPad/.test(ua)) {
+					osMatch[1] = "ios";
 				} else if(ua.indexOf("Mac") !== -1) {
 					osMatch[1] = "mac";
 				} else {
@@ -125,10 +126,10 @@ eg.hook.agent = function(agent) {
 
 			// browser
 			if(browserMatch.length >= 3) {
-				if(/Chrome|CriOS/.test(ua)) {
-					browserMatch[1] = ua.indexOf("SAMSUNG") !== -1 ? "sbrowser" : "chrome";
-				} else if(/MSIE|Trident/.test(ua)) {
+				if(/MSIE|IEMobile|Trident/.test(ua)) {
 					browserMatch[1] = "ie";
+				} else if(/Chrome|CriOS/.test(ua)) {
+					browserMatch[1] = ua.indexOf("SAMSUNG") !== -1 ? "sbrowser" : "chrome";
 				} else {
 					browserMatch[1] = browserMatch[1].toLowerCase();
 				}
