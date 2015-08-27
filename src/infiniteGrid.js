@@ -1,9 +1,23 @@
-eg.module("infiniteGrid",[window.jQuery, eg, window.Outlayer],function($, ns, Outlayer){
+eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.global],function($, ns, global, Outlayer){
 	if(!Outlayer) {
 		ns.InfiniteGrid = ns.Class({});
 		return;
 	}
 
+	// for IE -- start
+	var hasEventListener = !!global.addEventListener;
+	var eventPrefix = hasEventListener? "" : "on";
+	var bindMethod = hasEventListener ? "addEventListener" : "attachEvent";
+	var unbindMethod = hasEventListener ? "removeEventListener" : "detachEvent";
+	function bindImage(ele, callback) {
+		ele[bindMethod](eventPrefix + "load", callback, true);
+		ele[bindMethod](eventPrefix + "error", callback, true);
+	}
+	function unbindImage(ele, callback) {
+		ele[unbindMethod](eventPrefix + "load", callback, true);
+		ele[unbindMethod](eventPrefix + "error", callback, true);
+	}
+	// for IE -- end
 	function clone(target, source, what) {
 		var s;
 		$.each(what, function(i,v) {
@@ -286,8 +300,13 @@ eg.module("infiniteGrid",[window.jQuery, eg, window.Outlayer],function($, ns, Ou
 	  			this.core.items = items.concat(this.core.items.slice(0));
 				items = items.reverse();
 			}
-			this.core.layoutItems( items, true );
-			// console.log("컨텐츠의 개수 : " , this._contentCount);
+			var needCheck = this._checkImageLoaded(elements);
+			var checkCount = needCheck.length;
+			if(checkCount > 0) {
+				this._waitImageLoaded(items, checkCount);
+			} else {
+				this.core.layoutItems( items, true );
+			}
 		},
 		_adjustRange : function (isTop, addtional) {
 			var targets, idx, diff = this.core.items.length + addtional - this.core.options.count;
@@ -357,7 +376,9 @@ eg.module("infiniteGrid",[window.jQuery, eg, window.Outlayer],function($, ns, Ou
 				y = this.core.updateCols();	// for prepend
 			while(item = this.core.items[i++]) {
 				item.position.y -= y;
-				applyDom && item.goTo(item.position.x, item.position.y);
+				applyDom && item.css( {
+					"top" : 	item.position.y + "px"
+				});
 			}
 			this.core.updateCols(true);	// for append
 			height = this.core._getContainerSize().height;
@@ -377,6 +398,30 @@ eg.module("infiniteGrid",[window.jQuery, eg, window.Outlayer],function($, ns, Ou
 			this._isProcessing = false;
 			this._isRecycling = false;
 			this._contentCount = this.core.items.length;
+		},
+		_checkImageLoaded : function(elements) {
+			var needCheck = [];
+			$(elements).each(function(k,v) {
+				if(v.nodeName === "IMG") {
+					!v.complete && needCheck.push(v);
+				} else if(v.nodeType && (v.nodeType === 1 || v.nodeType === 9 || v.nodeType === 11)) {	// ELEMENT_NODE, DOCUMENT_NODE, DOCUMENT_FRAGMENT_NODE
+					needCheck = needCheck.concat($(v).find("img").filter(function(fk,fv) {
+						return !fv.complete;
+					}).toArray());
+				}
+			});
+			return needCheck;
+		},
+		_waitImageLoaded : function(items, checkCount) {
+			var self = this;
+			function onCheck() {
+				checkCount--;
+				if(checkCount <= 0) {
+					unbindImage(self.core.element, onCheck);
+					self.core.layoutItems( items, true );
+				}
+			}
+			bindImage(this.core.element, onCheck);
 		},
 		destroy : function() {
 			if(this.core) {
