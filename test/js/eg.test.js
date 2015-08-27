@@ -21,6 +21,7 @@ test("check namespace", function() {
 test("determine the return value of a 'isHWAccelerable' function", function() {
 	// Given
 	var result = eg.isHWAccelerable();
+
 	var controllValue = result;
 	eg.isHWAccelerable = this.isHWAccelerable;
 	// When
@@ -30,6 +31,22 @@ test("determine the return value of a 'isHWAccelerable' function", function() {
 	// Then
 	notEqual(result, eg.isHWAccelerable(), "change default value");
 });
+
+
+test("If 'isHWAccelerable' called then should be apply hook.", function() {
+	// Given
+	var result = eg.isHWAccelerable();
+	var controllValue = result;
+
+	// When
+	eg.hook.isHWAccelerable = function(defaultValue,agent) {
+		return !controllValue;
+	};
+	
+	// Then
+	notEqual(result, eg.isHWAccelerable(), "change default value");
+});
+
 
 // not support
 // test("pass the return value of a 'isHWAccelerable' function", function() {

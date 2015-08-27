@@ -25,10 +25,16 @@ eg.module("eg",[window.jQuery, eg, window],function($, ns, global){
 
 	function resultCache(scope,name,param,defaultValue){
 		var method = scope.hook[name];
+		
 		if(method){
 			defaultValue = method.apply(scope,param);
 		}
+
 		scope[name] = function () {
+			var method = scope.hook[name];
+			if(method){
+				 return method.apply(scope,param);
+			}
 			return defaultValue;
 		};
 		return defaultValue;
