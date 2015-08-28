@@ -4,20 +4,20 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 		return;
 	}
 
-	// for IE -- start
-	var hasEventListener = !!global.addEventListener;
-	var eventPrefix = hasEventListener? "" : "on";
-	var bindMethod = hasEventListener ? "addEventListener" : "attachEvent";
-	var unbindMethod = hasEventListener ? "removeEventListener" : "detachEvent";
-	function bindImage(ele, callback) {
-		ele[bindMethod](eventPrefix + "load", callback, true);
-		ele[bindMethod](eventPrefix + "error", callback, true);
-	}
-	function unbindImage(ele, callback) {
-		ele[unbindMethod](eventPrefix + "load", callback, true);
-		ele[unbindMethod](eventPrefix + "error", callback, true);
-	}
-	// for IE -- end
+	// // for IE -- start
+	// var hasEventListener = !!global.addEventListener;
+	// var eventPrefix = hasEventListener? "" : "on";
+	// var bindMethod = hasEventListener ? "addEventListener" : "attachEvent";
+	// var unbindMethod = hasEventListener ? "removeEventListener" : "detachEvent";
+	// function bindImage(ele, callback) {
+	// 	ele[bindMethod](eventPrefix + "load", callback, true);
+	// 	ele[bindMethod](eventPrefix + "error", callback, true);
+	// }
+	// function unbindImage(ele, callback) {
+	// 	ele[unbindMethod](eventPrefix + "load", callback, true);
+	// 	ele[unbindMethod](eventPrefix + "error", callback, true);
+	// }
+	// // for IE -- end
 	function clone(target, source, what) {
 		var s;
 		$.each(what, function(i,v) {
@@ -413,15 +413,17 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 			return needCheck;
 		},
 		_waitImageLoaded : function(items, checkCount) {
-			var self = this;
+			var core = this.core;
 			function onCheck() {
 				checkCount--;
 				if(checkCount <= 0) {
-					unbindImage(self.core.element, onCheck);
-					self.core.layoutItems( items, true );
+					core.$element.off("load");
+					core.$element.off("error");
+					core.layoutItems( items, true );
 				}
 			}
-			bindImage(this.core.element, onCheck);
+			this.core.$element.on("load", onCheck);
+			this.core.$element.on("error", onCheck);
 		},
 		destroy : function() {
 			if(this.core) {
