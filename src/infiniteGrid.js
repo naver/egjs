@@ -105,7 +105,6 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 				this._appendCols.push( 0 );
 				this._prependCols.push( 0 );
 			}
-			// console.warn(this._prependCols, this._appendCols);
 		},
 		_getColumnWidth : function() {
 			if(!this.columnWidth) {
@@ -175,19 +174,25 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 	});
 	
 	/**
-	 * InfiniteGrid
-	 * @group EvergreenJs
-	 * @ko InfiniteGrid
+	 * To build Grid layout UI. 
+	 * InfiniteGrid is composed of Outlayer. but this component supports recycle-dom. 
+	 * the more you add contents, a number of DOM are fixed.
+	 * @group egjs
+	 * @ko 그리드 레이아웃을 구성하는 UI 컴포넌트. InfiniteGrid는 Outlayer로 구성되어 있다. 하지만, 이 컴포넌트는 recycle-dom을 지원한다. 
+	 * 컨텐츠를 계속 증가하면 할수록 일정한 DOM 개수를 유지할수 있다.
 	 * @class
 	 * @name eg.InfiniteGrid
 	 * @extends eg.Component
 	 *
 	 * @param {HTMLElement|String|jQuery} element wrapper element <ko>기준 요소</ko>
 	 * @param {Object} options
-	 * @param {Number} options.count
-	 * @param {Number} options.itemSelector
-	 * @param {Boolean} options.isEqualSize
-	 * @param {Boolean} options.isLayoutInstant
+	 * @param {Number} options.itemSelector specifies which child elements will be used as item elements in the layout. <ko>레이아웃의 아이템으로 사용될 엘리먼트들의 셀렉터</ko>
+	 * @param {Boolean} options.isEqualSize determine if the size of all of items are same. <ko> 모든 아이템의 사이즈가 동일한지를 지정한다</ko>
+	 * @param {Boolean} options.defaultGroupKey when initialzed if you have items in markup, groupkey of them are 'defaultGroupkey' <ko>초기화할때 마크업에 아이템이 있다면, defalutGroupKey를 groupKey로 지정한다</ko>
+	 * @param {Boolean} options.isLayoutInstant determine if layout method are called when initialized. <ko>인스턴스 생성시, layout 메소드가 호출되지를 결정</ko>
+	 * @param {Boolean} options.count if count is more than zero, grid is recyclied. <ko>count값이 0보다 클 경우, 그리드는 일정한 dom 개수를 유지한다</ko>
+	 *
+	 *  @see Outlayer {@link https://github.com/metafizzy/outlayer}
 	 */
 	ns.InfiniteGrid = ns.Class.extend(ns.Component, {
 		construct : function(el, options) {
@@ -215,7 +220,13 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 				distance : distance
 			});
 		},
-		// current status (for persist)
+
+		/**
+		 * Get current status
+		 * @ko infiniteGrid의 현재상태를 반환한다.
+		 * @method eg.InfiniteGrid#getStatue
+		 * @return {Object} infiniteGrid status Object
+		 */
 		getStatus : function() {
 			var data=[];
 			for(var p in this) {
@@ -230,7 +241,12 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 				cssText : this.core.element.style.cssText
 			};
 		},
-		// set status (for persist)
+		/**
+		 * Set to current status
+		 * @ko infiniteGrid의 현재상태를 설정한다.
+		 * @method eg.InfiniteGrid#setStatus
+		 * @param {Object} infiniteGrid status Object
+		 */
 		setStatus : function(status) {
 			this.core.element.style.cssText = status.cssText;
 			this.core.$element.html(status.html);
@@ -238,24 +254,44 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 			this.core.clone(this.core, status.core);
 			$.extend(this, status.data);
 		},
-		// check if element is appending or prepending
+		/**
+		 * Check if element is appending or prepending
+		 * @ko append나 prepend가 진행중일 경우 true를 반환한다.
+		 * @method eg.InfiniteGrid#isProcessing
+		 * @return {Boolean}
+		 */
 		isProcessing : function() {
 			return this._isProcessing;
 		},
-		// check if elements are recycling
+		/**
+		 * Check if elements are recycling mode
+		 * @ko recycle 모드 여부를 반환한다.
+		 * @method eg.InfiniteGrid#isRecycling
+		 * @return {Boolean}
+		 */
 		isRecycling : function() {
 			return this.core.options.count > 0 && this._isRecycling;
 		},
-		// return page keys
+		/**
+		 * Get group keys
+		 * @ko 그룹키들을 반환한다.
+		 * @method eg.InfiniteGrid#getGroupKeys
+		 * @return {Array} groupKeys
+		 */
 		getGroupKeys : function() {
 			var result = [];
 			if(this.core._isLayoutInited) {
-				for(var i=0; item = this.core.items[i]; i++) {
+				for(var i=0,item; item = this.core.items[i]; i++) {
 					result.push(item.groupKey);
 				}
 			}
 			return result;
 		},
+		/**
+		 * Rearrang layout
+		 * @ko 레이아웃을 재배치한다.
+		 * @method eg.InfiniteGrid#layout
+		 */
 		layout : function() {
 			this._isProcessing = true;
 			this._isAppendType = true;
@@ -264,7 +300,14 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 			}
 			this.core.layout();
 		},
-		// append element
+		/**
+		 * Append elemensts
+		 * @ko 엘리먼트를 append 한다.
+		 * @method eg.InfiniteGrid#append
+		 * @param {Array} elements to be appended elements <ko>append될 엘리먼트 배열</ko>
+		 * @param {Number|String} groupKey to be appended groupkey of elements<ko>append될 엘리먼트의 그룹키</ko>
+		 * @return {Number} length a number of elements
+		 */
 		append : function(elements, groupKey) {
 			if(!this.core._isLayoutInited || this._isProcessing ||  elements.length === 0 ) { return; }
 
@@ -272,7 +315,14 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 			this._insert(elements, groupKey, true);
 			return elements.length;
 		},
-		// prepend element
+		/**
+		 * Prepend elemensts
+		 * @ko 엘리먼트를 prepend 한다.
+		 * @method eg.InfiniteGrid#prepend
+		 * @param {Array} elements to be prepended elements <ko>prepend될 엘리먼트 배열</ko>
+		 * @param {Number|String} groupKey to be prepended groupkey of elements<ko>prepend될 엘리먼트의 그룹키</ko>
+		 * @return {Number} length a number of elements
+		 */
 		prepend : function(elements, groupKey) {
 			if(!this.core._isLayoutInited || !this.isRecycling() || this._isProcessing || elements.length === 0 ) { return; }
 			if(elements.length - this._contentCount  > 0) {
@@ -387,7 +437,11 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 			applyDom && this.core._setContainerMeasure( height, false );
 			this._isFitted = true;
 		},
-		// clear elements and data
+		/**
+		 * Clear elements and data
+		 * @ko 엘리먼트와 데이터를 지운다.
+		 * @method eg.InfiniteGrid#clear
+		 */
 		clear : function() {
 			this.core.$element.empty();
 			this.core.items.length = 0;
@@ -429,6 +483,11 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 			// this.core.$element.on("load", onCheck);
 			// this.core.$element.on("error", onCheck);
 		},
+		/**
+		 * Release resources and off custom events
+		 * @ko 모든 커스텀 이벤트와 자원을 해제한다.
+		 * @method eg.InfiniteGrid#destroy
+		 */
 		destroy : function() {
 			if(this.core) {
 				this.core.destroy();
