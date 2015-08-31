@@ -246,8 +246,8 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 		isRecycling : function() {
 			return this.core.options.count > 0 && this._isRecycling;
 		},
-		// return page key range [0, 20]
-		getGroupKeyRange : function() {
+		// return page keys
+		getGroupKeys : function() {
 			var result = [];
 			if(this.core._isLayoutInited) {
 				for(var i=0; item = this.core.items[i]; i++) {
