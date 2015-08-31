@@ -57,7 +57,7 @@ eg.module("infiniteGridService",[window.jQuery, eg, window],function($, ns, glob
         },
         _handleScrollEnd : function() {
             if( this._inserting ) {
-                console.log( "this._inserting" , this._inserting );
+                console.log( "_handleScrollEnd", "this._inserting" , this._inserting );
                 return;
             }
             var clientRect = this._el.getBoundingClientRect();
@@ -76,16 +76,20 @@ eg.module("infiniteGridService",[window.jQuery, eg, window],function($, ns, glob
         },
         _insert : function( mode, url, options, callback ) {
             this._inserting = true;
+            console.log( "_insert", "this._inserting" , this._inserting );
 
             var elements;
             var insert = $.proxy(function ( elements ) {
                 var length;
-                if( mode === "append" ) {
-                    length = this._infiniteGrid.append( elements );
-                } else if ( mode === "prepend" ) {
-                    length = this._infiniteGrid.prepend( elements );
+                if( elements ) {
+                    if ( mode === "append" ) {
+                        length = this._infiniteGrid.append( elements );
+                    } else if ( mode === "prepend" ) {
+                        length = this._infiniteGrid.prepend( elements );
+                    }
                 }
                 this._inserting = false;
+                console.log( "_insert > insert", "this._inserting" , this._inserting );
                 return length;
             }, this );
 
@@ -105,17 +109,16 @@ eg.module("infiniteGridService",[window.jQuery, eg, window],function($, ns, glob
             }
 
             $.ajax( url, options )
-                .done( function( data ) {
-                    if ( callback ) {
-                        data = callback( data ); // 레퍼런스로 넘겨야하나 사본을 넘기고 리턴 받아야 하나?
+                .always( function( data, textStatus ) {
+                    var elements;
+
+                    if ( textStatus === "success" ) {
+                        if ( callback ) {
+                            elements = callback( data ); // 레퍼런스로 넘겨야하나 사본을 넘기고 리턴 받아야 하나?
+                        }
                     }
 
-                    if( data ) {
-                        insert( data );
-                    }
-                } )
-                .fail( function() {
-                    this._inserting = false; //<- _inserting을 다루는 데는 _insert 함수 안으로만 한정 짓자
+                    insert( elements );
                 } );
         },
         activate : function() {
