@@ -4,6 +4,7 @@ eg.module("infiniteGridService",[window.jQuery, eg, window],function($, ns, glob
             this._infiniteGrid = new eg.InfiniteGrid( el, options ); // 필요없는 옵션 값을 넘길 필요가 있나?
             this._$el = $( el );
             this._el = this._$el.get( 0 );
+            this._lastScrollY = 0;
             this._inserting = false;
 
             this._options = $.extend({
@@ -55,18 +56,23 @@ eg.module("infiniteGridService",[window.jQuery, eg, window],function($, ns, glob
             return isRestored
         },
         _handleScrollEnd : function() {
-            console.log( "scrollend" );
-            var clientRect;
+            if( this._inserting ) {
+                console.log( "this._inserting" , this._inserting );
+                return;
+            }
+            var clientRect = this._el.getBoundingClientRect();
 
-            if ( !this._inserting && !this._infiniteGrid.isProcessing() ) {
-                clientRect = this._el.getBoundingClientRect();
-
-                if ( clientRect.bottom - global.innerHeight <= this._options.threshold ) {
+            if( this._lastScrollY < global.scrollY ) {
+                if ( clientRect.bottom <= global.innerHeight ) {
                     this.trigger( "infinite.scroll.append" );
-                } else if ( this._infiniteGrid.isRecycling() && clientRect.top >= ( - this._options.threshold ) ) {
+                }
+            } else {
+                if ( clientRect.top >= 0 ) {
                     this.trigger("infinite.scroll.prepend");
                 }
             }
+
+            this._lastScrollY = global.scrollY;
         },
         _insert : function( mode, url, options, callback ) {
             this._inserting = true;
