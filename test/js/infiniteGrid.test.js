@@ -119,7 +119,7 @@ asyncTest("check a append module with groupkey", function() {
 		if(this.isRecycling()) {
 			var groupRange = this.getGroupKeyRange();
 			var total = 0;
-			for(var i=groupRange[0]; i<=groupRange[1]; i++) {
+			for(var i=groupRange[0]; i<=groupRange[groupRange.length-1]; i++) {
 				total += group[i];
 			}
 			equal(this.core.items.length, total, "a number of elements are " + total);
@@ -205,7 +205,7 @@ asyncTest("check a prepend module with groupkey", function() {
 			if(this.isRecycling()) {
 				var groupRange = this.getGroupKeyRange();
 				var total = 0;
-				for(var i=groupRange[1]; i>=groupRange[0]; i--) {
+				for(var i=groupRange[groupRange.length-1]; i>=groupRange[0]; i--) {
 					total += group[i];
 				}
 				equal(this.core.items.length, total, "a number of elements are " + total);
