@@ -67,6 +67,47 @@ test("Add event handler by invalid type",function(){
 	strictEqual(returnVal5, this.oClass, "Return value must be instance itself.");
 });
 
+module("on method", {
+	setup : function(){
+		this.oClass = new TestClass();
+	}
+});
+
+test("Basic part",function(){
+	//Given
+	var oClass = this.oClass.on("customEvent", noop);
+	//When
+	var nHandlerLength = this.oClass.eventHandler["customEvent"].length;
+	//Then
+	strictEqual(oClass , this.oClass, "When remove custom event handler, return value must be instance itself.");
+	strictEqual(nHandlerLength , 1, "Event handler length must be 1");
+});
+
+test("Re-attach after event detach by string type",function(){
+	//Given
+	//When
+	this.oClass.on("customEvent", noop);
+	this.oClass.on("customEvent", noop);
+	this.oClass.off("customEvent");
+	var oClass = this.oClass.on("customEvent", noop);
+	//Then
+	strictEqual(oClass.eventHandler.customEvent.length, 1, "When attach two events to same name and detach event by it name re-attach again, eventHandler length should be 1.");
+	strictEqual(oClass.eventHandler.customEvent[0], noop, "Handler of customEvent should be noop.");
+});
+
+test("Re-attach after event detach by string, function type",function(){
+	//Given
+	//When
+	this.oClass.on("customEvent", noop);
+	this.oClass.on("customEvent", noop);
+	this.oClass.off("customEvent", noop);
+	var oClass = this.oClass.on("customEvent", noop);
+	//Then
+	strictEqual(oClass.eventHandler.customEvent.length, 2, "When attach two events to same name and detach event by it name re-attach again, eventHandler length should be 2.");
+	strictEqual(oClass.eventHandler.customEvent[0], noop, "First handler of customEvent should be noop.");
+	strictEqual(oClass.eventHandler.customEvent[1], noop, "Second handler of customEvent should be noop.");
+});
+
 module("off method", {
 	setup : function(){
 		this.oClass = new TestClass();
@@ -155,7 +196,7 @@ test("Remove all event handlers.",function(){
 });
 
 
-	
+
 
 
 module("trigger method", {

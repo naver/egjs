@@ -133,8 +133,8 @@ eg.module("component", [eg], function(ns) {
 
 			// All handler of specific event detach.
 			if (typeof handlerToDetach === "undefined") {
-				if (typeof eventName === "string") {
-					this.eventHandler[eventName] = null;
+				if (typeof eventName === "string"){
+					this.eventHandler[eventName] = undefined;
 					return this;
 				} else {
 					var eventHash = eventName;
