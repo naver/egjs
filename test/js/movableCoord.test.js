@@ -710,6 +710,41 @@ asyncTest("interrupt test when 'setTo' method is called : duration = 100", funct
 	},150);
 });
 
+asyncTest("interrupt test after 'setTo' method is called : move to same position", function() {
+	//Given
+	var el = $("#area").get(0);
+	equal(this.inst._status.prevented, false, "init value is 'false'");
+	this.inst.on( {
+		"change" : function(e) {
+			equal(this._status.prevented, true, "prevented property is 'true'");
+		},
+		"animationStart" : function(e) {
+			equal(this._status.prevented, true, "prevented property is 'true'");
+		},
+		"animationEnd" : function(e) {
+			equal(this._status.prevented, false, "prevented property is 'false'");
+		}
+	});
+	this.inst.bind(el, {
+		interruptable : false
+	});
+	
+	// When
+	var self = this;
+	this.inst.setTo(200,200,100);
+	setTimeout(function() {
+		// Then
+		equal(self.inst._status.prevented, false, "prevented property is 'false'");
+		// move to same position
+		self.inst.setTo(200,200,100);
+		setTimeout(function() {
+			// Then
+			equal(self.inst._status.prevented, false, "prevented property is 'false'");
+			start();
+		},150);
+	},150);
+});
+
 module("movableCoord event Test", {
 	setup : function() {
 		this.inst = new eg.MovableCoord( {
