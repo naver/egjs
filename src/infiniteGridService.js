@@ -1,4 +1,19 @@
 eg.module("infiniteGridService",[window.jQuery, eg, window],function($, ns, global){
+    /**
+     * Infinite cascading grid layout service for infiniteGrid
+     * @ko infiniteGrid를 통한 무한 그리드 레이아웃 서비스.
+     * @class
+     * @name eg.infiniteGridService
+     * @extends eg.Component
+     * @group EvergreenJs
+     *
+     * @param {String} target element for infiniteGridService <ko>infiniteGrid 서비스를 적용할 타겟 엘리먼트</ko>
+     * @param {Object} options <ko>옵션</ko>
+     * @param {Number} [options.count=30] DOM count for recycle. If value is -1, DOM does increase without limit -1. <ko>재사용할 DOM 갯수. -1일 경우 DOM은 계속 늘어남.</ko>
+     * @param {Number} [threshold=100] Scroll coordinate threshold. <ko>append, preppend 이벤트가 발생하기 위한 스크롤 좌표 가용.</ko>
+     * @param {Boolean} [usePersist=true] Whether or not to use persist <ko>persist 사용 여부.</ko>
+     * @param {String} [persistKey="persist_<el>_"] persist key <ko>persist의 key 값.</ko>
+     */
     ns.InfiniteGridService = ns.Class.extend( ns.Component, {
         construct : function( el, options ) {
             this._infiniteGrid = new eg.InfiniteGrid( el, options ); // 필요없는 옵션 값을 넘길 필요가 있나?
@@ -8,67 +23,33 @@ eg.module("infiniteGridService",[window.jQuery, eg, window],function($, ns, glob
             this._inserting = false;
 
             this._options = $.extend({
-                threshold : 300, // 스크롤 엔드가 일어나는 스크롤 역치
-                forcePersist : false, // persist를 강제로 사용할 것인가?
-                persistSelector : [], // selector 클릭 시 persist에 데이터 저장. 데이터를 persist에 저장하는 시점을 어떻게 할 것인가?
-                persistKey : "persist_" + el + "_" //persist 키
+                count : 30,
+                threshold : 100, // 스크롤 엔드가 일어나는 스크롤 역치
+                usePersist : true,
+                persistKey : "persist_" + el + "_"
             }, options);
 
-            this._attachEvent();
+            if(this._options.usePersist) {
+                this._$el.addClass( "NO_TAP_HIGHLIGHT" );
+            }
+
             this.activate();
-        },
-        _attachEvent : function() {
-            var i = 0;
-            var storePersistDataFn = $.proxy(this._storePersistData, this);
-
-            if( this._isPersist() ) {
-                for (; selector = this._options.persistSelector[i]; i++) {
-                    this._$el.addClass("NO_TAP_HIGHLIGHT")
-                        .on('click', selector, storePersistDataFn);
-                }
-            }
-        },
-        _isPersist : function() {
-            return ( this._options.forcePersist || !global.___persisted___ );
-        },
-        _storePersistData : function() {
-            var data = {
-                "infiniteGridStatus" : this._infiniteGrid.getStatus(),
-                "scrollY" : global.scrollY
-            };
-
-            this.trigger( "infiniteGridService.beforePersist", data );
-
-            $.persist( this._options.persistKey, data );
-        },
-        _restorePersistData : function() {
-            var isRestored = false;
-            var data = $.persist( this._options.persistKey );
-            console.log( "_restorePersistData", data );
-
-            if( data ) {
-                this._infiniteGrid.setStatus( data.infiniteGridStatus );
-                global.scrollTo( 0, data.scrollY );
-                this.trigger( "infiniteGridService.afterPersist", data );
-                isRestored = true;
-            }
-
-            return isRestored
         },
         _handleScrollEnd : function() {
             if( this._inserting ) {
                 console.log( "_handleScrollEnd", "this._inserting" , this._inserting );
                 return;
             }
+
             var clientRect = this._el.getBoundingClientRect();
 
             if( this._lastScrollY < global.scrollY ) {
-                if ( clientRect.bottom <= global.innerHeight ) {
-                    this.trigger( "infinite.scroll.append" );
+                if ( clientRect.bottom <= global.innerHeight + this._options.threshold ) {
+                    this.trigger( "appendScroll" );
                 }
             } else {
-                if ( clientRect.top >= 0 ) {
-                    this.trigger("infinite.scroll.prepend");
+                if ( clientRect.top >= ( 0 - this._options.threshold ) ) {
+                    this.trigger( "prependScroll" );
                 }
             }
 
@@ -81,13 +62,19 @@ eg.module("infiniteGridService",[window.jQuery, eg, window],function($, ns, glob
             var elements;
             var insert = $.proxy(function ( elements ) {
                 var length;
+
                 if( elements ) {
                     if ( mode === "append" ) {
                         length = this._infiniteGrid.append( elements );
                     } else if ( mode === "prepend" ) {
                         length = this._infiniteGrid.prepend( elements );
                     }
+                    //if ( this._infiniteGrid.isRecycling() ) {
+                    //    this._infiniteGrid.layout();
+                    //}
+                    console.log( mode + " : " + length + " items added" );
                 }
+
                 this._inserting = false;
                 console.log( "_insert > insert", "this._inserting" , this._inserting );
                 return length;
@@ -122,7 +109,6 @@ eg.module("infiniteGridService",[window.jQuery, eg, window],function($, ns, glob
                 } );
         },
         activate : function() {
-            console.log("start global.__persisted__", global.___persisted___);
             $( global ).on( "scrollend", $.proxy( this._handleScrollEnd, this ) );
         },
         deactivate : function() {
@@ -134,11 +120,40 @@ eg.module("infiniteGridService",[window.jQuery, eg, window],function($, ns, glob
         prepend : function( url, options, callback ) {
             this._insert( "prepend", url, options, callback );
         },
+        storeContents : function() {
+            if( !this._options.usePersist) {
+                return;
+            }
+
+            var data = {
+                "infiniteGridStatus" : this._infiniteGrid.getStatus(),
+                "scrollY" : global.scrollY
+            };
+
+            this.trigger( "beforeStoreContents", data );
+
+            $.persist( this._options.persistKey, data );
+        },
+        restoreContents : function() {
+            if( !this._options.usePersist) {
+                return false;
+            }
+
+            var isRestored = false;
+            var data = $.persist( this._options.persistKey );
+            console.log( "_restorePersistData", data );
+
+            if( data ) {
+                this._infiniteGrid.setStatus( data.infiniteGridStatus );
+                global.scrollTo( 0, data.scrollY );
+                isRestored = true;
+            }
+
+            this.trigger( "restoreContentsEnd", data );
+            return isRestored;
+        },
         clear : function() {
             this._infiniteGrid.clear();
-        },
-        restore : function() {
-            return this._restorePersistData();
         },
         destroy : function() {
             if( this._infiniteGrid ) {
