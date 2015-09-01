@@ -602,7 +602,6 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		 * @return {Instance}
 		 */
 		setTo : function(x, y, duration) {
-			this._setInterrupt(true);
 			this._grab();
 			var pos = this._pos.concat(),
 				circular = this.options.circular,
@@ -611,6 +610,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			if( x === pos[0] && y === pos[1] ) {
 				return this;
 			}
+			this._setInterrupt(true);
 
 			if( x !== pos[0] ) {
 				if (!circular[3]) { x = Math.max(min[0], x); }
