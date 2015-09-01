@@ -42,7 +42,7 @@ server.route( {
         }
 
         for ( ; offset < end; offset ++ ) {
-            html = html + "<li class='item'><div class='r" + _random() + "'><a href='http://best.mqoo.com'>테스트 " + offset + "</a></div></li>";
+            html = html + "<li class='item' data-offset='" + offset + "'><div class='r" + _random() + "'><a href='http://best.mqoo.com'>테스트 " + offset + "</a></div></li>";
         }
 
         reply( html )
