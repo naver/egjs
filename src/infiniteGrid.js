@@ -185,12 +185,12 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 	 * @extends eg.Component
 	 *
 	 * @param {HTMLElement|String|jQuery} element wrapper element <ko>기준 요소</ko>
-	 * @param {Object} options
-	 * @param {Number} options.itemSelector specifies which child elements will be used as item elements in the layout. <ko>레이아웃의 아이템으로 사용될 엘리먼트들의 셀렉터</ko>
-	 * @param {Boolean} options.isEqualSize determine if the size of all of items are same. <ko> 모든 아이템의 사이즈가 동일한지를 지정한다</ko>
-	 * @param {Boolean} options.defaultGroupKey when initialzed if you have items in markup, groupkey of them are 'defaultGroupkey' <ko>초기화할때 마크업에 아이템이 있다면, defalutGroupKey를 groupKey로 지정한다</ko>
-	 * @param {Boolean} options.isLayoutInstant determine if layout method are called when initialized. <ko>인스턴스 생성시, layout 메소드가 호출되지를 결정</ko>
-	 * @param {Boolean} options.count if count is more than zero, grid is recyclied. <ko>count값이 0보다 클 경우, 그리드는 일정한 dom 개수를 유지한다</ko>
+	 * @param {Object} [options]
+	 * @param {Number} [options.itemSelector] specifies which child elements will be used as item elements in the layout. <ko>레이아웃의 아이템으로 사용될 엘리먼트들의 셀렉터</ko>
+	 * @param {Boolean} [options.isEqualSize] determine if the size of all of items are same. <ko> 모든 아이템의 사이즈가 동일한지를 지정한다</ko>
+	 * @param {Boolean} [options.defaultGroupKey] when initialzed if you have items in markup, groupkey of them are 'defaultGroupkey' <ko>초기화할때 마크업에 아이템이 있다면, defalutGroupKey를 groupKey로 지정한다</ko>
+	 * @param {Boolean} [options.isLayoutInstant] determine if layout method are called when initialized. <ko>인스턴스 생성시, layout 메소드가 호출되지를 결정</ko>
+	 * @param {Boolean} [options.count] if count is more than zero, grid is recyclied. <ko>count값이 0보다 클 경우, 그리드는 일정한 dom 개수를 유지한다</ko>
 	 *
 	 *  @see Outlayer {@link https://github.com/metafizzy/outlayer}
 	 */
@@ -245,7 +245,7 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 		 * Set to current status
 		 * @ko infiniteGrid의 현재상태를 설정한다.
 		 * @method eg.InfiniteGrid#setStatus
-		 * @param {Object} infiniteGrid status Object
+		 * @param {Object} status Object
 		 */
 		setStatus : function(status) {
 			this.core.element.style.cssText = status.cssText;
@@ -305,7 +305,7 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 		 * @ko 엘리먼트를 append 한다.
 		 * @method eg.InfiniteGrid#append
 		 * @param {Array} elements to be appended elements <ko>append될 엘리먼트 배열</ko>
-		 * @param {Number|String} groupKey to be appended groupkey of elements<ko>append될 엘리먼트의 그룹키</ko>
+		 * @param {Number|String} [groupKey] to be appended groupkey of elements<ko>append될 엘리먼트의 그룹키</ko>
 		 * @return {Number} length a number of elements
 		 */
 		append : function(elements, groupKey) {
@@ -320,7 +320,7 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 		 * @ko 엘리먼트를 prepend 한다.
 		 * @method eg.InfiniteGrid#prepend
 		 * @param {Array} elements to be prepended elements <ko>prepend될 엘리먼트 배열</ko>
-		 * @param {Number|String} groupKey to be prepended groupkey of elements<ko>prepend될 엘리먼트의 그룹키</ko>
+		 * @param {Number|String} [groupKey] to be prepended groupkey of elements<ko>prepend될 엘리먼트의 그룹키</ko>
 		 * @return {Number} length a number of elements
 		 */
 		prepend : function(elements, groupKey) {
