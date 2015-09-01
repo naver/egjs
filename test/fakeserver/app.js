@@ -28,15 +28,20 @@ server.route( {
     path : "/infiniteGrid/items",
     handler : function( request, reply ) {
         var html = "";
-        var limit = request.query.limit || 10;
+
         var offset = request.query.offset || 1;
+        offset = parseInt( offset, 10 );
+
+        var limit = request.query.limit || 10;
+        limit = parseInt( limit, 10 );
+
         var end = offset + limit;
 
         var _random = function() {
             return Math.floor( ( Math.random() * 7 ) + 1 );
         }
 
-        for ( ; offset < end; offset++) {
+        for ( ; offset < end; offset ++ ) {
             html = html + "<li class='item'><div class='r" + _random() + "'><a href='http://best.mqoo.com'>테스트 " + offset + "</a></div></li>";
         }
 
