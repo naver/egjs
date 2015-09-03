@@ -78,7 +78,7 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 		},
 		updateCols : function(isAppend) {
 			var col = isAppend ? this._appendCols : this._prependCols,
-				items = this._getColItems(isAppend),
+				items = this.getColItems(isAppend),
 				base = this._isFitted || isAppend ? 0 : this.getMinY(items);
 			for(var i=0, item, len = col.length; i < len; i++) {
 				if(item = items[i]) {
@@ -132,7 +132,7 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 		_getColIdx : function(item) {
 			return parseInt(item.position.x/parseInt(this.columnWidth,10),10);
 		},
-		_getColItems : function(isTail) {
+		getColItems : function(isTail) {
 			var len = this._appendCols.length,
 				colItems = new Array(len),
 				item, idx, count = 0,
@@ -482,6 +482,36 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 				}
 			}
 			bindImage(this.core.element, onCheck);
+		},
+		/**
+		 * Get top element
+		 * @ko 가장 위에 있는 엘리먼트를 반환한다.
+		 * @method eg.InfiniteGrid#getTopElement
+		 */		
+		getTopElement : function() {
+			var item, min = Infinity;
+			$.each(this.core.getColItems(false), function(i, v) {
+				if(v.position.y < min) {
+					min = v.position.y;
+					item = v;
+				}
+			});
+			return item.element;
+		},
+		/**
+		 * Get bottom element
+		 * @ko 가장 아래에 있는 엘리먼트를 반환한다.
+		 * @method eg.InfiniteGrid#getBottomElement
+		 */
+		getBottomElement : function() {
+			var item, max = -Infinity;
+			$.each(this.core.getColItems(true), function(i, v) {
+				if(v.position.y + v.size.outerHeight > max) {
+					max = v.position.y + v.size.outerHeight;
+					item = v;
+				}
+			});
+			return item.element;
 		},
 		/**
 		 * Release resources and off custom events
