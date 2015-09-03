@@ -31,9 +31,7 @@ module("infiniteGrid Test", {
 
 asyncTest("check a initialization (there are children)", function() {
 	// Given
-	this.inst = new eg.InfiniteGrid("#grid", {
-		"isInitLayout" : false,
-	});
+	this.inst = new eg.InfiniteGrid("#grid");
 	this.inst.on("layoutComplete",function(e) {
 		// Then
 		equal(e.target.length, 6, "a number of elements are 6");
@@ -49,23 +47,21 @@ asyncTest("check a initialization (there are children)", function() {
 	this.inst.layout();
 });
 
-asyncTest("check a initialization (there aren't children)", function() {
+asyncTest("check a append after a initialization (there aren't children)", function() {
 	// Given
-	this.inst = new eg.InfiniteGrid("#nochildren_grid", {
-		"isInitLayout" : false,
-	});
+	var $el = getContent("append");
+	this.inst = new eg.InfiniteGrid("#nochildren_grid");
+	
+	// When
+	equal(this.inst.isProcessing(), false, "idel");
 	this.inst.on("layoutComplete",function(e) {
 		// Then
-		equal(e.target.length, 0, "a number of elements are 0");
+		equal(e.target.length, $el.length, "a number of elements are " + $el.length);
+		equal(this.core._appendCols.length, 2, "is correct columnWidth");
 		equal(this.isProcessing(), false, "idel in layoutComplete");
 		start();
 	});
-	// When
-	// Then
-	equal(this.inst.isProcessing(), false, "idel");
-
-	// When
-	this.inst.layout();
+	this.inst.append($el);
 });
 
 asyncTest("check a append module", function() {

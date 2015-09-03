@@ -37,6 +37,10 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 
 	var InfiniteGridCore = Outlayer.create("InfiniteGrid");
 	$.extend(InfiniteGridCore.prototype, {
+		resetLayout : function() {
+			this._resetLayout();
+			this._isLayoutInited = true;
+		},
 		// @override (from layout)
 		_resetLayout : function() {
 			if(!this._isLayoutInited) {
@@ -189,7 +193,6 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 	 * @param {Number} [options.itemSelector] specifies which child elements will be used as item elements in the layout. <ko>레이아웃의 아이템으로 사용될 엘리먼트들의 셀렉터</ko>
 	 * @param {Boolean} [options.isEqualSize] determine if the size of all of items are same. <ko> 모든 아이템의 사이즈가 동일한지를 지정한다</ko>
 	 * @param {Boolean} [options.defaultGroupKey] when initialzed if you have items in markup, groupkey of them are 'defaultGroupkey' <ko>초기화할때 마크업에 아이템이 있다면, defalutGroupKey를 groupKey로 지정한다</ko>
-	 * @param {Boolean} [options.isLayoutInstant] determine if layout method are called when initialized. <ko>인스턴스 생성시, layout 메소드가 호출되지를 결정</ko>
 	 * @param {Boolean} [options.count] if count is more than zero, grid is recyclied. <ko>count값이 0보다 클 경우, 그리드는 일정한 dom 개수를 유지한다</ko>
 	 *
 	 *  @see Outlayer {@link https://github.com/metafizzy/outlayer}
@@ -197,30 +200,34 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 	ns.InfiniteGrid = ns.Class.extend(ns.Component, {
 		construct : function(el, options) {
 			var opts = $.extend({
-				"isLayoutInstant" : true,
 				"isEqualSize" : false,
 				"defaultGroupKey" : null,
 				"count" : 30
 			}, options);
-			opts["transitionDuration"] = 0;	// don't use this option.
+			opts["transitionDuration"] = 0;		// don't use this option.
+			opts["isInitLayout"] = false;	// isInitLayout is always 'false' in order to controll layout.
 			this.core = new InfiniteGridCore(el, opts).on("layoutComplete", $.proxy(this._onlayoutComplete,this));
 			this._reset();			
+			if(this.core.$element.children().length > 0) {
+				this.layout();
+			}
 		},
 		_onlayoutComplete : function(e) {
-			var distance = 0;
-			if(this._isAppendType === false) {
+			var distance = 0, 
+				isAppend = this._isAppendType;
+			if(isAppend === false) {
 				this._isFitted = false;
 				this._fit(true);
 				distance = this.core.items[e.length].position.y;
 			}
 			this._isProcessing = false;
+			this._isAppendType = null;
 			this.trigger("layoutComplete", {
 				target : e.concat(),
-				isAppend : this._isAppendType,
+				isAppend : isAppend,
 				distance : distance
 			});
 		},
-
 		/**
 		 * Get current status
 		 * @ko infiniteGrid의 현재상태를 반환한다.
@@ -309,7 +316,7 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 		 * @return {Number} length a number of elements
 		 */
 		append : function(elements, groupKey) {
-			if(!this.core._isLayoutInited || this._isProcessing ||  elements.length === 0 ) { return; }
+			if(this._isProcessing ||  elements.length === 0 ) { return; }
 
 			this._isRecycling = (this.core.items.length + elements.length) >= this.core.options.count;
 			this._insert(elements, groupKey, true);
@@ -324,7 +331,7 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 		 * @return {Number} length a number of elements
 		 */
 		prepend : function(elements, groupKey) {
-			if(!this.core._isLayoutInited || !this.isRecycling() || this._isProcessing || elements.length === 0 ) { return; }
+			if(!this.isRecycling() || this._isProcessing || elements.length === 0 ) { return; }
 			if(elements.length - this._contentCount  > 0) {
 				elements = elements.slice(elements.length - this._contentCount);
 			}
@@ -342,7 +349,6 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 			this._contentCount += isAppend ? items.length : -items.length;
 			this.isRecycling() && this._adjustRange(isAppend, elements.length);
 			this.core.$element[isAppend ? "append" : "prepend"](elements);
-
 			for(var i=0,item; item = items[i]; i++) {
 				item.isAppend = isAppend;
 			}
@@ -352,13 +358,11 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 	  			this.core.items = items.concat(this.core.items.slice(0));
 				items = items.reverse();
 			}
-			var needCheck = this._checkImageLoaded(elements);
-			var checkCount = needCheck.length;
-			if(checkCount > 0) {
-				this._waitImageLoaded(items, checkCount);
-			} else {
-				this.core.layoutItems( items, true );
-			}
+			!this.core._isLayoutInited && this.core.resetLayout();		// for init-items
+
+			var needCheck = this._checkImageLoaded(elements),
+				checkCount = needCheck.length;
+			checkCount > 0 ? this._waitImageLoaded(items, checkCount) : this.core.layoutItems( items, true );
 		},
 		_adjustRange : function (isTop, addtional) {
 			var targets, idx, diff = this.core.items.length + addtional - this.core.options.count;
@@ -474,14 +478,10 @@ eg.module("infiniteGrid",[window.jQuery, eg, window, window.Outlayer, window.glo
 				checkCount--;
 				if(checkCount <= 0) {
 					unbindImage(core.element, onCheck);
-					// core.$element.off("load");
-					// core.$element.off("error");
 					core.layoutItems( items, true );
 				}
 			}
 			bindImage(this.core.element, onCheck);
-			// this.core.$element.on("load", onCheck);
-			// this.core.$element.on("error", onCheck);
 		},
 		/**
 		 * Release resources and off custom events
