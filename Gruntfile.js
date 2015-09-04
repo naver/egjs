@@ -94,6 +94,17 @@ module.exports = function(grunt) {
 								configure : "jsdoc.json"
 						}
 				}
+		},
+		jscs: {
+			// src: ["src/**/*.js"."src/*.js"],
+			// src/hook/animate.js
+			// src/flicking.js
+			// src/movableCoord.js
+			// src/visible.js
+			src: ["src/customEvent/*.js", "src/hook/css.js", "src/class.js", "src/component.js", "src/eg.js", "src/module.js"], 
+			options: {
+				config: ".jscsrc"
+			}
 		}
 	});
 	grunt.registerTask("test", function() {
@@ -119,5 +130,6 @@ module.exports = function(grunt) {
 	grunt.registerTask("docBuild", ["copy:doc", "clean", "jsdoc"]);
 	grunt.registerTask("build", ["concat", "uglify", "docBuild"]);
 	// grunt.registerTask("build", ["concat", "uglify", "copy:lib", "docBuild"]);
-	grunt.registerTask("default", ["jshint", "build", "test"]);
+	grunt.registerTask("default", ["jshint", "jscs", "build", "test"]);
+	grunt.registerTask("check", ["jscs"]);
 };
