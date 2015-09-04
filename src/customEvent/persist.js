@@ -1,5 +1,4 @@
-eg.module("persist", [jQuery, window, document], function($, global, doc){
-	"use strict";
+eg.module("persist", [jQuery, window, document], function($, global, doc) {
 	/**
 	* Support persist event in jQuery
 	* @ko jQuery custom persist 이벤트 지원
@@ -12,28 +11,31 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 		// restore state
 		if(e.state.flickingPage)
 			oSlideFlicking.moveTo(e.state.flickingPage);
-		
 		if(e.state.scrollTop)
 			document.scrollTo(e.state.scrollTop);
 	});
 	*/
-	var wp = global.performance,
-	history = global.history,
-	location = global.location,
-	JSON = global.JSON,
-	CONST_PERSIST = "___persist___",
-	GLOBAL_KEY = "KEY" + CONST_PERSIST,
-	$global = $(global),
-	isPersisted = $global.attr(CONST_PERSIST) === true,
+	var wp = global.performance;
+	var history = global.history;
+	var location = global.location;
+	var JSON = global.JSON;
+	var CONST_PERSIST = "___persist___";
+	var GLOBAL_KEY = "KEY" + CONST_PERSIST;
+	var $global = $(global);
+	var isPersisted = $global.attr(CONST_PERSIST) === true;
+
 	// In case of IE8, TYPE_BACK_FORWARD is undefined.
-	isBackForwardNavigated = (wp && wp.navigation && (wp.navigation.type === (wp.navigation.TYPE_BACK_FORWARD || 2) )),
-	isSupportState = "replaceState" in history && "state" in history,
-	storage = (function() {
-		if(!isSupportState) {
-			if("sessionStorage" in global) {
+	var isBackForwardNavigated = (wp && wp.navigation &&
+									(wp.navigation.type === (wp.navigation.TYPE_BACK_FORWARD || 2)));
+	var isSupportState = "replaceState" in history && "state" in history;
+	var storage = (function() {
+		if (!isSupportState) {
+			if ("sessionStorage" in global) {
 				var tmpKey = "__tmp__" + CONST_PERSIST;
 				sessionStorage.setItem(tmpKey, CONST_PERSIST);
-				return sessionStorage.getItem(tmpKey) === CONST_PERSIST ? sessionStorage :  localStorage;
+				return sessionStorage.getItem(tmpKey) === CONST_PERSIST ?
+						sessionStorage :
+						localStorage;
 			} else {
 				return localStorage;
 			}
@@ -41,8 +43,8 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 	})();
 
 	function onPageshow(e) {
-		isPersisted = isPersisted || ( e.originalEvent && e.originalEvent.persisted );
-		if(!isPersisted && isBackForwardNavigated) {
+		isPersisted = isPersisted || (e.originalEvent && e.originalEvent.persisted);
+		if (!isPersisted && isBackForwardNavigated) {
 			$global.trigger("persist");
 		} else {
 			reset();
@@ -58,34 +60,34 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 
 	/*
 	 * Getter for state
-	 */	
+	 */
 	function getState() {
-		if(isSupportState) {
+		if (isSupportState) {
 			return JSON.parse(history.state) || {};
 		} else {
 			var stateStr = storage.getItem(location.href + CONST_PERSIST);
+
 			// Note2 (4.3) return value is null
 			return (stateStr && stateStr.length > 0) ? JSON.parse(stateStr) : {};
-		}		
+		}
 	}
-
 	function getStateByKey(key) {
 		return getState()[key];
 	}
-	
+
 	/*
 	 * Setter for state
 	 */
 	function setState(state) {
-		if(isSupportState) {
+		if (isSupportState) {
 			history.replaceState(JSON.stringify(state), doc.title, location.href);
 		} else {
-			if(state) {
+			if (state) {
 				storage.setItem(location.href + CONST_PERSIST, JSON.stringify(state));
 			} else {
 				storage.removeItem(location.href  + CONST_PERSIST);
 			}
-		}	
+		}
 		state ? $global.attr(CONST_PERSIST, true) : $global.attr(CONST_PERSIST, null);
 	}
 
@@ -94,7 +96,6 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 		beforeData[key] = data;
 		setState(beforeData);
 	}
-	
 	/**
 	* Saves state and returns current state.
 	* @ko 인자로 넘긴 현재 상태정보를 저장한다.
@@ -102,8 +103,7 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
     * @param {Object} state State object to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체</ko>
 	* @example
 	$("a").on("click",function(e){
-		e.preventdefault()	
-
+		e.preventdefault();
 		// save state
 		$.persist(state);
 	});
@@ -115,7 +115,7 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 	* @return {Object} state Stored state object <ko>복원을 위해 저장되어있는 상태 객체</ko>
 	* @example
 	$("a").on("click",function(e){
-		e.preventdefault()	
+		e.preventdefault();
 		// get state
 		var state = $.persist();
 	});
@@ -129,7 +129,7 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 	* @return {Object} state Stored state object <ko>복원을 위해 저장되어있는 상태 객체</ko>
 	* @example
 	$("a").on("click",function(e){
-		e.preventdefault()	
+		e.preventdefault();
 		// save state
 		$.persist("KEY",state);
 	});
@@ -142,14 +142,15 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 	* @return {Object} state Stored state object <ko>복원을 위해 저장되어있는 상태 객체</ko>
 	* @example
 	$("a").on("click",function(e){
-		e.preventdefault()	
+		e.preventdefault();
 		// get state
 		var state = $.persist("KEY");
 	});
 	*/
 	$.persist = function(state) {
-		var key,data;
-		if(typeof state === "string") {
+		var key;
+		var data;
+		if (typeof state === "string") {
 			key = state;
 			data = arguments.length === 2 ? arguments[1] : null;
 		} else {
@@ -159,9 +160,9 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 		data && setStateByKey(key, data);
 		return getStateByKey(key);
 	};
-	
+
 	// in case of reload
-	!isBackForwardNavigated && reset(); 
+	!isBackForwardNavigated && reset();
 
 	$.event.special.persist = {
 		setup: function() {
@@ -171,11 +172,11 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 			$global.off("pageshow", onPageshow);
 		},
 		trigger: function(e) {
+
 			//If you use 'persist' event, you can get global-key only!
 			e.state = getStateByKey(GLOBAL_KEY);
 		}
 	};
-	
 	return {
 		"isBackForwardNavigated": isBackForwardNavigated,
 		"onPageshow": onPageshow,
@@ -183,6 +184,6 @@ eg.module("persist", [jQuery, window, document], function($, global, doc){
 		"getState": getState,
 		"setState": setState,
 		"persist": $.persist,
-		"GLOBALKEY" : GLOBAL_KEY
+		"GLOBALKEY": GLOBAL_KEY
 	};
 });

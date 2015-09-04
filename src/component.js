@@ -1,4 +1,4 @@
-eg.module("component",[eg],function(ns){
+eg.module("component", [eg], function(ns) {
 	/**
 	 * Component
 	 * @class
@@ -6,10 +6,10 @@ eg.module("component",[eg],function(ns){
 	 * @name eg.Component
 	 */
 	ns.Component = ns.Class({
-		construct : function() {
-			this.eventHandler = {};
+		construct: function() {
 			// The reference count is not support yet.
 			// this.constructor.$count = (this.constructor.$count || 0) + 1;
+			this.eventHandler = {};
 		},
 		/**
 		 * The event fire with custom event.
@@ -20,42 +20,42 @@ eg.module("component",[eg],function(ns){
 		 * @return {Boolean}
 		 * @example
 		 	var Some = eg.Class.extend(eg.Component,{
-				"some" : function(){
+				"some": function(){
 					this.tigger("hi");// fire hi event.
 				}
 		 	});
 		 */
-		trigger : function(eventName, customEvent) {
+		trigger: function(eventName, customEvent) {
 			customEvent = customEvent || {};
-			var handlerList = this.eventHandler[eventName] || [],
-				hasHandlerList = handlerList.length > 0;
+			var handlerList = this.eventHandler[eventName] || [];
+			var hasHandlerList = handlerList.length > 0;
 
 			if (!hasHandlerList) {
 				return true;
 			}
+
 			// If detach method call in handler in first time then handeler list calls.
 			handlerList = handlerList.concat();
 
 			customEvent.eventType = eventName;
 
 			var isCanceled = false;
-			customEvent.stop = function(){
+			var arg = [customEvent];
+			var i;
+			var len;
+			var handler;
+
+			customEvent.stop = function() {
 				isCanceled = true;
 			};
 
-			var arg = [customEvent], i, len;
-
-
-			if((len = arguments.length)>2){
-				arg = arg.concat(Array.prototype.slice.call(arguments,2,len));
+			if ((len = arguments.length) > 2) {
+				arg = arg.concat(Array.prototype.slice.call(arguments, 2, len));
 			}
 
-
-			var handler;
 			for (i = 0; handler = handlerList[i]; i++) {
 				handler.apply(this, arg);
 			}
-
 
 			return !isCanceled;
 		},
@@ -67,12 +67,12 @@ eg.module("component",[eg],function(ns){
 		 * @return {Boolean}
 	 	 * @example
 		 	var Some = eg.Class.extend(eg.Component,{
-				"some" : function(){
+				"some": function(){
 					this.hasOn("hi");// check hi event.
 				}
 		 	});
 		 */
-		hasOn : function(eventName){
+		hasOn: function(eventName) {
 			return !!this.eventHandler[eventName];
 		},
 		/**
@@ -84,16 +84,17 @@ eg.module("component",[eg],function(ns){
 		 * @return {Instance}
 	 	 * @example
 		 	var Some = eg.Class.extend(eg.Component,{
-		 		"hi" : function(){},
-				"some" : function(){
+		 		"hi": function(){},
+				"some": function(){
 					this.on("hi",this.hi); //attach event
 				}
 			});
 		 */
-		on : function(eventName, handlerToAttach) {
+		on: function(eventName, handlerToAttach) {
 			if (typeof handlerToAttach === "undefined") {
-				var eventHash = eventName, i;
-				for(i in eventHash){
+				var eventHash = eventName;
+				var i;
+				for (i in eventHash) {
 					this.on(i, eventHash[i]);
 				}
 				return this;
@@ -101,7 +102,7 @@ eg.module("component",[eg],function(ns){
 
 			var handlerList = this.eventHandler[eventName];
 
-			if (typeof handlerList === "undefined"){
+			if (typeof handlerList === "undefined") {
 				handlerList = this.eventHandler[eventName] = [];
 			}
 
@@ -118,27 +119,27 @@ eg.module("component",[eg],function(ns){
 		 * @return {Instance}
 	 	 * @example
 		 	var Some = eg.Class.extend(eg.Component,{
-		 		"hi" : function(){},
-				"some" : function(){
+		 		"hi": function(){},
+				"some": function(){
 					this.off("hi",this.hi); //detach event
 				}
 			});
 		 */
-		off : function(eventName, handlerToDetach) {
+		off: function(eventName, handlerToDetach) {
 			// All event detach.
-			if (arguments.length === 0){
+			if (arguments.length === 0) {
 				this.eventHandler = {};
 				return this;
 			}
 
 			// All handler of specific event detach.
 			if (typeof handlerToDetach === "undefined") {
-				if (typeof eventName === "string"){
+				if (typeof eventName === "string") {
 					this.eventHandler[eventName] = null;
 					return this;
 				} else {
 					var eventHash = eventName;
-					for (var i in eventHash){
+					for (var i in eventHash) {
 						this.off(i, eventHash[i]);
 					}
 					return this;
@@ -148,7 +149,9 @@ eg.module("component",[eg],function(ns){
 			// The handler of specific event detach.
 			var handlerList = this.eventHandler[eventName];
 			if (handlerList) {
-				for (var k = 0, handlerFunction; handlerFunction = handlerList[k]; k++) {
+				var k;
+				var handlerFunction;
+				for (k = 0, handlerFunction; handlerFunction = handlerList[k]; k++) {
 					if (handlerFunction === handlerToDetach) {
 						handlerList = handlerList.splice(k, 1);
 						break;
@@ -160,6 +163,4 @@ eg.module("component",[eg],function(ns){
 		}
 	});
 });
-
-
 

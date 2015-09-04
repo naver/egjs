@@ -1,4 +1,4 @@
-eg.module("class",[eg],function(ns){
+eg.module("class", [eg], function(ns) {
 	"use strict";
 	/**
 	 *
@@ -23,7 +23,7 @@ eg.module("class",[eg],function(ns){
 	 	var some = new Some(5);
 	 	some.sumVal(5);//10
 	 */
-    ns.Class = function(def) {
+	ns.Class = function(def) {
 		var typeClass = function typeClass() {
 			if (typeof def.construct === "function") {
 				def.construct.apply(this, arguments);
@@ -61,6 +61,7 @@ eg.module("class",[eg],function(ns){
 
 		var ExtProto = function() {};
 		ExtProto.prototype = superClass.prototype;
+
 		//extendClass.$super = oSuperClass.prototype; //'super' is supported not yet.
 
 		var extProto = new ExtProto();
