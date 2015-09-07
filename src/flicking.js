@@ -1,7 +1,7 @@
 eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 	/**
 	 * To build flickable UI
-	 * @group EvergreenJs
+	 * @group egjs
 	 * @ko 플리킹 UI를 구성한다.
 	 * @class
 	 * @name eg.Flicking

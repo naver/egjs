@@ -5,7 +5,7 @@ eg.module("visible",[window.jQuery, eg],function($, ns){
 	 * @class
 	 * @name eg.Visible
 	 * @extends eg.Component
-	 * @group EvergreenJs
+	 * @group egjs
 	 *
 	 * @param {Object} options
 	 * @param {HTMLElement|String|jQuery} [options.wrapper=document] The parent element that to check targets (wrapper is only one.) <ko>확인할 영역의 상위 엘리먼트</ko>
