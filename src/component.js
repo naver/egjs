@@ -2,7 +2,7 @@ eg.module("component", [eg], function(ns) {
 	/**
 	 * Component
 	 * @class
-	 * @group EvergreenJs
+	 * @group egjs
 	 * @name eg.Component
 	 */
 	ns.Component = ns.Class({
