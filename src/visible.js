@@ -50,26 +50,19 @@ eg.module("visible", [window.jQuery, eg], function($, ns) {
 		 * If targets was added or removed, you must call 'refresh' method.
 		 * <ko> 확인 대상이 영역 안에 추가 된 경우, 또는 확인 대상이 영역 안에서 삭제 된 경우, 영역 내의 확인 대상을 이 메소드를 호출하여 갱신해야한다. <ko>
 		 */
-		refresh: function() {
-			if (this._supportElementsByClassName) {
-				this._targets =
-					this._$wrapper
-						.getElementsByClassName(this.options.targetClass);
-
-				this.refresh = function() {
-					return this;
-				};
-			} else {
-				this.refresh = function() {
-					this._targets =
-						$(this._$wrapper)
-							.find("." + this.options.targetClass).each(function() {
-								return this;
-							});
-					return this;
-				};
-			}
-			return this.refresh();
+		refresh : function() {
+		    if (this._supportElementsByClassName) {
+		        this._targets = this._$wrapper.getElementsByClassName(this.options.targetClass);
+		        this.refresh = function() {return this; };
+		    } else {
+		        this.refresh = function() {
+		            this._targets = $(this._$wrapper).find("." + this.options.targetClass).each(function() {
+		                return this;
+		            });
+		            return this;
+		        };
+		    }
+		    return this.refresh();
 		},
 		/**
 		 * Checks if the target elements has been changed.
@@ -110,6 +103,7 @@ eg.module("visible", [window.jQuery, eg], function($, ns) {
 			}
 			return this._reviseElements(target, i);
 		},
+<<<<<<< HEAD
 		_check: function() {
 			var expandSize = parseInt(this.options.expandSize, 10);
 			var wrapper = this._$wrapper;
@@ -117,6 +111,17 @@ eg.module("visible", [window.jQuery, eg], function($, ns) {
 			var invisibles = [];
 			var area = null;
 			if (!wrapper.nodeType || wrapper.nodeType !== 1) {
+=======
+
+		_check : function() {
+
+			var expandSize = parseInt(this.options.expandSize,10),
+				wrapper = this._$wrapper,
+				visibles = [],
+				invisibles = [],
+				area = null;
+			if(!wrapper.nodeType || wrapper.nodeType !== 1) {
+>>>>>>> Merge branch 'infiniteGrid' of http://yobi.navercorp.com/Front-End/egjs into infiniteGridService
 				area = {
 					top: 0,
 					left: 0,
