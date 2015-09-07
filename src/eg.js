@@ -45,7 +45,7 @@ eg.module("eg", [window.jQuery, eg, window], function($, ns, global) {
 
 	/**
 	 * @namespace eg
-	 * @group EvergreenJs
+	 * @group egjs
 	 */
 	var ua;
 	var eg = {
