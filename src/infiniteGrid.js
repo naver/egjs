@@ -44,6 +44,7 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 			if (!this._isLayoutInited) {
 				this._registGroupKey(this.options.defaultGroupKey, this.items);
 			}
+			this.element.style.width = null;
 			this.getSize();	// create size property
 			this._measureColumns();
 		},
@@ -120,7 +121,7 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 			}
 		},
 		_getColumnWidth: function() {
-			if (!this.columnWidth) {
+			// if (!this.columnWidth) {
 				var el = this.items[0] && this.items[0].element;
 				var size;
 				if (el) {
@@ -135,7 +136,7 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 				}
 				this.options.isEqualSize && (this._equalItemSize = size);
 				this.columnWidth = size.outerWidth || this.size.outerWidth;
-			}
+			// }
 			return this.columnWidth;
 		},
 		_getColIdx: function(item) {
