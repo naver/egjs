@@ -84,10 +84,12 @@ li.prepend {
 <body>
 <div id="controler">
   <button class="append">append</button>
-  <button class="prepend">prepend</button><br>
+  <button class="prepend">prepend</button>
   <button class="fit">fit</button>
-  <button class="layout">layout</button>
+  <button class="layout">layout</button><br>
   <button class="clear">clear</button>
+  <button class="getTopElement">getTopElement</button>
+  <button class="getBottomElement">getBottomElement</button>
 </div>
   <ul id="grid">
     <li class="item">
@@ -111,8 +113,7 @@ li.prepend {
   </ul>
 <script>
 oinst = new eg.InfiniteGrid("#grid", {
-  itemSelector : ".item",
-  // isInitLayout : false
+    itemSelector : ".item"
 });
 var HTML = '<li class="item"><div>테스트1</div></li><li class="item"><div>테스트2</div></li><li class="item"><div>테스트3</div></li><li class="item"><div>테스트4</div></li><li class="item"><div>테스트5</div></li><li class="item"><div>테스트6</div></li><li class="item"><div>테스트7</div></li>';
 
@@ -139,6 +140,22 @@ $("#controler").click(function(e) {
     oinst.layout();
   } else if ($el.hasClass("clear")) {
     oinst.clear();
+  } else if ($el.hasClass("getTopElement")) {
+    var $el = $(oinst.getTopElement());
+    $el.animate({
+            "fontSize" : "3em"
+    }, 1000)
+        .animate({
+            "fontSize" : "1em"
+        });
+  } else if ($el.hasClass("getBottomElement")) {
+    var $el = $(oinst.getBottomElement());
+    $el.animate({
+            "fontSize" : "3em"
+    }, 1000)
+        .animate({
+            "fontSize" : "1em"
+        });
   }
 });
 </script>  

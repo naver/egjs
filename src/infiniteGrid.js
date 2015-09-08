@@ -45,6 +45,7 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 				this._registGroupKey(this.options.defaultGroupKey, this.items);
 			}
 			this.element.style.width = null;
+			// this.columnWidth = null;
 			this.getSize();	// create size property
 			this._measureColumns();
 		},
@@ -387,12 +388,12 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 			var item;
 			var min = Infinity;
 			$.each(this.core.getColItems(false), function(i, v) {
-				if (v.position.y < min) {
+				if (v && v.position.y < min) {
 					min = v.position.y;
 					item = v;
 				}
 			});
-			return item.element;
+			return item ? item.element : null;
 		},
 		/**
 		 * Get bottom element
@@ -405,12 +406,12 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 			var item;
 			var max = -Infinity;
 			$.each(this.core.getColItems(true), function(i, v) {
-				if (v.position.y + v.size.outerHeight > max) {
+				if (v && v.position.y + v.size.outerHeight > max) {
 					max = v.position.y + v.size.outerHeight;
 					item = v;
 				}
 			});
-			return item.element;
+			return item ? item.element : null;
 		},
 		_onlayoutComplete: function(e) {
 			var distance = 0;
@@ -434,9 +435,9 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 				return;
 			}
 			this._isAppendType = isAppend;
-			var items = this.core.itemize(elements, groupKey);
 			var i = 0;
 			var item;
+			var items = this.core.itemize(elements, groupKey);
 			while (item = items[i++]) {
 				item.isAppend = isAppend;
 			}
@@ -449,8 +450,9 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 			if (this.isRecycling()) {
 				this._adjustRange(isAppend, elements);
 			}
+			var noChild = this.core.$element.children().length === 0;
 			this.core.$element[isAppend ? "append" : "prepend"](elements);
-			!this.core._isLayoutInited && this.core.resetLayout();		// for init-items
+			noChild && this.core.resetLayout();		// for init-items
 
 			var needCheck = this._checkImageLoaded(elements);
 			var checkCount = needCheck.length;
