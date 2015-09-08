@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
+</head>
+<style type="text/css">
+    body,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,table,th,td,form,fieldset,legend,input,textarea,button,select {
+        margin:0;
+        padding:0;
+    }
+
+    ul,ol {
+        list-style:none;
+    }
+
+    li div {
+        margin:10px;
+        border:1px solid red;
+        background-color:#eee;
+    }
+
+    li.append {
+        background-color:#797;
+    }
+
+    li.prepend {
+        background-color:#333;
+    }
+
+    .r1 {
+        width:220px;
+        height:300px;
+    }
+    .r2 {
+        width:220px;
+        height:320px;
+    }
+    .r3 {
+        width:220px;
+        height:340px;
+    }
+    .r4 {
+        width:220px;
+        height:360px;
+    }
+    .r5 {
+        width:220px;
+        height:380px;
+    }
+    .r6 {
+        width:220px;
+        height:400px;
+    }
+    .r7 {
+        width:220px;
+        height:420px;
+    }
+</style>
+<body>
+
+<div style="height:150px;background:#f2f2f2">
+    <h1>header</h1>
+    <button id="prepend">prepend</button>
+    <button id="append">append</button>
+</div>
+
+<ul id="grid">
+</ul>
+
+<div style="height:90px;background:#ffff99">
+    footer
+</div>
+
+<script src="../bower_components/jquery/jquery.js"></script>
+<script src="../bower_components/get-style-property/get-style-property.js"></script>
+<script src="../bower_components/get-size/get-size.js"></script>
+<script src="../bower_components/matches-selector/matches-selector.js"></script>
+<script src="../bower_components/eventEmitter/EventEmitter.js"></script>
+<script src="../bower_components/eventie/eventie.js"></script>
+<script src="../bower_components/doc-ready/doc-ready.js"></script>
+<script src="../bower_components/fizzy-ui-utils/utils.js"></script>
+<script src="../bower_components/outlayer/item.js"></script>
+<script src="../bower_components/outlayer/outlayer.js"></script>
+<script src="../src/module.js"></script>
+<script src="../src/eg.js"></script>
+<script src="../src/class.js"></script>
+<script src="../src/component.js"></script>
+<script src="../src/customEvent/persist.js"></script>
+<script src="../src/customEvent/scrollEnd.js"></script>
+<script src="../src/infiniteGrid.js"></script>
+<script src="../src/infiniteGridService.js"></script>
+
+<script>
+    function getContents(offset, limit) {
+        var html = "";
+        offset = offset || 1;
+        limit = limit || 10;
+
+        var end = offset + limit;
+
+        var _random = function() {
+            return Math.floor( ( Math.random() * 7 ) + 1 );
+        }
+
+        for ( ; offset < end; offset ++ ) {
+            html = html + "<li class='item' data-offset='" + offset + "'><div class='r" + _random() + "'><a href='http://best.mqoo.com'>테스트 " + offset + "</a></div></li>";
+        }
+
+        return html;
+    }
+</script>
+
+<script>
+    var offset = 1, limit = 40;
+
+    $( "#grid" ).append( getContents( offset, limit ) );
+
+    var infiniteGridService = new eg.InfiniteGridService( "#grid" );
+
+    $( "#grid" ).on( "click", "a", function() {
+        infiniteGridService.store();
+    } );
+
+    if( !infiniteGridService.restore() ) {
+        console.log( "Does not Restored. Try to append first data" );
+        offset = $("#grid").find("li").last().data("offset");
+        offset = offset || 0;
+        offset = parseInt( offset , 10 ) + 1;
+        infiniteGridService.append( "http://localhost:9099/infiniteGrid/items?offset="
+                + offset + "&limit=" + limit, function( data ) {
+            return $(data);
+        } );
+    }
+
+    infiniteGridService.on( "prepend", function() {
+        console.log( "prepend event" );
+        offset = $("#grid").find("li").first().data("offset");
+        if( offset < limit ) {
+            return;
+        }
+        offset = parseInt( offset , 10 ) - limit;
+        infiniteGridService.prepend( "http://localhost:9099/infiniteGrid/items?offset="
+                + offset + "&limit=" + limit, function( data ) {
+            return $(data);
+        } );
+    } );
+
+    infiniteGridService.on( "append", function() {
+        console.log( "append event" );
+        offset = $("#grid").find("li").last().data("offset");
+        offset = parseInt( offset , 10 ) + 1;
+        infiniteGridService.append( "http://localhost:9099/infiniteGrid/items?offset="
+                + offset + "&limit=" + limit, function( data ) {
+            return $(data);
+        } );
+    } );
+</script>
+</body>
+</html>
