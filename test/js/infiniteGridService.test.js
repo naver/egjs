@@ -1,23 +1,129 @@
-module("infiniteGridService Test", {
-    setup : function() {
-        this.inst = null;
-    },
-    teardown : function() {
-        this.inst.destroy();
-        this.inst = null;
-    }
-});
+function getContents( offset, limit ) {
+	var html = "";
+	offset = offset || 1;
+	limit = limit || 10;
 
-asyncTest("append via ajax", function() {
-    // Given
-    var offset = 1, limit = 8;
+	var end = offset + limit;
 
-    this.inst = new eg.InfiniteGridService( "#grid" , {
-        persistSelector : ['a']
-    });
+	var _random = function() {
+		return Math.floor( ( Math.random() * 7 ) + 1 );
+	}
 
-    this.inst.append( "http://localhost:9099/infiniteGrid/items?offset="
-        + offset + "&limit=" + limit, function( data ) {
-        return $(data);
-    } );
-});
+	for ( ; offset < end; offset ++ ) {
+		html = html + "<li class='item' data-offset='" + offset + "'><div class='r" + _random() + "'><a href='http://best.mqoo.com'>테스트 " + offset + "</a></div></li>";
+	}
+
+	return html;
+}
+
+module( "initialization", {
+	setup : function() {
+		this.inst = null;
+	},
+	teardown : function() {
+		this.inst.destroy();
+		this.inst = null;
+	}
+} );
+
+test( "initialization", function() {
+	//When
+	this.inst = new eg.InfiniteGridService( "#grid" );
+
+	//Then
+	equal( this.inst instanceof eg.InfiniteGridService, true, "Instance of eg.InfiniteGridService" );
+} );
+
+test( "initialization with static contents", function() {
+	// Given
+	var offset = 1, limit = 30;
+	var $grid = $( "#grid" );
+	$grid.append( getContents( offset, limit ) );
+
+	//When
+	this.inst = new eg.InfiniteGridService( "#grid" );
+
+	//Then
+	equal( $grid.children().length, limit - offset + 1, "Grid contents length : " + ( limit - offset + 1 ) );
+} );
+
+module( "append", {
+	setup : function() {
+		this.inst = null;
+	},
+	teardown : function() {
+		this.inst.destroy();
+		this.inst = null;
+	}
+} );
+
+test( "append contents with plain HTML string", function() {
+	// Given
+	var offset = 1, limit = 30;
+	var $grid = $( "#grid" );
+	var html = getContents( offset, limit );
+
+	//When
+	this.inst = new eg.InfiniteGridService( "#grid" );
+	var returnVal = this.inst.append( html );
+
+	//Then
+	equal( typeof html, "string", "Append parameter is plain HTML string" );
+	equal( $grid.children().length, limit - offset + 1, "Grid contents length : " + ( limit - offset + 1 ) );
+	equal( returnVal, this.inst, "return value is instance itself");
+} );
+
+test( "append contents with jQuery object", function() {
+	// Given
+	var offset = 1, limit = 30;
+	var $grid = $( "#grid" );
+	var html = getContents( offset, limit );
+	var $html = $( html );
+
+	//When
+	this.inst = new eg.InfiniteGridService( "#grid" );
+	var returnVal = this.inst.append( $html );
+
+	//Then
+	equal( $html instanceof jQuery, true, "Append parameter is jQuery object" );
+	equal( $grid.children().length, limit - offset + 1, "Grid contents length : " + ( limit - offset + 1 ) );
+	equal( returnVal, this.inst, "return value is instance itself");
+} );
+
+asyncTest( "append contents with URL for XHR", function() {
+	//Given
+	var offset = 1, limit = 30;
+	var $grid = $( "#grid" );
+	var url = "http://localhost:9099/infiniteGrid/items?offset=" + offset + "&limit=" + limit;
+
+	//When
+	this.inst = new eg.InfiniteGridService( "#grid" );
+	var returnVal = this.inst.append( url ).done( function() {
+		equal( $grid.children().length, limit - offset + 1, "Grid contents length : " + ( limit - offset + 1 ) );
+	});
+
+	//Then
+	equal( typeof url, "string", "URL for XHR is plain string" );
+	equal( typeof returnVal.readyState, "number", "Return value has readyState. It is jQuery.jqXHR" );
+} );
+
+asyncTest( "append contents with configure the Ajax request", function() {
+	//Given
+	var offset = 1, limit = 30;
+	var $grid = $( "#grid" );
+	var settings = {
+  		method: "GET",
+  		url: "http://localhost:9099/infiniteGrid/items?offset=" + offset + "&limit=" + limit,
+  		data: { offset : offset, limit : limit }
+	}
+
+	//When
+	this.inst = new eg.InfiniteGridService( "#grid" );
+	var returnVal = this.inst.append( setting ).done( function() {
+		equal( $grid.children().length, limit - offset + 1, "Grid contents length : " + ( limit - offset + 1 ) );
+	});
+
+	//Then
+	equal( typeof settings, "object", "Settings for XHR is object" );
+	equal( typeof returnVal.readyState, "number", "Return value has readyState. It is jQuery.jqXHR" );
+} );
