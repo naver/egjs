@@ -76,6 +76,21 @@ module.exports = function(grunt) {
 	            }
 			}
 		},
+		testee : {
+			options: {
+				root: './',
+				reporter: 'Spec'
+			},
+			coverage: {
+				options: {
+					browsers : ["chrome", "firefox"],
+					coverage: {
+						ignore: ['assets/', 'bower_components/', 'node_modules/', 'tc/', 'test/']
+					}
+				},
+				src: ['test/*.test.html']
+			},
+		},
 		watch : {
 			source : {
 				files : [ "src/**/*.js"],
@@ -107,6 +122,9 @@ module.exports = function(grunt) {
 			}
 		}
 	});
+
+	grunt.loadNpmTasks('testee');
+
 	grunt.registerTask("test", function() {
 		var eachfile = Array.prototype.slice.apply(arguments);
 		if(eachfile.length) {
