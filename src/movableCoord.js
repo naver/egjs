@@ -36,12 +36,17 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 	 * @param {Boolean} [options.circular.2=false] The circular bottom range <ko>bottom 순환 영역</ko>
 	 * @param {Boolean} [options.circular.3=false] The circular left range <ko>left 순환 영역</ko>
 	 *
-	 * @param {Function} [options.easing a easing=easing.easeOutQuint] Function of the jQuery Easing Plugin. If you want to use another easing function then should be import jQuery easing library. <ko>jQuery Easing 플러그인 함수. 다른 easing 함수를 사용하고 싶다면, jQuery easing 라이브러리를 삽입해야 한다.</ko>
+	 * @param {Function} [options.easing=easing.easeOutCubic] Function of the Easing (jQuery UI Easing, jQuery Easing Plugin). <ko>Easing 함수</ko>
 	 * @param {Number} [options.maximumDuration=Infinity] The maximum duration. <ko>최대 좌표 이동 시간</ko>
 	 * @param {Number} [options.deceleration=0.0006] deceleration This value can be altered to change the momentum animation duration. higher numbers make the animation shorter. <ko>감속계수. 높을값이 주어질수록 애니메이션의 동작 시간이 짧아진다.</ko>
 	 * @see Hammerjs {@link http://hammerjs.github.io}
-	 * @see There is usability issue due to default css properties ({@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}) of the Hammerjs. Therefore, movableCoord removes css properties. <ko>Hammerjs의 기본 CSS 속성({@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}) 으로 인해 사용성 이슈가 있다. 따라서, movableCoord는 hammerjs의 기본 CSS 속성을 제거하였다.</ko>
-	 * @see jQuery Easing Plugin {@link http://gsgd.co.uk/sandbox/jquery/easing}
+	 * @see There is usability issue due to default css properties ({@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}) of the Hammerjs. Therefore, movableCoord removes css properties.
+	 * <ko>Hammerjs의 기본 CSS 속성({@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}) 으로 인해 사용성 이슈가 있다. 따라서, movableCoord는 hammerjs의 기본 CSS 속성을 제거하였다.</ko>
+	 *
+	 * @codepen {"id":"bdVybg", "ko":"MovableCoord 기본 예제", "en":"MovableCoord basic example", "collectionId":"AKpkGW", "height" : 403}
+	 *
+	 * @see Easing Functions Cheat Sheet {@link http://easings.net/}
+	 * @see If you want to use another easing function then should be import jQuery easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/}) or jQuery UI easing.({@link https://jqueryui.com/easing/})<ko>다른 easing 함수를 사용하고 싶다면, jQuery easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/})이나, jQuery UI easing({@link https://jqueryui.com/easing/}) 라이브러리를 삽입해야 한다.</ko>
 	 */
 	ns.MovableCoord = ns.Class.extend(ns.Component,{
 		construct : function(options) {
@@ -51,7 +56,7 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				bounce : [10, 10, 10, 10],
 				margin : [0,0,0,0],
 				circular : [false, false, false, false],
-				easing : $.easing.easeOutQuint,
+				easing : $.easing.easeOutCubic,
 				maximumDuration : Infinity,
 				deceleration : 0.0006
 			};
@@ -234,7 +239,6 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				max = this.options.max,
 				bounce = this.options.bounce,
 				margin = this.options.margin,
-				easing = this.options.easing,
 				direction = this._subOptions.direction,
 				scale = this._subOptions.scale,
 				userDirection = this._getDirection(e.angle),
@@ -278,21 +282,23 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 				pos[1] = tv>tx?tx:(tv<tn?tn:tv);
 			} else {	// when start pointer is holded inside
 				// get a initialization slop value to prevent smooth animation.
-				var initSlope = this._isInEasing(easing) ? easing(null, 0.9999 , 0, 1, 1) / 0.9999 : easing(null, 0.00001 , 0, 1, 1) / 0.00001;
+				var initSlope = this._initSlope();
 				if (pos[1] < min[1]) { // up
 					tv = (min[1]-pos[1])/(out[0]*initSlope);
-					pos[1] = min[1]-easing(null, tv>1?1:tv , 0, 1, 1)* out[0];
+					pos[1] = min[1]-this._easing(tv)* out[0];
 				} else if (pos[1] > max[1]) { // down
 					tv = (pos[1]-max[1])/(out[2]*initSlope);
-					pos[1] = max[1]+easing(null, tv>1?1:tv , 0, 1, 1)*out[2];
+					pos[1] = max[1]+this._easing(tv)*out[2];
 				}
 				if (pos[0] < min[0]) { // left
 					tv = (min[0]-pos[0])/(out[3]*initSlope);
-					pos[0] = min[0]-easing(null, tv>1?1:tv , 0, 1, 1)*out[3];
+					pos[0] = min[0]-this._easing(tv)*out[3];
 				} else if (pos[0] > max[0]) { // right
 					tv = (pos[0]-max[0])/(out[1]*initSlope);
-					pos[0] = max[0]+easing(null, tv>1?1:tv , 0, 1, 1)*out[1];
+					pos[0] = max[0]+this._easing(tv)*out[1];
 				}
+
+
 			}
 			this._triggerChange(pos, true, e);
 		},
@@ -519,9 +525,8 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 		// animation frame (0~1)
 		_frame : function(param) {
 			var curTime = new Date() - param.startTime,
-				easingPer = this.options.easing(null, curTime, 0, 1, param.duration),
+				easingPer = this._easing(curTime/param.duration),
 				pos = [ param.depaPos[0], param.depaPos[1] ];
-			easingPer = easingPer >= 1 ? 1 : easingPer;
 
 			for (var i = 0; i <2 ; i++) {
 			    (pos[i] !== param.destPos[i]) && (pos[i] += (param.destPos[i] - pos[i]) * easingPer);
@@ -648,13 +653,25 @@ eg.module("movableCoord",[window.jQuery, eg, window.Hammer],function($, ns, HM){
 			);
 		},
 
-		_isInEasing : function(easing) {
-			for(var p in $.easing) {
-				if($.easing[p] === easing) {
-					return !~p.indexOf("Out");
+		_easing : function(p) {
+			if (p > 1) {
+				return 1;
+			} else {
+				return this.options.easing(p, p , 0, 1, 1);
+			}
+		},
+
+		_initSlope : function() {
+			var easing = this.options.easing;
+			var isIn = false;
+			var p;
+			for (p in $.easing) {
+				if ($.easing[p] === easing) {
+					isIn = !~p.indexOf("Out");
+					break;
 				}
 			}
-			return false;
+			return isIn ? easing(0.9999, 0.9999 , 0, 1, 1) / 0.9999 : easing(0.00001, 0.00001 , 0, 1, 1) / 0.00001;
 		},
 
 		_setInterrupt : function(prevented) {

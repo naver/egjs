@@ -53,7 +53,7 @@ eg.module("eg", [window.jQuery, eg, window], function($, ns, global) {
 		 * @name eg.VERSION
 		 * @description version infomation
 		 * @ko 버전 정보
-	     */
+		 */
 		VERSION: "#__VERSION__#",
 		hook: {
 			// isHWAccelerable : null,
@@ -337,55 +337,55 @@ eg.hook.isTransitional = function(defaultVal, agent) {
 	/**
 	 * @name eg.DIRECTION_NONE
 	 * @constant
-    	 * @type {Number}
-       */
+		 * @type {Number}
+	   */
 	ns.DIRECTION_NONE = 1;
 	/**
 	 * @name eg.DIRECTION_LEFT
 	 * @constant
-    	 * @type {Number}
-       */
+		 * @type {Number}
+	   */
 	ns.DIRECTION_LEFT = 2;
 	/**
 	 * @name eg.DIRECTION_RIGHT
 	 * @constant
-    	 * @type {Number}
-       */
+		 * @type {Number}
+	   */
 	ns.DIRECTION_RIGHT = 4;
 	/**
 	 * @name eg.DIRECTION_UP
 	 * @constant
-    	 * @type {Number}
-       */
+		 * @type {Number}
+	   */
 	ns.DIRECTION_UP = 8;
 	/**
 	 * @name eg.DIRECTION_DOWN
 	 * @constant
-    	 * @type {Number}
-       */
+		 * @type {Number}
+	   */
 	ns.DIRECTION_DOWN = 16;
 	/**
 	 * @name eg.DIRECTION_HORIZONTAL
 	 * @constant
-    	 * @type {Number}
-       */
+		 * @type {Number}
+	   */
 	ns.DIRECTION_HORIZONTAL = ns.DIRECTION_LEFT | ns.DIRECTION_RIGHT;
 	/**
 	 * @name eg.DIRECTION_VERTICAL
 	 * @constant
-    	 * @type {Number}
-       */
+		 * @type {Number}
+	   */
 	ns.DIRECTION_VERTICAL = ns.DIRECTION_UP | ns.DIRECTION_DOWN;
 	/**
 	 * @name eg.DIRECTION_ALL
 	 * @constant
-    	 * @type {Number}
-       */
+		 * @type {Number}
+	   */
 	ns.DIRECTION_ALL = ns.DIRECTION_HORIZONTAL | ns.DIRECTION_VERTICAL;
 
 	$.extend($.easing, {
-		easeOutQuint: function(x, t, b, c, d) {
-			return c * ((t = t / d - 1) * t * t * t * t + 1) + b;
+		easeOutCubic: function(p) {
+			return 1 - Math.pow(1 - p, 3);
 		}
 	});
 });

@@ -176,22 +176,6 @@ test("setTo", function() {
 	deepEqual(this.inst.get(), [300, 0], "if position parameters was out of range, set to position min or max values.");
 });
 
-
-test("_isInEasing", function() {
-	// Given
-	var easing = [
-		[ $.easing.easeInQuad, true ],
-		[ $.easing.easeInOutCirc, false ],
-		[ $.easing.easeInCubic, true ],
-		[ $.easing.easeOutQuint, false ]
-	];
-	// When
-	// Then
-	easing.forEach(function(v) {
-		equal(this.inst._isInEasing(v[0]), v[1], "determine if easing function is 'In' style");
-	}, this);
-});
-
 asyncTest("setTo : check 'change' event", function() {
 	// Given
 	this.inst.on("change", function(e) {
@@ -661,7 +645,7 @@ test("interrupt test when 'setTo' method is called : duration = 0", function() {
 	this.inst.bind(el, {
 		interruptable : false
 	});
-	
+
 	// When
 	this.inst.setTo(200,200);
 
@@ -694,7 +678,7 @@ asyncTest("interrupt test when 'setTo' method is called : duration = 100", funct
 	this.inst.bind(el, {
 		interruptable : false
 	});
-	
+
 	// When
 	var self = this;
 	this.inst.setTo(200,200,100);
@@ -728,7 +712,7 @@ asyncTest("interrupt test after 'setTo' method is called : move to same position
 	this.inst.bind(el, {
 		interruptable : false
 	});
-	
+
 	// When
 	var self = this;
 	this.inst.setTo(200,200,100);
