@@ -2,7 +2,7 @@ module("Component Test");
 
 var TestClass = eg.Class.extend(eg.Component,{});
 function noop() {}
-	
+
 module("on method", {
 	setup : function(){
 		this.oClass = new TestClass();
@@ -42,8 +42,12 @@ test("Add event handler by invalid type",function(){
 	function getPropertyCount(obj) {
 		var count = 0;
 		for(var prop in obj) {
-			if(this.hasOwnProperty(prop))
-				count = count + 1;
+			if(this.hasOwnProperty(prop)) {
+				// remove constructor (es6) in case of phantomjs
+				if(prop !== "constructor") {
+					count = count + 1;
+				}
+			}
 		}
 		return count;
 	}
@@ -206,14 +210,14 @@ module("trigger method", {
 });
 test("Return value test for trigger method",function(){
 	//Given
-	//When	
+	//When
 	var returnVal = this.oClass.trigger("noevent");
 	//Then
 	ok(returnVal, "If there is no event handler for event name, return value must be true.");
 
 	//Given
 	this.oClass.on("test", noop);
-	//When	
+	//When
 	var returnVal = this.oClass.trigger("test");
 	//Then
 	ok(returnVal, "When pull the event handler trigger for 'test', return value must be true.");
@@ -234,7 +238,7 @@ test("Test for run trigger method",function(){
 	//Then
 	strictEqual(oCustomEvent.nValue,100, "After event handler running, value of 'oCustomEvent.nValue' must be change to 100.");
 	deepEqual(param,[1,2,3], "More than 2 parameters will be passed to 'trigger()' method.");
-	
+
 });
 test("Check custom event",function(){
 	//Given

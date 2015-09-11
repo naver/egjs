@@ -19,11 +19,11 @@ eg.module("component", [eg], function(ns) {
 		 * @param {Object} customEvent
 		 * @return {Boolean}
 		 * @example
-		 	var Some = eg.Class.extend(eg.Component,{
+			var Some = eg.Class.extend(eg.Component,{
 				"some": function(){
 					this.tigger("hi");// fire hi event.
 				}
-		 	});
+			});
 		 */
 		trigger: function(eventName, customEvent) {
 			customEvent = customEvent || {};
@@ -65,12 +65,12 @@ eg.module("component", [eg], function(ns) {
 		 * @method eg.Component#hasOn
 		 * @param {String} eventName
 		 * @return {Boolean}
-	 	 * @example
-		 	var Some = eg.Class.extend(eg.Component,{
+		 * @example
+			var Some = eg.Class.extend(eg.Component,{
 				"some": function(){
 					this.hasOn("hi");// check hi event.
 				}
-		 	});
+			});
 		 */
 		hasOn: function(eventName) {
 			return !!this.eventHandler[eventName];
@@ -82,22 +82,25 @@ eg.module("component", [eg], function(ns) {
 		 * @param {eventName} eventName
 		 * @param {Function} handlerToAttach
 		 * @return {Instance}
-	 	 * @example
-		 	var Some = eg.Class.extend(eg.Component,{
-		 		"hi": function(){},
+		 * @example
+			var Some = eg.Class.extend(eg.Component,{
+				"hi": function(){},
 				"some": function(){
 					this.on("hi",this.hi); //attach event
 				}
 			});
 		 */
-		on : function(eventName, handlerToAttach) {
-			if (typeof eventName === "object" && typeof handlerToAttach === "undefined") {
-				var eventHash = eventName, i;
-				for(i in eventHash){
+		on: function(eventName, handlerToAttach) {
+			if (typeof eventName === "object" &&
+			typeof handlerToAttach === "undefined") {
+				var eventHash = eventName;
+				var i;
+				for (i in eventHash) {
 					this.on(i, eventHash[i]);
 				}
 				return this;
-			} else if (typeof eventName === "string" && typeof handlerToAttach === "function") {
+			} else if (typeof eventName === "string" &&
+				typeof handlerToAttach === "function") {
 				var handlerList = this.eventHandler[eventName];
 
 				if (typeof handlerList === "undefined") {
@@ -106,7 +109,7 @@ eg.module("component", [eg], function(ns) {
 
 				handlerList.push(handlerToAttach);
 			}
-			
+
 			return this;
 		},
 		/**
@@ -116,9 +119,9 @@ eg.module("component", [eg], function(ns) {
 		 * @param {eventName} eventName
 		 * @param {Function} handlerToDetach
 		 * @return {Instance}
-	 	 * @example
-		 	var Some = eg.Class.extend(eg.Component,{
-		 		"hi": function(){},
+		 * @example
+			var Some = eg.Class.extend(eg.Component,{
+				"hi": function(){},
 				"some": function(){
 					this.off("hi",this.hi); //detach event
 				}
@@ -133,7 +136,7 @@ eg.module("component", [eg], function(ns) {
 
 			// All handler of specific event detach.
 			if (typeof handlerToDetach === "undefined") {
-				if (typeof eventName === "string"){
+				if (typeof eventName === "string") {
 					this.eventHandler[eventName] = undefined;
 					return this;
 				} else {

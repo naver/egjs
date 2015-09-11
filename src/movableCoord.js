@@ -407,7 +407,7 @@ eg.module("movableCoord", [window.jQuery, eg, window.Hammer], function($, ns, HM
 		_getDurationFromPos: function(pos) {
 			var normalPos = Math.sqrt(pos[0] * pos[0] + pos[1] * pos[1]);
 			var duration = Math.sqrt(
-				normalPos / this.options.dec eleration * 2
+				normalPos / this.options.deceleration * 2
 			);
 
 			// when duration was under 100, duration is zero

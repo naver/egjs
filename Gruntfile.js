@@ -78,18 +78,18 @@ module.exports = function(grunt) {
 		},
 		testee : {
 			options: {
-				root: './',
-				reporter: 'Spec'
+				root: "./",
+				reporter: "Spec"
 			},
 			coverage: {
 				options: {
 					browsers : ["chrome", "firefox"],
 					coverage: {
-						ignore: ['assets/', 'bower_components/', 'node_modules/', 'tc/', 'test/']
+						ignore: ["assets/", "bower_components/", "node_modules/", "tc/", "test/"]
 					}
 				},
-				src: ['test/*.test.html']
-			},
+				src: ["test/*.test.html"]
+			}
 		},
 		watch : {
 			source : {
@@ -116,14 +116,14 @@ module.exports = function(grunt) {
 			// src/flicking.js
 			// src/movableCoord.js
 			// src/visible.js
-			src: ["src/customEvent/*.js", "src/movableCoord.js", "src/hook/css.js", "src/class.js", "src/component.js", "src/eg.js", "src/module.js"], 
+			src: ["src/customEvent/*.js", "src/movableCoord.js", "src/hook/css.js", "src/class.js", "src/component.js", "src/eg.js", "src/module.js"],
 			options: {
 				config: ".jscsrc"
 			}
 		}
 	});
 
-	grunt.loadNpmTasks('testee');
+	grunt.loadNpmTasks("testee");
 
 	grunt.registerTask("test", function() {
 		var eachfile = Array.prototype.slice.apply(arguments);
