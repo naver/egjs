@@ -127,7 +127,7 @@
         offset = $("#grid").find("li").last().data("offset");
         offset = offset || 0;
         offset = parseInt( offset , 10 ) + 1;
-        infiniteGridService.append( "http://localhost:9099/infiniteGrid/items?offset="
+        infiniteGridService.appendAjax( "http://localhost:9099/infiniteGrid/items?offset="
                 + offset + "&limit=" + limit, function( data ) {
             return $(data);
         } );
@@ -140,7 +140,7 @@
             return;
         }
         offset = parseInt( offset , 10 ) - limit;
-        infiniteGridService.prepend( "http://localhost:9099/infiniteGrid/items?offset="
+        infiniteGridService.prependAjax( "http://localhost:9099/infiniteGrid/items?offset="
                 + offset + "&limit=" + limit, function( data ) {
             return $(data);
         } );
@@ -150,7 +150,7 @@
         console.log( "append event" );
         offset = $("#grid").find("li").last().data("offset");
         offset = parseInt( offset , 10 ) + 1;
-        infiniteGridService.append( "http://localhost:9099/infiniteGrid/items?offset="
+        infiniteGridService.appendAjax( "http://localhost:9099/infiniteGrid/items?offset="
                 + offset + "&limit=" + limit, function( data ) {
             return $(data);
         } );
