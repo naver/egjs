@@ -373,11 +373,11 @@ eg.module("infiniteGridService",
 	 * @extends eg.Component
 	 * @group EvergreenJs
 	 *
-	 * @param {String} target element <ko>타겟 엘리먼트</ko>
-	 * @param {Object} options <ko>옵션</ko>
-	 * @param {Number} [options.count=30] DOM count for recycle. If value is -1, DOM does increase without limit -1. <ko>재사용할 DOM 갯수. -1일 경우 DOM은 계속 늘어남.</ko>
-	 * @param {Number} [threshold=100] Scroll coordinate threshold. <ko>append, prepend 이벤트가 발생하기 위한 스크롤 좌표 가용.</ko>
-	 * @param {Boolean} [usePersist=true] Determines whether allows persist. <ko>persist 사용 여부.</ko>
+	 * @param {String} DOM Element to be InfiniteGride. <ko>타겟 엘리먼트</ko>
+	 * @param {Object} [Options] A set of key/value pairs that configure the InfiniteGridService. <ko>key/value 형태의 옵션</ko>
+	 * @param {Number} [options.count=60] Count DOM count for recycle. If value is -1, DOM does increase without limit -1. <ko>재사용할 DOM 갯수. -1일 경우 DOM은 계속 늘어남.</ko>
+	 * @param {Number} [threshold=120] Threshold Scroll coordinate threshold. <ko>append, prepend 이벤트가 발생하기 위한 스크롤 좌표 임계치.</ko>
+	 * @param {Boolean} [usePersist=true] usePersist Determines whether allows persist. <ko>persist 사용 여부.</ko>
 	 */
 	ns.InfiniteGridService = ns.Class.extend(ns.Component, {
 		/**
@@ -576,7 +576,7 @@ eg.module("infiniteGridService",
 		 * Activate
 		 * @ko 활성화
 		 * @method eg.InfiniteGridService#activate
-		 * @return {Instance}
+		 * @return {Object} infiniteGridService Instance itself.
 		 */
 		activate: function() {
 			$(global).on("scrollend", $.proxy(this._handleScrollEnd, this));
@@ -586,7 +586,7 @@ eg.module("infiniteGridService",
 		 * Deactivate
 		 * @ko 비활성화
 		 * @method eg.InfiniteGridService#deactivate
-		 * @return {Instance}
+		 * @return {Object} infiniteGridService Instance itself.
 		 */
 		deactivate: function() {
 			$(global).off("scrollend", this._handleScrollEnd);
@@ -596,15 +596,11 @@ eg.module("infiniteGridService",
 		 * Append elements
 		 * @ko 하단에 요소 추가
 		 * @method eg.InfiniteGridService#append
-		 * @param {String|jQuery|Object} URL to which the request is sent. Or jQuery to append. Or A set of key/value pairs that configure the Ajax request.
-		 * @param {Object|Function} A set of key/value pairs that configure the Ajax request. Or function to be called when the before append. The function receives one argument: data to append.
-		 * @param {Function} A function to be called when the before append. The function receives one argument: data to append.
-		 * @return {Instance|jqXHR}
+		 * @param {String|jQuery} DOM Element to append in a target. <ko>타겟요소에 추가할 DOM 엘리먼트</ko>
+		 * @return {Number} Length The number of elements to prepended. <ko>추가한 요소의 갯수</ko>
 		 * @example
-		 *    infiniteGrid.append( $( "<li> contents </li>" ) );
-		 *    infiniteGrid.append( "http://server.com/contents", function( data ) {
-		 *        return $( data );
-		 *    } );
+		 *    infiniteGrid.append("<li> contents </li>");
+		 *    infiniteGrid.append($("<li> contents </li>"));
 		 */
 		append: function(elements) {
 			return this._insertElements("append", elements);
@@ -613,22 +609,44 @@ eg.module("infiniteGridService",
 		 * Prepend elements
 		 * @ko 상단에 요소 추가
 		 * @method eg.InfiniteGridService#preppend
-		 * @param {String|jQuery|Object} URL to which the request is sent. Or jQuery to append. Or A set of key/value pairs that configure the Ajax request.
-		 * @param {Object|Function} A set of key/value pairs that configure the Ajax request. Or function to be called when the before prepend. The function receives one argument: data to prepend.
-		 * @param {Function} A function to be called when the before append. The function receives one argument: data to prepend.
-		 * @return {Instance|jqXHR}
+		 * @param {String|jQuery} DOM Element to append in a target. <ko>타겟요소에 추가할 DOM 엘리먼트</ko>
+		 * @return {Number} Length The number of elements to prepended. <ko>추가한 요소의 갯수</ko>
 		 * @example
-			infiniteGrid.prepend( $( "<li> contents </li>" ) );
-			infiniteGrid.prepend( "http://server.com/contents", function( data ) {
-				return $( data );
-			} );
+		 * infiniteGrid.prepend("<li> contents </li>");
+		 * infiniteGrid.prepend($("<li> contents </li>"));
 		 */
 		prepend: function(elements) {
 			return this._insertElements("prepend", elements);
 		},
+		/**
+		 * Append Ajax response elements
+		 * @ko 하단에 Ajax 호출 결과 추가
+		 * @method eg.InfiniteGridService#ajaxAppend
+		 * @param {String} URL A string containing the URL to which the request is sent. <ko> 요청할 URL </ko>
+		 * @param {Object} [Settings] A set of key/value pairs that configure the Ajax request. <ko> Ajax 요청 설정 객체 </ko>
+		 * @param {Function} [Callback] A function to be called when the before append. The function receives one argument: data will append. <ko>요청 완료 후 실행 할 콜백. 응답 데이터를 파라메터로 받는다.</ko>
+		 * @return {Object} jqXHR.
+		 * @example
+		 *    infiniteGrid.ajaxAppend("http://server.com/contents", function(data) {
+		 *        return $(data);
+		 *    } );
+		 */
 		appendAjax: function(url, settings, callback) {
 			return this._insertAjax("append", url, settings, callback);
 		},
+		/**
+		 * Prepend Ajax response elements
+		 * @ko 상단에 요소 추가
+		 * @method eg.InfiniteGridService#preppend
+		 * @param {String} URL A string containing the URL to which the request is sent. <ko> 요청할 URL </ko>
+		 * @param {Object} [Settings] A set of key/value pairs that configure the Ajax request. <ko> Ajax 요청 설정 객체 </ko>
+		 * @param {Function} [Callback] A function to be called when the before append. The function receives one argument: data to prepended. <ko>요청 완료 후 실행 할 콜백. 응답 데이터를 파라메터로 받는다.</ko>
+		 * @return {Object} jqXHR.
+		 * @example
+			infiniteGrid.ajaxPrepend("http://server.com/contents", function(data) {
+				return $(data);
+			} );
+		 */
 		prependAjax: function(url, settings, callback) {
 			return this._insertAjax("prepend", url, settings, callback);
 		},
@@ -636,10 +654,10 @@ eg.module("infiniteGridService",
 		 * Stores state
 		 * @ko 상태 저장
 		 * @method eg.InfiniteGridService#storeContents
-		 * @param {String} key (Optional) The type of keys maintained <ko>저장/복원을 위해 관리하는 키</ko>
+		 * @param {String} [key] The type of keys maintained <ko>저장/복원을 위해 관리하는 키</ko>
 		 * @example
 			infiniteGridService.store();
-			infiniteGridService.store( "customKey" );
+			infiniteGridService.store("customKey");
 		*/
 		store: function(key) {
 			if (this._isEnablePersist()) {
@@ -660,10 +678,10 @@ eg.module("infiniteGridService",
 		 * Restores state
 		 * @ko 상태 복원
 		 * @method eg.InfiniteGridService#restore
-		 * @param {String} key (Optional) The type of keys maintained <ko>저장/복원을 위해 관리하는 키</ko>
+		 * @param {String} [key] The type of keys maintained <ko>저장/복원을 위해 관리하는 키</ko>
 		 * @example
 			infiniteGridService.restore();
-			infiniteGridService.restore( "customKey" );
+			infiniteGridService.restore("customKey");
 		*/
 		restore: function(key) {
 			var data;
