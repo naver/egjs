@@ -90,24 +90,23 @@ eg.module("component", [eg], function(ns) {
 				}
 			});
 		 */
-		on: function(eventName, handlerToAttach) {
-			if (typeof handlerToAttach === "undefined") {
-				var eventHash = eventName;
-				var i;
-				for (i in eventHash) {
+		on : function(eventName, handlerToAttach) {
+			if (typeof eventName === "object" && typeof handlerToAttach === "undefined") {
+				var eventHash = eventName, i;
+				for(i in eventHash){
 					this.on(i, eventHash[i]);
 				}
 				return this;
+			} else if (typeof eventName === "string" && typeof handlerToAttach === "function") {
+				var handlerList = this.eventHandler[eventName];
+
+				if (typeof handlerList === "undefined") {
+					handlerList = this.eventHandler[eventName] = [];
+				}
+
+				handlerList.push(handlerToAttach);
 			}
-
-			var handlerList = this.eventHandler[eventName];
-
-			if (typeof handlerList === "undefined") {
-				handlerList = this.eventHandler[eventName] = [];
-			}
-
-			handlerList.push(handlerToAttach);
-
+			
 			return this;
 		},
 		/**
@@ -134,8 +133,8 @@ eg.module("component", [eg], function(ns) {
 
 			// All handler of specific event detach.
 			if (typeof handlerToDetach === "undefined") {
-				if (typeof eventName === "string") {
-					this.eventHandler[eventName] = null;
+				if (typeof eventName === "string"){
+					this.eventHandler[eventName] = undefined;
 					return this;
 				} else {
 					var eventHash = eventName;
