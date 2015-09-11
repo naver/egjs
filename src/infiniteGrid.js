@@ -237,6 +237,7 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 			}
 			var self = this;
 			function delayed() {
+				self.core.element.style.width = null;
 				self.core.needsResizeLayout() && self.layout();
 				delete self.resizeTimeout;
 			}
