@@ -19,6 +19,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 	 * @param {Number} [options.duration=100] Duration time of panel change animation in milliseconds <ko>패널 이동 애니메이션 진행시간(ms) 값</ko>
 	 * @param {Function} [options.panelEffect=easeOutCubic] easing function which is used on panel move animation<ko>패널 간의 이동 애니메이션에 사용되는 effect easing 함수</ko>
 	 * @param {Number} [options.defaultIndex=0] Default panel index to show in first time <ko>초기에 출력할 패널 인덱스</ko>
+	 * @param {Array} [options.inputType] inputType you can controll input type. a kind of inputs are "touch", "mouse", "pointer".  default value is ["touch", "mouse"] <ko>입력 타입을 지정할수 있다. 입력타입은 "touch", "mouse", "pointer" 가 있으며, 배열로 입력할 수 있다. (기본값은 ["touch", "mouse"] 이다)</ko>
 	 *
 	 * @codepen {"id":"rVOpPK", "ko":"플리킹 기본 예제", "en":"Flicking default example", "collectionId":"ArxyLK", "height" : 403}
 	 *
@@ -66,7 +67,8 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				threshold : 40,				// the distance pixel threshold value for change panel
 				duration : 100,				// duration ms for animation
 				panelEffect : $.easing.easeOutCubic,  // $.easing function for panel change animation
-				defaultIndex : 0			// initial panel index to be shown
+				defaultIndex : 0,			// initial panel index to be shown
+				inputType : [ "touch", "mouse" ]	// input type
 			}, options);
 
 			var padding = this.options.previewPadding,
@@ -166,7 +168,8 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			}).bind(this._wrapper, {
 				scale : this._getDataByDirection( [ -1, 0 ] ),
 				direction : ns[ "DIRECTION_"+ ( horizontal ? "HORIZONTAL" : "VERTICAL" ) ],
-				interruptable : false
+				interruptable : false,
+				inputType : options.inputType
 			});
 
 			this._setDefaultPanel(options.defaultIndex);

@@ -90,7 +90,8 @@ eg.module("movableCoord", [window.jQuery, eg, window.Hammer], function($, ns, HM
 		 * @param {Number} [options.scale.1=1] y-scale <ko>y축 배율</ko>
 		 * @param {Number} [options.thresholdAngle=45] The threshold angle about direction which range is 0~90 <ko>방향에 대한 임계각 (0~90)</ko>
 		 * @param {Number} [options.interruptable=true] interruptable This value can be enabled to interrupt cycle of the animation event. <ko>이 값이  true이면, 애니메이션의 이벤트 사이클을 중단할수 있다.</ko>
-
+		 * @param {Array} [options.inputType] inputType you can controll input type. a kind of inputs are "touch", "mouse", "pointer".  default value is ["touch", "mouse"] <ko>입력 타입을 지정할수 있다. 입력타입은 "touch", "mouse", "pointer" 가 있으며, 배열로 입력할 수 있다. (기본값은 ["touch", "mouse"] 이다)</ko>
+		 *
 		 * @return {Boolean}
 		 */
 		bind: function(el, options) {
@@ -100,7 +101,8 @@ eg.module("movableCoord", [window.jQuery, eg, window.Hammer], function($, ns, HM
 				direction: ns.DIRECTION_ALL,
 				scale: [ 1, 1 ],
 				thresholdAngle: 45,
-				interruptable: true
+				interruptable: true,
+				inputType: [ "touch", "mouse" ]
 			};
 
 			$.extend(subOptions, options);
@@ -134,7 +136,8 @@ eg.module("movableCoord", [window.jQuery, eg, window.Hammer], function($, ns, HM
 
 						// css properties were removed due to usablility issue
 						// http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html
-						cssProps: {}
+						cssProps: {},
+						inputClass: this._convertInputType(subOptions.inputType)
 					});
 				return hammer.on("hammer.input", $.proxy(function(e) {
 					if (e.isFirst) {
@@ -150,6 +153,31 @@ eg.module("movableCoord", [window.jQuery, eg, window.Hammer], function($, ns, HM
 				// console.log(e);
 			}
 		},
+
+		_convertInputType: function(inputType) {
+			var hasPointer = false;
+			var hasTouch = false;
+			var hasMouse = false;
+			inputType = inputType || [];
+			$.each(inputType, function(i, v) {
+				switch (v) {
+					case "pointer" : hasPointer = true; break;
+					case "mouse" : hasMouse = true; break;
+					case "touch" : hasTouch = true; break;
+				}
+			});
+
+			if (hasPointer) {
+				return HM.PointerEventInput;
+			} else if (hasMouse) {
+				return hasTouch ? HM.TouchMouseInput : HM.MouseInput;
+			} else if (hasTouch) {
+				return HM.TouchInput;
+			} else {
+				return HM.TouchMouseInput;
+			}
+		},
+
 		/**
 		 * Dettach a element to an use for the movableCoord.
 		 * @ko movableCoord을 사용하기 위한 엘리먼트를 해제한다.

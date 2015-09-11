@@ -176,6 +176,40 @@ test("setTo", function() {
 	deepEqual(this.inst.get(), [300, 0], "if position parameters was out of range, set to position min or max values.");
 });
 
+
+test("_convertInputType", function() {
+	// Given
+	// When
+	var inputType = [ "touch", "mouse", "pointer" ];
+	// Then
+	equal(this.inst._convertInputType(inputType), Hammer.PointerEventInput, "check PointerEventInput");
+	// When
+	inputType = [ "touch", "mouse"];
+	// Then
+	equal(this.inst._convertInputType(inputType), Hammer.TouchMouseInput, "check TouchMouseInput");
+
+	// When
+	inputType = [ "touch" ];
+	// Then
+	equal(this.inst._convertInputType(inputType), Hammer.TouchInput, "check TouchInput");
+
+	// When
+	inputType = [ "mouse" ];
+	// Then
+	equal(this.inst._convertInputType(inputType), Hammer.MouseInput, "check MouseInput");
+
+	// When
+	inputType = [ "pointer", "mouse" ];
+	// Then
+	equal(this.inst._convertInputType(inputType), Hammer.PointerEventInput, "check PointerEventInput");
+
+	// When
+	inputType = [ ];
+	// Then
+	equal(this.inst._convertInputType(inputType), Hammer.TouchMouseInput, "check TouchMouseInput");
+
+});
+
 asyncTest("setTo : check 'change' event", function() {
 	// Given
 	this.inst.on("change", function(e) {
