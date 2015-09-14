@@ -29,7 +29,7 @@ eg.module("visible", [window.jQuery, eg], function($, ns) {
 			this._timer = null;
 			this._supportElementsByClassName = (function() {
 				var dummy = document.createElement("div");
-				var	dummies;
+				var dummies;
 				if (!dummy.getElementsByClassName) {
 					return false;
 				}
@@ -114,8 +114,8 @@ eg.module("visible", [window.jQuery, eg], function($, ns) {
 			var expandSize = parseInt(this.options.expandSize, 10);
 			var wrapper = this._$wrapper;
 			var visibles = [];
-			var	invisibles = [];
-			var	area = null;
+			var invisibles = [];
+			var area = null;
 			if (!wrapper.nodeType || wrapper.nodeType !== 1) {
 				area = {
 					top: 0,
