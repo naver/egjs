@@ -122,7 +122,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			this._arrangePanels();
 
 			this.options.hwAccelerable && supportHint && this._setHint();
-			this._conf.isAndroid2 && this._adjustContainerCss("end");
+			this._adjustContainerCss("end");
 		},
 
 		/**
@@ -311,7 +311,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * @param {String} phase
 		 *    start - set left/top value to 0
 		 *    end - set translate value to 0
-		 * @param {Array} coords coordinate value on end phase
+		 * @param {Array} coords coordinate value
 		 */
 		_adjustContainerCss: function (phase, coords) {
 			var conf = this._conf,
@@ -322,31 +322,35 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				container = this._container,
 				value;
 
-			if (phase === "start") {
-				container = container[0].style;
-				value = parseInt(container[horizontal ? "left" : "top"], 10);
+			if (conf.isAndroid2) {
+				if (phase === "start") {
+					container = container[0].style;
+					value = parseInt(container[horizontal ? "left" : "top"], 10);
 
-				if (horizontal) {
-					value && ( container.left = 0 );
-				} else {
-					value !== paddingTop && ( container.top = paddingTop + "px" );
+					if (horizontal) {
+						value && ( container.left = 0 );
+					} else {
+						value !== paddingTop && ( container.top = paddingTop + "px" );
+					}
+
+					this._setTranslate([-coords[+!options.horizontal], 0]);
+
+				} else if (phase === "end") {
+					if (!coords) {
+						coords = [-panel.size * panel.index, 0];
+					}
+
+					!horizontal && ( coords[0] += paddingTop );
+					coords = this._getCoordsValue(coords);
+
+					container.css({
+						left: coords.x,
+						top: coords.y,
+						transform: ns.translate(0, 0, conf.useLayerHack)
+					});
+
+					conf.dummyAnchor[0].focus();
 				}
-
-			} else if (phase === "end") {
-				if (!coords) {
-					coords = [-panel.size * panel.index, 0];
-				}
-
-				!horizontal && ( coords[0] += paddingTop );
-				coords = this._getCoordsValue(coords);
-
-				container.css({
-					left: coords.x,
-					top: coords.y,
-					transform: ns.translate(0, 0, conf.useLayerHack)
-				});
-
-				conf.dummyAnchor[0].focus();
 			}
 		},
 
@@ -428,7 +432,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		_holdHandler : function(e) {
 			this._conf.touch.holdPos = e.pos;
 			this._conf.panel.changed = false;
-
+			this._adjustContainerCss("start", e.pos);
 			/**
 			 * When touch starts
 			 * @ko 터치가 시작될 때 발생하는 이벤트
@@ -490,7 +494,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			conf.triggerFlickEvent && ( eventRes = this._triggerEvent(e.holding ? "touchMove" : "flick", {pos: e.pos}) );
 
 			if (eventRes || eventRes === null) {
-				conf.isAndroid2 && this._adjustContainerCss("start");
 				this._setTranslate([-pos[+!this.options.horizontal], 0]);
 			}
 		},
@@ -510,6 +513,8 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 
 			pos[posIndex] = Math.max(holdPos - panelSize, Math.min(holdPos, pos[posIndex]));
 			touch.destPos[posIndex] = pos[posIndex] = Math.round(pos[posIndex] / panelSize) * panelSize;
+
+			touch.distance === 0 && this._adjustContainerCss("end");
 
 			/**
 			 * When touch ends
@@ -663,7 +668,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 
 				coords = [-panel.size * panel.index, 0];
 				conf.isAndroid2 ? this._adjustContainerCss("end", coords) : this._setTranslate(coords);
-
 				conf.indexToMove = 0;
 			}
 		},
