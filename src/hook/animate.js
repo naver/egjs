@@ -1,5 +1,5 @@
-eg.module("animate",[window.jQuery, window],function($, global){
-    /**
+eg.module("animate", [window.jQuery, window], function($, global) {
+	/**
      * Extends jQuery animate in order to use 'transform' property.
      * @ko jQuery animate 사용시 transform을 사용할 수 있도록 확장한 animate 메소드
      * @name jQuery#animate
@@ -11,33 +11,38 @@ eg.module("animate",[window.jQuery, window],function($, global){
      *
      * @example
      * $("#box")
-     * 		.animate({"transform" : "translate3d(150px,100px,0px) rotate(20deg) scaleX(1)"} , 3000)
-     * 		.animate({"transform" : "+=translate3d(150px,10%,-20px) rotate(20deg) scale3d(2, 4.2, 1)"} , 3000);
+     * 		.animate({"transform" : "translate3d(150px, 100px, 0px) rotate(20deg) scaleX(1)"} , 3000)
+     * 		.animate({"transform" : "+=translate3d(150px, 10%, -20px) rotate(20deg) scale3d(2, 4.2, 1)"} , 3000);
      * @see {@link http://api.jquery.com/animate/}
      */
-	var supportFloat32Array = "Float32Array" in window,
-		CSSMatrix = global.WebKitCSSMatrix || global.MSCSSMatrix || global.OCSSMatrix || global.MozMatrix || global.CSSMatrix;
+	var supportFloat32Array = "Float32Array" in window;
+	var CSSMatrix = global.WebKitCSSMatrix || global.MSCSSMatrix ||
+					global.OCSSMatrix || global.MozMatrix || global.CSSMatrix;
 
 	/*
-	 * Utility functions : matrix and toRadian is copied from transform2d 
+	 * Utility functions : matrix and toRadian is copied from transform2d
 	 */
-	// turns a transform string into its "matrix(A,B,C,D,X,Y)" form (as an array, though)
-	function matrix( transform ) {
+
+	// turns a transform string into its "matrix(A, B, C, D, X, Y)" form (as an array, though)
+	function matrix(transform) {
 		transform = transform.split(")");
-		var trim = $.trim,
-			i = -1,
-			// last element of the array is an empty string, get rid of it
-			l = transform.length -1,
-			split, prop, val,
-			prev = supportFloat32Array ? new Float32Array(6) : [],
-			curr = supportFloat32Array ? new Float32Array(6) : [],
-			rslt = supportFloat32Array ? new Float32Array(6) : [1,0,0,1,0,0];
+		var trim = $.trim;
+		var i = -1;
+
+		// last element of the array is an empty string, get rid of it
+		var l = transform.length - 1;
+		var split;
+		var prop;
+		var val;
+		var prev = supportFloat32Array ? new Float32Array(6) : [];
+		var curr = supportFloat32Array ? new Float32Array(6) : [];
+		var rslt = supportFloat32Array ? new Float32Array(6) : [1, 0, 0, 1, 0, 0];
 
 		prev[0] = prev[3] = rslt[0] = rslt[3] = 1;
 		prev[1] = prev[2] = prev[4] = prev[5] = 0;
 
 		// Loop through the transform properties, parse and multiply them
-		while ( ++i < l ) {
+		while (++i < l) {
 			split = transform[i].split("(");
 			prop = trim(split[0]);
 			val = split[1];
@@ -78,7 +83,7 @@ eg.module("animate",[window.jQuery, window],function($, global){
 				case "scale":
 					val = val.split(",");
 					curr[0] = val[0];
-					curr[3] = val.length>1 ? val[1] : val[0];
+					curr[3] = val.length > 1 ? val[1] : val[0];
 					break;
 
 				case "skewX":
@@ -116,9 +121,9 @@ eg.module("animate",[window.jQuery, window],function($, global){
 	// converts an angle string in any unit to a radian Float
 	function toRadian(value) {
 		return ~value.indexOf("deg") ?
-			parseInt(value,10) * (Math.PI * 2 / 360):
+			parseInt(value, 10) * (Math.PI * 2 / 360) :
 			~value.indexOf("grad") ?
-				parseInt(value,10) * (Math.PI/200):
+				parseInt(value, 10) * (Math.PI / 200) :
 				parseFloat(value);
 	}
 
@@ -126,13 +131,13 @@ eg.module("animate",[window.jQuery, window],function($, global){
 	 * Get a 'px' converted value if it has a %.
 	 * Otherwise it returns value appened with 'px'.
 	 */
-	function getConverted( val, base ) {
-		var ret = val,
-			num = val.match(/([0-9]*)%/);
+	function getConverted(val, base) {
+		var ret = val;
+		var num = val.match(/([0-9]*)%/);
 
-		if ( num && num.length >= 1 ) {
-			ret = base * ( parseFloat( num[1] ) / 100 ) + "px";
-		} else if ( val.indexOf( "px" ) === -1 ){
+		if (num && num.length >= 1) {
+			ret = base * (parseFloat(num[1]) / 100) + "px";
+		} else if (val.indexOf("px") === -1) {
 			ret = val + "px";
 		}
 
@@ -140,35 +145,37 @@ eg.module("animate",[window.jQuery, window],function($, global){
 	}
 
 	function correctUnit(transform, width, height) {
-		var m, ret = "",
-			arr = transform.split(")");
+		var m;
+		var ret = "";
+		var arr = transform.split(")");
 
 		for (var i = 0, len = arr.length - 1; i < len; i++) {
 			var name = arr[i];
 
 			// '%' is only meaningful on translate.
-			if( (m = name.match(/(translate([XYZ]|3d)?|rotate)\(([^)]*)/)) && m.length > 1 ) {
-				if ( m[1] === "rotate" ) {
-					if ( m[3].indexOf( "deg" ) === -1 ) {
+			if ((m = name.match(/(translate([XYZ]|3d)?|rotate)\(([^)]*)/)) && m.length > 1) {
+				if (m[1] === "rotate") {
+					if (m[3].indexOf("deg") === -1) {
 						name = m[1] + "(" + m[3] + "deg";
 					}
 				} else {
-					switch ( m[2] ) {
+					switch (m[2]) {
 					case "X":
-						name = m[1] + "(" + getConverted( m[3], width );
+						name = m[1] + "(" + getConverted(m[3], width);
 						break;
 					case "Y":
-						name = m[1] + "(" +  getConverted( m[3], height );
+						name = m[1] + "(" +  getConverted(m[3], height);
 						break;
 					case "Z":
+
 						//Meaningless. Do nothing
 						break;
 					default://2d, 3d
-						var nums = m[3].split( "," ),
-							bases = [width, height, 100];
+						var nums = m[3].split(",");
+						var bases = [width, height, 100];
 
-						for (var k = 0, l = nums.length; k < l; k++ ) {
-							nums[k] = getConverted( nums[k], bases[k] );
+						for (var k = 0, l = nums.length; k < l; k++) {
+							nums[k] = getConverted(nums[k], bases[k]);
 						}
 						name = m[1] + "(" + nums.join(",");
 						break;
@@ -187,43 +194,44 @@ eg.module("animate",[window.jQuery, window],function($, global){
 
 	/**
 	 * Parse a transform atom value.
-	 * 
-	 * "30px" --> {num:30, unit:'px'}
 	 *
-	 * Because calculation of string number is heavy, 
+	 * "30px" --> {num: 30, unit: "px"}
+	 *
+	 * Because calculation of string number is heavy,
 	 * In advance, convert a string number to a float number with an unit for the use of transformByPos,
-	 * which is called very frequently. 
+	 * which is called very frequently.
 	 */
 	function toParsedFloat(val) {
 		var m = val.match(/(-*[\d|\.]+)(px|deg|rad)*/);
-		if ( m && m.length >= 1 ) {
-			return { "num" : parseFloat(m[1]), "unit" : m[2]};
+		if (m && m.length >= 1) {
+			return {"num": parseFloat(m[1]), "unit": m[2]};
 		}
 	}
 
 	function getTransformGenerateFunction(transform) {
-		var splitted = transform.split(")"),
-			list = [];
+		var splitted = transform.split(")");
+		var list = [];
 
-		for ( var i = 0, len = splitted.length - 1; i < len; i++) {
-			var parsed = parseStyle( splitted[i] );
+		for (var i = 0, len = splitted.length - 1; i < len; i++) {
+			var parsed = parseStyle(splitted[i]);
 
 			parsed[1] = $.map(parsed[1], toParsedFloat);
 			list.push(parsed);
 		}
 
 		return function transformByPos(pos) {
-			var transform = "", defaultVal = 0;
+			var transform = "";
+			var defaultVal = 0;
 
-			$.each( list, function(i) {
-				if ( list[i][0] === "scale" ) {
+			$.each(list, function(i) {
+				if (list[i][0] === "scale") {
 					defaultVal = 1;
 				}
 
 				var valStr = $.map(list[i][1], function(value) {
 					var val = value.num;
 					defaultVal === 1 && (val = val - 1);
-					return ( defaultVal + val * pos ) + ( value.unit || "" );
+					return (defaultVal + val * pos) + (value.unit || "");
 				}).join(",");
 
 				transform += list[i][0] + "(" + valStr + ") ";
@@ -234,14 +242,18 @@ eg.module("animate",[window.jQuery, window],function($, global){
 	}
 
 	function rateFn(element, startTf, endTf) {
-		var isRelative = endTf.indexOf( "+=" ) >= 0,
-			start, end;
+		var isRelative = endTf.indexOf("+=") >= 0;
+		var start;
+		var end;
 
 		// Convert translate unit to 'px'.
-		endTf = correctUnit(endTf, parseFloat( $.css( element, "width" ) ) || 0, parseFloat( $.css( element, "height") ) || 0);
+		endTf = correctUnit(endTf,
+					parseFloat($.css(element, "width")) || 0,
+					parseFloat($.css(element, "height")) || 0);
 
-		if ( isRelative ) {
-			start = (!startTf || startTf === "none") ? "matrix(1, 0, 0, 1, 0, 0)" : startTf;
+		if (isRelative) {
+			start = (!startTf || startTf === "none") ?
+						"matrix(1, 0, 0, 1, 0, 0)" : startTf;
 			end = getTransformGenerateFunction(endTf);
 		} else {
 			start = toMatrix(startTf);
@@ -256,24 +268,25 @@ eg.module("animate",[window.jQuery, window],function($, global){
 		}
 
 		return function(pos) {
-			var result = [], ret = "";
+			var result = [];
+			var ret = "";
 
-			if ( isRelative ) {
+			if (isRelative) {
 				// This means a muliply between a matrix and a transform.
-				ret = start + end( pos );
+				ret = start + end(pos);
 				return ret;
 			}
 
-			if(pos === 1) {
+			if (pos === 1) {
 				ret = data2String(end);
 			} else {
-				for(var i = 0, s, e, l = start[1].length; i < l; i++) {
-					s = parseFloat( start[1][i] );
-					e = parseFloat( end[1][i] );
-					result.push( s + ( e- s ) * pos );
+				for (var i = 0, s, e, l = start[1].length; i < l; i++) {
+					s = parseFloat(start[1][i]);
+					e = parseFloat(end[1][i]);
+					result.push(s + (e - s) * pos);
 				}
 
-				ret = data2String([ start[0], result ]);	
+				ret = data2String([start[0], result]);
 			}
 
 			return ret;
@@ -286,12 +299,14 @@ eg.module("animate",[window.jQuery, window],function($, global){
 	 * {matrix : [1, 0, 1, 0, 100, 0]} --> matrix(1, 0, 1, 0, 100, 0)
 	 */
 	function data2String(property) {
-		var name,tmp = [];
-		if($.isArray(property)) {
+		var name;
+		var tmp = [];
+
+		if ($.isArray(property)) {
 			name = property[0];
 			return name + "(" + property[1].join(unit(name) + ",") + unit(name) + ")";
 		} else {
-			for(name in property) {
+			for (name in property) {
 				tmp.push(name);
 			}
 
@@ -302,15 +317,18 @@ eg.module("animate",[window.jQuery, window],function($, global){
 	}
 
 	function unit(name) {
-		return name.indexOf("translate") >= 0 ? "px" : name.indexOf("rotate") >= 0 ? "deg" : "";
+		return name.indexOf("translate") >= 0 ?
+				"px" : name.indexOf("rotate") >= 0 ? "deg" : "";
 	}
 
-	// [ "translate" , [ "10", "20"] ]
+	// ["translate" , ["10", "20"]]
 	function parseStyle(property) {
-		var m = property.match(/(\b\w+?)\((\s*[^\)]+)/),
-			name, value, result = ["",""];
+		var m = property.match(/(\b\w+?)\((\s*[^\)]+)/);
+		var name;
+		var value;
+		var result = ["",""];
 
-		if(m && m.length > 2) {
+		if (m && m.length > 2) {
 			name = m[1];
 			value = m[2].split(",");
 			value = $.map(value, function(v) {
@@ -324,11 +342,12 @@ eg.module("animate",[window.jQuery, window],function($, global){
 	function toMatrix(transform) {
 		var retMatrix = [];
 
-		if( !transform || transform === "none" ) {
-			return ["matrix" , [ "1", "0", "0", "1", "0", "0"] ];
+		if (!transform || transform === "none") {
+			return ["matrix", [ "1", "0", "0", "1", "0", "0"] ];
 		}
 
-		retMatrix = CSSMatrix ? parseStyle(new CSSMatrix(transform).toString()) : ["matrix", matrix(transform)];
+		retMatrix = CSSMatrix ? parseStyle(new CSSMatrix(transform).toString()) :
+								["matrix", matrix(transform)];
 
 		/**
 		 * Make an unintended 2d matrix to 3d matrix.
@@ -344,26 +363,30 @@ eg.module("animate",[window.jQuery, window],function($, global){
 	}
 
 	function toMatrix3d(matrix) {
-		var name = matrix[0],
-			val = matrix[1];
-		
-		if("matrix3d" === name) {
-			return matrix; 
+		var name = matrix[0];
+		var val = matrix[1];
+
+		if (name === "matrix3d") {
+			return matrix;
 		}
+
 		// matrix(a, b, c, d, tx, ty) is a shorthand for matrix3d(a, b, 0, 0, c, d, 0, 0, 0, 0, 1, 0, tx, ty, 0, 1)
 		return [
-			name+"3d", [ val[0], val[1], "0", "0", val[2], val[3], "0","0","0","0","1","0",val[4],val[5],"0","1" ]
+			name + "3d", [val[0], val[1], "0", "0",
+						val[2], val[3], "0", "0",
+						"0", "0", "1", "0",
+						val[4], val[5], "0", "1"]
 		];
 	}
 
 	$.fx.step.transform = function(fx) {
-		fx.rateFn = fx.rateFn || rateFn( fx.elem, fx.start, fx.end );
-		$.style( fx.elem, "transform", fx.rateFn(fx.pos) );
+		fx.rateFn = fx.rateFn || rateFn(fx.elem, fx.start, fx.end);
+		$.style(fx.elem, "transform", fx.rateFn(fx.pos));
 	};
 
 	// All of this interfaces are functions for unit testing.
 	return {
-		toMatrix : toMatrix,
-		toMatrix3d : toMatrix3d
+		toMatrix: toMatrix,
+		toMatrix3d: toMatrix3d
 	};
 });
