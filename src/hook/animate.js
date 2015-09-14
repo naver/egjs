@@ -11,8 +11,8 @@ eg.module("animate", [window.jQuery, window], function($, global) {
      *
      * @example
      * $("#box")
-     * 		.animate({"transform" : "translate3d(150px,100px,0px) rotate(20deg) scaleX(1)"} , 3000)
-     * 		.animate({"transform" : "+=translate3d(150px,10%,-20px) rotate(20deg) scale3d(2, 4.2, 1)"} , 3000);
+     * 		.animate({"transform" : "translate3d(150px, 100px, 0px) rotate(20deg) scaleX(1)"} , 3000)
+     * 		.animate({"transform" : "+=translate3d(150px, 10%, -20px) rotate(20deg) scale3d(2, 4.2, 1)"} , 3000);
      * @see {@link http://api.jquery.com/animate/}
      */
 	var supportFloat32Array = "Float32Array" in window;
@@ -23,7 +23,7 @@ eg.module("animate", [window.jQuery, window], function($, global) {
 	 * Utility functions : matrix and toRadian is copied from transform2d
 	 */
 
-	// turns a transform string into its "matrix(A,B,C,D,X,Y)" form (as an array, though)
+	// turns a transform string into its "matrix(A, B, C, D, X, Y)" form (as an array, though)
 	function matrix(transform) {
 		transform = transform.split(")");
 		var trim = $.trim;
@@ -195,7 +195,7 @@ eg.module("animate", [window.jQuery, window], function($, global) {
 	/**
 	 * Parse a transform atom value.
 	 *
-	 * "30px" --> {num:30, unit:'px'}
+	 * "30px" --> {num: 30, unit: "px"}
 	 *
 	 * Because calculation of string number is heavy,
 	 * In advance, convert a string number to a float number with an unit for the use of transformByPos,
@@ -321,7 +321,7 @@ eg.module("animate", [window.jQuery, window], function($, global) {
 				"px" : name.indexOf("rotate") >= 0 ? "deg" : "";
 	}
 
-	// [ "translate" , [ "10", "20"] ]
+	// ["translate" , ["10", "20"]]
 	function parseStyle(property) {
 		var m = property.match(/(\b\w+?)\((\s*[^\)]+)/);
 		var name;
