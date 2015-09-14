@@ -36,7 +36,7 @@ eg.module("animate", [window.jQuery, window], function($, global) {
 		var val;
 		var prev = supportFloat32Array ? new Float32Array(6) : [];
 		var curr = supportFloat32Array ? new Float32Array(6) : [];
-		var rslt = supportFloat32Array ? new Float32Array(6) : [1,0,0,1,0,0];
+		var rslt = supportFloat32Array ? new Float32Array(6) : [1, 0, 0, 1, 0, 0];
 
 		prev[0] = prev[3] = rslt[0] = rslt[3] = 1;
 		prev[1] = prev[2] = prev[4] = prev[5] = 0;
