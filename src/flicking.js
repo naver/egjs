@@ -70,7 +70,8 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			}, options);
 
 			var padding = this.options.previewPadding,
-				supportHint = window.CSS && window.CSS.supports && window.CSS.supports("will-change", "transform");
+				supportHint = window.CSS && window.CSS.supports && window.CSS.supports("will-change", "transform"),
+				os = ns.agent().os;
 
 			if(typeof padding === "number") {
 				padding = this.options.previewPadding = [ padding, padding ];
@@ -101,7 +102,11 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				useLayerHack : this.options.hwAccelerable && !supportHint,
 				dirData : [],
 				indexToMove : 0,
-				triggerFlickEvent : true
+				triggerFlickEvent: true,
+
+				// For buggy link highlighting on Android 2.x
+				isAndroid2: os.name === "android" && /^2\./.test(os.version),
+				dummyAnchor: null
 			};
 
 			$([[ "LEFT", "RIGHT" ], [ "DOWN", "UP" ]][ +!this.options.horizontal ]).each( $.proxy( function(i,v) {
@@ -112,9 +117,12 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 
 			this._build();
 			this._bindEvents();
+
+			this._applyPanelsCss();
 			this._arrangePanels();
 
 			this.options.hwAccelerable && supportHint && this._setHint();
+			this._conf.isAndroid2 && this._adjustContainerCss("end");
 		},
 
 		/**
@@ -129,7 +137,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				horizontal = options.horizontal,
 				panelCount = panel.count = panel.origCount = children.length,
 				sizeValue = [ panel.size = this._wrapper[ horizontal ? "width" : "height" ]() - (padding[0] + padding[1]), "100%" ],
-				temp;
+				cssValue;
 
 			this._wrapper.css({
 				padding : ( horizontal ? "0 "+ padding.reverse().join("px 0 ") : padding.join("px 0 ") ) +"px",
@@ -138,7 +146,8 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 
 			this._getDataByDirection(sizeValue);
 
-			children.addClass(prefix +"-panel").css({
+			// panels' css values
+			children.addClass(prefix + "-panel").css({
 				position : "absolute",
 				width : sizeValue[0],
 				height : sizeValue[1],
@@ -146,11 +155,9 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				left : 0
 			});
 
-			sizeValue[temp = +!horizontal] *= panelCount;
-			sizeValue[temp] += "px";
-
-			temp = "width:"+ sizeValue[0] +";height:"+ sizeValue[1] + (!horizontal ? ";top:"+ padding[0] +"px;" : ";");
-			this._container = children.wrapAll("<div class='"+ prefix +"-container' style='position:relative;z-index:2000;"+ temp +"' />").parent();
+			// create container element
+			cssValue = "position:relative;z-index:2000;width:100%;height:100%;" + ( !horizontal ? "top:" + padding[0] + "px;" : "" );
+			this._container = children.wrapAll("<div class='" + prefix + "-container' style='" + cssValue + "' />").parent();
 
 			if(this._addClonePanels()) {
 				panelCount = panel.count = ( panel.list = this._container.children() ).length;
@@ -245,15 +252,14 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * @param {Number} indexToMove Number to move from current position (negative: left, positive: right)
 		 */
 		_arrangePanels : function(sort, indexToMove) {
-			var panel = this._conf.panel,
-				touch = this._conf.touch,
-				dirData = this._conf.dirData,
-				hwAccelerable = this._conf.useLayerHack,
-				coords;
+			var conf = this._conf,
+				panel = conf.panel,
+				touch = conf.touch,
+				dirData = conf.dirData;
 
 			if(this.options.circular) {
 				// when arranging panels, set flag to not trigger flick custom event
-				this._conf.triggerFlickEvent = false;
+				conf.triggerFlickEvent = false;
 
 				// move elements according direction
 				if(sort) {
@@ -265,15 +271,83 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				panel.index = this._getBasePositionIndex();
 
 				// arrange MovableCoord's coord position
-				this._conf.triggerFlickEvent = !!this._setMovableCoord( "setTo", [ panel.size * panel.index, 0 ], true );
+				conf.triggerFlickEvent = !!this._setMovableCoord("setTo", [panel.size * panel.index, 0], true);
 			}
 
 			// set each panel's position in DOM
-			panel.list.each(
-				$.proxy(function(i, v) {
-					coords = this._getDataByDirection([ (100 * i) +"%", 0 ]);
-					$(v).css("transform", ns.translate(coords[0], coords[1], hwAccelerable));
-				},this));
+			panel.list.each($.proxy(this._applyPanelsCss, this));
+		},
+
+		/**
+		 * Callback function for applying CSS values to each panels
+		 */
+		_applyPanelsCss: function () {
+			var conf = this._conf,
+				dummyAnchorClassName = "__dummy_anchor";
+
+			if (conf.isAndroid2) {
+				conf.dummyAnchor = $("." + dummyAnchorClassName);
+				!conf.dummyAnchor.length && this._wrapper.append(conf.dummyAnchor = $("<a href='javascript:void(0);' class='" + dummyAnchorClassName + "' style='position:absolute;height:0px;width:0px;'>"));
+
+				this._applyPanelsCss = function (i, v) {
+					var coords = this._getDataByDirection([( this._conf.panel.size * i ) + "px", 0]);
+
+					$(v).css({
+						left: coords[0],
+						top: coords[1]
+					});
+				};
+			} else {
+				this._applyPanelsCss = function (i, v) {
+					var coords = this._getDataByDirection([( 100 * i ) + "%", 0]);
+					$(v).css("transform", ns.translate(coords[0], coords[1], this._conf.useLayerHack));
+				};
+			}
+		},
+
+		/**
+		 * Adjust container's css value to handle Android 2.x link highlighting bug
+		 *
+		 * @param {String} phase
+		 *    start - set left/top value to 0
+		 *    end - set translate value to 0
+		 * @param {Array} coords coordinate value on end phase
+		 */
+		_adjustContainerCss: function (phase, coords) {
+			var conf = this._conf,
+				panel = conf.panel,
+				options = this.options,
+				horizontal = options.horizontal,
+				paddingTop = options.previewPadding[0],
+				container = this._container,
+				value;
+
+			if (phase === "start") {
+				container = container[0].style;
+				value = parseInt(container[horizontal ? "left" : "top"], 10);
+
+				if (horizontal) {
+					value && ( container.left = 0 );
+				} else {
+					value !== paddingTop && ( container.top = paddingTop + "px" );
+				}
+
+			} else if (phase === "end") {
+				if (!coords) {
+					coords = [-panel.size * panel.index, 0];
+				}
+
+				!horizontal && ( coords[0] += paddingTop );
+				coords = this._getCoordsValue(coords);
+
+				container.css({
+					left: coords.x,
+					top: coords.y,
+					transform: ns.translate(0, 0, conf.useLayerHack)
+				});
+
+				conf.dummyAnchor[0].focus();
+			}
 		},
 
 		/**
@@ -377,7 +451,8 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * 'change' event handler
 		 */
 		_changeHandler : function(e) {
-			var pos = e.pos,
+			var conf = this._conf,
+				pos = e.pos,
 				eventRes = null;
 
 			this._setPointerEvents(e);  // for "click" bug
@@ -400,7 +475,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			/**
 			 * Occurs during the change
 			 * @ko 터치하지 않은 상태에서 패널이 이동될 때 발생하는 이벤트
-			 * @name eg.Flicking#change
+			 * @name eg.Flicking#flick
 			 * @event
 			 *
 			 * @param {Object} param
@@ -412,8 +487,12 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			 * @param {Number} param.pos.0 Departure x-coordinate <ko>x 좌표</ko>
 			 * @param {Number} param.pos.1 Departure y-coordinate <ko>y 좌표</ko>
 			 */
-			this._conf.triggerFlickEvent && ( eventRes = this._triggerEvent( e.holding ? "touchMove" : "flick", { pos : e.pos } ) );
-			( eventRes || eventRes === null ) && this._setTranslate( [ -pos[ +!this.options.horizontal ], 0 ] );
+			conf.triggerFlickEvent && ( eventRes = this._triggerEvent(e.holding ? "touchMove" : "flick", {pos: e.pos}) );
+
+			if (eventRes || eventRes === null) {
+				conf.isAndroid2 && this._adjustContainerCss("start");
+				this._setTranslate([-pos[+!this.options.horizontal], 0]);
+			}
 		},
 
 		/**
@@ -526,7 +605,8 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * 'animationEnd' event handler
 		 */
 		_animationEndHandler : function() {
-			var panel = this._conf.panel;
+			var conf = this._conf,
+				panel = conf.panel;
 
 			this._setPhaseValue("end");
 			panel.animating = false;
@@ -555,9 +635,9 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
 			 * @param {Number} param.direction Direction of the panel move (see eg.DIRECTION_* constant) <ko>플리킹 방향 (eg.DIRECTION_* constant 확인)</ko>
 			 */
-			if(panel.changed) {
+			if (panel.changed) {
 				this._triggerEvent("flickEnd");
-			} else if(this._conf.customEvent.restore) {
+			} else if (conf.customEvent.restore) {
 				this._triggerEvent("restore");
 			}
 		},
@@ -567,19 +647,24 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * @param {String} phase - [start|end]
 		 */
 		_setPhaseValue : function(phase) {
-			var panel = this._conf.panel;
+			var conf = this._conf,
+				options = this.options,
+				panel = conf.panel,
+				coords;
 
 			if( ~phase.indexOf("start") && ( panel.changed = this._isMovable() ) ) {
-				this._conf.indexToMove === 0 && this._setPanelNo();
+				conf.indexToMove === 0 && this._setPanelNo();
 			}
 
 			if( ~phase.indexOf("end") ) {
-				if(this.options.circular && panel.changed) {
-					this._arrangePanels(true, this._conf.indexToMove);
+				if (options.circular && panel.changed) {
+					this._arrangePanels(true, conf.indexToMove);
 				}
 
-				this._setTranslate([ -panel.size * panel.index, 0 ]);
-				this._conf.indexToMove = 0;
+				coords = [-panel.size * panel.index, 0];
+				conf.isAndroid2 ? this._adjustContainerCss("end", coords) : this._setTranslate(coords);
+
+				conf.indexToMove = 0;
 			}
 		},
 
@@ -618,18 +703,27 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		},
 
 		/**
+		 * Get coordinate value with unit
+		 * @param coords {Array} x,y numeric value
+		 * @return {Object} x,y coordinate value with unit
+		 */
+		_getCoordsValue: function (coords) {
+			// the param comes as [ val, 0 ], whatever the direction. So reorder the value depend the direction.
+			this._getDataByDirection(coords);
+
+			return {
+				x: this._getUnitValue(coords[0]),
+				y: this._getUnitValue(coords[1])
+			};
+		},
+
+		/**
 		 * Set translate property value
 		 * @param {Array} coords coordinate x,y value
 		 */
 		_setTranslate : function(coords) {
-			// the param comes as [ val, 0 ], whatever the direction. So reorder the value depend the direction.
-			this._getDataByDirection(coords);
-
-			this._container.css("transform", ns.translate(
-				this._getUnitValue(coords[0]),
-				this._getUnitValue(coords[1]),
-				this._conf.useLayerHack
-			));
+			coords = this._getCoordsValue(coords);
+			this._container.css("transform", ns.translate(coords.x, coords.y, this._conf.useLayerHack));
 		},
 
 		/**
