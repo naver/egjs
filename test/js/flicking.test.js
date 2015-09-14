@@ -235,7 +235,7 @@ asyncTest("Option: threshold #4 - (vertical) when moved less than threshold pixe
     });
 });
 
-test("defaultIndex option", function() {
+test("Option: defaultIndex", function () {
 	// Given
 	var defaultIndex = 3;
 
@@ -247,6 +247,22 @@ test("defaultIndex option", function() {
 	// When
 	// Then
 	equal(this.inst._conf.panel.no, defaultIndex, "The initial panel number should be "+ defaultIndex);
+});
+
+test("Option: hwAccelerable", function () {
+	// Given
+	this.inst = new eg.Flicking($("#mflick3"), {
+		hwAccelerable: true,
+		defaultIndex: 1
+	});
+
+	var container = this.inst._container,
+		panel = this.inst._conf.panel.list[0];
+
+	// When
+	// Then
+	ok($.css(container[0], "willChange") === "transform" || $getTransformValue(container).indexOf("3d") >= 0, "HW Acceleration css property is prensent in container element?");
+	ok($.css(panel, "willChange") === "transform" || $getTransformValue(panel).indexOf("3d") >= 0, "HW Acceleration css property is prensent in panel element?");
 });
 
 test("Method: getIndex()", function() {

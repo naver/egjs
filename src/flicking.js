@@ -109,11 +109,12 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			}, this ) );
 
 			!ns._hasClickBug() && ( this._setPointerEvents = function(){} );
-			!(this.options.hwAccelerable && supportHint) && ( this._setHint = function(){} );
 
 			this._build();
 			this._bindEvents();
 			this._arrangePanels();
+
+			this.options.hwAccelerable && supportHint && this._setHint();
 		},
 
 		/**
@@ -288,7 +289,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 
 			if( type !== "undefined" ) {
 				duration = type === "number" ? duration : this.options.duration;
-				duration > 0 && this._setHint(true);
 			}
 
 			isDirVal && this._getDataByDirection(coord);
@@ -299,10 +299,9 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		/**
 		 * Set hint for browser to decide efficient way of doing transform changes(or animation)
 		 * https://dev.opera.com/articles/css-will-change-property/
-		 * @param {Boolean} set
 		 */
-		_setHint : function(set) {
-			var value = set ? "transform" : "";
+		_setHint: function () {
+			var value = "transform";
 			this._container.css("willChange", value);
 			this._conf.panel.list.css("willChange", value);
 		},
@@ -355,7 +354,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		_holdHandler : function(e) {
 			this._conf.touch.holdPos = e.pos;
 			this._conf.panel.changed = false;
-			this._setHint(true);
 
 			/**
 			 * When touch starts
@@ -531,7 +529,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			var panel = this._conf.panel;
 
 			this._setPhaseValue("end");
-			this._setHint(panel.animating = false);
+			panel.animating = false;
 
 			/**
 			 * After panel changes
