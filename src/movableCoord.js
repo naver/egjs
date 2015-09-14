@@ -90,7 +90,7 @@ eg.module("movableCoord", [window.jQuery, eg, window.Hammer], function($, ns, HM
 		 * @param {Number} [options.scale.1=1] y-scale <ko>y축 배율</ko>
 		 * @param {Number} [options.thresholdAngle=45] The threshold angle about direction which range is 0~90 <ko>방향에 대한 임계각 (0~90)</ko>
 		 * @param {Number} [options.interruptable=true] interruptable This value can be enabled to interrupt cycle of the animation event. <ko>이 값이  true이면, 애니메이션의 이벤트 사이클을 중단할수 있다.</ko>
-		 * @param {Array} [options.inputType] inputType you can controll input type. a kind of inputs are "touch", "mouse", "pointer".  default value is ["touch", "mouse"] <ko>입력 타입을 지정할수 있다. 입력타입은 "touch", "mouse", "pointer" 가 있으며, 배열로 입력할 수 있다. (기본값은 ["touch", "mouse"] 이다)</ko>
+		 * @param {Array} [options.inputType] inputType you can controll input type. a kind of inputs are "touch", "mouse".  default value is ["touch", "mouse"] <ko>입력 타입을 지정할수 있다. 입력타입은 "touch", "mouse" 가 있으며, 배열로 입력할 수 있다. (기본값은 ["touch", "mouse"] 이다)</ko>
 		 *
 		 * @return {Boolean}
 		 */
@@ -155,21 +155,16 @@ eg.module("movableCoord", [window.jQuery, eg, window.Hammer], function($, ns, HM
 		},
 
 		_convertInputType: function(inputType) {
-			var hasPointer = false;
 			var hasTouch = false;
 			var hasMouse = false;
-			inputType = inputType || [];
 			$.each(inputType, function(i, v) {
 				switch (v) {
-					case "pointer" : hasPointer = true; break;
 					case "mouse" : hasMouse = true; break;
 					case "touch" : hasTouch = true; break;
 				}
 			});
 
-			if (hasPointer) {
-				return HM.PointerEventInput;
-			} else if (hasMouse) {
+			if (hasMouse) {
 				return hasTouch ? HM.TouchMouseInput : HM.MouseInput;
 			} else if (hasTouch) {
 				return HM.TouchInput;

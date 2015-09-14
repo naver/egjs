@@ -180,14 +180,9 @@ test("setTo", function() {
 test("_convertInputType", function() {
 	// Given
 	// When
-	var inputType = [ "touch", "mouse", "pointer" ];
-	// Then
-	equal(this.inst._convertInputType(inputType), Hammer.PointerEventInput, "check PointerEventInput");
-	// When
-	inputType = [ "touch", "mouse"];
+	var inputType = [ "touch", "mouse" ];
 	// Then
 	equal(this.inst._convertInputType(inputType), Hammer.TouchMouseInput, "check TouchMouseInput");
-
 	// When
 	inputType = [ "touch" ];
 	// Then
@@ -197,11 +192,6 @@ test("_convertInputType", function() {
 	inputType = [ "mouse" ];
 	// Then
 	equal(this.inst._convertInputType(inputType), Hammer.MouseInput, "check MouseInput");
-
-	// When
-	inputType = [ "pointer", "mouse" ];
-	// Then
-	equal(this.inst._convertInputType(inputType), Hammer.PointerEventInput, "check PointerEventInput");
 
 	// When
 	inputType = [ ];
