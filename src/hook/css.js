@@ -6,6 +6,7 @@ eg.module("css", [window.jQuery, document], function($, doc) {
 	 * @name jQuery#css
 	 * @method
 	 *
+	 * * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
 	 * @example
 	 * $("#ID").css("transform", "translate('10px', '10px');
 	 * $("#ID").css("Transform", "translate('10px', '10px');

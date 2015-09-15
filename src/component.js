@@ -4,6 +4,8 @@ eg.module("component", [eg], function(ns) {
 	 * @class
 	 * @group egjs
 	 * @name eg.Component
+	 *
+	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
 	 */
 	ns.Component = ns.Class({
 		construct: function() {

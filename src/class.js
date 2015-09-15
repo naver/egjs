@@ -8,6 +8,8 @@ eg.module("class", [eg], function(ns) {
 	 * @ko Class는 어플리케이션을 객체지향 프로그래밍 방식으로 구현하는데 사용합니다.
 	 * @class
 	 * @name eg.Class
+	 *
+	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
 	 * @param {Object} def Class definition of object literal type. <ko>리터럴 형태의 클래스 정의부</ko>
 	 * @example
 	 	var Some = eg.Class({
