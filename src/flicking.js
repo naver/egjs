@@ -536,8 +536,8 @@ eg.module("flicking", [window.jQuery, eg, eg.MovableCoord], function ($, ns, MC)
 			var conf = this._conf;
 			var panel = conf.panel;
 			var pos = {
-					depaPos: e.depaPos,
-					destPos: e.destPos
+				depaPos: e.depaPos,
+				destPos: e.destPos
 			};
 			var fpStop = function () {
 					e.stop();
