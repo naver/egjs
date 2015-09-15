@@ -195,10 +195,10 @@ eg.module("flicking", [window.jQuery, eg, eg.MovableCoord], function ($, ns, MC)
 				easing: options.panelEffect,
 				deceleration: options.deceleration
 			}).bind(this.$wrapper, {
-					scale: this._getDataByDirection([-1, 0]),
-					direction: ns["DIRECTION_" + (horizontal ? "HORIZONTAL" : "VERTICAL")],
-					interruptable: false,
-					inputType: options.inputType
+				scale: this._getDataByDirection([-1, 0]),
+				direction: ns["DIRECTION_" + (horizontal ? "HORIZONTAL" : "VERTICAL")],
+				interruptable: false,
+				inputType: options.inputType
 			});
 
 			this._setDefaultPanel(options.defaultIndex);
