@@ -1,3 +1,4 @@
+// jscs:disable
 // to resolve transform style value
 function $getTransformValue(el, match) {
 	el = $(el)[0].style;
@@ -24,7 +25,7 @@ test("Check for the initialization", function() {
 
 	// When
 	// Then
-	deepEqual(this.inst._container.width(), this.inst._container.parent().width(), "Then panel container was added and the width is same as wrapper element.");
+	deepEqual(this.inst.$container.width(), this.inst.$container.parent().width(), "Then panel container was added and the width is same as wrapper element.");
 });
 
 test("Option: circular", function() {
@@ -74,10 +75,10 @@ test("Option: preview - horizontal", function() {
 	});
 
 	var padding = this.inst.options.previewPadding,
-		right = parseInt(this.inst._wrapper.css("padding-right"),10),
-		left = parseInt(this.inst._wrapper.css("padding-left"),10),
-		wrapperWidth = this.inst._wrapper.width(),
-		panelWidth = this.inst._container.children().width();
+		right = parseInt(this.inst.$wrapper.css("padding-right"), 10),
+		left = parseInt(this.inst.$wrapper.css("padding-left"), 10),
+		wrapperWidth = this.inst.$wrapper.width(),
+		panelWidth = this.inst.$container.children().width();
 
 	// When
 	// Then
@@ -94,10 +95,10 @@ test("Option: preview - vertical", function() {
 	});
 
 	var padding = this.inst.options.previewPadding,
-		top = parseInt(this.inst._wrapper.css("padding-top"),10),
-		bottom = parseInt(this.inst._wrapper.css("padding-bottom"),10),
-		wrapperHeight = this.inst._wrapper.height(),
-		panelHeight = this.inst._container.children().height();
+		top = parseInt(this.inst.$wrapper.css("padding-top"), 10),
+		bottom = parseInt(this.inst.$wrapper.css("padding-bottom"), 10),
+		wrapperHeight = this.inst.$wrapper.height(),
+		panelHeight = this.inst.$container.children().height();
 
 	// When
 	// Then
@@ -256,8 +257,8 @@ test("Option: hwAccelerable", function () {
 		defaultIndex: 1
 	});
 
-	var container = this.inst._container,
-		panel = this.inst._conf.panel.list[0];
+	var container = this.inst.$container,
+		panel = this.inst._conf.panel.$list[0];
 
 	// When
 	// Then
@@ -279,7 +280,7 @@ test("Method: getIndex()", function() {
 	// Then
 	equal(defaultIndex, this.inst.getIndex(), "Get current logical panel number");
 	notEqual(this.inst.getIndex(true), this.inst.getIndex(), "Physical and logical panel number are different");
-	deepEqual(this.inst._conf.panel.list[this.inst.getIndex(true)], this.inst.getElement()[0], "Get current panel using physical panel number");
+	deepEqual(this.inst._conf.panel.$list[this.inst.getIndex(true)], this.inst.getElement()[0], "Get current panel using physical panel number");
 });
 
 test("Method: getElement()", function() {
@@ -395,7 +396,7 @@ test("Method: getAllElements()", function() {
 
 	// When
 	// Then
-	deepEqual(elements.length, this.inst._container.children().length, "Returned all panel elements?");
+	deepEqual(elements.length, this.inst.$container.children().length, "Returned all panel elements?");
 });
 
 test("Method: getTotalCount()", function() {
@@ -406,7 +407,7 @@ test("Method: getTotalCount()", function() {
 
 	// When
 	// Then
-	deepEqual(counts, this.inst._container.children().length, "Return total panel elements count?");
+	deepEqual(counts, this.inst.$container.children().length, "Return total panel elements count?");
 	this.inst._mcInst.destroy();
 
 	// When
@@ -417,11 +418,11 @@ test("Method: getTotalCount()", function() {
 	counts = this.inst.getTotalCount();
 
 	// Then
-	ok(counts < this.inst._container.children().length, "When circular options is set, the elements count is less than physical elements count");
+	ok(counts < this.inst.$container.children().length, "When circular options is set, the elements count is less than physical elements count");
 
 	// When
 	counts = this.inst.getTotalCount(true);
-	deepEqual(counts, this.inst._container.children().length, "Returned physical elements total count?");
+	deepEqual(counts, this.inst.$container.children().length, "Returned physical elements total count?");
 });
 
 asyncTest("Method: isPlaying()", function() {
@@ -745,10 +746,10 @@ test("Method: resize()", function() {
 	maxPosX = panel.size * ( panel.count - 1 );
 
 	// Then
-	equal($getTransformValue(this.inst._container, true), maxPosX, "Current container element is in right position?");
+	equal($getTransformValue(this.inst.$container, true), maxPosX, "Current container element is in right position?");
 	deepEqual(maxPosX, this.inst._mcInst.options.max[0], "Max coord value has been set correctly?");
 	deepEqual(panel.size, element.width(), "The panel width should be same as current wrapper element");
-	deepEqual(this.inst._container.width(), panel.count * panel.size, "The panel container width should be same as current panels element total width");
+	deepEqual(this.inst.$container.width(), panel.count * panel.size, "The panel container width should be same as current panels element total width");
 	notDeepEqual(oldCoordMax, this.inst._mcInst.options.max, "Should be updated MovableCoord's 'max' options value");
 });
 
@@ -813,7 +814,7 @@ asyncTest("Custom events #2 - When stop event on beforeRestore", function() {
 			}
 		}),
 		rx = /\(-?(\d+)/,
-		currentTransform = $getTransformValue(inst._container, true);
+		currentTransform = $getTransformValue(inst.$container, true);
 
 	// When
 	Simulator.gestures.pan(el, {
@@ -826,7 +827,7 @@ asyncTest("Custom events #2 - When stop event on beforeRestore", function() {
 		// Then
 		setTimeout(function() {
 			ok(!called, "restore event should not be triggered");
-			//notEqual(currentTransform, $getTransformValue(inst._container, true), "the panel should not be restored");
+			//notEqual(currentTransform, $getTransformValue(inst.$container, true), "the panel should not be restored");
 			start();
 		},1000);
     });
@@ -850,7 +851,7 @@ asyncTest("Custom events #3 - When stop on flick event", function () {
 			beforeFlickStart: handler,
 			flick : function(e) {
 				e.stop();
-				translate = $getTransformValue(inst._container, true);
+				translate = $getTransformValue(inst.$container, true);
 			},
 			flickEnd : handler,
 			beforeRestore : handler,
@@ -868,7 +869,7 @@ asyncTest("Custom events #3 - When stop on flick event", function () {
 	}, function() {
 		// Then
 		setTimeout(function() {
-			notEqual(translate, $getTransformValue(inst._container, true), "The panel should not be moved during change");
+			notEqual(translate, $getTransformValue(inst.$container, true), "The panel should not be moved during change");
 			start();
 		},800);
     });
@@ -890,7 +891,7 @@ asyncTest("Custom events #4 - When stop on beforeFlickStart event", function () 
 		inst = this.inst = new eg.Flicking(el).on({
 			beforeFlickStart: function (e) {
 				e.stop();
-				translate = $getTransformValue(inst._container, true);
+				translate = $getTransformValue(inst.$container, true);
 			},
 			flick: handler,
 			flickEnd: handler,
@@ -956,11 +957,11 @@ test("Workaround for buggy link highlighting on android 2.x", function () {
 	// When
 	var inst = this.inst = new eg.Flicking("#mflick1"),
 		re = /translate\(0(px)?,\s?0(px)?\)/,
-		dummyAnchor = $(inst._wrapper).find("> a:last-child")[0],
+		$dummyAnchor = $(inst.$wrapper).find("> a:last-child")[0],
 		leftValue;
 
 	// Then
-	ok(dummyAnchor.tagName === "A" && !dummyAnchor.innerHTML, "Dummy anchor element should be added.");
+	ok($dummyAnchor.tagName === "A" && !$dummyAnchor.innerHTML, "Dummy anchor element should be added.");
 
 	// When
 	inst.next();
