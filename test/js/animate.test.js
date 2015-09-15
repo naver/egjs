@@ -71,7 +71,7 @@ if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
 	});
 
 	var RELATIVE_CASE = [
-		{title : "+=translate(100px, 0)", css : "translate(100px, 0)", transform: "+=translate(100px, 0)"},
+		{title : "+=translate(100px, 0)", css : "translate(100px, 0px)", transform: "+=translate(100px, 0)"},
 		{title : "+=translate(0, 100px)", css : "translate(100px, 100px)", transform: "+=translate(0, 100px)"},
 		{title : "+=translate(100, 100)", css : "translate(200px, 200px)", transform: "+=translate(100, 100)"},
 		{title : "+=scale(2) translate(-100, -100)", css : "scale(2) translate(0px, 0px)", transform: "+=scale(2) translate(-100, -100)"},
@@ -142,7 +142,7 @@ if (navigator.userAgent.indexOf("WebKit") >= 0) {
 	if (navigator.userAgent.indexOf("PhantomJS") == -1) {
 		ANI_3D_CASE.push({title : "+=translate(0px, 100px)", css : "translate3d(100px, 200px, 100px)", transform: "+=translate(0px, 100px)"});
 		ANI_3D_CASE.push({title : "translate3d(100%, 200px, 0)", css : "translate3d(120px, 200px, 0)", transform: "translate3d(100%, 200px, 0)"});
-		ANI_3D_CASE.push({title : "translate3d(0, 0, 0)", css : "translate3d(0, 0, 0)", transform: "translate3d(0, 0, 0)"});
+		ANI_3D_CASE.push({title : "translate3d(0, 0, 0)", css : "translate3d(0px, 0px, 0px)", transform: "translate3d(0, 0, 0)"});
 		ANI_3D_CASE.push({title : "+=scale(2) translate3d(-100, -100, 100)", css : "scale(2) translate3d(-100px, -100px, 100px)", transform: "+=scale(2) translate3d(-100, -100, 100)"});
 	}
 
