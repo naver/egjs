@@ -104,7 +104,7 @@
         }
 
         for ( ; offset < end; offset ++ ) {
-            html = html + "<li class='item' data-offset='" + offset + "'><div class='r" + _random() + "'><a href='http://best.mqoo.com'>테스트 " + offset + "</a></div></li>";
+            html = html + "<li class='item' data-offset='" + offset + "'><div class='r" + _random() + "'><a href='http://naver.com'>테스트 " + offset + "</a></div></li>";
         }
 
         return html;
@@ -112,9 +112,8 @@
 </script>
 
 <script>
+    var contents;
     var offset = 1, limit = 40;
-
-    $( "#grid" ).append( getContents( offset, limit ) );
 
     var infiniteGridService = new eg.InfiniteGridService( "#grid" );
 
@@ -123,37 +122,28 @@
     } );
 
     if( !infiniteGridService.restore() ) {
-        console.log( "Does not Restored. Try to append first data" );
         offset = $("#grid").find("li").last().data("offset");
         offset = offset || 0;
         offset = parseInt( offset , 10 ) + 1;
-        infiniteGridService.appendAjax( "http://localhost:9099/infiniteGrid/items?offset="
-                + offset + "&limit=" + limit, function( data ) {
-            return $(data);
-        } );
+        contents = getContents(offset, limit);
+        infiniteGridService.append(contents);
     }
 
     infiniteGridService.on( "prepend", function() {
-        console.log( "prepend event" );
         offset = $("#grid").find("li").first().data("offset");
         if( offset < limit ) {
             return;
         }
         offset = parseInt( offset , 10 ) - limit;
-        infiniteGridService.prependAjax( "http://localhost:9099/infiniteGrid/items?offset="
-                + offset + "&limit=" + limit, function( data ) {
-            return $(data);
-        } );
+        contents = getContents(offset, limit);
+        infiniteGridService.prepend(contents);
     } );
 
     infiniteGridService.on( "append", function() {
-        console.log( "append event" );
         offset = $("#grid").find("li").last().data("offset");
         offset = parseInt( offset , 10 ) + 1;
-        infiniteGridService.appendAjax( "http://localhost:9099/infiniteGrid/items?offset="
-                + offset + "&limit=" + limit, function( data ) {
-            return $(data);
-        } );
+        contents = getContents(offset, limit);
+        infiniteGridService.append(contents);
     } );
 </script>
 </body>
