@@ -471,10 +471,34 @@ test("Method: next()", function() {
 	deepEqual(element[0], nextElement[0], "The next element is what expected?");
 });
 
-asyncTest("Method: next() - Animation", function() {
+asyncTest("Method: next() - Animation #1", function () {
 	// Given
 	this.inst = new eg.Flicking($("#mflick2-1"), {
 		circular : true
+	});
+
+	var nextElement = this.inst.getNextElement();
+
+	// When
+	this.inst.next();
+
+	setTimeout($.proxy(function () {
+		var element = this.inst.getElement(),
+			value = (this.inst._getBasePositionIndex() * 100) + "%";
+
+		// When
+		// Then
+		deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to next panel correctly?");
+		deepEqual(element[0], nextElement[0], "The next element is what expected?");
+
+		start();
+	}, this), 400);
+});
+
+asyncTest("Method: next() - Animation #2", function () {
+	// Given
+	this.inst = new eg.Flicking($("#mflick2-1"), {
+		circular: true
 	});
 
 	var nextElement = this.inst.getNextElement();
@@ -492,7 +516,7 @@ asyncTest("Method: next() - Animation", function() {
 		deepEqual(element[0], nextElement[0], "The next element is what expected?");
 
 		start();
-	}, this),500);
+	}, this), 400);
 });
 
 test("Method: prev()", function() {
@@ -513,7 +537,7 @@ test("Method: prev()", function() {
 	deepEqual(element.html(), prevElement.html(), "The previous element is what expected?");
 });
 
-asyncTest("Method: prev() - Animation", function() {
+asyncTest("Method: prev() - Animation #1", function () {
 	// Given
 	this.inst = new eg.Flicking($("#mflick2-1"), {
 		circular : true
@@ -533,7 +557,30 @@ asyncTest("Method: prev() - Animation", function() {
 		deepEqual(element.html(), prevElement.html(), "The previous element is what expected?");
 
 		start();
-	}, this),500);
+	}, this), 400);
+});
+
+asyncTest("Method: prev() - Animation #2", function () {
+	// Given
+	this.inst = new eg.Flicking($("#mflick2-1"), {
+		circular: true
+	});
+
+	var prevElement = this.inst.getPrevElement();
+
+	// When
+	this.inst.prev();
+
+	setTimeout($.proxy(function () {
+		var element = this.inst.getElement(),
+			value = (this.inst._getBasePositionIndex() * 100) + "%";
+
+		// Then
+		deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to previous panel correctly?");
+		deepEqual(element.html(), prevElement.html(), "The previous element is what expected?");
+
+		start();
+	}, this), 400);
 });
 
 test("Method: moveTo()", function() {
@@ -585,7 +632,7 @@ test("Method: moveTo()", function() {
 	ok(this.inst.getElement().html().indexOf("Layer 0"), "Moved correctly?");
 
 	// When
-	this.inst.moveTo(2,0);  // move to third
+	this.inst.moveTo("2", 0);  // move to third
 
 	equal(this.inst._conf.panel.no, 2, "Panel number indicate correct panel number?");
 	deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
@@ -601,7 +648,7 @@ asyncTest("Method: moveTo() - Animation #1", function() {
 		value = (count - 1) * 100;
 
 	// When
-	this.inst.moveTo(count - 1,0, 500);  // move to last
+	this.inst.moveTo(count - 1);  // move to last
 
 	setTimeout($.proxy(function() {
 		// Then
@@ -611,6 +658,24 @@ asyncTest("Method: moveTo() - Animation #1", function() {
 });
 
 asyncTest("Method: moveTo() - Animation #2", function() {
+	// Given
+	this.inst = new eg.Flicking($("#mflick1"));
+
+	var count = this.inst._conf.panel.count,
+		panelSize = this.inst._conf.panel.size,
+		value = (count - 1) * 100;
+
+	// When
+	this.inst.moveTo(count - 1, 500);  // move to last
+
+	setTimeout($.proxy(function () {
+		// Then
+		equal($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Moved to last panel?");
+		start();
+	}, this), 500);
+});
+
+asyncTest("Method: moveTo() - Animation #3", function () {
 	// Given
 	this.inst = new eg.Flicking($("#mflick3"), {
 		circular : true
@@ -635,7 +700,7 @@ asyncTest("Method: moveTo() - Animation #2", function() {
 	}, this),500);
 });
 
-asyncTest("Method: moveTo() - Animation #3", function() {
+asyncTest("Method: moveTo() - Animation #4", function () {
 	// Given
 	this.inst = new eg.Flicking($("#mflick3"), {
 		circular : true

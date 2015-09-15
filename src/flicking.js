@@ -244,7 +244,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 					coords = [ -(panel.size * index), 0];
 
 					this._setTranslate(coords);
-					this._setMovableCoord("setTo", [ Math.abs(coords[0]), Math.abs(coords[1]) ] );
+					this._setMovableCoord("setTo", [Math.abs(coords[0]), Math.abs(coords[1])], true, 0);
 				}
 			}
 		},
@@ -274,7 +274,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				panel.index = this._getBasePositionIndex();
 
 				// arrange MovableCoord's coord position
-				conf.triggerFlickEvent = !!this._setMovableCoord("setTo", [panel.size * panel.index, 0], true);
+				conf.triggerFlickEvent = !!this._setMovableCoord("setTo", [panel.size * panel.index, 0], true, 0);
 			}
 
 			// set each panel's position in DOM
@@ -366,14 +366,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * @return {Object} MovableCoord instance
 		 */
 		_setMovableCoord : function(method, coord, isDirVal, duration) {
-			var type = typeof duration;
-
-			if( type !== "undefined" ) {
-				duration = type === "number" ? duration : this.options.duration;
-			}
-
 			isDirVal && this._getDataByDirection(coord);
-
 			return this._mcInst[ method ]( coord[0], coord[1], duration );
 		},
 
@@ -775,20 +768,33 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		},
 
 		/**
+		 * Check and parse value to number
+		 * @param {Number|String} val
+		 * @param {Number} defVal
+		 * @returns {Number}
+		 */
+		_getNumValue: function (val, defVal) {
+			return isNaN(val = parseInt(val, 10)) ? defVal : val;
+		},
+
+		/**
 		 * Move panel to the given direction
 		 * @param {Boolean} next
 		 * @param {Number} duration
 		 */
 		_movePanel : function(next, duration) {
-			var panel = this._conf.panel;
+			var panel = this._conf.panel,
+				options = this.options;
 
 			if(panel.animating) {
 				return;
 			}
 
+			duration = this._getNumValue(duration, options.duration);
+
 			this._setValueToMove(next);
 
-			if( this.options.circular || this[ next ? "getNextIndex" : "getPrevIndex" ]() != null ) {
+			if (options.circular || this[next ? "getNextIndex" : "getPrevIndex"]() != null) {
 				this._setMovableCoord("setBy", [ panel.size * ( next ? 1 : -1 ), 0 ], true, duration);
 				!duration && this._setPhaseValue("startend");
 			}
@@ -918,17 +924,21 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 */
 		moveTo : function(no, duration) {
 			var panel = this._conf.panel,
+				options = this.options,
 				currentIndex = panel.index,
 				indexToMove = 0,
 				movableCount, movable;
+
+			no = this._getNumValue(no);
 
 			if(typeof no !== "number" || no >= panel.origCount || no === panel.no || panel.animating) {
 				return;
 			}
 
-			movable = this.options.circular || no >= 0 && no < panel.origCount;
+			duration = this._getNumValue(duration, options.duration);
+			movable = options.circular || no >= 0 && no < panel.origCount;
 
-			if(this.options.circular) {
+			if (options.circular) {
 				// real panel count which can be moved on each(left(up)/right(down)) sides
 				movableCount = [ currentIndex, panel.count - (currentIndex + 1) ];
 
