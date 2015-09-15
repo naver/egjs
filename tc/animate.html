@@ -61,7 +61,7 @@ var absoluteTestCases = {
 	"tc5": {"targetId": "box", "tc": "skewX(30deg)"},
 	"tc6": {"targetId": "box", "tc": "skew(30deg, 30deg)"},
 	"tc7": {"targetId": "box", "tc": "matrix(.5, .433, -.5, 1.033, 50, -10)"},
-	"tc8": {"targetId": "box", "tc": "translate(0, 0)"},
+	"tc8": {"targetId": "box", "tc": "translate(0, 0)"}
 };
 
 var relativeTestCases = {
@@ -82,11 +82,7 @@ var compositionTestCases = {
 	"comTc1": {"targetId": "box3", "tc": "rotate(45deg) translateX(200px)"},
 	"comTc2": {"targetId": "box3", "tc": "translateX(200px) rotate(45deg)"},
 	"comTc3": {"targetId": "box3", "tc": "scale(2) translateX(100px)"},
-	"comTc4": {"targetId": "box3", "tc": "translateX(100px) scale(2)"},
-	// "comTc4": {"targetId": "box", "tc": "+=scale(0.5)"},
-	// "comTc5": {"targetId": "box", "tc": "+=scale(2)"},
-	// "comTc6": {"targetId": "box", "tc": "+=skewX(30deg)"},
-	// "comTc7": {"targetId": "box", "tc": "+=skew(30deg, 30deg)"}
+	"comTc4": {"targetId": "box3", "tc": "translateX(100px) scale(2)"}
 };
 
 var _3dTestCases = {
@@ -105,7 +101,7 @@ $(function(){
 	 * Relative Test Case
 	 */
 	 $("#btn_init_pos").click(function() {
-	 	$("#box2").css("transform", "translate(0, 0)")
+	 	$("#box2").css("transform", "translate(0, 0)");
 	 });
 
 	addTestCase("Relative", "#relativeTestButtons", relativeTestCases);
