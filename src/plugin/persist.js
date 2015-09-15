@@ -6,6 +6,7 @@ eg.module("persist", [jQuery, window, document], function($, global, doc) {
 	* @event
 	* @param {Event} e event <ko>이벤트 객체</ko>
 	* @param {Object} e.state state info to be restored <ko>복원되어야 하는 상태의 정보</ko>
+	* @support {"ie": "8+", "ch" : "latest", "ff" : "1.5+",  "sf" : "latest", "ios" : "7+", "an" : "2.2+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
 	* @example
 	$(window).on("persist",function(e){
 		// restore state
@@ -72,7 +73,12 @@ eg.module("persist", [jQuery, window, document], function($, global, doc) {
 		}
 	}
 	function getStateByKey(key) {
-		return getState()[key];
+		var result = getState()[key];
+		// some device returns "null" or undefined
+		if (result === "null" || typeof result === "undefined") {
+			result = null;
+		}
+		return result;
 	}
 
 	/*

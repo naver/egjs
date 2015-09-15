@@ -160,20 +160,7 @@ function NewsLoader(baseElId) {
 	this.$LoadBtn= $("button", this.$baseEl);
 
 	// 더보기 버튼을 눌러 더 많은 코멘트 보여주기
-	this.$LoadBtn.on("click", $.proxy(this._appendNews, this));
-
-	$(window).on("persist", $.proxy(function(e){
-	    // @todo 서비스 개발자 : persist메소드를 통해 저장한 데이터 꺼내서 화면 복원하기
-		var state = e.state;
-		if(state[this.baseId]) {
-			if(state[this.baseId].news) {
-				this.$ListContainer.html(state[this.baseId].news);
-			}
-			if(state[this.baseId].scrollTop) {
-				window.scrollTo(0, state[this.baseId].scrollTop);
-			}
-		}
-	},this));
+	this.$LoadBtn.on("click", $.proxy(this._appendNews,this));
 
 	// delegate 사용시, delegate영역이 클릭시 하이라이트 되는 이슈 대응 코드
 	this.$ListContainer.addClass("NO_TAP_HIGHLIGHT");
@@ -184,11 +171,15 @@ function NewsLoader(baseElId) {
 	     * @todo 서비스 개발자 : persist메소드를 통해 화면 복원에 필요한 데이터를 저장한다.
 	     * 복원에 필요한 정보 scroll 위치, javascript 객체, HTML String 등을 저장한다.
 	     */
-		var state = $.persist() || {};
-		state[this.baseId].scrollTop = document.body.scrollTop;
-		$.persist(state);
+	    	// 스크롤 포지션 저장 (글로벌 영역에)
+		$.persist({
+			"scrollPos" : document.body.scrollTop
+		});
+
 	},this));
 
+	var data = $.persist(this.baseId);
+	data && this.$ListContainer.html(data);
 }
 
 NewsLoader.prototype._appendNews = function() {
@@ -203,14 +194,16 @@ NewsLoader.prototype._appendNews = function() {
      * @todo 서비스 개발자 : persist메소드를 통해 화면 복원에 필요한 데이터를 저장한다.
      * 복원에 필요한 정보 scroll 위치, javascript 객체, HTML String 등을 저장한다.
      */
-	var state = $.persist() || {};
-	state[this.baseId] = state[this.baseId] || {};
-	state[this.baseId].news = this.$ListContainer.html();
-	$.persist(state);
+    	$.persist(this.baseId, this.$ListContainer.html());
 };
 
 new NewsLoader("newsLoader1");
 new NewsLoader("newsLoader2");
+// 스크롤 포지션 복원
+var data = $.persist();
+data && window.scrollTo(0, data.scrollPos);
+
+
 </script>
 </body>
 </html>

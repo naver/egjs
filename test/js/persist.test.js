@@ -24,7 +24,7 @@ module("persist", {
 		this.data = {
 			"scrollTop": 100
 		};
-		
+
 		this.method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 		this.GLOBALKEY = this.method.GLOBALKEY;
 		/*
@@ -33,7 +33,7 @@ module("persist", {
 		function History() {
 			this.state = null;
 		}
-		
+
 		History.prototype.replaceState = function(state) {
 			this.state = state;
 		};
@@ -46,7 +46,7 @@ module("persist", {
 test("reset", function() {
 	// When
 	this.method.reset();
-	
+
 	// Then
 	equal(this.fakeWindow.history.state, null);
 });
@@ -54,10 +54,10 @@ test("reset", function() {
 test("persist : save state data, get state data", function() {
 	// When
 	var state = this.method.persist();
-	
+
 	// Then
 	equal(state, null);
-	
+
 	// When
 	var clonedState = this.method.persist(this.data);
 	// Then
@@ -68,10 +68,10 @@ test("persist : save state data, get state data", function() {
 test("persist : save state data by key, get state data by key", function() {
 	// When
 	var state = this.method.persist("TESTKEY");
-	
+
 	// Then
 	equal(state, null);
-	
+
 	// When
 	var clonedState = this.method.persist("TESTKEY", this.data);
 
@@ -81,7 +81,7 @@ test("persist : save state data by key, get state data by key", function() {
 });
 
 test("onPageshow : when bfCache miss and not BF navigated, _reset method must be executed.", function() {
-	// Given  
+	// Given
 	var ht = {};
 	ht[this.GLOBALKEY] = this.data;
 	this.fakeWindow.performance.navigation.type = 2;	// navigation
@@ -116,16 +116,16 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 			persisted: false
 		}
 	});
-	
+
 	// Then
 	equal(method.persist(), null);
-	
+
 
 	// When
 	this.fakeWindow.performance.navigation.type = 1;
 	this.fakeWindow.history.state = JSON.stringify(ht);
 	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
-	
+
 	// Then
 	equal(method.persist(), null);
 
@@ -136,7 +136,7 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 			persisted: false
 		}
 	});
-	
+
 	// Then
 	equal(method.persist(), null);
 });
@@ -145,14 +145,14 @@ test("getState, setState: getter, setter of state", function() {
 	// When
 	this.method.setState(this.data);
 	var clonedData = this.method.getState();
-	
+
 	// Then
 	deepEqual(clonedData, this.data);
 });
 
 
 test("onPageshow : when bfCache miss and BF navigated, persist event must be triggered.", function(assert) {
-	// Given  
+	// Given
 	this.fakeWindow.performance = {};
 	this.fakeWindow.performance.navigation = {
 		TYPE_BACK_FORWARD: 2,
@@ -168,7 +168,7 @@ test("onPageshow : when bfCache miss and BF navigated, persist event must be tri
 		restoredState = e.state;
 	});
 	var clonedData = method.persist(this.data);
-		
+
 	// When
 	$(this.fakeWindow).trigger({
 		type: "pageshow",
@@ -176,7 +176,7 @@ test("onPageshow : when bfCache miss and BF navigated, persist event must be tri
 			persisted: false
 		}
 	});
-	
-	// Then	
+
+	// Then
 	deepEqual(restoredState, clonedData);
  });
