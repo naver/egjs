@@ -128,11 +128,11 @@ test("transform property set/get", function() {
     var method = eg.invoke("css",[jQuery, document]);
 
     // When
-    $("#prefixId").css("transform", "translate(100px, 0px)");
+    $("#prefixId").css("transform", "translate(200px, 0px)");
 
     //Then
     var returnValue = jQuery("#prefixId").css("transform");
-    equal(returnValue , "matrix(1, 0, 0, 1, 100, 0)");
+    equal(returnValue , "matrix(1, 0, 0, 1, 200, 0)");
 });
 
 
@@ -148,14 +148,23 @@ test("Transform property set/get", function() {
     equal(returnValue , "matrix(1, 0, 0, 1, 300, 0)");
 });
 
-test("webkitTransform property set/get", function() {
-    // Given
-    var method = eg.invoke("css",[jQuery, document]);
+test("transform property with bender prefix set/get", function() {
+    // Given 
+    var method = eg.invoke("css",[jQuery, document]);	
+	var cssPrefixes = [ "Webkit", "Moz", "O", "ms" ];
+    var vendorPrefix = (function() {
+		var bodyStyle = (document.head || document.getElementsByTagName("head")[0]).style;
+		for (var i = 0, len = cssPrefixes.length ; i < len ; i++) {
+			if (cssPrefixes[i] + "Transition" in bodyStyle) {
+				return cssPrefixes[i];
+			}
+		}
+	})();
 
     // When
-    $("#prefixId").css("webkitTransform", "translate(200px, 0px)");
+    $("#prefixId").css( vendorPrefix + "Transform", "translate(400px, 0px)");
 
     //Then
-    var returnValue = jQuery("#prefixId").css("webkitTransform");
-    equal(returnValue , "matrix(1, 0, 0, 1, 200, 0)");
+    var returnValue = jQuery("#prefixId").css( vendorPrefix + "Transform");
+    equal(returnValue , "matrix(1, 0, 0, 1, 400, 0)");
 });
