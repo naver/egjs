@@ -32,7 +32,7 @@ list-style:none;
 }
 li {
   width : 30%;
-  
+
 }
 
 li div {
@@ -48,12 +48,12 @@ li.prepend {
    background-color:#333;
 }
 #controler {
-  position:fixed; 
+  position:fixed;
   z-index:2000;
-  bottom:0px; 
+  bottom:0px;
   left :0px;
   background-color: #efefef;
-  padding : 20px;
+  padding : 5px;
 }
 #grid {
   border : 1px solid blue;
@@ -97,6 +97,8 @@ li.prepend {
   <button class="fit">fit</button>
   <button class="layout">layout</button><br>
   <button class="clear">clear</button>
+  <button class="save">save</button>
+  <button class="restore">restore</button><br>
   <button class="getTopElement">getTopElement</button>
   <button class="getBottomElement">getBottomElement</button>
 =======
@@ -127,7 +129,7 @@ li.prepend {
     </li>
     <li class="item">
       <div>테스트6</div>
-    </li>  
+    </li>
   </ul>
 <script>
 oinst = new eg.InfiniteGrid("#grid", {
@@ -139,6 +141,8 @@ oinst = new eg.InfiniteGrid("#grid", {
 >>>>>>> feat(InfiniteGrid) : create InfiniteGrid
 });
 var HTML = '<li class="item"><div>테스트1</div></li><li class="item"><div>테스트2</div></li><li class="item"><div>테스트3</div></li><li class="item"><div>테스트4</div></li><li class="item"><div>테스트5</div></li><li class="item"><div>테스트6</div></li><li class="item"><div>테스트7</div></li>';
+
+var tmpStatus = {};
 
 $("#controler").click(function(e) {
   var $el = $(e.target),
@@ -165,6 +169,11 @@ $("#controler").click(function(e) {
 <<<<<<< HEAD
   } else if ($el.hasClass("clear")) {
     oinst.clear();
+  } else if ($el.hasClass("save")) {
+    tmpStatus = oinst.getStatus();
+    console.log(tmpStatus);
+  } else if ($el.hasClass("restore")) {
+    oinst.setStatus(tmpStatus);
   } else if ($el.hasClass("getTopElement")) {
     var $el = $(oinst.getTopElement());
     $el.animate({
@@ -189,6 +198,6 @@ $("#controler").click(function(e) {
 >>>>>>> refactor(InfiniteGrid) : change structure from outlayer to eg.Class
   }
 });
-</script>  
+</script>
 </body>
 </html>
