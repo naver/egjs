@@ -461,7 +461,7 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 
 			var needCheck = this._checkImageLoaded(elements);
 			var checkCount = needCheck.length;
-			checkCount > 0 ? this._waitImageLoaded(items, checkCount) : this.core.layoutItems(items, true);
+			checkCount > 0 ? this._waitImageLoaded(items, needCheck) : this.core.layoutItems(items, true);
 		},
 		_adjustRange: function (isTop, elements) {
 			var diff = this.core.items.length - this.core.options.count;
@@ -574,16 +574,32 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 			});
 			return needCheck;
 		},
-		_waitImageLoaded: function(items, checkCount) {
+		_waitImageLoaded: function(items, needCheck) {
 			var core = this.core;
-			function onCheck() {
-				checkCount--;
-				if (checkCount <= 0) {
-					unbindImage(core.element, onCheck);
-					core.layoutItems(items, true);
-				}
+			var checkCount = needCheck.length;
+			var onCheck;
+
+			if (hasEventListener) {
+				onCheck = function() {
+					checkCount--;
+					if (checkCount <= 0) {
+						unbindImage(core.element, onCheck);
+						core.layoutItems(items, true);
+					}
+				};
+				bindImage(this.core.element, onCheck);
+			} else {
+				onCheck = function(e) {
+					checkCount--;
+					unbindImage(e.srcElement, onCheck);
+					if (checkCount <= 0) {
+						core.layoutItems(items, true);
+					}
+				};
+				$.each(needCheck, function(k, v) {
+					bindImage(v, onCheck);
+				});
 			}
-			bindImage(this.core.element, onCheck);
 		},
 		/**
 		 * Release resources and off custom events

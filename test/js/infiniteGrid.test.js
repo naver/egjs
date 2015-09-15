@@ -295,39 +295,6 @@ asyncTest("check a prepend module with groupkey", function() {
 		groupInfo = beforeGroupInfo(inst, group);
 		inst.prepend(getContent("prepend", groupInfo.count), groupInfo.groupKey);
 	}
-
-
-	// 	this.inst.on("layoutComplete",function(e) {
-	// 		// When
-	// 		group[10] = 20;
-	// 		this.off();
-	// 		this.on("layoutComplete",function(e) {
-	// 			equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
-	// 			equal(e.isAppend, false, "prepend type");
-	// 			group[groupkey] = e.target.length;
-	// 			if(this.isRecycling()) {
-	// 				var groupKeys = this.getGroupKeys();
-	// 				var total = 0;
-	// 				for(var i=groupKeys[groupKeys.length-1]; i>=groupKeys[0]; i--) {
-	// 					total += group[i];
-	// 				}
-	// 				equal(this.core.items.length, total, "a number of elements are " + total);
-	// 				equal(this.core.$element.children().length, this.core.items.length, "a number of elements(DOM) -> " + this.core.items.length);
-	// 			}
-
-	// 			if(addCount++ < 10) {
-	// 				if(this.prepend(getContent("prepend"), --groupkey) == 0) {
-	// 					start();
-	// 				}
-	// 			} else {
-	// 				start();
-	// 			}
-	// 		});
-	// 		beforeItemsCount = this.core.items.length;
-	// 		// Then
-	// 		this.prepend(getContent("prepend"), groupkey);
-	// 	});
-	// }
 });
 
 asyncTest("restore status", function() {
@@ -356,24 +323,41 @@ test("restore status", function() {
 	// When
 <<<<<<< HEAD
 	this.inst.on("layoutComplete",function(e) {
+		var parseCssText = function(str) {
+			var ht = {};
+			var $styles = $(str.split(";"));
+			$styles = $styles.map(function(i,v) {
+	            		return $.trim(v);
+			}).filter(function(i,v) {
+				return !$.isEmptyObject(v);
+			}).each(function(i,v) {
+			    var a =v.split(":");
+			    var val = $.trim(a[1]);
+			    if(!$.isEmptyObject(val)) {
+			        ht[a[0]] = $.trim(a[1]);
+			    }
+			});
+			return ht;
+		};
 		var properties = getProperties(this);
 		var beforeStatus = this.getStatus();
+		var self = this;
 
 		// Then
 		equal(beforeStatus.html, this.core.$element.html(), "check html");
 		equal(beforeStatus.cssText, this.core.element.style.cssText, "check cssText");
-		beforeStatus.core.items.forEach(function(v,i,a) {
-			deepEqual(v.position, this.core.items[i].position, "check html and position information");
-			deepEqual(v.size, this.core.items[i].size,"check html and size information");
-		}, this);
+		$.each(beforeStatus.core.items, function(i, v) {
+			deepEqual(v.position, self.core.items[i].position, "check html and position information");
+			deepEqual(v.size, self.core.items[i].size,"check html and size information");
+		});
 		deepEqual(beforeStatus.core._appendCols, this.core._appendCols, "check appendCol info");
 		deepEqual(beforeStatus.core._prependCols, this.core._prependCols, "check appendCol info");
 		deepEqual(beforeStatus.core.columnWidth, this.core.columnWidth, "check columnWidth info");
 		deepEqual(beforeStatus.core.size, this.core.size, "check size info");
 		deepEqual(beforeStatus.core.options, this.core.options, "check options info");
-		properties.forEach(function(v,i,a) {
-			equal(this[v], beforeStatus.data[v], "check infiniteGrid properties " + v	);
-		}, this);
+		$.each(properties, function(i, v) {
+			equal(self[v], beforeStatus.data[v], "check infiniteGrid properties " + v);
+		});
 
 		// Given
 		this.destroy();
@@ -385,8 +369,9 @@ test("restore status", function() {
 		infinite.setStatus(beforeStatus);
 
 		// Then
-		equal(infinite.core.element.style.cssText, beforeStatus.cssText, "check cssText");
-		infinite.core.items.forEach(function(v,i,a) {
+		// equal(infinite.core.element.style.cssText, beforeStatus.cssText, "check cssText");
+		deepEqual(parseCssText(infinite.core.element.style.cssText), parseCssText(beforeStatus.cssText), "check cssText");
+		$.each(infinite.core.items, function(i, v) {
 			deepEqual(v.position, beforeStatus.core.items[i].position, "check html and position information");
 			deepEqual(v.size, beforeStatus.core.items[i].size,"check html and size information");
 			$el = $(v.element);
@@ -400,9 +385,9 @@ test("restore status", function() {
 		deepEqual(infinite.core.columnWidth, beforeStatus.core.columnWidth, "check columnWidth info");
 		deepEqual(infinite.core.size, beforeStatus.core.size, "check size info");
 		deepEqual(infinite.core.options, beforeStatus.core.options, "check options info");
-		properties.forEach(function(v,i,a) {
-			equal(infinite[v], beforeStatus.data[v], "check infiniteGrid properties " + v	);
-		}, infinite);
+		$.each(properties, function(i, v) {
+			equal(infinite[v], beforeStatus.data[v], "check infiniteGrid properties " + v);
+		});
 		start();
 	});
 =======
