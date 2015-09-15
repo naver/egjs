@@ -24,7 +24,7 @@ test("Check for the initialization", function() {
 
 	// When
 	// Then
-	deepEqual(this.inst._container.width(), this.inst._conf.panel.count * this.inst._conf.panel.size, "Then panel container was added and the width is same as total panels width.");
+	deepEqual(this.inst._container.width(), this.inst._container.parent().width(), "Then panel container was added and the width is same as wrapper element.");
 });
 
 test("Option: circular", function() {
@@ -859,4 +859,42 @@ asyncTest("Custom events #5 - When stop on change event", function() {
 			start();
 		},800);
     });
+});
+
+test("Workaround for buggy link highlighting on android 2.x", function () {
+	eg.hook.agent = function () {
+		return {
+			// GalaxyS:2.3.4
+			"device": "GalaxyS:2.3.4",
+			"ua": "Mozilla/5.0 (Linux;U;Android 2.3.4;ko-kr;SHW-M110S Build/GINGERBREAD)AppleWebKit/533.1(KHTML, like Gecko) Version/4.0 Mobile Safari/533.1",
+			"os": {
+				"name": "android",
+				"version": "2.3.4"
+			},
+			"browser": {
+				"name": "default",
+				"version": "-1"
+			},
+			"isHWAccelerable": false,
+			"isTransitional": false,
+			"_hasClickBug": false
+		};
+	};
+
+	// When
+	var inst = this.inst = new eg.Flicking("#mflick1"),
+		re = /translate\(0(px)?,\s?0(px)?\)/,
+		dummyAnchor = $(inst._wrapper).find("> a:last-child")[0],
+		leftValue;
+
+	// Then
+	ok(dummyAnchor.tagName === "A" && !dummyAnchor.innerHTML, "Dummy anchor element should be added.");
+
+	// When
+	inst.next();
+
+	leftValue = $.css(inst.getElement()[0], "left");
+
+	// Then
+	ok(leftValue && parseInt(leftValue, 10) > 0, "Panel should be moved using left property instead of translate.");
 });
