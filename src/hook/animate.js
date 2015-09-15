@@ -14,6 +14,7 @@ eg.module("animate",[window.jQuery, window],function($, global){
      * 		.animate({"transform" : "translate3d(150px,100px,0px) rotate(20deg) scaleX(1)"} , 3000)
      * 		.animate({"transform" : "+=translate3d(150px,10%,-20px) rotate(20deg) scale3d(2, 4.2, 1)"} , 3000);
      * @see {@link http://api.jquery.com/animate/}
+     * @support {"ie": "10+", "ch" : "latest", "sf" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
      */
 	var supportFloat32Array = "Float32Array" in window,
 		CSSMatrix = global.WebKitCSSMatrix || global.MSCSSMatrix || global.OCSSMatrix || global.MozMatrix || global.CSSMatrix;
