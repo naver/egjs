@@ -160,13 +160,13 @@ function NewsLoader(baseElId) {
 	this.$LoadBtn= $("button", this.$baseEl);
 
 	// 더보기 버튼을 눌러 더 많은 코멘트 보여주기
-	this.$LoadBtn.on("click", this._appendNews.bind(this));
+	this.$LoadBtn.on("click", $.proxy(this._appendNews,this));
 
 	// delegate 사용시, delegate영역이 클릭시 하이라이트 되는 이슈 대응 코드
 	this.$ListContainer.addClass("NO_TAP_HIGHLIGHT");
 
 	// 페이지 이동이 되는 대상의 부모를 delegate으로 지정
-	this.$ListContainer.on("click", "a", function(e){
+	this.$ListContainer.on("click", "a", $.proxy(function(e){
 	    /*
 	     * @todo 서비스 개발자 : persist메소드를 통해 화면 복원에 필요한 데이터를 저장한다.
 	     * 복원에 필요한 정보 scroll 위치, javascript 객체, HTML String 등을 저장한다.
@@ -176,7 +176,7 @@ function NewsLoader(baseElId) {
 			"scrollPos" : document.body.scrollTop
 		});
 
-	}.bind(this));
+	},this));
 
 	var data = $.persist(this.baseId);
 	data && this.$ListContainer.html(data);
