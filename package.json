@@ -1,6 +1,6 @@
 {
   "name": "egjs",
-  "version": "0.0.2-snapshot",
+  "version": "0.0.2-rc",
   "description": "egjs는 jQuery기반의 UI 인터랙션, 이펙트, 유틸리티로 구성된 통합 라이브러리로써 다양한 환경을 지원하는 빠른 웹어플리케이션을 쉽게 개발할 수 있도록 도와줍니다.",
   "outputname": "eg",
   "main": "dist/eg.js",
