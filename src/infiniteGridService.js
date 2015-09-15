@@ -3,10 +3,6 @@ eg.module("infiniteGridService",
     /**
      * Infinite cascading grid layout service for infiniteGrid
      * @ko infiniteGrid를 통한 무한 그리드 레이아웃 서비스.
-     * @class
-     * @name eg.infiniteGridService
-     * @extends eg.Component
-     * @group EvergreenJs
      *
      * @param {String} DOM Element to be InfiniteGride. <ko>타겟 엘리먼트</ko>
      * @param {Object} [Options] A set of key/value pairs that configure the InfiniteGridService. <ko>key/value 형태의 옵션</ko>
