@@ -76,6 +76,7 @@ eg.module("persist", [jQuery, window, document], function($, global, doc) {
 	}
 	function getStateByKey(key) {
 		var result = getState()[key];
+
 		// some device returns "null" or undefined
 		if (result === "null" || typeof result === "undefined") {
 			result = null;

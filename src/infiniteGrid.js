@@ -46,7 +46,6 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 				this._registGroupKey(this.options.defaultGroupKey, this.items);
 			}
 			this.element.style.width = null;
-			// this.columnWidth = null;
 			this.getSize();	// create size property
 			this._measureColumns();
 		},
@@ -73,7 +72,8 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 			var cols = isAppend ? this._appendCols : this._prependCols;
 			y = Math[isAppend ? "min" : "max"].apply(Math, cols);
 			shortColIndex = $.inArray(y, cols);
-			cols[shortColIndex] = y + (isAppend ? item.size.outerHeight : -item.size.outerHeight);
+			cols[shortColIndex] = y + (isAppend ?
+				item.size.outerHeight : -item.size.outerHeight);
 
 			return {
 				x: this.columnWidth * shortColIndex,
@@ -123,22 +123,20 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 			}
 		},
 		_getColumnWidth: function() {
-			// if (!this.columnWidth) {
-				var el = this.items[0] && this.items[0].element;
-				var size;
-				if (el) {
-					/* jshint ignore:start */
-					size = getSize(el);
-					/* jshint ignore:end */
-				} else {
-					size = {
-						outerWidth: 0,
-						outerHeight: 0
-					};
-				}
-				this.options.isEqualSize && (this._equalItemSize = size);
-				this.columnWidth = size.outerWidth || this.size.outerWidth;
-			// }
+			var el = this.items[0] && this.items[0].element;
+			var size;
+			if (el) {
+				/* jshint ignore:start */
+				size = getSize(el);
+				/* jshint ignore:end */
+			} else {
+				size = {
+					outerWidth: 0,
+					outerHeight: 0
+				};
+			}
+			this.options.isEqualSize && (this._equalItemSize = size);
+			this.columnWidth = size.outerWidth || this.size.outerWidth;
 			return this.columnWidth;
 		},
 		_getColIdx: function(item) {
@@ -164,11 +162,19 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 			return colItems;
 		},
 		clone: function(target, source) {
-			clone(target, source, ["_equalItemSize", "_appendCols", "_prependCols", "columnWidth", "size", "options"]);
+			clone(target, source, [
+				"_equalItemSize",
+				"_appendCols",
+				"_prependCols",
+				"columnWidth",
+				"size",
+				"options"
+				]);
 			target.items = target.items || [];
 			target.items.length = source.items.length;
 			$.each(source.items, function(i) {
-				target.items[i] = clone(target.items[i] || {}, source.items[i], ["position", "size", "isAppend", "groupKey"]);
+				target.items[i] = clone(target.items[i] || {}, source.items[i],
+					["position", "size", "isAppend", "groupKey"]);
 			});
 			return target;
 		},
@@ -226,7 +232,8 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 			opts.transitionDuration = 0;	// don't use this option.
 			opts.isInitLayout = false;	// isInitLayout is always 'false' in order to controll layout.
 			opts.isResizeBound = false;	// isResizeBound is always 'false' in order to controll layout.
-			this.core = new InfiniteGridCore(el, opts).on("layoutComplete", $.proxy(this._onlayoutComplete, this));
+			this.core = new InfiniteGridCore(el, opts)
+				.on("layoutComplete", $.proxy(this._onlayoutComplete, this));
 			this.$global = $(global);
 			this._reset();
 			this.core.$element.children().length > 0 && this.layout();
@@ -344,7 +351,8 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 			}
 			this._isProcessing = true;
 			if (!this._isRecycling) {
-				this._isRecycling = (this.core.items.length + elements.length) >= this.core.options.count;
+				this._isRecycling =
+				(this.core.items.length + elements.length) >= this.core.options.count;
 			}
 			this._insert(elements, groupKey, true);
 			return elements.length;
@@ -358,7 +366,8 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 		 * @return {Number} length a number of elements
 		 */
 		prepend: function(elements, groupKey) {
-			if (!this.isRecycling() || this._removedContent === 0 || this._isProcessing || elements.length === 0) {
+			if (!this.isRecycling() || this._removedContent === 0 ||
+				this._isProcessing || elements.length === 0) {
 				return;
 			}
 			this._isProcessing = true;
@@ -423,7 +432,8 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 			if (isAppend === false) {
 				this._isFitted = false;
 				this._fit(true);
-				distance = e.length > this.core.items.length ? 0 : this.core.items[e.length].position.y;
+				distance = e.length > this.core.items.length ?
+					0 : this.core.items[e.length].position.y;
 			}
 
 			// reset flags
@@ -460,7 +470,8 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 
 			var needCheck = this._checkImageLoaded(elements);
 			var checkCount = needCheck.length;
-			checkCount > 0 ? this._waitImageLoaded(items, needCheck) : this.core.layoutItems(items, true);
+			checkCount > 0 ? this._waitImageLoaded(items, needCheck) :
+					this.core.layoutItems(items, true);
 		},
 		_adjustRange: function (isTop, elements) {
 			var diff = this.core.items.length - this.core.options.count;
@@ -565,7 +576,8 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 			$(elements).each(function(k, v) {
 				if (v.nodeName === "IMG") {
 					!v.complete && needCheck.push(v);
-				} else if (v.nodeType && (v.nodeType === 1 || v.nodeType === 9 || v.nodeType === 11)) {	// ELEMENT_NODE, DOCUMENT_NODE, DOCUMENT_FRAGMENT_NODE
+				} else if (v.nodeType &&
+					(v.nodeType === 1 || v.nodeType === 9 || v.nodeType === 11)) {	// ELEMENT_NODE, DOCUMENT_NODE, DOCUMENT_FRAGMENT_NODE
 					needCheck = needCheck.concat($(v).find("img").filter(function(fk, fv) {
 						return !fv.complete;
 					}).toArray());

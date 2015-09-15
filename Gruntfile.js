@@ -116,7 +116,7 @@ module.exports = function(grunt) {
 			// src/flicking.js
 			// src/movableCoord.js
 			// src/visible.js
-			src: ["src/customEvent/*.js", "src/movableCoord.js", "src/hook/css.js", "src/class.js", "src/component.js", "src/eg.js", "src/module.js"],
+			src: ["src/customEvent/*.js", "src/hook/*.js", "src/plugin/*.js", "src/class.js", "src/component.js", "src/eg.js", "src/module.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js",  "src/visible.js" ],
 			options: {
 				config: ".jscsrc"
 			}
