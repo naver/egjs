@@ -690,7 +690,7 @@ test("Method: resize()", function() {
 asyncTest("Custom events #1 - When changes panel normally", function() {
 	// Given
 	var el = $("#mflick1").get(0),
-		eventOrder = ["touchStart", "touchMove", "touchEnd", "flickStart", "flick", "flickEnd"],
+		eventOrder = ["beforeFlickStart", "flick", "flickEnd"],
 		eventFired = [],
 		handler = function(e) {
 			var type = e.eventType;
@@ -701,10 +701,7 @@ asyncTest("Custom events #1 - When changes panel normally", function() {
 		};
 
 	this.inst = new eg.Flicking(el).on({
-		touchStart : handler,
-		touchMove : handler,
-		touchEnd : handler,
-		flickStart : handler,
+		beforeFlickStart: handler,
 		flick : handler,
 		flickEnd : handler,
 		beforeRestore : handler,
@@ -740,10 +737,7 @@ asyncTest("Custom events #2 - When stop event on beforeRestore", function() {
 			}
 		},
 		inst = this.inst = new eg.Flicking(el, { threshold : 100 }).on({
-			touchStart : handler,
-			touchMove : handler,
-			touchEnd : handler,
-			flickStart : handler,
+			beforeFlickStart: handler,
 			flick : handler,
 			flickEnd : handler,
 			beforeRestore : function(e) {
@@ -773,51 +767,8 @@ asyncTest("Custom events #2 - When stop event on beforeRestore", function() {
     });
 });
 
-asyncTest("Custom events #3 - When stop on touchMove event", function() {
-	// Given
-	var el = $("#mflick1").get(0),
-		eventFired = [],
-		handler = function(e) {
-			var type = e.eventType;
 
-			if(eventFired.indexOf(type) == -1) {
-				eventFired.push(type);
-			}
-		},
-		rx = /\(-?(\d+)/,
-		called = false,
-		inst = this.inst = new eg.Flicking(el).on({
-			touchStart : handler,
-			touchMove : function(e) {
-				e.stop();
-				called = !!$getTransformValue(inst._container);
-			},
-			touchEnd : handler,
-			flickStart : handler,
-			flick : handler,
-			flickEnd : handler,
-			beforeRestore : handler,
-			restore : handler
-		});
-
-	// When
-	Simulator.gestures.pan(el, {
-		pos: [0, 0],
-		deltaX: -70,
-		deltaY: 0,
-		duration: 1000,
-		easing: "linear",
-		touches : 1
-	}, function() {
-		// Then
-		setTimeout(function() {
-			ok(!called, "The panel should not be moved during touch move");
-			start();
-		},500);
-    });
-});
-
-asyncTest("Custom events #5 - When stop on change event", function() {
+asyncTest("Custom events #3 - When stop on flick event", function () {
 	// Given
 	var el = $("#mflick1").get(0),
 		eventFired = [],
@@ -831,10 +782,7 @@ asyncTest("Custom events #5 - When stop on change event", function() {
 		rx = /\(-?(\d+)/,
 		translate = "",
 		inst = this.inst = new eg.Flicking(el).on({
-			touchStart : handler,
-			touchMove : handler,
-			touchEnd : handler,
-			flickStart : handler,
+			beforeFlickStart: handler,
 			flick : function(e) {
 				e.stop();
 				translate = $getTransformValue(inst._container, true);
@@ -859,6 +807,65 @@ asyncTest("Custom events #5 - When stop on change event", function() {
 			start();
 		},800);
     });
+});
+
+asyncTest("Custom events #4 - When stop on beforeFlickStart event", function () {
+	// Given
+	var el = $("#mflick1").get(0),
+		eventFired = [],
+		handler = function (e) {
+			var type = e.eventType;
+
+			if (eventFired.indexOf(type) == -1) {
+				eventFired.push(type);
+			}
+		},
+		rx = /\(-?(\d+)/,
+		translate = "",
+		inst = this.inst = new eg.Flicking(el).on({
+			beforeFlickStart: function (e) {
+				e.stop();
+				translate = $getTransformValue(inst._container, true);
+			},
+			flick: handler,
+			flickEnd: handler,
+			beforeRestore: handler,
+			restore: handler
+		}),
+		panelIndex = {
+			no: inst._conf.panel.no,
+			index: inst._conf.panel.index
+		};
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [0, 0],
+		deltaX: -70,
+		deltaY: 0,
+		duration: 500,
+		easing: "linear",
+		touches: 1
+	}, function () {
+		// Then
+		setTimeout(function () {
+			var currPos = inst._getDataByDirection(inst._mcInst.get())[0];
+
+			ok(currPos % inst._conf.panel.size, "The panel stopped to move and is not positioned well?");
+
+			// When
+			inst.restore();
+			currPos = inst._getDataByDirection(inst._mcInst.get())[0];
+
+			// Then
+			ok(currPos % inst._conf.panel.size === 0, "The panel restored in its original position?");
+			deepEqual(panelIndex, {
+				no: inst._conf.panel.no,
+				index: inst._conf.panel.index
+			}, "Restored panel index value?")
+
+			start();
+		}, 800);
+	});
 });
 
 test("Workaround for buggy link highlighting on android 2.x", function () {

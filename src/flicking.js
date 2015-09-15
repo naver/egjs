@@ -435,50 +435,19 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		_holdHandler : function(e) {
 			this._conf.touch.holdPos = e.pos;
 			this._conf.panel.changed = false;
+
 			this._adjustContainerCss("start", e.pos);
-			/**
-			 * When touch starts
-			 * @ko 터치가 시작될 때 발생하는 이벤트
-			 * @name eg.Flicking#touchStart
-			 * @event
-			 *
-			 * @param {Object} param
-			 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
-			 * @param {Number} param.index Current panel physical index <ko>현재 패널 물리적 인덱스</ko>
-			 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
-			 * @param {Number} param.direction Direction of the panel move (see eg.DIRECTION_* constant) <ko>플리킹 방향 (eg.DIRECTION_* constant 확인)</ko>
-			 * @param {Array} param.pos Departure coordinate <ko>출발점 좌표</ko>
-			 * @param {Number} param.pos.0 Departure x-coordinate <ko>x 좌표</ko>
-			 * @param {Number} param.pos.1 Departure y-coordinate <ko>y 좌표</ko>
-			 */
-			this._triggerEvent("touchStart", { pos : e.pos });
 		},
 
 		/**
 		 * 'change' event handler
 		 */
 		_changeHandler : function(e) {
-			var conf = this._conf,
-				pos = e.pos,
+			var pos = e.pos,
 				eventRes = null;
 
 			this._setPointerEvents(e);  // for "click" bug
 
-			/**
-			 * When touch moves
-			 * @ko 터치한 상태에서 이동될 때 발생하는 이벤트
-			 * @name eg.Flicking#touchMove
-			 * @event
-			 *
-			 * @param {Object} param
-			 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
-			 * @param {Number} param.index Current panel physical index <ko>현재 패널 물리적 인덱스</ko>
-			 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
-			 * @param {Number} param.direction Direction of the panel move (see eg.DIRECTION_* constant) <ko>플리킹 방향 (eg.DIRECTION_* constant 확인)</ko>
-			 * @param {Array} param.pos Departure coordinate <ko>출발점 좌표</ko>
-			 * @param {Number} param.pos.0 Departure x-coordinate <ko>x 좌표</ko>
-			 * @param {Number} param.pos.1 Departure y-coordinate <ko>y 좌표</ko>
-			 */
 			/**
 			 * Occurs during the change
 			 * @ko 터치하지 않은 상태에서 패널이 이동될 때 발생하는 이벤트
@@ -494,11 +463,8 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			 * @param {Number} param.pos.0 Departure x-coordinate <ko>x 좌표</ko>
 			 * @param {Number} param.pos.1 Departure y-coordinate <ko>y 좌표</ko>
 			 */
-			conf.triggerFlickEvent && ( eventRes = this._triggerEvent(e.holding ? "touchMove" : "flick", {pos: e.pos}) );
-
-			if (eventRes || eventRes === null) {
-				this._setTranslate([-pos[+!this.options.horizontal], 0]);
-			}
+			this._conf.triggerFlickEvent && !e.holding && ( eventRes = this._triggerEvent("flick", {pos: e.pos}));
+			( eventRes || eventRes === null ) && this._setTranslate([-pos[+!this.options.horizontal], 0]);
 		},
 
 		/**
@@ -519,29 +485,6 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 
 			touch.distance === 0 && this._adjustContainerCss("end");
 
-			/**
-			 * When touch ends
-			 * @ko 터치가 종료될 때 발생되는 이벤트
-			 * @name eg.Flicking#touchEnd
-			 * @event
-			 *
-			 * @param {Object} param
-			 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
-			 * @param {Number} param.index Current panel physical index <ko>현재 패널 물리적 인덱스</ko>
-			 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
-			 * @param {Number} param.direction Direction of the panel move (see eg.DIRECTION_* constant) <ko>플리킹 방향 (eg.DIRECTION_* constant 확인)</ko>
-			 * @param {Array} param.depaPos Departure coordinate <ko>출발점 좌표</ko>
-			 * @param {Number} param.depaPos.0 Departure x-coordinate <ko>x 좌표</ko>
-			 * @param {Number} param.depaPos.1 Departure y-coordinate <ko>y 좌표</ko>
-			 * @param {Array} param.destPos Destination coordinate <ko>도착점 좌표</ko>
-			 * @param {Number} param.destPos.0 Destination x-coordinate <ko>x 좌표</ko>
-			 * @param {Number} param.destPos.1 Destination y-coordinate <ko>y 좌표</ko>
-			 */
-			this._triggerEvent("touchEnd", {
-				depaPos : e.depaPos,
-				destPos : e.destPos
-			});
-
 			this._setPointerEvents();  // for "click" bug
 		},
 
@@ -549,7 +492,15 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * 'animationStart' event handler
 		 */
 		_animationStartHandler : function(e) {
-			var panel = this._conf.panel;
+			var panel = this._conf.panel,
+				pos = {
+					depaPos: e.depaPos,
+					destPos: e.destPos
+				},
+				fpStop = function () {
+					e.stop();
+					panel.animating = false;
+				};
 
 			panel.animating = true;
 			//e.duration = this.options.duration;
@@ -561,7 +512,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				/**
 				 * Before panel changes
 				 * @ko 플리킹이 시작되기 전에 발생하는 이벤트
-				 * @name eg.Flicking#flickStart
+				 * @name eg.Flicking#beforeFlickStart
 				 * @event
 				 *
 				 * @param {Object} param
@@ -576,10 +527,10 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				 * @param {Number} param.destPos.0 Destination x-coordinate <ko>x 좌표</ko>
 				 * @param {Number} param.destPos.1 Destination y-coordinate <ko>y 좌표</ko>
 				 */
-				this._triggerEvent("flickStart", {
-					depaPos : e.depaPos,
-					destPos : e.destPos
-				});
+				if (!this._triggerEvent("beforeFlickStart", pos)) {
+					fpStop();
+					panel.changed = false;
+				}
 
 			} else {
 				/**
@@ -600,11 +551,8 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 				 * @param {Number} param.destPos.0 Destination x-coordinate <ko>x 좌표</ko>
 				 * @param {Number} param.destPos.1 Destination y-coordinate <ko>y 좌표</ko>
 				 */
-				if(!(this._conf.customEvent.restore = this._triggerEvent("beforeRestore", {
-					depaPos : e.depaPos,
-					destPos : e.destPos
-				}))) {
-					e.stop();
+				if (!(this._conf.customEvent.restore = this._triggerEvent("beforeRestore", pos))) {
+					fpStop();
 				}
 			}
 		},
@@ -613,8 +561,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 		 * 'animationEnd' event handler
 		 */
 		_animationEndHandler : function() {
-			var conf = this._conf,
-				panel = conf.panel;
+			var panel = this._conf.panel;
 
 			this._setPhaseValue("end");
 			panel.animating = false;
@@ -645,7 +592,7 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			 */
 			if (panel.changed) {
 				this._triggerEvent("flickEnd");
-			} else if (conf.customEvent.restore) {
+			} else if (this._conf.customEvent.restore) {
 				this._triggerEvent("restore");
 			}
 		},
@@ -677,14 +624,20 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 
 		/**
 		 * Set the logical panel index number
+		 * @param {Boolean} recover
 		 */
-		_setPanelNo : function() {
+		_setPanelNo: function (recover) {
 			var panel = this._conf.panel,
 				count = panel.origCount - 1,
 				num = this._conf.touch.direction === this._conf.dirData[0] ? 1 : -1;
 
-			panel.index += num;
-			panel.no += num;
+			if (recover) {
+				panel.index -= num;
+				panel.no -= num;
+			} else {
+				panel.index += num;
+				panel.no += num;
+			}
 
 			if(panel.no > count) {
 				panel.no = 0;
@@ -1024,6 +977,21 @@ eg.module("flicking",[window.jQuery, eg, eg.MovableCoord],function($, ns, MC) {
 			// adjust the position of current panel
 			this._mcInst.options.max = maxCoords;
 			this._setMovableCoord( "setTo", [ width * panel.index, 0 ] );
+		},
+
+		/**
+		 * Restore panel in its right position
+		 * @ko 패널의 위치가 올바로 위치하지 않게 되는 경우, 제대로 위치하도록 보정한다.
+		 */
+		restore: function () {
+			var panel = this._conf.panel,
+				currPos = this._getDataByDirection(this._mcInst.get())[0];
+
+			// check if the panel isn't in right position
+			if (currPos % panel.size) {
+				this._setPanelNo(true);
+				this._setMovableCoord("setTo", [panel.size * panel.index, 0], true, 0);
+			}
 		}
 	});
 });
