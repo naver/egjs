@@ -27,6 +27,7 @@ eg.module("infiniteGridService",
 			this._prependTopElementInfo;
 
 			this._PERSIST_KEY = "__INFINITEGRIDSERVICE_PERSISTKEY__";
+			this._EVENT_NAMESPACE = ".infiniteGridService" + Math.floor((Math.random() * 100000) + 1);
 
 			this._options = $.extend({
 				count: 120,
@@ -210,7 +211,7 @@ eg.module("infiniteGridService",
 		 * @return {Object} infiniteGridService Instance itself.
 		 */
 		activate: function() {
-			$(global).on("scrollend", $.proxy(this._handleScrollEnd, this));
+			$(global).on("scrollend" + this._EVENT_NAMESPACE, $.proxy(this._handleScrollEnd, this));
 			return this;
 		},
 		/**
@@ -220,7 +221,7 @@ eg.module("infiniteGridService",
 		 * @return {Object} infiniteGridService Instance itself.
 		 */
 		deactivate: function() {
-			$(global).off("scrollend", this._handleScrollEnd);
+			$(global).off("scrollend" + this._EVENT_NAMESPACE);
 			return this;
 		},
 		/**
