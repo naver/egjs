@@ -13,6 +13,7 @@ eg.module("rotate", [window.jQuery, eg, window, document], function($, ns, globa
 	 * @event
 	 * @param {Event} e event
 	 * @param {Boolean} e.isVertical vertical <ko>수직여부</ko>
+	 * @support { "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "3+", "an" : "2.1+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
 	 * @example
 	 * $(window).on("rotate",function(e){
 	 *      e.isVertical;
