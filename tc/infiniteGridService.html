@@ -1,76 +1,79 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+	<style>
+		.cf:before,.cf:after{content:" ";display:table;}
+		.cf:after{clear:both;}
+	</style>
 </head>
-<style type="text/css">
-    body,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,table,th,td,form,fieldset,legend,input,textarea,button,select {
-        margin:0;
-        padding:0;
-    }
-
-    ul,ol {
-        list-style:none;
-    }
-
-    li div {
-        margin:10px;
-        border:1px solid red;
-        background-color:#eee;
-    }
-
-    li.append {
-        background-color:#797;
-    }
-
-    li.prepend {
-        background-color:#333;
-    }
-
-    .r1 {
-        width:220px;
-        height:300px;
-    }
-    .r2 {
-        width:220px;
-        height:320px;
-    }
-    .r3 {
-        width:220px;
-        height:340px;
-    }
-    .r4 {
-        width:220px;
-        height:360px;
-    }
-    .r5 {
-        width:220px;
-        height:380px;
-    }
-    .r6 {
-        width:220px;
-        height:400px;
-    }
-    .r7 {
-        width:220px;
-        height:420px;
-    }
-</style>
 <body>
-
-<div style="height:150px;background:#f2f2f2">
-    <h1>header</h1>
-    <button id="prepend">prepend</button>
-    <button id="append">append</button>
+<nav class="navbar navbar-default">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#">InfiniteGridService</a>
+		</div>
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+				<li><a href="#">Link</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="#">Action</a></li>
+						<li><a href="#">Another action</a></li>
+						<li><a href="#">Something else here</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a href="#">Separated link</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a href="#">One more separated link</a></li>
+					</ul>
+				</li>
+			</ul>
+			<form class="navbar-form navbar-left" role="search">
+				<div class="form-group">
+					<input type="text" class="form-control" placeholder="Search">
+				</div>
+			<button type="submit" class="btn btn-default">Submit</button>
+			</form>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="#">Link</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="#">Action</a></li>
+						<li><a href="#">Another action</a></li>
+						<li><a href="#">Something else here</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a href="#">Separated link</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div><!-- /.navbar-collapse -->
+	</div><!-- /.container-fluid -->
+</nav>
+<div class="jumbotron">
+	<div class="container">
+		<h1>Hello, InfiniteGridService!</h1>
+		<p>This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+	</div>
 </div>
-
-<ul id="grid">
-</ul>
-
-<div style="height:90px;background:#ffff99">
-    footer
+<div class="container">
+  	<div class="row">
+  		<div id="prepend-loading-bar" class="alert alert-info" role="alert" style="display:none"><span class="glyphicon glyphicon-refresh" aria-hidden="true"> prepending...</span></div>
+		<div id="grid" class="col-md-12"></div>
+		<div class="cf"></div>
+		<div id="append-loading-bar" class="alert alert-info" role="alert" style="display:none"><span class="glyphicon glyphicon-refresh" aria-hidden="true"> appending...</span></div>
+	</div>
 </div>
 
 <script src="../bower_components/jquery/jquery.js"></script>
@@ -93,59 +96,150 @@
 <script src="../src/infiniteGridService.js"></script>
 
 <script>
-    function getContents(offset, limit) {
-        var html = "";
-        offset = offset || 1;
-        limit = limit || 10;
+	function getContents(offset, limit) {
+		var html = "";
+		var colors = ["63a69f", "f2e1ac", "f2836b", "f2594b", "CD2C24"];
 
-        var end = offset + limit;
+		offset = offset || 1;
+		limit = limit || 80;
 
-        var _random = function() {
-            return Math.floor( ( Math.random() * 7 ) + 1 );
+		var end = offset + limit;
+
+		var _random = function(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
-        for ( ; offset < end; offset ++ ) {
-            html = html + "<li class='item' data-offset='" + offset + "'><div class='r" + _random() + "'><a href='http://naver.com'>테스트 " + offset + "</a></div></li>";
-        }
+		for ( ; offset < end; offset ++ ) {
+			html = html +
+                '<div class="col-sm-6 col-md-3" data-offset="' + offset + '">' +
+                    '<div class="thumbnail">' +
+                        '<img src="http://dummyimage.com/' + _random(128, 182) + 'x1:1.65/' + colors[_random(0, colors.length - 1)] + '&text=++0x23' + offset + '++" alt="' + offset + '">' +
+                        '<div class="caption">' +
+                            '<h3>Thumbnail label</h3>' +
+                            '<p>...</p>' +
+                            '<p><a href="http://naver.com/" class="btn btn-primary" role="button">더보기</a>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+		}
 
-        return html;
-    }
-</script>
+		return html;
+	};
 
-<script>
-    var contents;
-    var offset = 1, limit = 40;
+	/**
+	 * Grid 내부 아이템의 offset 인덱스 리턴
+	 * @param {String} pos "first"일 경우 첫 아이템의 data-offset 리턴. "last"일 경우 마지막 아이템의 data-offset 리턴
+	 * @return {Number} offset
+	 */
+	function getOffset(pos) {
+		var offset;
 
-    var infiniteGridService = new eg.InfiniteGridService( "#grid" );
+		if (pos === "first") {
+			offset = $("#grid").children("div").first().data("offset");
+		} else if (pos === "last") {
+			offset = $("#grid").children("div").last().data("offset");
+		} else
 
-    $( "#grid" ).on( "click", "a", function() {
-        infiniteGridService.store();
-    } );
+		offset = parseInt(offset, 10);
+		return offset;
+	};
 
-    if( !infiniteGridService.restore() ) {
-        offset = $("#grid").find("li").last().data("offset");
-        offset = offset || 0;
-        offset = parseInt( offset , 10 ) + 1;
-        contents = getContents(offset, limit);
-        infiniteGridService.append(contents);
-    }
+	var contents;
+	var limit = 80;
+	var SERVER_URL = "http://fakeserver-dev-auplatform-1.c9.io/infiniteGrid/items";
 
-    infiniteGridService.on( "prepend", function() {
-        offset = $("#grid").find("li").first().data("offset");
-        if( offset < limit ) {
-            return;
-        }
-        offset = parseInt( offset , 10 ) - limit;
-        contents = getContents(offset, limit);
-        infiniteGridService.prepend(contents);
-    } );
+	/*
+	 eg.InfiniteGrideService 인스턴스 생성
+	 InfiniteGridService 대상인 엘리먼트 셀렉터 지정
+	 옵션 설정
+	*/
+	var infiniteGridService = new eg.InfiniteGridService("#grid");
 
-    infiniteGridService.on( "append", function() {
-        offset = $("#grid").find("li").last().data("offset");
-        offset = parseInt( offset , 10 ) + 1;
-        contents = getContents(offset, limit);
-        infiniteGridService.append(contents);
-    } );
+	/*
+	 "append" 이벤트 핸들러
+	 스크롤 다운 중 최하단 아이템이 화면에 보여질 때(threshold로 보정 가능)
+	 threshold가 300이면 최하단 아이템이 화면에 보여지기 300px 전에 이벤트 발생
+	 로딩바를 보이고 appendAjax 메소드를 호출해 서버에 데이터를 요청함.
+	 응답데이터가 #grid에 append 됨
+	 */
+	infiniteGridService.on("append", function() {
+		var offset = getOffset("last");
+		$("#append-loading-bar").show();
+//		var url = SERVER_URL + "?offset=" + (offset + 1) + "&limit=" + limit;
+//		infiniteGridService.appendAjax(url);
+//		var options = {
+//			url: url,
+//			jsonp: "callback"
+//		};
+//		infiniteGridService.appendAjax(options);
+		var contents = getContents(offset, limit);
+		infiniteGridService.append(contents);
+	});
+
+	/*
+	 "preppend" 이벤트 핸들러
+	 스크롤 업 중 최상단 아이템이 화면에 보여질 때(threshold로 보정 가능)
+	 threshold가 300이면 최하단 아이템이 화면에 보여지기 300px 전에 이벤트 발생
+	 로딩바를 보이고 prependAjax 메소드를 호출해 서버에 데이터를 요청
+	 응답데이터가 #grid에 preppend 되고 스크롤 위치가 보정
+	 */
+	infiniteGridService.on("prepend", function() {
+		var offset = getOffset("first");
+		offset = offset - limit;
+		if( offset > 0) {
+			$("#prepend-loading-bar").show();
+//			var url = SERVER_URL + "?offset=" + offset + "&limit=" + limit;
+//			infiniteGridService.prependAjax(url, function(data) {
+//				return $(data);
+//			});
+//			var options = {
+//				url: url,
+//				jsonp: "callback"
+//			};
+//			infiniteGridService.prependAjax(options, function(data) {
+//				return $(data);
+//			});
+			var contents = getContents(offset, limit);
+			infiniteGridService.append(contents);
+		}
+	});
+
+	/*
+	 "layoutComplete" 이벤트 핸들러
+	 append, preppend가 완료되면 발생
+	 이벤트 파라미터를 통해 append인지 prepend인지 확인 가능
+	 로딩바 감춤
+	 */
+	infiniteGridService.on("layoutComplete", function(e) {
+		if(e.isAppend) {
+			$("#append-loading-bar").hide();
+		} else {
+			$("#prepend-loading-bar").hide();
+		}
+	});
+
+	/*
+	 아이템의 <a> 클릭시 persist 데이터를 저장
+	 */
+	$("#grid").on("click", "a", function() {
+		infiniteGridService.store();
+	});
+
+	/*
+	 persist 데이터를 복원함
+	 복원하지 못한다면 새로운 데이터를 요청함
+	 */
+	if (!infiniteGridService.restore()) {
+//		var url = SERVER_URL + "?offset=1&limit=" + limit;
+//		infiniteGridService.appendAjax(url);
+//		var options = {
+//			url: url,
+//			jsonp: "callback"
+//		};
+//		infiniteGridService.appendAjax(options);
+		var contents = getContents(1, limit);
+		infiniteGridService.append(contents);
+	}
 </script>
 </body>
 </html>
