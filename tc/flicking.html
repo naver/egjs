@@ -244,16 +244,12 @@ button{
 		<button>getTotalCount(physical)</button>
 		<button>isPlaying()</button><button>resize()</button>
 	</p>
-	<p>
-		<input type="number" id="panel_no_restore" style="width:40px" min=0 value=0>
-		<button>restore()</button>
-	</p>
 
 	<textarea id="log1" class='log'></textarea>
 </div>
 <div id="custom_events">
-	<h4>2) Custom Events Log : <button onclick=elLog2.html('') style='width:120px'>CLEAR LOG</button></h4>
-	<textarea id='log2' class='log'></textarea>
+	<h4>2) Custom Events Log : <button onclick="elLog2.html('')" style="width:120px">CLEAR LOG</button></h4>
+	<textarea id="log2" class="log"></textarea>
 </div>
 
 <div id="custom_event_stop">
@@ -270,6 +266,8 @@ button{
 			<p>Layer 2</p>
 		</div>
 	</div>
+</div>
+
 <script>
 $("#methods").on("click", function(e) {
 	var el = e.target, method;
@@ -385,9 +383,9 @@ setTimeout(function() {
 	});
 
 	vf3a = new eg.Flicking($("#vflick3-1"), {
-		duration : 300
-		//,defaultIndex : 2
-		,circular : true,
+		duration : 300,
+		//,defaultIndex : 2,
+		circular : true,
 		previewPadding : 10,
 		horizontal : false
 	});
@@ -414,7 +412,7 @@ setTimeout(function() {
 				e.stop();
 				this.restore();
 			}
-		},
+		}
 	});
 }, 500);
 </script>
