@@ -244,6 +244,10 @@ button{
 		<button>getTotalCount(physical)</button>
 		<button>isPlaying()</button><button>resize()</button>
 	</p>
+	<p>
+		<input type="number" id="panel_no_restore" style="width:40px" min=0 value=0>
+		<button>restore()</button>
+	</p>
 
 	<textarea id="log1" class='log'></textarea>
 </div>
@@ -252,6 +256,20 @@ button{
 	<textarea id='log2' class='log'></textarea>
 </div>
 
+<div id="custom_event_stop">
+	<h4>3) beforeFlickStart e.stop()/restore()</h4>
+
+	<div id="mflick6" class="flick">
+		<div style="background-color:#CC66CC">
+			<p>Layer 0</p>
+		</div>
+		<div style="background-color:#66cccc">
+			<p>Layer 1</p>
+		</div>
+		<div style="background-color:green">
+			<p>Layer 2</p>
+		</div>
+	</div>
 <script>
 $("#methods").on("click", function(e) {
 	var el = e.target, method;
@@ -349,7 +367,6 @@ setTimeout(function() {
 		duration : 300,
 		circular : true,
 		defaultIndex : 1,
-		circular : true,
 		horizontal : false
 	});
 
@@ -376,19 +393,28 @@ setTimeout(function() {
 	});
 
 	f5 = new eg.Flicking($("#mflick5"), {
-		duration : 0,
+		duration : 500,
 		threshold : 50,
 		circular : true
 	}).on({
-		touchStart : log,
-		touchMove : log,
-		touchEnd : log,
-		flickStart : log,
+		beforeFlickStart : log,
 		flick : log,
 		flickEnd : log,
-		flickStart : log,
 		beforeRestore : log,
 		restore : log
+	});
+
+	f6 = new eg.Flicking($("#mflick6"), {
+		duration : 500,
+		threshold : 50,
+		circular : true
+	}).on({
+		beforeFlickStart : function(e) {
+			if(e.no === 2) {
+				e.stop();
+				this.restore();
+			}
+		},
 	});
 }, 500);
 </script>
