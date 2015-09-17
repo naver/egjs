@@ -55,8 +55,7 @@ var $dot = $("#dot"),
 
     "change" : function(evt) {
       var pos = evt.pos;
-      $dot.css("-webkit-transform", eg.translate( pos[0]+ "px", pos[1]+ "px", useHW));
-      console.log(evt.pos[0]);
+      $dot.css("transform", eg.translate( pos[0]+ "px", pos[1]+ "px", useHW));
     }
   });
 
