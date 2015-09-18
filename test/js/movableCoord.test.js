@@ -89,6 +89,25 @@ test("bind", function() {
 	equal(beforeHammerCount+1, Object.keys(this.inst._hammers).length, "added hammer instance after call bind method" );
 });
 
+test("bind with inputType", function() {
+	// Given
+	var $el = jQuery("#area");
+	var before = $el.data(eg.MovableCoord.KEY);
+	var beforeHammerCount = Object.keys(this.inst._hammers).length;
+
+	// When
+	this.inst.bind($el, {
+		direction : eg.DIRECTION_ALL,
+		inputType : null
+	});
+
+	// Then
+	var key = $el.data(eg.MovableCoord.KEY);
+	equal(before, undefined, "key data value is 'undefined'' before call bind method" );
+	equal(key, undefined, "key data value is 'undefined' after call bind method" );
+	equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "nothing" );
+});
+
 test("unbind", function() {
 	// Given
 	var $el = jQuery("#area");
@@ -106,6 +125,26 @@ test("unbind", function() {
 	notEqual(before, key, "key data value was changed after call 'unbind' method" );
 	equal(key, undefined, "key data value is 'undefined'' after call bind method" );
 	equal(beforeHammerCount-1, Object.keys(this.inst._hammers).length, "removed hammer instance after call bind method" );
+});
+
+test("unbind with inputType", function() {
+	// Given
+	var $el = jQuery("#area");
+	this.inst.bind($el, {
+		direction : eg.DIRECTION_ALL,
+		inputType : []
+	});
+	var before = $el.data(eg.MovableCoord.KEY);
+	var beforeHammerCount = Object.keys(this.inst._hammers).length;
+
+	// When
+	this.inst.unbind($el);
+
+	// Then
+	var key = $el.data(eg.MovableCoord.KEY);
+	equal(before, undefined, "key data value is 'undefined'' after call 'unbind' method" );
+	equal(key, undefined, "key data value is 'undefined'' after call bind method" );
+	equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "nothing" );
 });
 
 test("one element, double bind", function() {
@@ -196,7 +235,7 @@ test("_convertInputType", function() {
 	// When
 	inputType = [ ];
 	// Then
-	equal(this.inst._convertInputType(inputType), Hammer.TouchMouseInput, "check TouchMouseInput");
+	equal(this.inst._convertInputType(inputType), null, "type is null");
 
 });
 
@@ -210,7 +249,6 @@ asyncTest("setTo : check 'change' event", function() {
 	// When
 	this.inst.setTo(0, 200, 0);
 });
-
 
 test("setBy", function() {
 	// Given
@@ -244,6 +282,74 @@ asyncTest("setBy : check a 'change' event", function() {
 	this.inst.setBy(-10, -10);
 });
 
+
+module("movableCoord methods Test when inputType is []", {
+	setup : function() {
+		this.inst = new eg.MovableCoord( {
+			min : [ 0, 0 ],
+			max : [ 300, 400 ],
+			bounce : 100,
+			margin : 0,
+			circular : false,
+			inputType : []
+		});
+	},
+	teardown : function() {
+		this.inst.destroy();
+		this.inst = null;
+	}
+});
+
+test("setTo when inputType is []", function() {
+	// Given
+
+	// When
+	this.inst.setTo(0, 200);
+	// Then
+	deepEqual(this.inst.get(), [0, 200], "set to position 0,200");
+
+	// When
+	this.inst.setTo(-200, 500);
+	// Then
+	deepEqual(this.inst.get(), [0, 400], "if position parameters was out of range, set to position min or max values.");
+
+	// When
+	this.inst.setTo(600, -900);
+	// Then
+	deepEqual(this.inst.get(), [300, 0], "if position parameters was out of range, set to position min or max values.");
+});
+
+asyncTest("setTo when inputType is [] : check 'change' event", function() {
+	// Given
+	this.inst.on("change", function(e) {
+		// Then
+		deepEqual(e.pos, [0, 200], "set to position 0,200");
+		start();
+	})
+	// When
+	this.inst.setTo(0, 200, 0);
+});
+
+
+test("setBy when inputType is []", function() {
+	// Given
+	// When
+	this.inst.setBy(20, 20);
+	// Then
+	deepEqual(this.inst.get(), [20, 20], "set to position 20,20 relatively");
+	// When
+	this.inst.setBy(-10, -10);
+	// Then
+	deepEqual(this.inst.get(), [10, 10], "set to position -10,-10 relatively");
+	// When
+	this.inst.setBy(-1000, -1000);
+	// Then
+	deepEqual(this.inst.get(), [0, 0], "if position parameters was out of range, set to position min or max values.");
+	// When
+	this.inst.setBy(1000, 1000);
+	// Then
+	deepEqual(this.inst.get(), [300, 400], "if position parameters was out of range, set to position min or max values.");
+});
 
 module("movableCoord setTo duration Test", {
 	setup : function() {

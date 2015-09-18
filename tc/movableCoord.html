@@ -55,6 +55,11 @@
 <div id="viewport"></div>
 <script>
 window.console = window.console || {};
+var supportTransform = (function() {
+    var bodyStyle = (document.head || document.getElementsByTagName("head")[0]).style;
+    return "transform" in bodyStyle || "webkitTransform" in bodyStyle || "msTransform" in bodyStyle || "mozTransform" in bodyStyle;
+})();
+
 var mores = [ 0, 0, 2, 0, 3, 0 ];
 var $content = $("#content");
 var useHW = eg.isHWAccelerable();
@@ -91,7 +96,14 @@ var inst = new eg.MovableCoord({
   "change" : function(evt) {
     var pos = evt.pos;
     evt.holding ? console.log("change",pos) :  console.log("animation-change",pos);
-      $content.css("transform", eg.translate(-pos[0] + 'px',-pos[1] + "px", useHW));
+      if(supportTransform) {
+        $content.css("transform", eg.translate(-pos[0] + 'px',-pos[1] + "px", useHW));
+      } else {
+        $content.css({
+            "left" : (10-pos[0]) + 'px',
+            "top" : (90-pos[1]) + "px"
+          });
+      }
   }
 });
 
