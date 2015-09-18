@@ -6,8 +6,8 @@ eg.module("infiniteGridService",
 	 *
 	 * @param {String} DOM Element to be InfiniteGride. <ko>타겟 엘리먼트</ko>
 	 * @param {Object} [Options] A set of key/value pairs that configure the InfiniteGridService. <ko>key/value 형태의 옵션</ko>
-	 * @param {Number} [options.count=60] Count DOM count for recycle. If value is -1, DOM does increase without limit -1. <ko>재사용할 DOM 갯수. -1일 경우 DOM은 계속 늘어남.</ko>
-	 * @param {Number} [threshold=120] Threshold Scroll coordinate threshold. <ko>append, prepend 이벤트가 발생하기 위한 스크롤 좌표 임계치.</ko>
+	 * @param {Number} [options.count=240] Count DOM count for recycle. If value is -1, DOM does increase without limit -1. <ko>재사용할 DOM 갯수. -1일 경우 DOM은 계속 늘어남.</ko>
+	 * @param {Number} [threshold=300] Threshold Scroll coordinate threshold. <ko>append, prepend 이벤트가 발생하기 위한 스크롤 좌표 임계치.</ko>
 	 * @param {Boolean} [usePersist=true] usePersist Determines whether allows persist. <ko>persist 사용 여부.</ko>
 	 */
 	ns.InfiniteGridService = ns.Class.extend(ns.Component, {
@@ -17,7 +17,6 @@ eg.module("infiniteGridService",
 		 * @param {Object} options
 		 */
 		construct: function(element, options) {
-			this._$global = $(global);
 			this._$wrapper = $(element);
 
 			this._prevScrollTop = 0;
@@ -25,14 +24,13 @@ eg.module("infiniteGridService",
 
 			this._topElement;
 			this._bottomElemment;
-			this._prependTopElementInfo;
 
 			this._PERSIST_KEY = "__INFINITEGRIDSERVICE_PERSISTKEY__";
 			this._EVENT_NAMESPACE = ".infiniteGridService" + Math.floor((Math.random() * 100000) + 1);
 
 			this._options = $.extend({
-				count: 120,
-				threshold: 100,
+				count: 240,
+				threshold: 300,
 				usePersist: true
 			}, options);
 
@@ -42,16 +40,6 @@ eg.module("infiniteGridService",
 
 			this._getScrollTop();
 			this._infiniteGrid = new eg.InfiniteGrid(element, this._options);
-
-			this._infiniteGrid.on("layoutComplete", $.proxy(function(e) {
-				this._setBoundaryElements();
-
-				if (!e.isAppend) {
-					this._adjustPrependScroll(e);
-				}
-
-				this._inserting = false;
-			}, this));
 
 			this.activate();
 		},
@@ -106,7 +94,7 @@ eg.module("infiniteGridService",
 
 			return enablePersist;
 		},
-		_handleScrollEnd: function() {
+		_onScroll: function() {
 			if (this._inserting) {
 				return;
 			}
@@ -117,7 +105,7 @@ eg.module("infiniteGridService",
 						this._bottomElemment.getBoundingClientRect();
 
 					if (bottomElementBoundingClientRect.top <=
-							this._$global.height() + this._options.threshold) {
+							doc.documentElement.clientHeight + this._options.threshold) {
 						this.trigger("append");
 					}
 				}
@@ -128,6 +116,7 @@ eg.module("infiniteGridService",
 
 					if (topElementBoundingClientRect.bottom >=
 							(0 - this._options.threshold)) {
+						this._fit();
 						this.trigger("prepend");
 					}
 				}
@@ -135,9 +124,16 @@ eg.module("infiniteGridService",
 
 			this._prevScrollTop = this._getScrollTop();
 		},
-		_insertElements: function(mode, elements) {
-			this._inserting = true;
+		_onLayoutComplete: function(e) {
+			if (!e.isAppend) {
+				global.scrollTo(0, this._getScrollTop() + e.distance);
+			}
 
+			this._setBoundaryElements();
+			this.trigger("layoutComplete", e);
+			this._inserting = false;
+		},
+		_insertElements: function(mode, elements) {
 			var length = 0;
 			var $elements;
 
@@ -150,59 +146,41 @@ eg.module("infiniteGridService",
 			if (mode === "append") {
 				length = this._infiniteGrid.append($elements);
 			} else if (mode === "prepend") {
-				this._setPrependTopElementInfo();
 				length = this._infiniteGrid.prepend($elements);
 			}
-
-			this._inserting = false;
 
 			return length;
 		},
 		_insertAjax: function(mode, url, options, callback) {
-			this._inserting = true;
-
-			if (typeof url === "object") {
-				options = url;
-				url = undefined;
-			}
-
 			if ($.isFunction(options)) {
 				callback = options;
 				options = undefined;
 			}
 
 			return $.ajax(url, options)
-				.always($.proxy(function(data, textStatus) {
-					var $elements;
-
-					if (textStatus === "success") {
+					.done($.proxy(function(data) {
+						var $elements;
 						if (callback) {
 							$elements = callback(data);
 						} else {
 							$elements = $(data);
 						}
-					}
-
-					this._insertElements(mode, $elements);
-				}, this));
+						this._insertElements(mode, $elements);
+					}, this))
+					.fail($.proxy(function(){
+						this._inserting = false;
+					}, this));
 		},
-		_setPrependTopElementInfo: function() {
-			if (this._topElement) {
-				this._prependTopElementInfo = {
-					element: this._topElement,
-					boundingClientRect: this._topElement.getBoundingClientRect()
-				};
-			}
-		},
-		_adjustPrependScroll: function() {
-			if (this._prependTopElementInfo.element) {
-				var $element = $(this._prependTopElementInfo.element);
-				var scrollTop =
-						this._$wrapper.offset().top + $element.offset().top +
-						$element.outerHeight() +
-						(0 - this._prependTopElementInfo.boundingClientRect.bottom);
+		_fit: function() {
+			var wrapper = this._$wrapper.get(0);
+			var wrapperClientRect = wrapper.getBoundingClientRect();
+			var isFitted = this._infiniteGrid.fit();
 
-				global.scrollTo(0, scrollTop);
+			if (isFitted) {
+				var fittedWrapperClientRect = wrapper.getBoundingClientRect();
+				var delta = wrapperClientRect.bottom - fittedWrapperClientRect.bottom;
+				var scrollTop = this._getScrollTop();
+				global.scrollTo(0, scrollTop - delta);
 			}
 		},
 		/**
@@ -212,7 +190,9 @@ eg.module("infiniteGridService",
 		 * @return {Object} infiniteGridService Instance itself.
 		 */
 		activate: function() {
-			$(global).on("scrollend" + this._EVENT_NAMESPACE, $.proxy(this._handleScrollEnd, this));
+			$(global).on("scroll" + this._EVENT_NAMESPACE, $.proxy(this._onScroll, this));
+			this._infiniteGrid.on("layoutComplete", $.proxy(this._onLayoutComplete, this));
+
 			return this;
 		},
 		/**
@@ -223,6 +203,7 @@ eg.module("infiniteGridService",
 		 */
 		deactivate: function() {
 			$(global).off("scrollend" + this._EVENT_NAMESPACE);
+			this._infiniteGrid.off("layoutComplete");
 			return this;
 		},
 		/**
@@ -236,6 +217,7 @@ eg.module("infiniteGridService",
 		 *    infiniteGrid.append($("<li> contents </li>"));
 		 */
 		append: function(elements) {
+			this._inserting = true;
 			return this._insertElements("append", elements);
 		},
 		/**
@@ -249,6 +231,7 @@ eg.module("infiniteGridService",
 		 * infiniteGrid.prepend($("<li> contents </li>"));
 		 */
 		prepend: function(elements) {
+			this._inserting = true;
 			return this._insertElements("prepend", elements);
 		},
 		/**
@@ -265,6 +248,7 @@ eg.module("infiniteGridService",
 		 *    } );
 		 */
 		appendAjax: function(url, settings, callback) {
+			this._inserting = true;
 			return this._insertAjax("append", url, settings, callback);
 		},
 		/**
@@ -281,6 +265,7 @@ eg.module("infiniteGridService",
 			} );
 		 */
 		prependAjax: function(url, settings, callback) {
+			this._inserting = true;
 			return this._insertAjax("prepend", url, settings, callback);
 		},
 		/**
