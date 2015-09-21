@@ -1,5 +1,7 @@
 // jscs:disable maximumLineLength
 eg.module("movableCoord", [window.jQuery, eg, window.Hammer], function($, ns, HM) {
+	var SUPPORT_TOUCH = ("ontouchstart" in window);
+
 	// jscs:enable maximumLineLength
 	// It is scheduled to be removed in case of build process.
 	// ns.__checkLibrary__( !("Hammer" in window), "You must download Hammerjs. (http://hammerjs.github.io/)\n\ne.g. bower install hammerjs");
@@ -109,21 +111,27 @@ eg.module("movableCoord", [window.jQuery, eg, window.Hammer], function($, ns, HM
 
 			$.extend(subOptions, options);
 
+			var inputClass = this._convertInputType(subOptions.inputType);
+			if (!inputClass) {
+				return this;
+			}
 			if (keyValue) {
-				this._hammers[keyValue].get("pan").set(
-					{ direction: subOptions.direction }
-				);
+				this._hammers[keyValue].get("pan").set({
+					direction: subOptions.direction
+				});
 			} else {
 				keyValue = Math.round(Math.random() * new Date().getTime());
 				this._hammers[keyValue] = this._createHammer(
 					$el.get(0),
-					subOptions
+					subOptions,
+					inputClass
 				);
 				$el.data(ns.MovableCoord.KEY, keyValue);
 			}
 			return this;
 		},
-		_createHammer: function(el, subOptions) {
+
+		_createHammer: function(el, subOptions, inputClass) {
 			try {
 				// create Hammer
 				var hammer = new HM.Manager(el, {
@@ -139,7 +147,7 @@ eg.module("movableCoord", [window.jQuery, eg, window.Hammer], function($, ns, HM
 						// css properties were removed due to usablility issue
 						// http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html
 						cssProps: {},
-						inputClass: this._convertInputType(subOptions.inputType)
+						inputClass: inputClass
 					});
 				return hammer.on("hammer.input", $.proxy(function(e) {
 					if (e.isFirst) {
@@ -159,19 +167,19 @@ eg.module("movableCoord", [window.jQuery, eg, window.Hammer], function($, ns, HM
 		_convertInputType: function(inputType) {
 			var hasTouch = false;
 			var hasMouse = false;
+			inputType = inputType || [];
 			$.each(inputType, function(i, v) {
 				switch (v) {
 					case "mouse" : hasMouse = true; break;
-					case "touch" : hasTouch = true; break;
+					case "touch" : hasTouch = SUPPORT_TOUCH; break;
 				}
 			});
-
 			if (hasMouse) {
 				return hasTouch ? HM.TouchMouseInput : HM.MouseInput;
 			} else if (hasTouch) {
 				return HM.TouchInput;
 			} else {
-				return HM.TouchMouseInput;
+				return null;
 			}
 		},
 
@@ -711,7 +719,6 @@ eg.module("movableCoord", [window.jQuery, eg, window.Hammer], function($, ns, HM
 				return this;
 			}
 			this._setInterrupt(true);
-
 			if (x !== pos[0]) {
 				if (!circular[3]) {
 					x = Math.max(min[0], x);

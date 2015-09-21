@@ -44,6 +44,10 @@
   <div id="vmove"></div>
 
 <script>
+var supportTransform = (function() {
+    var bodyStyle = (document.head || document.getElementsByTagName("head")[0]).style;
+    return "transform" in bodyStyle || "webkitTransform" in bodyStyle || "msTransform" in bodyStyle || "mozTransform" in bodyStyle;
+})();
 var $dot = $("#dot"),
   useHW = eg.isHWAccelerable(),
   inst = new eg.MovableCoord({
@@ -55,8 +59,14 @@ var $dot = $("#dot"),
 
     "change" : function(evt) {
       var pos = evt.pos;
-      $dot.css("-webkit-transform", eg.translate( pos[0]+ "px", pos[1]+ "px", useHW));
-      console.log(evt.pos[0]);
+      if(supportTransform) {
+        $dot.css("transform", eg.translate(pos[0] + 'px',pos[1] + "px", useHW));
+      } else {
+        $dot.css({
+            "left" : (pos[0]) + 'px',
+            "top" : (pos[1]) + "px"
+          });
+      }
     }
   });
 
