@@ -183,7 +183,6 @@ function NewsLoader(baseElId) {
 }
 
 NewsLoader.prototype._appendNews = function() {
-	console.log("append");
 	var newsHtml = "";
 	for(var i = 0 ; i < newsAddUnit ; i++){
 		var randomNews = newsData[Math.floor(Math.random()*10)];
