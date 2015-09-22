@@ -222,7 +222,7 @@ button{
   </div>
 </div>
 
-<h4>1) Methods : <button onclick="this.innerHTML=$('#methods').toggle().is(':visible')?'-':'+'">-</button></h4>
+<div style="margin-top:20px;font-size:17px;font-weight:bold">1) Methods : <button onclick="this.innerHTML=$('#methods').toggle().is(':visible')?'-':'+'">-</button></div>
 <div id="methods">
 	<p>
 		<button>prev()</button> <button>next()</button> /
@@ -252,7 +252,7 @@ button{
 	<textarea id="log2" class="log"></textarea>
 </div>
 
-<div id="custom_event_stop">
+<div id="custom_event_stop" style="margin-bottom:20px">
 	<h4>3) beforeFlickStart e.stop()/restore()</h4>
 
 	<div id="mflick6" class="flick">
@@ -416,5 +416,6 @@ setTimeout(function() {
 	});
 }, 500);
 </script>
+<!--<script src="http://yobi.navercorp.com/Front-End/egjs-util/rawcode/master/src/loghelper.js?init"></script>-->
 </body>
 </html>
