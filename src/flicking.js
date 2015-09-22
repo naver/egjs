@@ -323,13 +323,12 @@ eg.module("flicking", [window.jQuery, eg, eg.MovableCoord], function ($, ns, MC)
 		 */
 		_applyPanelsCss: function () {
 			var conf = this._conf;
-			var $dummyAnchor = conf.$dummyAnchor;
 			var dummyAnchorClassName = "__dummy_anchor";
 
 			if (conf.isAndroid2) {
-				$dummyAnchor = $("." + dummyAnchorClassName);
+				conf.$dummyAnchor = $("." + dummyAnchorClassName);
 
-				!$dummyAnchor.length && this.$wrapper.append(
+				!conf.$dummyAnchor.length && this.$wrapper.append(
 					conf.$dummyAnchor = $("<a href='javascript:void(0);' class='" +
 						dummyAnchorClassName +
 						"' style='position:absolute;height:0px;width:0px;'>")
