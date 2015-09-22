@@ -25,9 +25,9 @@ button{
 	background-color:#eee;
 }
 
-.log{border:solid 1px #000 }
+.log{border:solid 1px #000;overflow:scroll }
 #log1{width:99%;height:42px}
-#log2{width:99%;height:130px}
+#log2{width:80%;height:130px;float:left;-webkit-overflow-scrolling:touch;}
 .red{color:red}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-shim.js"></script>
@@ -245,14 +245,14 @@ button{
 		<button>isPlaying()</button><button>resize()</button>
 	</p>
 
-	<textarea id="log1" class='log'></textarea>
+	<textarea id="log1" class="log"></textarea>
 </div>
 <div id="custom_events">
 	<h4>2) Custom Events Log : <button onclick="elLog2.html('')" style="width:120px">CLEAR LOG</button></h4>
-	<textarea id="log2" class="log"></textarea>
+	<div id="log2" class="log"></div> <div style="width:45px;float:left"><button onclick="scroll()">▲</button><button onclick="scroll(true)">▼</button></div>
 </div>
 
-<div id="custom_event_stop" style="margin-bottom:20px">
+<div id="custom_event_stop" style="margin-bottom:20px;padding-top:5px;clear:left">
 	<h4>3) beforeFlickStart e.stop()/restore()</h4>
 
 	<div id="mflick6" class="flick">
@@ -312,11 +312,22 @@ function getDirection(dir) {
 	}
 }
 
+function scroll(up) {
+	var ele = $("#log2")[0],
+		pixel = 100;
+
+	if(up) {
+		ele.scrollTop += pixel;
+	} else {
+		ele.scrollTop -= pixel;
+	}
+}
+
 function log(e) {
 	var direction = getDirection(e.direction),
 		 msg = [ i++, e.eventType, direction, e.no ].join(" : ");
 
-	elLog2.text( msg +"\n" + elLog2.text());
+	elLog2.html( [ msg, elLog2.html(), ""].join("<br>") );
 }
 
 setTimeout(function() {
