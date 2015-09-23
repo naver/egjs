@@ -17,21 +17,21 @@ eg.module("scrollEnd", [jQuery, eg, window, document], function($, ns, global, d
 	* });
 	*
 	*/
-
+	
 	var isTouched;
-	var isMoved;
-	var preTop = 0;
-	var preLeft = 0;
-	var observerInterval;
+	var isMobile;
 	var scrollEndTimer;
 	var rotateFlag = false;
-	var CHROME = 3;
+	
+	var CHROME = 3; 
 	var TIMERBASE = 2;
 	var TOUCHBASE = 1;
 	var SCROLLBASE = 0;
+			
 	var deviceType = getDeviceType();
 
 	$.event.special.scrollend = {
+        latency: 250,
 		setup: function() {
 			attachEvent();
 		},
@@ -41,111 +41,66 @@ eg.module("scrollEnd", [jQuery, eg, window, document], function($, ns, global, d
 	};
 
 	/**
-	 * Below iOS7 : Scroll event occurs once when the scroll is stopped
-	 * Since iOS8 : Scroll event occurs every time scroll
-	 * android : Scroll event occurs every time scroll
-	 * Below android 2.x : Touch event-based processing
-	 * android & chrome : Scroll event occurs when the rotation
+	 * iOS & safari : 
+	 * 		Below iOS7, Scroll event occurs once when the scroll is stopped.
+	 * 		Since iOS8, Scroll event occurs every time scroll
+	 * 		Scroll event occurs when the rotation
+	 * android : 
+	 *		Scroll event occurs every time scroll
+	 *		Scroll event occurs when the rotation
 	 * @ko
-	 * iOS : iOS 7.x 이하에서는 스크롤이 멈췄을때 scroll 이벤트 한번 발생
-	 *       iOS 8.x 이상에서는 scroll 이벤트가 android 와 동일하게 스크롤시 매번 발생
-	 * android : 스크롤시 scroll 이벤트는 매번 발생
-	 *           android 2.x 이하에서는 터치 이벤트 기반으로 처리
-	 * android & chrome : 회전시 scroll 이벤트가 발생되어 이를 처리하기 위함.
+	 * iOS & safari : 
+	 *		iOS 7.x 이하에서는 스크롤이 멈췄을때 scroll 이벤트 한번 발생
+	 *      iOS 8.x 이상에서는 scroll 이벤트가 android 와 동일하게 스크롤시 매번 발생
+	 *		회전시 scroll 이벤트가 발생되어 이를 무시처리해야함
+	 *		(orientationchange 에 의해 발생하는 scroll 이벤트 1회만 무시)
+	 * android : 
+	 *		스크롤시 scroll 이벤트 매번 발생
+	 *		회전시 scroll 이벤트가 발생되어 이를 무시처리해야함
 	 */
-
+	
 	function getDeviceType() {
-		var retValue = SCROLLBASE;
+		var retValue = TIMERBASE;
 		var agent = ns.agent();
 		var osInfo = agent.os;
+		var osVersion = osInfo.version;
 		var browserInfo = agent.browser;
 		var version = parseInt(osInfo.version, 10);
 
-		if (osInfo.name === "android") {
-			retValue = browserInfo.name === "chrome" ? CHROME : (version >= 3 ? TIMERBASE : TOUCHBASE);
-		} else if (/^(?:window|ios)$/.test(osInfo.name) && version >= 8) {
-			retValue = TIMERBASE;
+		// Browsers that trigger scroll event like scrollstop : SCROLLBASE
+		if (osInfo.name === "ios") {
+			if(browserInfo.webview === true || osVersion.indexOf("7.") !== -1) {
+				retValue = SCROLLBASE;
+			}
 		}
-
+		console.log("retValue", retValue);
 		return retValue;
 	}
 
 	function attachEvent() {
-
-		var winEvent = $(global).on("scroll", scroll);
-
-		if (deviceType === TOUCHBASE) {
-			$(doc).on({
-				"touchstart": touchStart,
-				"touchmove": touchMove,
-				"touchend": touchEnd
-			});
-		}
-
-		if (deviceType === CHROME) {
-			winEvent.on("orientationchange", function() {
-				rotateFlag = true;
-			});
-		}
+		$(global).on("scroll", scroll);
+		$(global).on("orientationchange", onOrientationchange);
 	}
 
-	function touchStart() {
-		isTouched = true;
-		isMoved = false;
-		preTop = preLeft = 0;
-	}
-
-	function touchMove() {
-		isMoved = true;
-	}
-
-	function touchEnd() {
-		isTouched = false;
-		if (isMoved) {
-			startObserver();
-		}
+	function onOrientationchange() {
+		rotateFlag = true;
 	}
 
 	function scroll() {
+		if (rotateFlag) {
+			rotateFlag = false;
+			return;
+		}
+		
 		switch (deviceType) {
 			case SCROLLBASE :
 				triggerScrollEnd();
 				break;
-			case TOUCHBASE :
-				startObserver();
-				break;
 			case TIMERBASE :
 				triggerScrollEndAlways();
 				break;
-			case CHROME :
-				if (rotateFlag) {
-					rotateFlag = false;
-				} else {
-					triggerScrollEnd();
-				}
-				break;
-		}
-	}
+		}				
 
-	function startObserver() {
-		stopObserver();
-		observerInterval = setInterval(observe, 100);
-
-	}
-
-	function stopObserver() {
-		observerInterval && clearInterval(observerInterval);
-		observerInterval = null;
-	}
-
-	function observe() {
-		if (isTouched || (preTop !== global.pageYOffset || preLeft !== global.pageXOffset)) {
-			preTop = global.pageYOffset;
-			preLeft = global.pageXOffset;
-		} else {
-			stopObserver();
-			triggerScrollEnd();
-		}
 	}
 
 	function triggerScrollEnd() {
@@ -158,17 +113,17 @@ eg.module("scrollEnd", [jQuery, eg, window, document], function($, ns, global, d
 	function triggerScrollEndAlways() {
 		clearTimeout(scrollEndTimer);
 		scrollEndTimer = setTimeout(function() {
+			if (rotateFlag) {
+				rotateFlag = false;
+				return;
+			}
 			triggerScrollEnd();
-		}, 350);
+		}, $.event.special.scrollend.latency);
 	}
 
 	function removeEvent() {
-		$(doc).off({
-			"touchstart": touchStart,
-			"touchmove":  touchMove,
-			"touchend": touchEnd
-		});
 		$(global).off("scroll", scroll);
+		$(global).off("orientationchange", onOrientationchange);
 	}
 
 	return {
