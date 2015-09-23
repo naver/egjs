@@ -121,8 +121,8 @@ eg.module("visible", [window.jQuery, eg], function($, ns) {
 				area = {
 					top: 0,
 					left: 0,
-					bottom: window.innerHeight,
-					right: window.innerWidth
+					bottom: window.innerHeight || document.documentElement.clientHeight,
+					right: window.innerWidth || document.documentElement.clientWidth
 				};
 			} else {
 				area = wrapper.getBoundingClientRect();
