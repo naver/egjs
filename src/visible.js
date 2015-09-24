@@ -106,11 +106,14 @@ eg.module("visible", [window.jQuery, eg], function($, ns) {
 			return this._$wrapper.getBoundingClientRect();
 		},
 		_getWindowRect : function() {
+			// [IE7] document.documentElement.clientHeight has always value 0 (bug)
 			return {
 				top: 0,
 				left: 0,
-				bottom: document.documentElement.clientHeight,
-				right: document.documentElement.clientWidth
+				bottom: document.documentElement.clientHeight || 
+							document.body.clientHeight,
+				right: document.documentElement.clientWidth || 
+							document.body.clientWidth
 			};
 		},
 		_reviseElements: function(target, i) {
