@@ -28,6 +28,14 @@ eg.module("visible", [window.jQuery, eg], function($, ns) {
 
 			this._$wrapper = $(this.options.wrapper);
 			this._$wrapper = this._$wrapper.length > 0 ? this._$wrapper[0] : document;
+			
+			// this._$wrapper is Element, or may be Window 
+			if(this._$wrapper.nodeType && this._$wrapper.nodeType === 1) {
+				this._getAreaRect = this._getWrapperRect;
+			} else {
+				this._getAreaRect = this._getWindowRect;
+			}	
+
 			this._targets = [];
 			this._timer = null;
 			this._supportElementsByClassName = (function() {
@@ -94,6 +102,17 @@ eg.module("visible", [window.jQuery, eg], function($, ns) {
 			}
 			return this;
 		},
+		_getWrapperRect : function() {
+			return this._$wrapper.getBoundingClientRect();
+		},
+		_getWindowRect : function() {
+			return {
+				top: 0,
+				left: 0,
+				bottom: document.documentElement.clientHeight,
+				right: document.documentElement.clientWidth
+			};
+		},
 		_reviseElements: function(target, i) {
 			if (this._supportElementsByClassName) {
 				this._reviseElements = function() {
@@ -116,18 +135,8 @@ eg.module("visible", [window.jQuery, eg], function($, ns) {
 			var wrapper = this._$wrapper;
 			var visibles = [];
 			var invisibles = [];
-			var area = null;
-			if (!wrapper.nodeType || wrapper.nodeType !== 1) {
-				area = {
-					top: 0,
-					left: 0,
-					bottom: window.innerHeight,
-					right: window.innerWidth
-				};
-			} else {
-				area = wrapper.getBoundingClientRect();
-			}
-
+			var area = this._getAreaRect();
+			
 			// Error Fix: Cannot set property top of #<ClientRect> which has only a getter
 			area = $.extend({}, area);
 
