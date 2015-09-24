@@ -247,10 +247,9 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 		<script>
 	 	var some = new eg.InfiniteGrid("#grid", {
 		    itemSelector : ".item"
-		}).on({
-	 		beforeRestore : function(e) { ... },
-	 		flickStart : function(e) { ... }
-	 	);
+		}).on("layoutComplete", function(e) {
+			// ...
+		});
 	 	</script>
 	 */
 	ns.InfiniteGrid = ns.Class.extend(ns.Component, {
