@@ -1,4 +1,4 @@
-eg.module("css", [window.jQuery, document], function($, doc) {
+eg.module("css", ["jQuery", document], function($, doc) {
 	/**
 	 * Apply css prefix cssHooks
 	 * @ko css prefix cssHooks 적용

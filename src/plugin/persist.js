@@ -1,4 +1,4 @@
-eg.module("persist", [jQuery, window, document], function($, global, doc) {
+eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 	/**
 	* Support persist event in jQuery
 	* @ko jQuery custom persist 이벤트 지원
