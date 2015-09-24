@@ -1,5 +1,5 @@
 // jscs:disable maximumLineLength
-eg.module("rotate", [window.jQuery, eg, window, document], function($, ns, global, doc) {
+eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, doc) {
 	// jscs:enable maximumLineLength
 	/**
 	 * @namespace jQuery

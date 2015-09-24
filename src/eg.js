@@ -1,4 +1,4 @@
-eg.module("eg", [window.jQuery, eg, window], function($, ns, global) {
+eg.module("eg", ["jQuery", eg, window], function($, ns, global) {
 	var raf = global.requestAnimationFrame || global.webkitRequestAnimationFrame ||
 				global.mozRequestAnimationFrame || global.msRequestAnimationFrame;
 	var caf = global.cancelAnimationFrame || global.webkitCancelAnimationFrame ||
