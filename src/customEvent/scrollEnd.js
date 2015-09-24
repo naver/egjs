@@ -73,7 +73,6 @@ eg.module("scrollEnd", [jQuery, eg, window, document], function($, ns, global, d
 				retValue = SCROLLBASE;
 			}
 		}
-		console.log("retValue", retValue);
 		return retValue;
 	}
 
