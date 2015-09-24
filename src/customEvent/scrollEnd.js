@@ -1,5 +1,5 @@
 // jscs:disable maximumLineLength
-eg.module("scrollEnd", [jQuery, eg, window, document], function($, ns, global, doc) {
+eg.module("scrollEnd", [jQuery, eg, window, document], function($, ns, global) {
 	// jscs:eable maximumLineLength
 	"use strict";
 	/**
@@ -17,21 +17,19 @@ eg.module("scrollEnd", [jQuery, eg, window, document], function($, ns, global, d
 	* });
 	*
 	*/
-	
-	var isTouched;
-	var isMobile;
+
 	var scrollEndTimer;
 	var rotateFlag = false;
-	
-	var CHROME = 3; 
+
+	var CHROME = 3;
 	var TIMERBASE = 2;
 	var TOUCHBASE = 1;
 	var SCROLLBASE = 0;
-			
+
 	var deviceType = getDeviceType();
 
 	$.event.special.scrollend = {
-        latency: 250,
+		latency: 250,
 		setup: function() {
 			attachEvent();
 		},
@@ -41,35 +39,34 @@ eg.module("scrollEnd", [jQuery, eg, window, document], function($, ns, global, d
 	};
 
 	/**
-	 * iOS & safari : 
+	 * iOS & safari :
 	 * 		Below iOS7, Scroll event occurs once when the scroll is stopped.
 	 * 		Since iOS8, Scroll event occurs every time scroll
 	 * 		Scroll event occurs when the rotation
-	 * android : 
+	 * android :
 	 *		Scroll event occurs every time scroll
 	 *		Scroll event occurs when the rotation
 	 * @ko
-	 * iOS & safari : 
+	 * iOS & safari :
 	 *		iOS 7.x 이하에서는 스크롤이 멈췄을때 scroll 이벤트 한번 발생
 	 *      iOS 8.x 이상에서는 scroll 이벤트가 android 와 동일하게 스크롤시 매번 발생
 	 *		회전시 scroll 이벤트가 발생되어 이를 무시처리해야함
 	 *		(orientationchange 에 의해 발생하는 scroll 이벤트 1회만 무시)
-	 * android : 
+	 * android :
 	 *		스크롤시 scroll 이벤트 매번 발생
 	 *		회전시 scroll 이벤트가 발생되어 이를 무시처리해야함
 	 */
-	
+
 	function getDeviceType() {
 		var retValue = TIMERBASE;
 		var agent = ns.agent();
 		var osInfo = agent.os;
 		var osVersion = osInfo.version;
 		var browserInfo = agent.browser;
-		var version = parseInt(osInfo.version, 10);
 
 		// Browsers that trigger scroll event like scrollstop : SCROLLBASE
 		if (osInfo.name === "ios") {
-			if(browserInfo.webview === true || osVersion.indexOf("7.") !== -1) {
+			if (browserInfo.webview === true || osVersion.indexOf("7.") !== -1) {
 				retValue = SCROLLBASE;
 			}
 		}
@@ -90,7 +87,7 @@ eg.module("scrollEnd", [jQuery, eg, window, document], function($, ns, global, d
 			rotateFlag = false;
 			return;
 		}
-		
+
 		switch (deviceType) {
 			case SCROLLBASE :
 				triggerScrollEnd();
@@ -98,7 +95,7 @@ eg.module("scrollEnd", [jQuery, eg, window, document], function($, ns, global, d
 			case TIMERBASE :
 				triggerScrollEndAlways();
 				break;
-		}				
+		}
 
 	}
 

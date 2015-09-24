@@ -43,7 +43,7 @@ eg.module("flicking", [window.jQuery, eg, eg.MovableCoord], function ($, ns, MC)
 			</div>
 		</div>
 		<script>
-	 	var some = eg.Flicking("#mflick", {
+	 	var some = new eg.Flicking("#mflick", {
 	 		circular : true,
 	 		threshold : 50
 	 	}).on({
@@ -312,7 +312,7 @@ eg.module("flicking", [window.jQuery, eg, eg.MovableCoord], function ($, ns, MC)
 		/**
 		 * Set each panel's position in DOM
  		 */
-		_applyPanelsPos : function() {
+		_applyPanelsPos: function() {
 			this._conf.panel.$list.each(
 				$.proxy(this._applyPanelsCss, this)
 			);

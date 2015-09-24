@@ -221,6 +221,37 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 	 *  @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
 	 *
 	 *  @see Outlayer {@link https://github.com/metafizzy/outlayer}
+	 *
+	 * @example
+	 	<!-- HTML -->
+		<ul id="grid">
+		    <li class="item">
+		      <div>테스트1</div>
+		    </li>
+		    <li class="item">
+		      <div>테스트2</div>
+		    </li>
+		    <li class="item">
+		      <div>테스트3</div>
+		    </li>
+		    <li class="item">
+		      <div>테스트4</div>
+		    </li>
+		    <li class="item">
+		      <div>테스트5</div>
+		    </li>
+		    <li class="item">
+		      <div>테스트6</div>
+		    </li>
+	  	</ul>
+		<script>
+	 	var some = new eg.InfiniteGrid("#grid", {
+		    itemSelector : ".item"
+		}).on({
+	 		beforeRestore : function(e) { ... },
+	 		flickStart : function(e) { ... }
+	 	);
+	 	</script>
 	 */
 	ns.InfiniteGrid = ns.Class.extend(ns.Component, {
 		construct: function(el, options) {
@@ -438,6 +469,18 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 
 			// reset flags
 			this._reset(true);
+
+			/**
+			 * Occurs when layout is completed (after append / after prepend / after layout)
+			 * @ko 레이아웃이 완료 되었을 때 발생하는 이벤트 (append/prepand/layout 메소드 호출 후, 아이템의 배치가 완료되었을때 발생)
+			 * @name eg.InfiniteGrid#layoutComplete
+			 * @event
+			 *
+			 * @param {Object} param
+			 * @param {Array} param.target target rearranged elements<ko>재배치된 엘리먼트들</ko>
+			 * @param {Boolean} param.isAppend isAppend determine if append or prepend (value is true when call layout method)<ko>아이템이 append로 추가되었는지, prepend로 추가되었는지를 반한환다. (layout호출시에는 true)</ko>
+			 * @param {Number} param.distance distance<ko>layout 전의 최상단 엘리먼트의 거리</ko>
+			 */
 			this.trigger("layoutComplete", {
 				target: e.concat(),
 				isAppend: isAppend,
