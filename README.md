@@ -1,3 +1,26 @@
+## egjs
+egjs는 jQuery기반의 UI 인터랙션, 이펙트, 유틸리티로 구성된 통합 라이브러리로써 다양한 환경을 지원하는 빠른 웹어플리케이션을 쉽게 개발할 수 있도록 도와줍니다.
+
+### Component
+* **eg** : eg에서 필요한 유틸리티
+* **eg.Class** : 객체 지향으로 개발하는데 도와주는 Class.
+* **eg.Component** : 컴포넌트를 개발하는데 공통적인 기능을 가진 Class
+* **eg.MovableCoord** : 사용자 행동에 따른 좌표를 계산하는 Component
+* **eg.Flicking** : 플리킹 인터랙션을 구현하는 Component
+* **eg.Visible** : 엘리먼트가 viewport상에 있는지 확인하는 Component
+* **eg.infiniteGrid** : 카드 격자형 컨텐츠를 무한 배치하는 Component
+ 
+### jQuery Extension
+#### method
+* **persit** : 데이터를 저장하고 persist이벤트에서 저장한 데이트를 사용할 수 있게 하는 메서드
+* **css** : jQuery버전에서 자동으로 vendor prefix을 지원하지 않는 경우 prefix없이 사용하게 하는 확장기능
+* **animate** : jQuery animate 확장해 transform 및 3d 가속 지원
+
+#### event
+* **persit** : persist 데이터를 복원하는 시점을 알려주는 이벤트
+* **rotate** : 회전을 알려주는 이벤트
+* **scrollend** : 스크롤의 마지막 시점을 알려주는 이벤트
+
 ## Downloading egjs using Naver-bower
 ### 1. naver-bower 설치
 ```
