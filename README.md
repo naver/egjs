@@ -15,7 +15,6 @@
 * **animate** : jQuery animate 확장해 transform 및 3d 가속 지원
 
 #### event
-* **persit** : persist 데이터를 복원하는 시점을 알려주는 이벤트
 * **rotate** : 회전을 알려주는 이벤트
 * **scrollend** : 스크롤의 마지막 시점을 알려주는 이벤트
 
