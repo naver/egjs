@@ -32,7 +32,7 @@ test("getDeviceType : android && 2.1 ", function() {
     });
 
     // Then
-    equal(method.getDeviceType(), method.TOUCHBASE);
+    equal(method.getDeviceType(), method.TIMERBASE);
 
 });
 
@@ -56,7 +56,7 @@ test("getDeviceType : android && chrome ", function() {
     });
 
     // Then
-    equal(method.getDeviceType(), method.CHROME);
+    equal(method.getDeviceType(), method.TIMERBASE);
 
 });
 
@@ -171,7 +171,7 @@ test("touchbase scroll", function() {
     }, 30);
 
   // Then
-  equal(method.getDeviceType(), method.TOUCHBASE);
+  equal(method.getDeviceType(), method.TIMERBASE);
 
   stop();
   setTimeout(function(){
@@ -298,7 +298,7 @@ test("chrome scroll", function() {
     }, 30);
 
   // Then
-  equal(method.getDeviceType(), method.CHROME);
+  equal(method.getDeviceType(), method.TIMERBASE);
 
   stop();
   setTimeout(function(){

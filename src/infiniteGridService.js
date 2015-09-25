@@ -17,6 +17,7 @@ eg.module("infiniteGridService",
 		 * @param {Object} options
 		 */
 		construct: function(element, options) {
+			this._$global = $(global);
 			this._$wrapper = $(element);
 
 			this._prevScrollTop = 0;
@@ -116,7 +117,7 @@ eg.module("infiniteGridService",
 						this._bottomElemment.getBoundingClientRect();
 
 					if (bottomElementBoundingClientRect.top <=
-							global.innerHeight + this._options.threshold) {
+							this._$global.height() + this._options.threshold) {
 						this.trigger("append");
 					}
 				}

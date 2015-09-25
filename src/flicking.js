@@ -43,7 +43,7 @@ eg.module("flicking", [window.jQuery, eg, eg.MovableCoord], function ($, ns, MC)
 			</div>
 		</div>
 		<script>
-	 	var some = eg.Flicking("#mflick", {
+	 	var some = new eg.Flicking("#mflick", {
 	 		circular : true,
 	 		threshold : 50
 	 	}).on({
@@ -306,8 +306,16 @@ eg.module("flicking", [window.jQuery, eg, eg.MovableCoord], function ($, ns, MC)
 				], true, 0);
 			}
 
-			// set each panel's position in DOM
-			panel.$list.each($.proxy(this._applyPanelsCss, this));
+			this._applyPanelsPos();
+		},
+
+		/**
+		 * Set each panel's position in DOM
+ 		 */
+		_applyPanelsPos: function() {
+			this._conf.panel.$list.each(
+				$.proxy(this._applyPanelsCss, this)
+			);
 		},
 
 		/**
@@ -315,14 +323,14 @@ eg.module("flicking", [window.jQuery, eg, eg.MovableCoord], function ($, ns, MC)
 		 */
 		_applyPanelsCss: function () {
 			var conf = this._conf;
-			var $dummyAnchorClassName = "__dummy_anchor";
+			var dummyAnchorClassName = "__dummy_anchor";
 
 			if (conf.isAndroid2) {
-				conf.$dummyAnchor = $("." + $dummyAnchorClassName);
-				!conf.$dummyAnchor.length &&
-				this.$wrapper.append(
+				conf.$dummyAnchor = $("." + dummyAnchorClassName);
+
+				!conf.$dummyAnchor.length && this.$wrapper.append(
 					conf.$dummyAnchor = $("<a href='javascript:void(0);' class='" +
-						$dummyAnchorClassName +
+						dummyAnchorClassName +
 						"' style='position:absolute;height:0px;width:0px;'>")
 				);
 
@@ -516,15 +524,14 @@ eg.module("flicking", [window.jQuery, eg, eg.MovableCoord], function ($, ns, MC)
 
 			touch.direction = this._conf.dirData[
 				+!Boolean(touch.holdPos[posIndex] < e.depaPos[posIndex])
-				];
+			];
 
 			pos[posIndex] = Math.max(
 				holdPos - panelSize, Math.min(holdPos, pos[posIndex])
 			);
 
 			touch.destPos[posIndex] =
-				pos[posIndex] =
-					Math.round(pos[posIndex] / panelSize) * panelSize;
+				pos[posIndex] = Math.round(pos[posIndex] / panelSize) * panelSize;
 
 			touch.distance === 0 && this._adjustContainerCss("end");
 
@@ -1061,7 +1068,8 @@ eg.module("flicking", [window.jQuery, eg, eg.MovableCoord], function ($, ns, MC)
 		 * @method eg.Flicking#resize
 		 */
 		resize: function () {
-			var panel = this._conf.panel;
+			var conf = this._conf;
+			var panel = conf.panel;
 			var width = panel.size = this.$wrapper.width();
 			var maxCoords = [width * (panel.count - 1), 0];
 
@@ -1071,7 +1079,12 @@ eg.module("flicking", [window.jQuery, eg, eg.MovableCoord], function ($, ns, MC)
 
 			// adjust the position of current panel
 			this._mcInst.options.max = maxCoords;
-			this._setMovableCoord("setTo", [width * panel.index, 0]);
+			this._setMovableCoord("setTo", [width * panel.index, 0], true, 0);
+
+			if (conf.isAndroid2) {
+				this._applyPanelsPos();
+				this._adjustContainerCss("end");
+			}
 		},
 
 		/**
@@ -1079,13 +1092,15 @@ eg.module("flicking", [window.jQuery, eg, eg.MovableCoord], function ($, ns, MC)
 		 * @ko 패널의 위치가 올바로 위치하지 않게 되는 경우, 제대로 위치하도록 보정한다.
 		 */
 		restore: function () {
-			var panel = this._conf.panel;
+			var conf = this._conf;
+			var panel = conf.panel;
 			var currPos = this._getDataByDirection(this._mcInst.get())[0];
 
 			// check if the panel isn't in right position
 			if (currPos % panel.size) {
 				this._setPanelNo(true);
 				this._setMovableCoord("setTo", [panel.size * panel.index, 0], true, 0);
+				conf.isAndroid2 && this._adjustContainerCss("end");
 			}
 		}
 	});

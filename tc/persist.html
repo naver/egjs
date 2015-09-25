@@ -1,6 +1,7 @@
 <html lang="en">
 <head>
 <title>Persist - QA</title>
+<meta http-equiv="x-ua-compatible" content="ie=edge"/>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
 <style>
@@ -104,7 +105,7 @@ button:focus {
 </head>
 <body>
 		<section id="newsLoader1">
-				<ul class="listContainer">
+				<ul id="newsLoader1_listContainer">
 						<li class="row">
 								<p><a href="http://me2.do/FF0C3V8H">'수요' 못 읽은 현대차… 판매량 줄며 매출·영업익 감소(종합)</a></p>
 								<p></p>
@@ -118,10 +119,10 @@ button:focus {
 								<p></p>
 						</li>
 				</ul>
-				<button>더보기1</button>
+				<button id="newsLoader1_more">더보기1</button>
 		</section>
 		<section id="newsLoader2">
-				<ul class="listContainer">
+				<ul id="newsLoader2_listContainer">
 						<li class="row">
 								<p><a href="http://me2.do/FF0C3V8H">중국 車업계 자체 기술로 전기차 개발…'고급·저가'로 승부</a></p>
 								<p></p>
@@ -135,7 +136,7 @@ button:focus {
 								<p></p>
 						</li>
 				</ul>
-				<button>더보기2</button>
+				<button id="newsLoader2_more">더보기2</button>
 		</section>
 <script>
 var newsData = [
@@ -156,9 +157,8 @@ var newsAddUnit = 5;
 function NewsLoader(baseElId) {
 	this.baseId = baseElId;
 	this.$baseEl = $("#" + this.baseId);
-	this.$ListContainer = $(".listContainer", this.$baseEl);
-	this.$LoadBtn= $("button", this.$baseEl);
-
+	this.$ListContainer = $("#" + this.baseId + "_listContainer");
+	this.$LoadBtn = $("#" + this.baseId + "_more");
 	// 더보기 버튼을 눌러 더 많은 코멘트 보여주기
 	this.$LoadBtn.on("click", $.proxy(this._appendNews,this));
 
