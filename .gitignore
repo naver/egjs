@@ -8,3 +8,4 @@ temp
 *.iml
 doc
 .idea/
+dist
