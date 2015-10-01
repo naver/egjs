@@ -579,16 +579,19 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 
 		// fit size
 		_fit: function(applyDom) {
-			if (this._isFitted) {
-				return;
-			}
-
 			// for caching
 			if (this.core.options.count <= 0) {
-				this._fit = $.noop();
+				this._fit = function() {
+					return false;
+				};
 				this._isFitted = true;
-				return;
+				return false;
 			}
+
+			if (this._isFitted) {
+				return false;
+			}
+
 			var item;
 			var height;
 			var i = 0;
@@ -603,6 +606,17 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 			height = this.core._getContainerSize().height;
 			applyDom && this.core._setContainerMeasure(height, false);
 			this._isFitted = true;
+			return true;
+		},
+
+		/**
+		 * Remove empty space that is removed by append action.
+		 * @ko append에 의해 제거된 빈공간을 제거한다.
+		 * @return {Boolean} isFitted if empty space is removed, value is true <ko>빈공간이 제거되면 true값을 반환</ko>
+		 * @method eg.InfiniteGrid#fit
+		 */
+		fit: function() {
+			return this._fit(true);
 		},
 		_reset: function(isLayoutComplete) {
 			if (!isLayoutComplete) {
