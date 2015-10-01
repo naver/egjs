@@ -3,16 +3,162 @@
 "use strict";
 (function(global) {
 	global.eg = {};
+
+	var dependency = {
+		"jQuery": {
+			"url": "http://jquery.com/"
+		},
+		"Hammer": {
+			"url": "http://hammerjs.github.io/"
+		},
+		"Outlayer": {
+			"url": "https://github.com/metafizzy/outlayer/"
+		}
+	};
+
+	// jscs:disable maximumLineLength
+	var templateMessage = [
+		"[egjs] The {{name}} library must be loaded before {{componentName}}.",
+		"[egjs] For AMD evnronment (like RequireJS), \"{{name}}\" must be declared, which is required by {{componentName}}.",
+		"[egjs] The {{componentName}} in {{index}} argument is missing.\n\rDownload {{name}} from [{{url}}].",
+		"[egjs] The {{name}} parameter of {{componentName}} is not valid.\n\rPlease check and try again.",
+		"[egjs] The {{componentName}} in {{index}} argument is undefined.\n\rPlease check and try again."
+	];
+
+	// jscs:enable maximumLineLength
+
+	var ordinal = [ "1st", "2nd", "3rd"];
+
+	function changeOdinal(index) {
+		return index > 2 ? index + "th" : ordinal[index];
+	}
+
+	function replaceStr(str, obj) {
+		var i;
+		for (i in obj) {
+			str = str.replace(new RegExp("{{" + i + "}}","gi"), obj[i]);
+		}
+		return str;
+	}
+
+	function checkDependency(componentName, di) {
+		var i = 0;
+		var l = di.length;
+		var message = [];
+		var paramList = [];
+		var require = global.require;
+		var dependencyInfo;
+		var param;
+		var messageInfo;
+		var isString;
+		var isUndefined;
+		var registedDependency;
+		var isNotGlobal;
+		var specifiedAMD;
+
+		for (; i < l; i++) {
+			param = di[i];
+			messageInfo = {
+				"index": changeOdinal(i),
+				"name": param,
+				"componentName": componentName
+			};
+
+			isString = typeof di[i] === "string";
+			isUndefined = di[i] === undefined;
+			registedDependency = isString && (dependencyInfo = dependency[di[i]]);
+			isNotGlobal = isString && dependencyInfo && !global[di[i]];
+			specifiedAMD = isNotGlobal && require && require.specified(di[i]);
+
+			// Message decision chart
+			//             argument
+			// |--------------|--------------|
+			// undefined    string    !string&&!undefined
+			// |              |              |
+			// msg(4)         |             (OK)
+			//         defined dependency
+			//                |
+			// |-----------------------------|
+			// |                             |
+			// msg(3)                     in global
+			//                               |
+			//                 |------------------------------|
+			//              use AMD                          (OK)
+			//                 |
+			//  |------------------------------|
+			//  msg(2)                  require.specified
+			// 	                               |
+			// 	                |------------------------------|
+			//                  msg(1)                  require.defined
+			// 	                                               |
+			//                                  |------------------------------|
+			//                                  msg(0)                        (OK)
+
+			if (!isString && !isUndefined) {
+				paramList.push(param);
+				continue;
+			}
+
+			if (specifiedAMD && require.defined(di[i])) {
+				param = require(di[i]);
+				paramList.push(param);
+				continue;
+			}
+
+			if (specifiedAMD && !require.defined(di[i])) {
+				messageInfo.url = dependencyInfo.url;
+				message.push(replaceStr(templateMessage[0], messageInfo));
+				continue;
+			}
+
+			if (isNotGlobal && require && !require.specified(di[i])) {
+				messageInfo.url = dependencyInfo.url;
+				message.push(replaceStr(templateMessage[1], messageInfo));
+				continue;
+			}
+
+			if (isNotGlobal && !require) {
+				messageInfo.url = dependencyInfo.url;
+				message.push(replaceStr(templateMessage[2], messageInfo));
+				continue;
+			}
+
+			if (registedDependency && global[di[i]]) {
+				param = global[di[i]];
+				paramList.push(param);
+				continue;
+			}
+
+			if (isString && !dependencyInfo) {
+				message.push(replaceStr(templateMessage[3], messageInfo));
+				continue;
+			}
+
+			if (di[i] === undefined) {
+				message.push(replaceStr(templateMessage[4], messageInfo));
+				continue;
+			}
+		}
+
+		return [paramList, message];
+	}
+
 	/**
 	 * Regist module.
 	 * @private
 	 */
 	global.eg.module = function(name, di, fp) {
-		fp.apply(global, di);
+		var result = checkDependency(name, di);
+
+		if (result[1].length) {
+			throw new Error(result[1].join("\n\r"));
+		} else {
+			fp.apply(global, result[0]);
+		}
 	};
 })(window);
 
-eg.module("animate", [window.jQuery, window], function($, global) {
+eg.module("animate", ["jQuery", window], function($, global) {
 	/**
      * Extends jQuery animate in order to use 'transform' property.
      * @ko jQuery animate 사용시 transform을 사용할 수 있도록 확장한 animate 메소드
@@ -407,7 +553,7 @@ eg.module("animate", [window.jQuery, window], function($, global) {
 	};
 });
 
-eg.module("css", [window.jQuery, document], function($, doc) {
+eg.module("css", ["jQuery", document], function($, doc) {
 	/**
 	 * Apply css prefix cssHooks
 	 * @ko css prefix cssHooks 적용
@@ -480,7 +626,7 @@ eg.module("css", [window.jQuery, document], function($, doc) {
 	};
 
 });
-eg.module("eg", [window.jQuery, eg, window], function($, ns, global) {
+eg.module("eg", ["jQuery", eg, window], function($, ns, global) {
 	var raf = global.requestAnimationFrame || global.webkitRequestAnimationFrame ||
 				global.mozRequestAnimationFrame || global.msRequestAnimationFrame;
 	var caf = global.cancelAnimationFrame || global.webkitCancelAnimationFrame ||
@@ -873,7 +1019,7 @@ eg.hook.isTransitional = function(defaultVal, agent) {
 });
 
 // jscs:disable maximumLineLength
-eg.module("rotate", [window.jQuery, eg, window, document], function($, ns, global, doc) {
+eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, doc) {
 	// jscs:enable maximumLineLength
 	/**
 	 * @namespace jQuery
@@ -1034,7 +1180,7 @@ eg.module("rotate", [window.jQuery, eg, window, document], function($, ns, globa
 });
 
 // jscs:disable maximumLineLength
-eg.module("scrollEnd", [jQuery, eg, window, document], function($, ns, global) {
+eg.module("scrollEnd", ["jQuery", eg, window, document], function($, ns, global) {
 	// jscs:eable maximumLineLength
 /**
 	* Support scrollEnd event in jQuery
@@ -1413,7 +1559,9 @@ eg.module("component", [eg], function(ns) {
 
 
 // jscs:disable maximumLineLength
-eg.module("movableCoord", [window.jQuery, eg, window.Hammer], function($, ns, HM) {
+eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
+	var SUPPORT_TOUCH = ("ontouchstart" in window);
+
 	// jscs:enable maximumLineLength
 	// It is scheduled to be removed in case of build process.
 	// ns.__checkLibrary__( !("Hammer" in window), "You must download Hammerjs. (http://hammerjs.github.io/)\n\ne.g. bower install hammerjs");
@@ -1523,21 +1671,27 @@ eg.module("movableCoord", [window.jQuery, eg, window.Hammer], function($, ns, HM
 
 			$.extend(subOptions, options);
 
+			var inputClass = this._convertInputType(subOptions.inputType);
+			if (!inputClass) {
+				return this;
+			}
 			if (keyValue) {
-				this._hammers[keyValue].get("pan").set(
-					{ direction: subOptions.direction }
-				);
+				this._hammers[keyValue].get("pan").set({
+					direction: subOptions.direction
+				});
 			} else {
 				keyValue = Math.round(Math.random() * new Date().getTime());
 				this._hammers[keyValue] = this._createHammer(
 					$el.get(0),
-					subOptions
+					subOptions,
+					inputClass
 				);
 				$el.data(ns.MovableCoord.KEY, keyValue);
 			}
 			return this;
 		},
-		_createHammer: function(el, subOptions) {
+
+		_createHammer: function(el, subOptions, inputClass) {
 			try {
 				// create Hammer
 				var hammer = new HM.Manager(el, {
@@ -1553,7 +1707,7 @@ eg.module("movableCoord", [window.jQuery, eg, window.Hammer], function($, ns, HM
 						// css properties were removed due to usablility issue
 						// http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html
 						cssProps: {},
-						inputClass: this._convertInputType(subOptions.inputType)
+						inputClass: inputClass
 					});
 				return hammer.on("hammer.input", $.proxy(function(e) {
 					if (e.isFirst) {
@@ -1573,19 +1727,19 @@ eg.module("movableCoord", [window.jQuery, eg, window.Hammer], function($, ns, HM
 		_convertInputType: function(inputType) {
 			var hasTouch = false;
 			var hasMouse = false;
+			inputType = inputType || [];
 			$.each(inputType, function(i, v) {
 				switch (v) {
 					case "mouse" : hasMouse = true; break;
-					case "touch" : hasTouch = true; break;
+					case "touch" : hasTouch = SUPPORT_TOUCH; break;
 				}
 			});
-
 			if (hasMouse) {
 				return hasTouch ? HM.TouchMouseInput : HM.MouseInput;
 			} else if (hasTouch) {
 				return HM.TouchInput;
 			} else {
-				return HM.TouchMouseInput;
+				return null;
 			}
 		},
 
@@ -2125,7 +2279,6 @@ eg.module("movableCoord", [window.jQuery, eg, window.Hammer], function($, ns, HM
 				return this;
 			}
 			this._setInterrupt(true);
-
 			if (x !== pos[0]) {
 				if (!circular[3]) {
 					x = Math.max(min[0], x);
@@ -2214,7 +2367,7 @@ eg.module("movableCoord", [window.jQuery, eg, window.Hammer], function($, ns, HM
 	ns.MovableCoord.KEY = "__MOVABLECOORD__";
 });
 // jscs:disable validateLineBreaks, maximumLineLength
-eg.module("flicking", [window.jQuery, eg, eg.MovableCoord], function ($, ns, MC) {
+eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 	// jscs:enable validateLineBreaks, maximumLineLength
 	/**
 	 * To build flickable UI
@@ -3321,7 +3474,7 @@ eg.module("flicking", [window.jQuery, eg, eg.MovableCoord], function ($, ns, MC)
 	});
 });
 // jscs:disable maximumLineLength
-eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.global], function($, ns, global, Outlayer) {
+eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, global, Outlayer) {
 	// jscs:enable validateLineBreaks, maximumLineLength
 	if (!Outlayer) {
 		ns.InfiniteGrid = ns.Class({});
@@ -3992,7 +4145,7 @@ eg.module("infiniteGrid", [window.jQuery, eg, window, window.Outlayer, window.gl
 	});
 });
 eg.module("infiniteGridService",
-	[window.jQuery, eg, window, document], function($, ns, global, doc) {
+	["jQuery", eg, window, document], function($, ns, global, doc) {
 	/**
 	 * Infinite cascading grid layout service for infiniteGrid
 	 * @ko infiniteGrid를 통한 무한 그리드 레이아웃 서비스.
@@ -4355,7 +4508,7 @@ eg.module("infiniteGridService",
 		}
 	});
 });
-eg.module("visible", [window.jQuery, eg], function($, ns) {
+eg.module("visible", ["jQuery", eg], function($, ns) {
 	/**
 	 * It check element is visible within the specific element or viewport, regardless of the scroll position
 	 * @ko scroll 위치와 상관없이 특정 엘리먼트나 viewport 안에 엘리먼트가 보이는지 확인한다.

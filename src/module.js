@@ -17,7 +17,7 @@
 	var templateMessage = [
 		"[egjs] The {{name}} library must be loaded before {{componentName}}.",
 		"[egjs] For AMD evnronment (like RequireJS), \"{{name}}\" must be declared, which is required by {{componentName}}.",
-		"[egjs] The {{componentName}} in {{index}} argument is missing.\n\rDownload {{name}} from [{{url}}].",	
+		"[egjs] The {{componentName}} in {{index}} argument is missing.\n\rDownload {{name}} from [{{url}}].",
 		"[egjs] The {{name}} parameter of {{componentName}} is not valid.\n\rPlease check and try again.",
 		"[egjs] The {{componentName}} in {{index}} argument is undefined.\n\rPlease check and try again."
 	];
@@ -67,32 +67,30 @@
 			isNotGlobal = isString && dependencyInfo && !global[di[i]];
 			specifiedAMD = isNotGlobal && require && require.specified(di[i]);
 
-
 			// Message decision chart
-			// 			   argument
+			//             argument
 			// |--------------|--------------|
-			// undefined	string		!string&&!undefined
-			// |		   	  |		      	 |
-			// msg(4)		  |				(OK)
-			// 		   defined dependency
-			// 			   	  |
+			// undefined    string    !string&&!undefined
+			// |              |              |
+			// msg(4)         |             (OK)
+			//         defined dependency
+			//                |
 			// |-----------------------------|
-			// |							 |
-			// msg(3)					  in global
-			// 							  	 |
-			// 			   	   |------------------------------|
-			// 				use AMD 						 (OK)
-			// 			   	   |
-			// 	|------------------------------|
-			// 	msg(2)					require.specified
-			// 							   	   |
-			// 					|------------------------------|
-			// 					msg(1)					require.defined
-			// 											   	   |
-			// 									|------------------------------|
-			// 									msg(0)						  (OK)
+			// |                             |
+			// msg(3)                     in global
+			//                               |
+			//                 |------------------------------|
+			//              use AMD                          (OK)
+			//                 |
+			//  |------------------------------|
+			//  msg(2)                  require.specified
+			// 	                               |
+			// 	                |------------------------------|
+			//                  msg(1)                  require.defined
+			// 	                                               |
+			//                                  |------------------------------|
+			//                                  msg(0)                        (OK)
 
-			
 			if (!isString && !isUndefined) {
 				paramList.push(param);
 				continue;
