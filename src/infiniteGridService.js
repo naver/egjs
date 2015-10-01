@@ -1,5 +1,5 @@
 eg.module("infiniteGridService",
-	[window.jQuery, eg, window, document], function($, ns, global, doc) {
+	["jQuery", eg, window, document], function($, ns, global, doc) {
 	/**
 	 * Infinite cascading grid layout service for infiniteGrid
 	 * @ko infiniteGrid를 통한 무한 그리드 레이아웃 서비스.
