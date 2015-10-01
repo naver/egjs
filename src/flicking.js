@@ -500,10 +500,13 @@ eg.module("flicking", [window.jQuery, eg, eg.MovableCoord], function ($, ns, MC)
 			 * @param {Number} param.direction Direction of the panel move (see eg.DIRECTION_* constant) <ko>플리킹 방향 (eg.DIRECTION_* constant 확인)</ko>
 			 * @param {Array} param.pos Departure coordinate <ko>출발점 좌표</ko>
 			 * @param {Number} param.pos.0 Departure x-coordinate <ko>x 좌표</ko>
-			 * @param {Number} param.pos.1 Departure y-coordinate <ko>y 좌표</ko>
+			 * @param {Boolean} param.holding Holding if an area was pressed, this value is 'true'. <ko>스크린을 사용자가 누르고 있을 경우 true </ko>
 			 */
-			this._conf.triggerFlickEvent && !e.holding &&
-			(eventRes = this._triggerEvent("flick", {pos: e.pos}));
+			this._conf.triggerFlickEvent &&
+			(eventRes = this._triggerEvent("flick", {
+				pos: e.pos,
+				holding: e.holding
+			}));
 
 			(eventRes || eventRes === null) && this._setTranslate([
 				-pos[+!this.options.horizontal], 0
