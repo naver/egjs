@@ -762,7 +762,7 @@ asyncTest("Custom events #1 - When changes panel normally", function() {
 			var type = e.eventType;
 
 			if(eventFired.indexOf(type) == -1) {
-				eventFired.push(type);
+				!e.holding && eventFired.push(type);
 			}
 		};
 
