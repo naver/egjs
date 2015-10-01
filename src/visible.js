@@ -72,9 +72,7 @@ eg.module("visible", [window.jQuery, eg], function($, ns) {
 				this.refresh = function() {
 					this._targets = $(this._$wrapper)
 						.find("." + this.options.targetClass)
-						.each(function() {
-						return this;
-					});
+						.get();
 					return this;
 				};
 			}
