@@ -67,7 +67,7 @@
 			isNotGlobal = isString && dependencyInfo && !global[di[i]];
 			specifiedAMD = isNotGlobal && require && require.specified(di[i]);
 
-			// Message decision chart
+			// Message decision flow
 			//             argument
 			// |--------------|--------------|
 			// undefined    string    !string&&!undefined
