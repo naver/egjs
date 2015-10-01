@@ -14,7 +14,7 @@ QUnit.test( "A parameter is undefined.", function( assert ) {
     function() {
       throw eg.module("test",param,function($) {});
     },
-    new Error("[egjs] The 1st parameter is undefined in test.\n\rCheck up depandency component.")
+    new Error("[egjs] The test in 1st argument is undefined.\n\rPlease check and try again.")
   );
 });
 
@@ -27,7 +27,7 @@ QUnit.test( "The dependency library did not regist.", function( assert ) {
     function() {
       throw eg.module("test",param,function($) {});
     },
-    new Error("[egjs] The 1st parameter is notRegist that does not defined in test.\n\rCheck up paratemer name.")
+    new Error("[egjs] The notRegist parameter of test is not valid.\n\rPlease check and try again.")
   );
 });
 
@@ -40,7 +40,7 @@ QUnit.test( "The dependency library registed but It does not use amd", function(
     function() {
       throw eg.module("notUseAmd",param,function($) {});
     },
-    new Error("[egjs] The 1st parameter is undefined in notUseAmd.\n\rDownload jQuery[http://jquery.com/].")
+    new Error("[egjs] The notUseAmd in 1st argument is missing.\n\rDownload jQuery from [http://jquery.com/].")
   );
 });
 
@@ -59,7 +59,7 @@ QUnit.test( "The dependency library registed but It did not define in amd.", fun
     function() {
       throw eg.module("notRegisteAmd",param,function($) {});
     },
-    new Error("[egjs] If you use amd(requirejs..) that you have to register \"jQuery\" of defined library name in notRegisteAmd."  )
+    new Error("[egjs] For AMD evnronment (like RequireJS), \"jQuery\" must be declared, which is required by notRegisteAmd."  )
   );
 });
 
@@ -81,7 +81,7 @@ QUnit.test( "The dependency library registed and It defined in amd but It did no
     function() {
       throw eg.module("notLoadAmd",param,function($) {});
     },
-    new Error("[egjs] You can use notLoadAmd after The jQuery loaded."  )
+    new Error("[egjs] The jQuery library must be loaded before notLoadAmd."  )
   );
 });
 
