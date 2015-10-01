@@ -15,11 +15,11 @@
 
 	// jscs:disable maximumLineLength
 	var templateMessage = [
-		"[egjs] You can use {{componentName}} after The {{name}} loaded.",
-		"[egjs] If you use amd(requirejs..) that you have to register \"{{name}}\" of defined library name in {{componentName}}.",
-		"[egjs] The {{index}} parameter is undefined in {{componentName}}.\n\rDownload {{name}}[{{url}}].",
-		"[egjs] The {{index}} parameter is {{name}} that does not defined in {{componentName}}.\n\rCheck up paratemer name.",
-		"[egjs] The {{index}} parameter is undefined in {{componentName}}.\n\rCheck up depandency component."
+		"[egjs] The {{name}} library must be loaded before {{componentName}}.",
+		"[egjs] For AMD evnronment (like RequireJS), \"{{name}}\" must be declared, which is required by {{componentName}}.",
+		"[egjs] The {{componentName}} in {{index}} argument is missing.\n\rDownload {{name}} from [{{url}}].",	
+		"[egjs] The {{name}} parameter of {{componentName}} is not valid.\n\rPlease check and try again.",
+		"[egjs] The {{componentName}} in {{index}} argument is undefined.\n\rPlease check and try again."
 	];
 
 	// jscs:enable maximumLineLength
@@ -67,6 +67,32 @@
 			isNotGlobal = isString && dependencyInfo && !global[di[i]];
 			specifiedAMD = isNotGlobal && require && require.specified(di[i]);
 
+
+			// Message decision chart
+			// 			   argument
+			// |--------------|--------------|
+			// undefined	string		!string&&!undefined
+			// |		   	  |		      	 |
+			// msg(4)		  |				(OK)
+			// 		   defined dependency
+			// 			   	  |
+			// |-----------------------------|
+			// |							 |
+			// msg(3)					  in global
+			// 							  	 |
+			// 			   	   |------------------------------|
+			// 				use AMD 						 (OK)
+			// 			   	   |
+			// 	|------------------------------|
+			// 	msg(2)					require.specified
+			// 							   	   |
+			// 					|------------------------------|
+			// 					msg(1)					require.defined
+			// 											   	   |
+			// 									|------------------------------|
+			// 									msg(0)						  (OK)
+
+			
 			if (!isString && !isUndefined) {
 				paramList.push(param);
 				continue;
@@ -126,7 +152,7 @@
 		if (result[1].length) {
 			throw new Error(result[1].join("\n\r"));
 		} else {
-			fp.apply(global, checkDependency(name, di)[0]);
+			fp.apply(global, result[0]);
 		}
 	};
 })(window);
