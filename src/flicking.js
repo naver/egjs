@@ -558,9 +558,8 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 
 			panel.animating = true;
 
-			//e.duration = this.options.duration;
-
 			this._setPhaseValue("start");
+			e.hammerEvent && (e.duration = this.options.duration);
 			e.destPos[+!this.options.horizontal] =
 				panel.size * (
 					panel.index + this._conf.indexToMove
@@ -719,7 +718,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 			var val;
 
 			if (e && e.holding &&
-				e.hammerEvent.preventSystemEvent &&
+				e.hammerEvent && e.hammerEvent.preventSystemEvent &&
 				pointer !== "none"
 			) {
 				val = "none";

@@ -263,7 +263,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			 * @param {Array} param.pos coordinate <ko>좌표 정보</ko>
 			 * @param {Number} param.pos.0 x-coordinate <ko>x 좌표</ko>
 			 * @param {Number} param.pos.1 y-coordinate <ko>y 좌표</ko>
-			 * @param {Object} param.hammerEvent Hammerjs event. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자의 액션에 대한 hammerjs 이벤트 정보</ko>
+			 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자의 액션에 대한 hammerjs 이벤트 정보 (API에 의해 호출될 경우, null 을 반환)</ko>
 			 *
 			 */
 			this.trigger("hold", {
@@ -502,7 +502,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			var param = {
 					depaPos: pos.concat(),
 					destPos: destPos,
-					hammerEvent: e || {}
+					hammerEvent: e || null
 				};
 			if (!isBounce && e) {	// check whether user's action
 				/**
@@ -518,7 +518,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 				 * @param {Array} param.destPos destination coordinate <ko>애니메이션에 의해 이동할 좌표</ko>
 				 * @param {Number} param.destPos.0 destination x-coordinate <ko>x 좌표</ko>
 				 * @param {Number} param.destPos.1 destination y-coordinate <ko>y 좌표</ko>
-				 * @param {Object} param.hammerEvent Hammerjs event. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자의 액션에 대한 hammerjs 이벤트 정보</ko>
+				 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자의 액션에 대한 hammerjs 이벤트 정보 (API에 의해 호출될 경우, null 을 반환)</ko>
 				 *
 				 */
 				this.trigger("release", param);
@@ -553,7 +553,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			duration = this.options.maximumDuration > duration ?
 						duration : this.options.maximumDuration;
 
-			var	done = $.proxy(function(isNext) {
+			var done = $.proxy(function(isNext) {
 					this._status.animationParam = null;
 					pos[0] = Math.round(destPos[0]);
 					pos[1] = Math.round(destPos[1]);
@@ -573,7 +573,8 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 				destPos: destPos,
 				isBounce: isBounce,
 				isCircular: isCircular,
-				done: done
+				done: done,
+				hammerEvent: param.hammerEvent
 			};
 
 			/**
@@ -592,6 +593,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			 * @param {Boolean} param.isBounce When an animation is bounced, a value is 'true'.  <ko>바운스 되는 애니메이션인 경우 true</ko>
 			 * @param {Boolean} param.isCircular When the area is circular type, a value is 'true'. <ko>순환하여 움직여야하는 애니메이션인경우 true</ko>
 			 * @param {Function} param.done If user control animation, user must call this function. <ko>애니메이션이 끝났다는 것을 알려주는 함수</ko>
+			 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자의 액션에 대한 hammerjs 이벤트 정보 (API에 의해 호출될 경우, null 을 반환)</ko>
 			 *
 			 */
 			var retTrigger = this.trigger("animationStart", animationParam);
@@ -675,14 +677,14 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			 * @param {Number} param.pos.0 departure x-coordinate <ko>x 좌표</ko>
 			 * @param {Number} param.pos.1 departure y-coordinate <ko>y 좌표</ko>
 			 * @param {Boolean} param.holding If an area was pressed, this value is 'true'. <ko>스크린을 사용자가 누르고 있을 경우 true </ko>
-			 * @param {Object} param.hammerEvent Hammerjs event. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자의 액션에 대한 hammerjs 이벤트 정보</ko>
+			 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자의 액션에 대한 hammerjs 이벤트 정보 (API에 의해 호출될 경우, null 을 반환)</ko>
 			 *
 			 */
 			this._pos = pos.concat();
 			this.trigger("change", {
 				pos: pos.concat(),
 				holding: holding,
-				hammerEvent: e || { }
+				hammerEvent: e || null
 			});
 		},
 
