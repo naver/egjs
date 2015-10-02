@@ -62,12 +62,12 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 		var retValue = TIMERBASE;
 		var agent = ns.agent();
 		var osInfo = agent.os;
-		var osVersion = osInfo.version;
+		var osVersion = arseInt(osInfo.version, 10);
 		var browserInfo = agent.browser;
 
 		// Browsers that trigger scroll event like scrollstop : SCROLLBASE
 		if (osInfo.name === "ios") {
-			if (browserInfo.webview === true || osVersion.indexOf("7.") !== -1) {
+			if (browserInfo.webview === true || osVersion > 7) {
 				retValue = SCROLLBASE;
 			}
 		}
