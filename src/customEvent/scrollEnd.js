@@ -26,10 +26,11 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 	var TOUCHBASE = 1;
 	var SCROLLBASE = 0;
 
+	var latency = 250;
+
 	var deviceType = getDeviceType();
 
 	$.event.special.scrollend = {
-		latency: 250,
 		setup: function() {
 			attachEvent();
 		},
@@ -114,7 +115,7 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 				return;
 			}
 			triggerScrollEnd();
-		}, $.event.special.scrollend.latency);
+		}, latency);
 	}
 
 	function removeEvent() {
