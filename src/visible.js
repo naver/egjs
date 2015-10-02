@@ -26,11 +26,10 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 			};
 			$.extend(this.options, options);
 
-			this._$wrapper = $(this.options.wrapper);
-			this._$wrapper = this._$wrapper.length > 0 ? this._$wrapper[0] : doc;
+			this._wrapper = $(this.options.wrapper)[0] || doc;
 
-			// this._$wrapper is Element, or may be Window
-			if (this._$wrapper.nodeType && this._$wrapper.nodeType === 1) {
+			// this._wrapper is Element, or may be Window
+			if (this._wrapper.nodeType && this._wrapper.nodeType === 1) {
 				this._getAreaRect = this._getWrapperRect;
 			} else {
 				this._getAreaRect = this._getWindowRect;
@@ -63,14 +62,14 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 		 */
 		refresh: function() {
 			if (this._supportElementsByClassName) {
-				this._targets = this._$wrapper
+				this._targets = this._wrapper
 					.getElementsByClassName(this.options.targetClass);
 				this.refresh = function() {
 					return this;
 				};
 			} else {
 				this.refresh = function() {
-					this._targets = $(this._$wrapper)
+					this._targets = $(this._wrapper)
 						.find("." + this.options.targetClass)
 						.get();
 					return this;
@@ -101,7 +100,7 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 			return this;
 		},
 		_getWrapperRect: function() {
-			return this._$wrapper.getBoundingClientRect();
+			return this._wrapper.getBoundingClientRect();
 		},
 		_getWindowRect: function() {
 			// [IE7] document.documentElement.clientHeight has always value 0 (bug)
@@ -175,7 +174,7 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 		destroy: function() {
 			this.off();
 			this._targets = [];
-			this._$wrapper = this._timer = null;
+			this._wrapper = this._timer = null;
 		}
 	});
 });
