@@ -1,4 +1,4 @@
-eg.module("visible", ["jQuery", eg], function($, ns) {
+eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 	/**
 	 * It check element is visible within the specific element or viewport, regardless of the scroll position
 	 * @ko scroll 위치와 상관없이 특정 엘리먼트나 viewport 안에 엘리먼트가 보이는지 확인한다.
@@ -20,14 +20,14 @@ eg.module("visible", ["jQuery", eg], function($, ns) {
 	ns.Visible = ns.Class.extend(ns.Component, {
 		construct: function(options) {
 			this.options = {
-				wrapper: document,
+				wrapper: doc,
 				targetClass: "check_visible",
 				expandSize: 0
 			};
 			$.extend(this.options, options);
 
 			this._$wrapper = $(this.options.wrapper);
-			this._$wrapper = this._$wrapper.length > 0 ? this._$wrapper[0] : document;
+			this._$wrapper = this._$wrapper.length > 0 ? this._$wrapper[0] : doc;
 
 			// this._$wrapper is Element, or may be Window
 			if (this._$wrapper.nodeType && this._$wrapper.nodeType === 1) {
@@ -39,7 +39,7 @@ eg.module("visible", ["jQuery", eg], function($, ns) {
 			this._targets = [];
 			this._timer = null;
 			this._supportElementsByClassName = (function() {
-				var dummy = document.createElement("div");
+				var dummy = doc.createElement("div");
 				var dummies;
 				if (!dummy.getElementsByClassName) {
 					return false;
@@ -108,10 +108,10 @@ eg.module("visible", ["jQuery", eg], function($, ns) {
 			return {
 				top: 0,
 				left: 0,
-				bottom: document.documentElement.clientHeight ||
-							document.body.clientHeight,
-				right: document.documentElement.clientWidth ||
-							document.body.clientWidth
+				bottom: doc.documentElement.clientHeight ||
+							doc.body.clientHeight,
+				right: doc.documentElement.clientWidth ||
+							doc.body.clientWidth
 			};
 		},
 		_reviseElements: function(target, i) {
