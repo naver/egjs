@@ -26,10 +26,11 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 	var TOUCHBASE = 1;
 	var SCROLLBASE = 0;
 
+	var latency = 250;
+
 	var deviceType = getDeviceType();
 
 	$.event.special.scrollend = {
-		latency: 250,
 		setup: function() {
 			attachEvent();
 		},
@@ -61,12 +62,12 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 		var retValue = TIMERBASE;
 		var agent = ns.agent();
 		var osInfo = agent.os;
-		var osVersion = osInfo.version;
+		var osVersion = parseInt(osInfo.version, 10);
 		var browserInfo = agent.browser;
 
 		// Browsers that trigger scroll event like scrollstop : SCROLLBASE
 		if (osInfo.name === "ios") {
-			if (browserInfo.webview === true || osVersion.indexOf("7.") !== -1) {
+			if (browserInfo.webview === true || osVersion > 7) {
 				retValue = SCROLLBASE;
 			}
 		}
@@ -114,7 +115,7 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 				return;
 			}
 			triggerScrollEnd();
-		}, $.event.special.scrollend.latency);
+		}, latency);
 	}
 
 	function removeEvent() {
