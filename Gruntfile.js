@@ -29,7 +29,7 @@ module.exports = function(grunt) {
 				}
 			},
 			build: {
-				src: ["src/customEvent/*.js", "src/hook/*.js", "src/plugin/*.js", "src/class.js", "src/component.js", "src/eg.js", "src/module.js", "src/visible.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js"],
+				src: ["src/module.js", "src/eg.js", "src/customEvent/*.js", "src/hook/*.js", "src/plugin/*.js", "src/class.js", "src/component.js", "src/visible.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js"],
 				dest: "dist/<%=pkg.outputname%>.js"
 			}
 		},
@@ -110,7 +110,7 @@ module.exports = function(grunt) {
 				}
 		},
 		jscs: {
-			src: ["src/customEvent/*.js", "src/hook/*.js", "src/plugin/*.js", "src/class.js", "src/component.js", "src/eg.js", "src/module.js", "src/visible.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js"],
+			src: "<%=concat.build.src%>",
 			options: {
 				config: ".jscsrc"
 			}
