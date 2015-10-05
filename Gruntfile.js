@@ -29,7 +29,7 @@ module.exports = function(grunt) {
 				}
 			},
 			build: {
-				src: ["src/module.js", "src/hook/**/*.js",  "src/eg.js", "src/customEvent/*.js", "src/class.js", "src/component.js", "src/movableCoord.js", "src/flicking.js", "src/*.js" ],
+				src: ["src/customEvent/*.js", "src/hook/*.js", "src/plugin/*.js", "src/class.js", "src/component.js", "src/eg.js", "src/module.js", "src/visible.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js"],
 				dest: "dist/<%=pkg.outputname%>.js"
 			}
 		},
@@ -47,10 +47,9 @@ module.exports = function(grunt) {
 				expand : true,
 				flatten : true,
 				src : [
-						"bower_components/jquery/jquery.js",
-						"bower_components/hammer.js/hammer.js",
-						"bower_components/jquery.easing/js/jquery.easing.js"
-					],
+					"bower_components/jquery/jquery.js",
+					"bower_components/hammer.js/hammer.js"
+				],
 				dest : "dist/lib"
 			},
 			doc : {
@@ -111,12 +110,7 @@ module.exports = function(grunt) {
 				}
 		},
 		jscs: {
-			// src: ["src/**/*.js"."src/*.js"],
-			// src/hook/animate.js
-			// src/flicking.js
-			// src/movableCoord.js
-			// src/visible.js
-			src: ["src/customEvent/*.js", "src/hook/*.js", "src/plugin/*.js", "src/class.js", "src/component.js", "src/eg.js", "src/module.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js",  "src/visible.js" ],
+			src: ["src/customEvent/*.js", "src/hook/*.js", "src/plugin/*.js", "src/class.js", "src/component.js", "src/eg.js", "src/module.js", "src/visible.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js"],
 			options: {
 				config: ".jscsrc"
 			}
