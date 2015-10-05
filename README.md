@@ -69,7 +69,7 @@ http://jindo.nhncorp.com/eg 를 통해 최신 egjs의 API 문서를 볼 수 있�
 - `dist` 디렉토리에 eg.js 나 eg.min.js을 script의 src로 추가한다.
 - 아래와 같이 eg라는 네임스페이스가 있는 컴포넌트를 사용할 수 있다.
 
-```
+```html
 <script src="bower_components/egjs/dist/lib/jquery.js"></script>
 <script src="bower_components/egjs/dist/lib/hammer.js"></script>
 <script src="bower_components/egjs/dist/eg.min.js"></script>
@@ -90,7 +90,7 @@ egjs를 개발하고자 하는 개발자는 아래 순서대로, 개발 환경�
 
 ### Project setting
 #### 1. grunt-cli, bower 설치
-```
+```shell
 npm install grunt-cli -g // grunt-cli를 전역으로 설치한다 (관리자 계정 필요)
 npm install bower -g // bower를 전역으로 설치한다 (관리자 계정 필요)
 ```
