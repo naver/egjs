@@ -67,7 +67,7 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 
 		// Browsers that trigger scroll event like scrollstop : SCROLLBASE
 		if (osInfo.name === "ios") {
-			if (browserInfo.webview === true || osVersion > 7) {
+			if (browserInfo.webview === true || osVersion <= 7) {
 				retValue = SCROLLBASE;
 			}
 		}
