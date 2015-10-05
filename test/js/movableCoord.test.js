@@ -221,7 +221,7 @@ test("_convertInputType", function() {
 	// When
 	var inputType = [ "touch", "mouse" ];
 	// Then
-	equal(this.inst._convertInputType(inputType), Hammer.TouchMouseInput, "check TouchMouseInput");
+	equal(this.inst._convertInputType(inputType), Hammer.TouchInput, "check TouchInput");
 	// When
 	inputType = [ "touch" ];
 	// Then
