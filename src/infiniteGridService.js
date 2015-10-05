@@ -45,23 +45,23 @@ eg.module("infiniteGridService",
 		},
 		_getScrollTop: function() {
 			var fn;
+			var supportScrollY = window.scrollY !== undefined;
+			var isCSS1Compat = ((document.compatMode || "") === "CSS1Compat");
 
-			if (typeof global.scrollY === "number") {
+			if (supportScrollY) {
 				fn = function() {
 					return global.scrollY;
 				};
-			} else if (typeof global.pageYOffset === "number") {
-				fn = function() {
-					return global.pageYOffset;
-				};
-			} else if (typeof doc.documentElement.scrollTop === "number") {
-				fn = function() {
-					return doc.documentElement.scrollTop;
-				};
-			} else if (typeof doc.body.scrollTop === "number") {
-				fn = function() {
-					return doc.body.scrollTop;
-				};
+			} else {
+				if (isCSS1Compat) {
+					fn = function() {
+						return document.documentElement.scrollTop;
+					};
+				} else {
+					fn = function() {
+						return document.body.scrollTop;
+					};
+				}
 			}
 
 			this._getScrollTop = fn;
@@ -159,6 +159,7 @@ eg.module("infiniteGridService",
 
 			return $.ajax(url, options)
 					.done($.proxy(function(data) {
+						console.log(data);
 						var $elements;
 						if (callback) {
 							$elements = callback(data);
