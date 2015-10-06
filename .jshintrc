@@ -1,3 +1,4 @@
+// http://jshint.com/docs/options/
 // https://github.com/jshint/jshint/blob/master/src/messages.js
 // https://gist.github.com/haschek/2595796
 {
@@ -15,12 +16,14 @@
     "trailing": true,
     "undef": true,
     "unused": true,
-    "node": true,
+    "node": false,
     "sub" : true,
     "browser": true,
     "jquery": true,
+    "devel": false,
     "globals" : {
         "eg" : true,
-        "Hammer" : true
+        "Hammer" : true,
+        "require" : true
     }
 }
