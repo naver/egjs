@@ -20,7 +20,7 @@
     }
   ],
   "devDependencies": {
-    "egjs-jsdoc-template": "git+http://ajaxpf:naver@yobi.navercorp.com/Front-End/egjs-jsdoc-template#master",
+    "egjs-jsdoc-template": "git+http://oss.navercorp.com/egjs/egjs-jsdoc-template#master",
     "grunt": "^0.4.5",
     "grunt-contrib-concat": "^0.5.1",
     "grunt-contrib-copy": "^0.8.0",
