@@ -90,7 +90,7 @@ var Komponent = eg.Class.extend(eg.Component,{
 ```
 
 
-## How to start develop egjs
+## How to start developing egjs?
 For anyone interested to develop egjs, follow below instructions.
 
 ### Steps for setting project
