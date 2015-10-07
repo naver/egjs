@@ -1,123 +1,139 @@
-## egjs 구성
-### Component
-* **eg** : eg에서 필요한 유틸리티
-* **eg.Class** : 객체 지향으로 개발하는데 도와주는 Class.
-* **eg.Component** : 컴포넌트를 개발하는데 공통적인 기능을 가진 Class
-* **eg.MovableCoord** : 사용자 행동에 따른 좌표를 계산하는 Component
-* **eg.Flicking** : 플리킹 인터랙션을 구현하는 Component
-* **eg.Visible** : 엘리먼트가 viewport상에 있는지 확인하는 Component
-* **eg.infiniteGrid** : 카드 격자형 컨텐츠를 무한 배치하는 Component
+# egjs 
+
+'egjs' is a set of UI interactions, effects and utilities components library using jQuery, which brings easiest and fastest way to build web application in your way.
+
+> - **Demo**: http://codepen.io/egjs/
+> - **Online API Documentation**
+    - Latest : http://jindo.nhncorp.com/eg
+    - For specific version : `http://jindo.nhncorp.com/eg/[VERSION]/`
+
+- [한국어(Korean) readme](README-ko.md)
+
+### Components
+* **eg** : Collection of base utilities, which are used in diverse egjs components.
+* **eg.Class** : Provide class methods to make object oriented programming style code.
+* **eg.Component** : Base class utility to help develop modules in component.
+* **eg.MovableCoord** : Easily get computed coordinate values according user actions.
+* **eg.Flicking** : Implement flicking interaction UI.
+* **eg.Visible** : Check weather elements are within viewport.
+* **eg.infiniteGrid** : Make card style UI arranged in grid style in infinite way.
  
 ### jQuery Extensions
-#### method
-* **persit** : 데이터를 저장하고 persist이벤트에서 저장한 데이트를 사용할 수 있게 하는 메서드
-* **css** : jQuery버전에서 자동으로 vendor prefix을 지원하지 않는 경우 prefix없이 사용하게 하는 확장기능
-* **animate** : jQuery animate 확장해 transform 및 3d 가속 지원
+#### Methods
+* **persit** : Provide cache interface to handle persisted data among history navigation.
+* **css** : Help to use css properties without browser's vendor prefix.
+* **animate** : Support transform and 3d acceleration extending jQuery's animate.
 
-#### event
-* **rotate** : 회전을 알려주는 이벤트
-* **scrollend** : 스크롤의 마지막 시점을 알려주는 이벤트
+#### Events
+* **rotate** : Trigger event detecting device orientation.
+* **scrollEnd** : Trigger event detecting end of scroll's position.
 
-## Downloading egjs using Naver-bower
-### 1. naver-bower 설치
-```
-npm install naver-bower -g // naver-bower를 전역으로 설치한다 (관리자 계정 필요)
-```
-### 2. naver-bower를 이용하여 egjs 설치
-```
-naver-bower install egjs
-```
+## Download
+For latest version, check out - http://jindo.nhncorp.com/eg/dist/latest
 
-## Download URL
-egjs는 http://jindo.nhncorp.com/eg/dist/latest 을 통해 최신 egjs를 다운 받을수 있습니다.
+### Uncompressed (for development)
+  - Latest : http://jindo.nhncorp.com/eg/dist/latest/eg.js  
+  - For specific version :  `http://jindo.nhncorp.com/eg/dist/[VERSION]/eg.js`
 
- - 개발버전
-http://jindo.nhncorp.com/eg/dist/latest/eg.js  
-버전별 다운로드는 다음과 같이 다운로드 하시면 됩니다.
-```
-http://jindo.nhncorp.com/eg/dist/[버전]/eg.js
-```
- - 제품버전
-http://jindo.nhncorp.com/eg/dist/latest/eg.min.js  
-버전별 다운로드는 다음과 같이 다운로드 하시면 됩니다.
-```
-http://jindo.nhncorp.com/eg/dist/[버전]/eg.min.js
+### Compressed (for production)
+  - Latest : http://jindo.nhncorp.com/eg/dist/latest/eg.min.js  
+  - For specific version : `http://jindo.nhncorp.com/eg/dist/[VERSION]/eg.min.js`
+
+### with Bower
+
+```bash
+# Intall naver-bower (if not installed)
+# install naver-bower globally (admin account required)
+$ npm install naver-bower -g
+
+# then intall egjs using naver-bower
+$ naver-bower install egjs
 ```
 
-## Browser Support
-`jQuery 1.7 이상`에서 egjs를 사용하실수 있습니다.
+## Browser support
 
-|Internet Explorer|Chrome|FireFox|Safari|iOS|Android|네이버앱 iOS|네이버앱 Android|
+|Internet Explorer|Chrome|FireFox|Safari|iOS|Android|NAVER App iOS|NAVER App Android|
 |---|---|---|---|---|---|---|---|
-|7+|최신|최신|최신|7+|2.3+ (3.x는 제외)|최신|최신|
-- 컴포넌트별 지원범위가 다를수 있으며, 사용시 API 문서를 참조한다.
+|7+|Latest|Latest|Latest|7+|2.3+ (except 3.x)|Latest|Latest|
+- Coverage could be vary among components. For more details check out API documentation.
 
-## 의존 라이브러리
-|[jQuery](https://jquery.com/)|[hammer.js](http://hammerjs.github.io/)|
-|---|---|---|
-|1.7.0+ |2.0.4+|
+## Dependency library
 
-## Demo 
-http://codepen.io/egjs/
+egjs has following dependencies.
 
-## API
-http://jindo.nhncorp.com/eg 를 통해 최신 egjs의 API 문서를 볼 수 있다.
-또한, `http://jindo.nhncorp.com/eg/[버전]/` 을 통해 버전별 API 문서를 제공한다.
+|[jQuery](https://jquery.com/)|[hammer.js](http://hammerjs.github.io/)|[Outlayer](https://github.com/metafizzy/outlayer/)|
+|---|---|---|---|
+|1.7.0+ |2.0.4+|1.4.1+|
+- Except `jQuery`, others are not mandatory. Required dependencies may differ according components.
 
-## Usage
-- egjs의 `dist/lib`에 있는 라이브러리(jquery.js, jquery.easing.js, hammer.js)를 script의 src로 추가한다.
-- `dist` 디렉토리에 eg.js 나 eg.min.js을 script의 src로 추가한다.
-- 아래와 같이 eg라는 네임스페이스가 있는 컴포넌트를 사용할 수 있다.
+
+## How to use?
+Load dependency libraries(jquery.js, hammer.js, outlayer.js) first, then load eg.js(or eg.min.js).
 
 ```html
-<script src="bower_components/egjs/dist/lib/jquery.js"></script>
-<script src="bower_components/egjs/dist/lib/hammer.js"></script>
-<script src="bower_components/egjs/dist/eg.min.js"></script>
+<script src="bower_components/jquery/jquery.js"></script>
+<script src="bower_components/hammer.js/hammer.js"></script>
+<script src="bower_components/outlayer/outlayer.js"></script>
+<script src="dist/eg.js"></script>
+```
 
-<script>
+All done, ready to start using egjs!
+egjs has `eg` namespace and can be used as below example.
+
+```javascript
 var Klass = eg.Class({
     "construct" : function(){}
 });
 var Komponent = eg.Class.extend(eg.Component,{
     "construct" : function(){}
 });
-</script>
 ```
 
 
-## egjs 개발
-egjs를 개발하고자 하는 개발자는 아래 순서대로, 개발 환경을 구성한다.
+## How to start develop egjs
+For anyone interested to develop egjs, follow below instructions.
 
-### Project setting
-#### 1. grunt-cli, bower 설치
-```shell
-npm install grunt-cli -g // grunt-cli를 전역으로 설치한다 (관리자 계정 필요)
-npm install bower -g // bower를 전역으로 설치한다 (관리자 계정 필요)
+### Steps for setting project
+#### 1. Install grunt-cli and bower
+```bash
+# Install grunt-cli and bower globally (admin account required)
+$ npm install grunt-cli -g  # grunt-cli
+$ npm install bower -g  # bower
 ```
 
-#### 2. 다음 명령어를 이용하여 프로젝트를 설정한다.
-```
-git clone http://사용자아이디@yobi.navercorp.com/Front-End/egjs
-cd egjs
-npm install
-bower install
+#### 2. Clone from repo and install dependency modules
+```bash
+# make directory and enter
+$ mkdir egjs && cd egjs
+
+# get the clone from the repo
+$ git clone http://username@oss.navercorp.com/egjs/egjs.git
+
+# install npm & bower dependency modules
+$ npm install
+$ bower install
 ```
 
 #### 3. Build
-grunt의 build를 실행하여, 빌드작업을 진행한다.
+Run grunt build task to build.
+```bash
+$ grunt build
 ```
-grunt build
-```
-- 빌드가 정상적으로 완료되면 `dist` 디렉토리에 eg.js 와 eg.min.js 가 생성된다.
-- eg.js와 의존성이 있는 라이브러리는 `dist/lib` 폴더로 생성된다.
-- API문서는 `doc/index.html` 로 생성된다.
+If the build successfully complete :
+
+- `eg.js` and `eg.min.js` are created in `dist` folder.
+- API documentations are created in `doc` folder, and can be accessed `doc/index.html`.
 
 ### Test
-branch를 생성한 후, 개발이 완료되면, push 하기 전에 `꼭! 단위 테스트를 수행`한다.
+After development has been done from your branch, `must run unit test` before push.
+Running `grunt test` task, jshint, qunit and istanbul coverage task will be run.
+```bash
+$ grunt test
+```
+- Coverage results can be shown immediately and also can be found at `./report/index.html`.
 
-grunt test를 실행하면, jshint, qunit, istanbul coverage 측정이 실행된다.
-```
-grunt test
-```
-- coverage 결과는 grunt 실행시 확일 할수 있다.
-- coverage 결과는 ./report/index.html 파일을 통해 확인 할 수 있다.
+## Issues
+If you find a bug, please report us via [issues page](https://oss.navercorp.com/egjs/egjs/issues).
+
+## License
+egjs is released under the [LGPL v2](http://www.gnu.org/licenses/old-licenses/lgpl-2.0.html) license.
