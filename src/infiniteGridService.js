@@ -1,5 +1,6 @@
 eg.module("infiniteGridService",
 	["jQuery", eg, window, document], function($, ns, global, doc) {
+	var PERSIST_KEY = "__INFINITEGRIDSERVICE_PERSISTKEY__";
 	/**
 	 * Infinite cascading grid layout service for infiniteGrid
 	 * @ko infiniteGrid를 통한 무한 그리드 레이아웃 서비스.
@@ -25,7 +26,6 @@ eg.module("infiniteGridService",
 			this._topElement;
 			this._bottomElemment;
 
-			this._PERSIST_KEY = "__INFINITEGRIDSERVICE_PERSISTKEY__";
 			this._EVENT_NAMESPACE = ".infiniteGridService" + Math.floor((Math.random() * 100000) + 1);
 
 			this._options = $.extend({
@@ -38,34 +38,12 @@ eg.module("infiniteGridService",
 				this._$wrapper.addClass("NO_TAP_HIGHLIGHT");
 			}
 
-			this._getScrollTop();
 			this._infiniteGrid = new eg.InfiniteGrid(element, this._options);
 
 			this.activate();
 		},
 		_getScrollTop: function() {
-			var fn;
-			var supportScrollY = window.scrollY !== undefined;
-			var isCSS1Compat = ((document.compatMode || "") === "CSS1Compat");
-
-			if (supportScrollY) {
-				fn = function() {
-					return global.scrollY;
-				};
-			} else {
-				if (isCSS1Compat) {
-					fn = function() {
-						return document.documentElement.scrollTop;
-					};
-				} else {
-					fn = function() {
-						return document.body.scrollTop;
-					};
-				}
-			}
-
-			this._getScrollTop = fn;
-			return fn();
+			return doc.body.scrollTop || doc.documentElement.scrollTop;
 		},
 		_setBoundaryElements: function() {
 			var element;
@@ -159,7 +137,6 @@ eg.module("infiniteGridService",
 
 			return $.ajax(url, options)
 					.done($.proxy(function(data) {
-						console.log(data);
 						var $elements;
 						if (callback) {
 							$elements = callback(data);
@@ -180,8 +157,7 @@ eg.module("infiniteGridService",
 			if (isFitted) {
 				var fittedWrapperClientRect = wrapper.getBoundingClientRect();
 				var delta = wrapperClientRect.bottom - fittedWrapperClientRect.bottom;
-				var scrollTop = this._getScrollTop();
-				global.scrollTo(0, scrollTop - delta);
+				global.scrollTo(0, this._getScrollTop() - delta);
 			}
 		},
 		/**
@@ -282,7 +258,7 @@ eg.module("infiniteGridService",
 			if (this._isEnablePersist()) {
 				var data;
 
-				key = key || this._PERSIST_KEY;
+				key = key || PERSIST_KEY;
 
 				data = {
 					"infiniteGridStatus": this._infiniteGrid.getStatus(),
@@ -308,7 +284,7 @@ eg.module("infiniteGridService",
 
 			if (this._isEnablePersist()) {
 
-				key = key || this._PERSIST_KEY;
+				key = key || PERSIST_KEY;
 
 				data = $.persist(key);
 
