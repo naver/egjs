@@ -15,7 +15,7 @@
 * **eg.Component** : Base class utility to help develop modules in component.
 * **eg.MovableCoord** : Easily get computed coordinate values according user actions.
 * **eg.Flicking** : Implement flicking interaction UI.
-* **eg.Visible** : Check weather elements are within viewport.
+* **eg.Visible** : Check whether elements are within viewport.
 * **eg.infiniteGrid** : Make card style UI arranged in grid style in infinite way.
  
 ### jQuery Extensions
@@ -107,7 +107,7 @@ $ npm install bower -g  # bower
 $ mkdir egjs && cd egjs
 
 # get the clone from the repo
-$ git clone http://username@oss.navercorp.com/egjs/egjs.git
+$ git clone https://oss.navercorp.com/egjs/egjs.git
 
 # install npm & bower dependency modules
 $ npm install

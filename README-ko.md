@@ -107,7 +107,7 @@ $ npm install bower -g  # bower
 $ mkdir egjs && cd egjs
 
 # 저장소로부터 코드를 복제
-$ git clone http://사용자아이디@oss.navercorp.com/egjs/egjs.git
+$ git clone https://oss.navercorp.com/egjs/egjs.git
 
 # npm과 bower 의존성 모듈 설치
 $ npm install
