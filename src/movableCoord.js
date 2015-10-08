@@ -137,10 +137,17 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 				var hammer = new HM.Manager(el, {
 						recognizers: [
 							[
+								HM.Tap, {
+
+									// for long tap
+									time: 30000
+								}
+							],
+							[
 								HM.Pan, {
 									direction: subOptions.direction,
 									threshold: 0
-								}
+								}, ["tap"]
 							]
 						],
 
@@ -158,7 +165,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 					}
 				}, this))
 				.on("panstart panmove", this._panmove)
-				.on("panend", this._panend);
+				.on("panend tap", this._panend);
 			} catch (e) {
 				// console.log(e);
 			}
@@ -174,13 +181,13 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 					case "touch" : hasTouch = SUPPORT_TOUCH; break;
 				}
 			});
-			if (hasMouse) {
-				return hasTouch ? HM.TouchMouseInput : HM.MouseInput;
-			} else if (hasTouch) {
+			if (hasTouch) {
 				return HM.TouchInput;
-			} else {
-				return null;
 			}
+			if (hasMouse) {
+				return HM.MouseInput;
+			}
+			return null;
 		},
 
 		/**
