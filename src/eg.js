@@ -53,7 +53,7 @@ eg.module("eg", ["jQuery", eg, window], function($, ns, global) {
 	 * @description version infomation
 	 * @ko 버전 정보
 	 */
-	ns.VERSION = "#__VERSION__#";
+	ns.VERSION = "#VERSION#";
 	ns.hook =  {
 		// isHWAccelerable : null,
 		// isTransitional 	: null,
@@ -186,16 +186,14 @@ if(agent.os.name === "naver") {
 			}
 		}
 	};
-	function UAParser(useragent) {
-		this._ua = useragent || userAgentRules.versionString;
-	}
-	UAParser.prototype = {
-		__getBrowserVersion: function(browserName) {
-			var ua = this._ua;
+
+	var UAParser = {
+		getBrowserVersion: function(browserName) {
+			var ua = this.ua;
 			var defaultBrowserVersion =
 				userAgentRules.defaultString.browser.version;
 			var browserVersion;
-			var rules;
+			var rules = [];
 			var rule;
 			var i;
 			var ruleCount;
@@ -206,11 +204,13 @@ if(agent.os.name === "naver") {
 			if (!ua || !browserName) {
 				return;
 			}
-			
-			rules = $(userAgentRules.browser).filter(function(index, rule) {
-				return rule.identity === browserName;
-			});
-		
+
+			for(i in userAgentRules.browser) {
+				if (userAgentRules.browser[i].identity === browserName) {
+					rules.push(userAgentRules.browser[i]);
+				}
+			}
+
 			for(i = 0, ruleCount = rules.length ; i < ruleCount ; i++) {
 				rule = rules[i];
 				versionToken = rule.versionSearch || browserName;
@@ -230,13 +230,13 @@ if(agent.os.name === "naver") {
 
 			return browserVersion || defaultBrowserVersion;
 		},
-		__getName: function(browserRules) {
-			return this.__getIdentityStringFromArray(browserRules);
+		getName: function(browserRules) {
+			return this.getIdentityStringFromArray(browserRules);
 		},
-		__getIdentity: function(rule) {
-			return this.__matchSubString(rule);
+		getIdentity: function(rule) {
+			return this.matchSubString(rule);
 		},
-		__getIdentityStringFromArray: function(rules) {
+		getIdentityStringFromArray: function(rules) {
 			var conflictOSIdentity;
 			var identity;
 			var rule;
@@ -244,22 +244,22 @@ if(agent.os.name === "naver") {
 			for (var i = 0, h = rules.length; i < h; i++) {
 				rule = rules[i];
 				conflictOSIdentity = rule.conflictOSIdentity;
-				if (this.__isMatched(this._ua, conflictOSIdentity)) {
+				if (this.isMatched(this.ua, conflictOSIdentity)) {
 					continue;
 				}
-				identity = this.__getIdentity(rule);
+				identity = this.getIdentity(rule);
 				if (identity) {
 					return identity;
 				}
 			}
 			return userAgentRules.defaultString.browser.name;
 		},
-		__getOS: function(osRules) {
-			return this.__getIdentityStringFromArray(osRules);
+		getOS: function(osRules) {
+			return this.getIdentityStringFromArray(osRules);
 		},
-		__getOSVersion: function(osName) {
-			var ua = this._ua;
-			var OSRule = this.__getOSRule(osName);
+		getOSVersion: function(osName) {
+			var ua = this.ua;
+			var OSRule = this.getOSRule(osName);
 			var defaultOSVersion = userAgentRules.defaultString.os.version;
 			var OSVersion;
 			var OSVersionToken;
@@ -285,33 +285,43 @@ if(agent.os.name === "naver") {
 
 			return OSVersion || defaultOSVersion;
 		},
-		__getOSRule: function(osName) {
-			return this.__getRule(userAgentRules.os, osName);
+		getOSRule: function(osName) {
+			return this.getRule(userAgentRules.os, osName);
 		},
-		__getBrowserRule: function(browserName) {
-			return this.__getRule(userAgentRules.browser, browserName);
+		getBrowserRule: function(browserName) {
+			return this.getRule(userAgentRules.browser, browserName);
 		},
-		__getRule: function(rules, targetIdentity) {
-			var ua = this._ua;
+		getRule: function(rules, targetIdentity) {
+			var ua = this.ua;
+			var i;
+			var subString;
+			var regex;
+			var identityMatched;
+			var rule;
 
-			return $(rules).filter($.proxy(function(index, rule) {
-				var subString = rule.subString;
-				var regex = new RegExp("^" + rule.identity + "$", "i");
-				var identityMatched = regex.test(targetIdentity);
-				return subString ?
-					identityMatched && this.__isMatched(ua, subString) :
-					identityMatched;
-			}, this))[0];
+			for(i in rules) {
+				subString = rules[i].subString;
+				regex = new RegExp("^" + rules[i].identity + "$", "i");
+				identityMatched = regex.test(targetIdentity);
+				if (subString ?
+					identityMatched && this.isMatched(ua, subString) :
+					identityMatched) {
+					rule = rules[i];
+					break;
+				}
+			}
+
+			return rule;
 		},
-		__matchSubString: function(rule) {
-			var ua = this._ua;
+		matchSubString: function(rule) {
+			var ua = this.ua;
 			var token = rule.subString;
 			var exToken = rule.conflictOSIdentity;
-			if (!this.__isMatched(ua, exToken) && this.__isMatched(ua, token)) {
+			if (!this.isMatched(ua, exToken) && this.isMatched(ua, token)) {
 				return rule.identity;
 			}
 		},
-		__isMatched: function(base, target) {
+		isMatched: function(base, target) {
 			return target &&
 				target.test ? !!target.test(base) : base.indexOf(target) > -1;
 		},
@@ -320,34 +330,34 @@ if(agent.os.name === "naver") {
 		// ios : In the absence of version
 		// Android 5.0 && chrome 40+ : when there is a keyword of "; wv" in useragent
 		// Under android 5.0 :  when there is a keyword of "NAVER or Daum" in useragent
-		__getWebview: function(osName, browserName, browserVersion) {
-			var ua = this._ua;
-			var OSRule = this.__getOSRule(osName) || {};
-			var browserRule = this.__getBrowserRule(browserName) || {};
+		getWebview: function(osName, browserName, browserVersion) {
+			var ua = this.ua;
+			var OSRule = this.getOSRule(osName) || {};
+			var browserRule = this.getBrowserRule(browserName) || {};
 
-			return this.__isMatched(ua, OSRule.webviewToken) ||
-				this.__isMatched(ua, browserRule.webviewToken) ||
-				this.__isMatched(browserVersion, browserRule.webviewVersion) ||
+			return this.isMatched(ua, OSRule.webviewToken) ||
+				this.isMatched(ua, browserRule.webviewToken) ||
+				this.isMatched(browserVersion, browserRule.webviewVersion) ||
 				false;
 		}
 	};
 
 	UAParser.create = function(useragent) {
-		var g = new UAParser(useragent);
+		UAParser.ua = useragent;
 		var agent = {
 			os: {},
 			browser: {}
 		};
 
-		agent.browser.name = g.__getName(userAgentRules.browser);
-		agent.browser.version = g.__getBrowserVersion(agent.browser.name);
-		agent.os.name = g.__getOS(userAgentRules.os);
-		agent.os.version = g.__getOSVersion(agent.os.name);
-		agent.browser.webview = g.__getWebview(
-												agent.os.name,
-												agent.browser.name,
-												agent.browser.version
-											);
+		agent.browser.name = UAParser.getName(userAgentRules.browser);
+		agent.browser.version = UAParser.getBrowserVersion(agent.browser.name);
+		agent.os.name = UAParser.getOS(userAgentRules.os);
+		agent.os.version = UAParser.getOSVersion(agent.os.name);
+		agent.browser.webview = UAParser.getWebview(
+			agent.os.name,
+			agent.browser.name,
+			agent.browser.version
+		);
 
 		agent.browser.name = agent.browser.name.toLowerCase();
 		agent.os.name = agent.os.name.toLowerCase();
