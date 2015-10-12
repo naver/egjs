@@ -200,7 +200,7 @@ if(agent.os.name === "naver") {
 			var versionTokenIndex;
 			var versionIndex;
 
-			if (!ua || !browserName) {
+			if (!browserName) {
 				return;
 			}
 
