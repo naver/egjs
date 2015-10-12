@@ -94,17 +94,15 @@ if(agent.os.name === "naver") {
 }
 }
 	*/
-
-	/*		
-		{String|RegEx} subString
-		{String|RegEx} identity
-		{String|RegEx} versionSearch
-		{String|RegEx} conflictOSIdentity
-		{String|RegEx} webviewVersion
-		{String|RegEx} webviewToken
-		{String} versionAlias
+	/*
+	*	{String|RegEx} subString
+	*	{String|RegEx} identity
+	*	{String|RegEx} versionSearch
+	*	{String|RegEx} conflictOSIdentity
+	*	{String|RegEx} webviewVersion
+	*	{String|RegEx} webviewToken
+	*	{String} versionAlias
 	*/
-		
 	var userAgentRules = {
 		browser: [{
 			subString: "PhantomJS",
@@ -113,7 +111,7 @@ if(agent.os.name === "naver") {
 			subString: "SAMSUNG",
 			identity: "SBrowser",
 			versionSearch: "Chrome",
-			conflictOSIdentity : "Windows Phone"
+			conflictOSIdentity: "Windows Phone"
 		}, {
 			subString: "Chrome",
 			identity: "Chrome"
@@ -127,7 +125,7 @@ if(agent.os.name === "naver") {
 			subString: "Apple",
 			identity: "Safari",
 			versionSearch: "Version",
-			conflictOSIdentity : /(Android)/i
+			conflictOSIdentity: /(Android)/i
 		}, {
 			identity: "Opera",
 			versionSearch: "Version"
@@ -177,124 +175,133 @@ if(agent.os.name === "naver") {
 			identity: "Android",
 			webviewToken: /(NAVER)|(DAUM)|(; wv)/i
 		}],
-		versionString: window.navigator.userAgent || window.navigator.appVersion || undefined,
+		versionString: window.navigator.userAgent || undefined,
 		defaultString: {
 			browser: {
-				version : "-1",
-				name : "default"
+				version: "-1",
+				name: "default"
 			},
 			os: {
-				version : "-1"
+				version: "-1"
 			}
 		}
 	};
-	
 	function UAParser(useragent) {
 		this._ua = useragent || userAgentRules.versionString;
 	}
-	
 	UAParser.prototype = {
 		__getBrowserVersion: function(browserName) {
 			var ua = this._ua;
-			var defaultBrowserVersion = 
+			var defaultBrowserVersion =
 				userAgentRules.defaultString.browser.version;
 			var browserVersion;
+			var rules;
+			var rule;
+			var i;
+			var ruleCount;
+			var versionToken;
+			var versionTokenIndex;
+			var versionIndex;
 			
 			if (!ua || !browserName) {
-				return
+				return;
 			}
 			
-			var rules = userAgentRules.browser.filter(function(rule) {
+			rules = $(userAgentRules.browser).filter(function(index, rule) {
 				return rule.identity === browserName;
 			});
-
-			rules.some(function(rule) {
-				var versionToken = rule.versionSearch || browserName;
-				var versionTokenIndex = ua.indexOf(versionToken);
-				var versionIndex;
+		
+			for(i = 0, ruleCount = rules.length ; i < ruleCount ; i++) {
+				rule = rules[i];
+				versionToken = rule.versionSearch || browserName;
+				versionTokenIndex = ua.indexOf(versionToken);
+				versionIndex;
 				if (versionTokenIndex > -1) {
 					versionIndex = versionTokenIndex + versionToken.length + 1;
 					browserVersion = ua.substring(versionIndex).split(" ")[0];
-					return true;
+					break;
 				}
-			});
-			
-			if(browserVersion) {
+			};
+
+			if (browserVersion) {
 				browserVersion = browserVersion.replace(/_/g, ".")
 												.replace(/\;|\)/g, "");
 			}
-			
+
 			return browserVersion || defaultBrowserVersion;
 		},
 		__getName: function(browserRules) {
-			return this.__getIdentityStringFromArray(browserRules)
+			return this.__getIdentityStringFromArray(browserRules);
 		},
 		__getIdentity: function(rule) {
-			return this.__matchSubString(rule)
+			return this.__matchSubString(rule);
 		},
 		__getIdentityStringFromArray: function(rules) {
 			var conflictOSIdentity;
 			var identity;
 			var rule;
-			for (var i = 0, h = rules.length, identity; i < h; i++) {
+			var h = rules.length;
+			for (var i = 0; i < h; i++) {
 				rule = rules[i];
 				conflictOSIdentity = rule.conflictOSIdentity;
-				if(this.__isMatched(this._ua, conflictOSIdentity)) {
+				if (this.__isMatched(this._ua, conflictOSIdentity)) {
 					continue;
-				} 
-				
+				}
 				identity = this.__getIdentity(rule);
-
 				if (identity) {
-					return identity
+					return identity;
 				}
 			}
 			return userAgentRules.defaultString.browser.name;
 		},
 		__getOS: function(osRules) {
-			return this.__getIdentityStringFromArray(osRules)
+			return this.__getIdentityStringFromArray(osRules);
 		},
 		__getOSVersion: function(osName) {
 			var ua = this._ua;
 			var OSRule = this.__getOSRule(osName);
 			var defaultOSVersion = userAgentRules.defaultString.os.version;
 			var OSVersion;
-
-			if (!ua || !osName) {
-				return
-			}
-				
-			if(OSRule.versionAlias) {
-				return OSVersionAlias;
-			}
-						
-			var OSVersionToken = OSRule.versionSearch || osName;
-			var OSVersionRegex = new RegExp(OSVersionToken + " ([\\d_\\.]+)", "i");
-			var OSVersionRegResult = ua.match(OSVersionRegex);
+			var OSVersionToken;
+			var OSVersionRegex;
+			var OSVersionRegResult;
 			
+			if (!ua || !osName) {
+				return;
+			}
+
+			if (OSRule.versionAlias) {
+				return OSRule.versionAlias;
+			}
+
+			OSVersionToken = OSRule.versionSearch || osName;
+			OSVersionRegex = new RegExp(OSVersionToken + " ([\\d_\\.]+)", "i");
+			OSVersionRegResult = ua.match(OSVersionRegex);
+
 			if (OSVersionRegResult !== null) {
 				OSVersion = OSVersionRegResult[1].replace(/_/g, ".")
 													.replace(/\;|\)/g, "");
 			}
-			
+
 			return OSVersion || defaultOSVersion;
 		},
 		__getOSRule: function(osName) {
 			return this.__getRule(userAgentRules.os, osName);
 		},
 		__getBrowserRule: function(browserName) {
-			return this.__getRule(userAgentRules.browser, browserName);	
+			return this.__getRule(userAgentRules.browser, browserName);
 		},
 		__getRule: function(rules, targetIdentity) {
-			var ua = this._ua;			
-			return rules.filter(function(rule) {
+			var ua = this._ua;
+
+			return $(rules).filter($.proxy(function(index, rule) {
 				var subString = rule.subString;
-				var regex = new RegExp('^' + rule.identity + '$', 'i');
-				var identityMatched = regex.test(targetIdentity); 
-				return subString ? 
+				var regex = new RegExp("^" + rule.identity + "$", "i");
+				var identityMatched = regex.test(targetIdentity);
+				return subString ?
 					identityMatched && this.__isMatched(ua, subString) :
 					identityMatched;
-			}.bind(this))[0];				
+			}, this))[0];
 		},
 		__matchSubString: function(rule) {
 			var ua = this._ua;
@@ -304,50 +311,53 @@ if(agent.os.name === "naver") {
 				return rule.identity;
 			}
 		},
-		__isMatched : function(base, target) {
-			return target && 
-				target.test ? !! target.test(base) : base.indexOf(target) > -1;
+		__isMatched: function(base, target) {
+			return target &&
+				target.test ? !!target.test(base) : base.indexOf(target) > -1;
 		},
+
 		// Check Webview
 		// ios : In the absence of version
 		// Android 5.0 && chrome 40+ : when there is a keyword of "; wv" in useragent
 		// Under android 5.0 :  when there is a keyword of "NAVER or Daum" in useragent
 		__getWebview: function(osName, browserName, browserVersion) {
-			var ua = this._ua;			
-			var OSRule = this.__getOSRule(osName) || {}; 
+			var ua = this._ua;
+			var OSRule = this.__getOSRule(osName) || {};
 			var browserRule = this.__getBrowserRule(browserName) || {};
-			return this.__isMatched(ua, OSRule.webviewToken)|| 
+
+			return this.__isMatched(ua, OSRule.webviewToken) ||
 				this.__isMatched(ua, browserRule.webviewToken) ||
 				this.__isMatched(browserVersion, browserRule.webviewVersion) ||
 				false;
 		}
 	};
-	
+
 	UAParser.create = function(useragent) {
 		var g = new UAParser(useragent);
 		var agent = {
-			os : {},
-			browser : {}
+			os: {},
+			browser: {}
 		};
-		
+
 		agent.browser.name = g.__getName(userAgentRules.browser);
 		agent.browser.version = g.__getBrowserVersion(agent.browser.name);
 		agent.os.name = g.__getOS(userAgentRules.os);
 		agent.os.version = g.__getOSVersion(agent.os.name);
-		agent.browser.webview = g.__getWebview(agent.os.name, agent.browser.name, agent.browser.version);
+		agent.browser.webview = g.__getWebview(
+												agent.os.name,
+												agent.browser.name,
+												agent.browser.version
+											);
 
 		agent.browser.name = agent.browser.name.toLowerCase();
 		agent.os.name = agent.os.name.toLowerCase();
-	
-	
+
 		return agent;
-	};	
-		
+	};
+
 	ns.agent = function(useragent) {
 		ua = useragent || navigator.userAgent;
-		
 		var info = UAParser.create(ua);
-		
 		return resultCache(this, "agent", [info], info);
 	};
 
@@ -398,7 +408,6 @@ return defaultVal;
 		var browser = agent.browser.name;
 		var browserVersion = agent.browser.version;
 		var useragent;
-
 		// chrome (less then 25) has a text blur bug.
 		// but samsung sbrowser fix it.
 		if (browser.indexOf("chrome") !== -1) {
