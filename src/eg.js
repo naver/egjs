@@ -175,7 +175,7 @@ if(agent.os.name === "naver") {
 			identity: "Android",
 			webviewToken: /(NAVER)|(DAUM)|(; wv)/i
 		}],
-		versionString: window.navigator.userAgent || undefined,
+		versionString: window.navigator.userAgent,
 		defaultString: {
 			browser: {
 				version: "-1",
@@ -240,8 +240,8 @@ if(agent.os.name === "naver") {
 			var conflictOSIdentity;
 			var identity;
 			var rule;
-			var h = rules.length;
-			for (var i = 0; i < h; i++) {
+
+			for (var i = 0, h = rules.length; i < h; i++) {
 				rule = rules[i];
 				conflictOSIdentity = rule.conflictOSIdentity;
 				if (this.__isMatched(this._ua, conflictOSIdentity)) {
