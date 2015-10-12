@@ -199,18 +199,18 @@ if(agent.os.name === "naver") {
 			var versionToken;
 			var versionTokenIndex;
 			var versionIndex;
-			
+
 			if (!ua || !browserName) {
 				return;
 			}
 
-			for(i in userAgentRules.browser) {
+			for (i in userAgentRules.browser) {
 				if (userAgentRules.browser[i].identity === browserName) {
 					rules.push(userAgentRules.browser[i]);
 				}
 			}
 
-			for(i = 0, ruleCount = rules.length ; i < ruleCount ; i++) {
+			for (i = 0, ruleCount = rules.length ; i < ruleCount ; i++) {
 				rule = rules[i];
 				versionToken = rule.versionSearch || browserName;
 				versionTokenIndex = ua.indexOf(versionToken);
@@ -220,7 +220,7 @@ if(agent.os.name === "naver") {
 					browserVersion = ua.substring(versionIndex).split(" ")[0];
 					break;
 				}
-			};
+			}
 
 			if (browserVersion) {
 				browserVersion = browserVersion.replace(/_/g, ".")
@@ -264,7 +264,7 @@ if(agent.os.name === "naver") {
 			var OSVersionToken;
 			var OSVersionRegex;
 			var OSVersionRegResult;
-			
+
 			if (!ua || !osName) {
 				return;
 			}
@@ -298,7 +298,7 @@ if(agent.os.name === "naver") {
 			var identityMatched;
 			var rule;
 
-			for(i in rules) {
+			for (i in rules) {
 				subString = rules[i].subString;
 				regex = new RegExp("^" + rules[i].identity + "$", "i");
 				identityMatched = regex.test(targetIdentity);
@@ -417,6 +417,7 @@ return defaultVal;
 		var browser = agent.browser.name;
 		var browserVersion = agent.browser.version;
 		var useragent;
+
 		// chrome (less then 25) has a text blur bug.
 		// but samsung sbrowser fix it.
 		if (browser.indexOf("chrome") !== -1) {
