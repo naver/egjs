@@ -175,7 +175,6 @@ if(agent.os.name === "naver") {
 			identity: "Android",
 			webviewToken: /(NAVER)|(DAUM)|(; wv)/i
 		}],
-		versionString: window.navigator.userAgent,
 		defaultString: {
 			browser: {
 				version: "-1",
