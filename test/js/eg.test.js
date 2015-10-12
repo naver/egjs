@@ -656,7 +656,7 @@ var ua = [
 		},
 		"browser" : {
 			"name" : "ie",
-			"version" : "7.0"
+			"version" : "11.0"
 		},
 		"isHWAccelerable" : true,
 		"isTransitional" : false,
@@ -995,7 +995,7 @@ var nativeVersionProfile = [{
 		"isTransitional" : true
 	},
 	{
-		// Window 8 && ie10
+		// Window phone 8 && ie10
 		"ua" : "Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; SAMSUNG; SGH-T899M",
 		"os" : {
 			"name" : "window",
@@ -1061,6 +1061,7 @@ nativeVersionProfile.forEach(function(v,i) {
 			} else {
 				nativeVersion = parseFloat(agent.browser.version,10);
 			}
+
 			agent.browser.nativeVersion = nativeVersion;
 			return agent;
 		}
