@@ -258,31 +258,31 @@ if(agent.os.name === "naver") {
 		},
 		getOSVersion: function(osName) {
 			var ua = this.ua;
-			var OSRule = this.getOSRule(osName);
+			var osRule = this.getOSRule(osName);
 			var defaultOSVersion = userAgentRules.defaultString.os.version;
-			var OSVersion;
-			var OSVersionToken;
-			var OSVersionRegex;
-			var OSVersionRegResult;
+			var osVersion;
+			var osVersionToken;
+			var osVersionRegex;
+			var osVersionRegResult;
 
 			if (!ua || !osName) {
 				return;
 			}
 
-			if (OSRule.versionAlias) {
-				return OSRule.versionAlias;
+			if (osRule.versionAlias) {
+				return osRule.versionAlias;
 			}
 
-			OSVersionToken = OSRule.versionSearch || osName;
-			OSVersionRegex = new RegExp(OSVersionToken + " ([\\d_\\.]+)", "i");
-			OSVersionRegResult = ua.match(OSVersionRegex);
+			osVersionToken = osRule.versionSearch || osName;
+			osVersionRegex = new RegExp(osVersionToken + " ([\\d_\\.]+)", "i");
+			osVersionRegResult = ua.match(osVersionRegex);
 
-			if (OSVersionRegResult !== null) {
-				OSVersion = OSVersionRegResult[1].replace(/_/g, ".")
+			if (osVersionRegResult !== null) {
+				osVersion = osVersionRegResult[1].replace(/_/g, ".")
 													.replace(/\;|\)/g, "");
 			}
 
-			return OSVersion || defaultOSVersion;
+			return osVersion || defaultOSVersion;
 		},
 		getOSRule: function(osName) {
 			return this.getRule(userAgentRules.os, osName);
@@ -331,10 +331,10 @@ if(agent.os.name === "naver") {
 		// Under android 5.0 :  when there is a keyword of "NAVER or Daum" in useragent
 		getWebview: function(osName, browserName, browserVersion) {
 			var ua = this.ua;
-			var OSRule = this.getOSRule(osName) || {};
+			var osRule = this.getOSRule(osName) || {};
 			var browserRule = this.getBrowserRule(browserName) || {};
 
-			return this.isMatched(ua, OSRule.webviewToken) ||
+			return this.isMatched(ua, osRule.webviewToken) ||
 				this.isMatched(ua, browserRule.webviewToken) ||
 				this.isMatched(browserVersion, browserRule.webviewVersion) ||
 				false;
