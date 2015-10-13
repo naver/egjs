@@ -53,7 +53,7 @@ eg.module("eg", ["jQuery", eg, window], function($, ns, global) {
 	 * @description version infomation
 	 * @ko 버전 정보
 	 */
-	ns.VERSION = "#__VERSION__#";
+	ns.VERSION = "#VERSION#";
 	ns.hook =  {
 		// isHWAccelerable : null,
 		// isTransitional 	: null,
@@ -94,86 +94,281 @@ if(agent.os.name === "naver") {
 }
 }
 	*/
+	/*
+	*	{String|RegEx} subString
+	*	{String|RegEx} identity
+	*	{String|RegEx} versionSearch
+	*	{String|RegEx} conflictOSIdentity
+	*	{String|RegEx} webviewVersion
+	*	{String|RegEx} webviewToken
+	*	{String} versionAlias
+	*/
+	var userAgentRules = {
+		browser: [{
+			subString: "PhantomJS",
+			identity: "PhantomJS"
+		}, {
+			subString: "SAMSUNG",
+			identity: "SBrowser",
+			versionSearch: "Chrome",
+			conflictOSIdentity: "Windows Phone"
+		}, {
+			subString: "Chrome",
+			identity: "Chrome"
+		}, {
+			subString: /(iPhone)|(iPad)/i,
+			identity: "Safari",
+			versionSearch: "Version",
+			conflictOSIdentity: /(Android)|(Windows Phone)/i,
+			webviewVersion: /-1/
+		}, {
+			subString: "Apple",
+			identity: "Safari",
+			versionSearch: "Version",
+			conflictOSIdentity: /(Android)/i
+		}, {
+			identity: "Opera",
+			versionSearch: "Version"
+		}, {
+			subString: "Firefox",
+			identity: "Firefox"
+		}, {
+			subString: "MSIE",
+			identity: "IE",
+			versionSearch: "MSIE"
+		}, {
+			subString: "Trident",
+			identity: "IE",
+			versionSearch: "rv"
+		}],
+		os: [{
+			subString: "Windows Phone",
+			identity: "Window",
+			versionSearch: "Windows Phone"
+		},
+		{
+			subString: "Windows 2000",
+			identity: "Window",
+			versionAlias: "5.0"
+		},
+		{
+			subString: "Win",
+			identity: "Window",
+			versionSearch: "Windows NT"
+		},
+		{
+			subString: "iPhone",
+			identity: "iOS",
+			versionSearch: "iPhone OS",
+			webviewToken: /(NAVER)|(DAUM)/i
+		}, {
+			subString: "iPad",
+			identity: "iOS",
+			versionSearch: "CPU OS",
+			webviewToken: /(NAVER)|(DAUM)/i
+		}, {
+			subString: "Mac",
+			versionSearch: "OS X",
+			identity: "MAC"
+		}, {
+			subString: /android/i,
+			identity: "Android",
+			webviewToken: /(NAVER)|(DAUM)|(; wv)/i
+		}],
+		defaultString: {
+			browser: {
+				version: "-1",
+				name: "default"
+			},
+			os: {
+				version: "-1"
+			}
+		}
+	};
+
+	var UAParser = {
+		getBrowserVersion: function(browserName) {
+			var ua = this.ua;
+			var defaultBrowserVersion =
+				userAgentRules.defaultString.browser.version;
+			var browserVersion;
+			var rules = [];
+			var rule;
+			var i;
+			var ruleCount;
+			var versionToken;
+			var versionTokenIndex;
+			var versionIndex;
+
+			if (!browserName) {
+				return;
+			}
+
+			for (i in userAgentRules.browser) {
+				if (userAgentRules.browser[i].identity === browserName) {
+					rules.push(userAgentRules.browser[i]);
+				}
+			}
+
+			for (i = 0, ruleCount = rules.length ; i < ruleCount ; i++) {
+				rule = rules[i];
+				versionToken = rule.versionSearch || browserName;
+				versionTokenIndex = ua.indexOf(versionToken);
+				versionIndex;
+				if (versionTokenIndex > -1) {
+					versionIndex = versionTokenIndex + versionToken.length + 1;
+					browserVersion = ua.substring(versionIndex).split(" ")[0];
+					break;
+				}
+			}
+
+			if (browserVersion) {
+				browserVersion = browserVersion.replace(/_/g, ".")
+												.replace(/\;|\)/g, "");
+			}
+
+			return browserVersion || defaultBrowserVersion;
+		},
+		getName: function(browserRules) {
+			return this.getIdentityStringFromArray(browserRules);
+		},
+		getIdentity: function(rule) {
+			return this.matchSubString(rule);
+		},
+		getIdentityStringFromArray: function(rules) {
+			var conflictOSIdentity;
+			var identity;
+			var rule;
+
+			for (var i = 0, h = rules.length; i < h; i++) {
+				rule = rules[i];
+				conflictOSIdentity = rule.conflictOSIdentity;
+				if (this.isMatched(this.ua, conflictOSIdentity)) {
+					continue;
+				}
+				identity = this.getIdentity(rule);
+				if (identity) {
+					return identity;
+				}
+			}
+			return userAgentRules.defaultString.browser.name;
+		},
+		getOS: function(osRules) {
+			return this.getIdentityStringFromArray(osRules);
+		},
+		getOSVersion: function(osName) {
+			var ua = this.ua;
+			var osRule = this.getOSRule(osName);
+			var defaultOSVersion = userAgentRules.defaultString.os.version;
+			var osVersion;
+			var osVersionToken;
+			var osVersionRegex;
+			var osVersionRegResult;
+
+			if (!ua || !osName) {
+				return;
+			}
+
+			if (osRule.versionAlias) {
+				return osRule.versionAlias;
+			}
+
+			osVersionToken = osRule.versionSearch || osName;
+			osVersionRegex = new RegExp(osVersionToken + " ([\\d_\\.]+)", "i");
+			osVersionRegResult = ua.match(osVersionRegex);
+
+			if (osVersionRegResult !== null) {
+				osVersion = osVersionRegResult[1].replace(/_/g, ".")
+													.replace(/\;|\)/g, "");
+			}
+
+			return osVersion || defaultOSVersion;
+		},
+		getOSRule: function(osName) {
+			return this.getRule(userAgentRules.os, osName);
+		},
+		getBrowserRule: function(browserName) {
+			return this.getRule(userAgentRules.browser, browserName);
+		},
+		getRule: function(rules, targetIdentity) {
+			var ua = this.ua;
+			var i;
+			var subString;
+			var regex;
+			var identityMatched;
+			var rule;
+
+			for (i in rules) {
+				subString = rules[i].subString;
+				regex = new RegExp("^" + rules[i].identity + "$", "i");
+				identityMatched = regex.test(targetIdentity);
+				if (subString ?
+					identityMatched && this.isMatched(ua, subString) :
+					identityMatched) {
+					rule = rules[i];
+					break;
+				}
+			}
+
+			return rule;
+		},
+		matchSubString: function(rule) {
+			var ua = this.ua;
+			var token = rule.subString;
+			var exToken = rule.conflictOSIdentity;
+			if (!this.isMatched(ua, exToken) && this.isMatched(ua, token)) {
+				return rule.identity;
+			}
+		},
+		isMatched: function(base, target) {
+			return target &&
+				target.test ? !!target.test(base) : base.indexOf(target) > -1;
+		},
+
+		// Check Webview
+		// ios : In the absence of version
+		// Android 5.0 && chrome 40+ : when there is a keyword of "; wv" in useragent
+		// Under android 5.0 :  when there is a keyword of "NAVER or Daum" in useragent
+		getWebview: function(osName, browserName, browserVersion) {
+			var ua = this.ua;
+			var osRule = this.getOSRule(osName) || {};
+			var browserRule = this.getBrowserRule(browserName) || {};
+
+			return this.isMatched(ua, osRule.webviewToken) ||
+				this.isMatched(ua, browserRule.webviewToken) ||
+				this.isMatched(browserVersion, browserRule.webviewVersion) ||
+				false;
+		}
+	};
+
+	UAParser.create = function(useragent) {
+		UAParser.ua = useragent;
+		var agent = {
+			os: {},
+			browser: {}
+		};
+
+		agent.browser.name = UAParser.getName(userAgentRules.browser);
+		agent.browser.version = UAParser.getBrowserVersion(agent.browser.name);
+		agent.os.name = UAParser.getOS(userAgentRules.os);
+		agent.os.version = UAParser.getOSVersion(agent.os.name);
+		agent.browser.webview = UAParser.getWebview(
+			agent.os.name,
+			agent.browser.name,
+			agent.browser.version
+		);
+
+		agent.browser.name = agent.browser.name.toLowerCase();
+		agent.os.name = agent.os.name.toLowerCase();
+
+		return agent;
+	};
 
 	ns.agent = function(useragent) {
 		ua = useragent || navigator.userAgent;
-
-		var osMatch = /(Windows Phone) ([\d|\.]+)/.exec(ua) ||
-				/(iPhone |iPad )?OS ([\d|_]+)/.exec(ua) ||
-				/(Android) ([\w.]+)/.exec(ua) ||
-				/(Windows NT) ([\d|\.]+)/.exec(ua) ||
-				/(Windows) ([\w|\.]+)/.exec(ua) ||
-				/(Mac OS X)( ([\w.]+))?/.exec(ua) ||
-				[];
-		var browserMatch = /(Chrome|CriOS|Firefox)[\s\/]([\w.]+)/.exec(ua) ||
-				/(MSIE|IEMobile)[\/\s]([\d.]+)/.exec(ua) ||
-				/(Trident)[\/\s]([\d.]+)/.exec(ua) ||
-				/(PhantomJS)\/([\d.]+)/.exec(ua) ||
-				[];
-
-		// os
-		if (osMatch.length >= 3) {
-			if (ua.indexOf("Win") !== -1) {
-				osMatch[1] = "window";
-				osMatch[2] = osMatch[2] === "2000" ? "5.0" : osMatch[2]; // for window 2000
-			} else if (/iPhone|iPad/.test(ua)) {
-				osMatch[1] = "ios";
-			} else if (ua.indexOf("Mac") !== -1) {
-				osMatch[1] = "mac";
-			} else {
-				osMatch[1] = osMatch[1].toLowerCase();
-			}
-			osMatch[2] = (osMatch[2] || "").replace(/\_/g, ".").replace(/\s/g, "");
-		}
-
-		// browser
-		if (browserMatch.length >= 3) {
-			if (/MSIE|IEMobile|Trident/.test(ua)) {
-				browserMatch[1] = "ie";
-			} else if (/Chrome|CriOS/.test(ua)) {
-				browserMatch[1] = ua.indexOf("SAMSUNG") !== -1 ? "sbrowser" : "chrome";
-			} else {
-				browserMatch[1] = browserMatch[1].toLowerCase();
-			}
-		} else if (browserMatch.length === 0 && osMatch[1] &&
-					osMatch[1] !== "android") {
-			browserMatch = /(Safari)\/([\w.]+)/.exec(ua) ||
-							(osMatch[1] === "ios" ? ["", "safari"] : ["", ""]);
-			browserMatch[1] = browserMatch[1].toLowerCase();
-			if (browserMatch[0] && browserMatch[1].indexOf("safari") !== -1) {
-				browserMatch[2] = ua.indexOf("Apple") !== -1 ?
-										ua.match(/Version\/([\d.]+)/)[1] || null :
-										null;
-			}
-		}
-
-		var info = {
-			os: {
-				name: osMatch[1] || "",
-				version: osMatch[2] || "-1"
-			},
-			browser: {
-				name: browserMatch[1] || "default",
-				version: browserMatch[2] || /*osMatch[2] ||*/ "-1"
-			}
-		};
-		info = checkWebview(info, ua);
+		var info = UAParser.create(ua);
 		return resultCache(this, "agent", [info], info);
 	};
-
-	// Check Webview
-	// ios : In the absence of version
-	// Android 5.0 && chrome 40+ : when there is a keyword of "; wv" in useragent
-	// Under android 5.0 :  when there is a keyword of "NAVER or Daum" in useragent
-	function checkWebview(info, ua) {
-		info.browser.webview =
-			(info.os.name === "android" && ua.indexOf("; wv") > -1) ||// Android
-			(info.os.name === "ios" && info.browser.version === "-1") ||// ios
-			(ua.indexOf("NAVER") > -1 || ua.indexOf("Daum") > -1) ||// Other
-			false;
-
-		return info;
-	}
 
 	/**
 	 * Get a translate string.
