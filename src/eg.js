@@ -116,16 +116,16 @@ if(agent.os.name === "naver") {
 			subString: "Chrome",
 			identity: "Chrome"
 		}, {
-			subString: /(iPhone)|(iPad)/i,
+			subString: /iPhone|iPad/i,
 			identity: "Safari",
 			versionSearch: "Version",
-			conflictOSIdentity: /(Android)|(Windows Phone)/i,
+			conflictOSIdentity: /Android|Windows Phone/i,
 			webviewVersion: /-1/
 		}, {
 			subString: "Apple",
 			identity: "Safari",
 			versionSearch: "Version",
-			conflictOSIdentity: /(Android)/i
+			conflictOSIdentity: /Android/i
 		}, {
 			identity: "Opera",
 			versionSearch: "Version"
@@ -160,12 +160,12 @@ if(agent.os.name === "naver") {
 			subString: "iPhone",
 			identity: "iOS",
 			versionSearch: "iPhone OS",
-			webviewToken: /(NAVER)|(DAUM)/i
+			webviewToken: /NAVER|DAUM/i
 		}, {
 			subString: "iPad",
 			identity: "iOS",
 			versionSearch: "CPU OS",
-			webviewToken: /(NAVER)|(DAUM)/i
+			webviewToken: /NAVER|DAUM/i
 		}, {
 			subString: "Mac",
 			versionSearch: "OS X",
@@ -173,7 +173,7 @@ if(agent.os.name === "naver") {
 		}, {
 			subString: /android/i,
 			identity: "Android",
-			webviewToken: /(NAVER)|(DAUM)|(; wv)/i
+			webviewToken: /NAVER|DAUM|; wv/i
 		}],
 		defaultString: {
 			browser: {
