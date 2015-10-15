@@ -47,7 +47,7 @@ eg.module("eg", ["jQuery", eg, window], function($, ns, global) {
 	 * @namespace eg
 	 * @group egjs
 	 */
-	var ua;
+
 	/**
 	 * @name eg.VERSION
 	 * @description version infomation
@@ -353,8 +353,7 @@ if(agent.os.name === "naver") {
 	};
 
 	ns.agent = function(useragent) {
-		ua = useragent || navigator.userAgent;
-		var info = UAParser.create(ua);
+		var info = UAParser.create(useragent || navigator.userAgent);
 		return resultCache(this, "agent", [info], info);
 	};
 
@@ -413,7 +412,8 @@ return defaultVal;
 		} else if (/ie|firefox|safari|inapp/.test(browser)) {
 			result = true;
 		} else if (agent.os.name.indexOf("android") !== -1) {
-			useragent = (ua.match(/\(.*\)/) || [null])[0];
+			// for Xiaomi
+			useragent = (UAParser.ua.match(/\(.*\)/) || [null])[0];
 
 			// android 4.1+ blacklist
 			// EK-GN120 : Galaxy Camera, SM-G386F : Galaxy Core LTE
