@@ -107,7 +107,7 @@ if(agent.os.name === "naver") {
 			criteria: "PhantomJS",
 			identity: "PhantomJS"
 		}, {
-			criteria: /MSIE|Trident|Windows Phone/,
+			criteria: /MSIE|Trident|Windows Phone/i,
 			identity: "IE",
 			versionSearch: "IEMobile|MSIE|rv"
 		}, {
@@ -115,7 +115,7 @@ if(agent.os.name === "naver") {
 			identity: "SBrowser",
 			versionSearch: "Chrome"
 		}, {
-			criteria: /Chrome|CriOS/,
+			criteria: /Chrome|CriOS/i,
 			identity: "Chrome"
 		}, {
 			criteria: /android/i,
@@ -129,14 +129,11 @@ if(agent.os.name === "naver") {
 			identity: "Safari",
 			versionSearch: "Version"
 		}, {
-			identity: "Opera",
-			versionSearch: "Version"
-		}, {
 			criteria: "Firefox",
 			identity: "Firefox"
 		}],
 		os: [{
-			criteria: /Windows Phone|Windows NT/,
+			criteria: /Windows Phone|Windows NT/i,
 			identity: "Window",
 			versionSearch: "Windows Phone|Windows NT"
 		}, {
@@ -144,7 +141,7 @@ if(agent.os.name === "naver") {
 			identity: "Window",
 			versionAlias: "5.0"
 		}, {
-			criteria: /iPhone|iPad/,
+			criteria: /iPhone|iPad/i,
 			identity: "iOS",
 			versionSearch: "iPhone OS|CPU OS"
 		}, {
@@ -174,7 +171,8 @@ if(agent.os.name === "naver") {
 				name: "default"
 			},
 			os: {
-				version: "-1"
+				version: "-1",
+				name: "unknown"
 			}
 		}
 	};
@@ -272,21 +270,21 @@ if(agent.os.name === "naver") {
 			var criteria;
 			var identityMatched;
 
-			for (var i in rules) {
-				criteria = rules[i].criteria;
+			for (var i = 0, rule; rule = rules[i]; i++) {
+				criteria = rule.criteria;
 				identityMatched =
-					new RegExp(rules[i].identity, "i").test(targetIdentity);
+					new RegExp(rule.identity, "i").test(targetIdentity);
 				if (criteria ?
 					identityMatched && this.isMatched(this.ua, criteria) :
 					identityMatched) {
-					return rules[i];
+					return rule;
 				}
 			}
 		},
 		getIdentityStringFromArray: function(rules, defaultStrings) {
-			for (var i in rules) {
-				if (this.isMatched(this.ua, rules[i].criteria)) {
-					return rules[i].identity || defaultStrings.name;
+			for (var i = 0, rule; rule = rules[i]; i++) {
+				if (this.isMatched(this.ua, rule.criteria)) {
+					return rule.identity || defaultStrings.name;
 				}
 			}
 			return defaultStrings.name;
@@ -298,33 +296,20 @@ if(agent.os.name === "naver") {
 		isWebview: function() {
 			var ua = this.ua;
 			var webviewRules = userAgentRules.webview;
-			var webviewRule;
 			var isWebview = false;
-			var browserVersionSearch;
 			var browserVersion;
-			var webviewToken;
-			var webviewBrowserVersion;
 
-			for (var i in webviewRules) {
-				webviewRule = webviewRules[i];
-				if (!this.isMatched(ua, webviewRule.criteria)) {
+			for (var i = 0, rule; rule = webviewRules[i]; i++) {
+				if (!this.isMatched(ua, rule.criteria)) {
 					continue;
 				}
 
-				browserVersionSearch = webviewRule.browserVersionSearch;
 				browserVersion =
-					this.extractBrowserVersion(browserVersionSearch, ua);
-				webviewBrowserVersion = webviewRule.webviewBrowserVersion;
-				if (this.isMatched(browserVersion, webviewBrowserVersion)) {
-					isWebview = true;
-				}
+					this.extractBrowserVersion(rule.browserVersionSearch, ua);
 
-				webviewToken = webviewRule.webviewToken;
-				if (webviewToken && this.isMatched(ua, webviewToken)) {
+				if (this.isMatched(ua, rule.webviewToken) ||
+					this.isMatched(browserVersion, rule.webviewBrowserVersion)) {
 					isWebview = true;
-				}
-
-				if (isWebview === true) {
 					break;
 				}
 			}
