@@ -107,11 +107,15 @@ if(agent.os.name === "naver") {
 			criteria: "PhantomJS",
 			identity: "PhantomJS"
 		}, {
+			criteria: /Edge/i,
+			identity: "Edge",
+			versionSearch: "Edge"
+		}, {
 			criteria: /MSIE|Trident|Windows Phone/i,
 			identity: "IE",
 			versionSearch: "IEMobile|MSIE|rv"
 		}, {
-			criteria: "SAMSUNG",
+			criteria: /SAMSUNG|SamsungBrowser/i,
 			identity: "SBrowser",
 			versionSearch: "Chrome"
 		}, {
@@ -163,7 +167,8 @@ if(agent.os.name === "naver") {
 			webviewBrowserVersion: /-1/
 		}, {
 			criteria: /iPhone|iPad|android/i,
-			webviewToken: /NAVER|DAUM|; wv/i
+			webviewToken: /NAVER|LINE|DAUM|KAKAOTALK|FB_IAB|; wv/i
+
 		}],
 		defaultString: {
 			browser: {
@@ -394,7 +399,7 @@ return defaultVal;
 		// but samsung sbrowser fix it.
 		if (browser.indexOf("chrome") !== -1) {
 			result = browserVersion >= "25";
-		} else if (/ie|firefox|safari|inapp/.test(browser)) {
+		} else if (/ie|edge|firefox|safari|inapp/.test(browser)) {
 			result = true;
 		} else if (agent.os.name.indexOf("android") !== -1) {
 			// for Xiaomi
