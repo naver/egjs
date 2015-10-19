@@ -43,6 +43,5 @@
 	"safeContextKeyword" : "self",
 	"validateLineBreaks" : "LF",
 	"validateIndentation": "\t",
-	"validateParameterSeparator" : ", ",
 	"validateQuoteMarks" : {"mark":"\"","escape":true}
 }
