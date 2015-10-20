@@ -65,10 +65,19 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 	 * Getter for state
 	 */
 	function getState() {
+		var stateStr;
 		if (isSupportState) {
-			return JSON.parse(history.state) || {};
+			stateStr = history.state;
+
+			// If typeof stateStr is not a "string", it is not a valid state data for Persist module
+			if (typeof stateStr === "string") {
+				try {
+					return JSON.parse(stateStr) || {};
+				} catch (e) {}
+			}
+			return {};
 		} else {
-			var stateStr = storage.getItem(location.href + CONST_PERSIST);
+			stateStr = storage.getItem(location.href + CONST_PERSIST);
 
 			// Note2 (4.3) return value is null
 			return (stateStr && stateStr.length > 0) ? JSON.parse(stateStr) : {};
