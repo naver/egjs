@@ -548,40 +548,6 @@ var ua = [
         "isTransitional" : true,
         "_hasClickBug" : false
     },
-	{
-        // GalaxyS5 4.4.2 - webview (KAKAOTALK app)
-        "device" : "GalaxyS5 - webview (KAKAOTALK app)",
-        "ua" : "Mozilla/5.0 (Linux; Android 4.4.2; SM-G900S Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36;KAKAOTALK",
-        "os" : {
-            "name" : "android",
-            "version" : "4.4.2"
-        },
-        "browser" : {
-            "name" : "chrome",
-            "version" : "30.0.0.0",
-            "webview" : true
-        },
-        "isHWAccelerable" : true,
-        "isTransitional" : true,
-        "_hasClickBug" : false
-    },
-	{
-        // GalaxyS5 4.4.2 - webview (Facebook app)
-        "device" : "GalaxyS5 - webview (Facebook app)",
-        "ua" : "Mozilla/5.0 (Linux; Android 4.4.2; SM-G900S Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/50.0.0.10.54;]",
-        "os" : {
-            "name" : "android",
-            "version" : "4.4.2"
-        },
-        "browser" : {
-            "name" : "chrome",
-            "version" : "30.0.0.0",
-            "webview" : true
-        },
-        "isHWAccelerable" : true,
-        "isTransitional" : true,
-        "_hasClickBug" : false
-    },
     {
          // GalaxyS5 5.0 - webview
          "device" : "GalaxyS5 5.0 - webview",
