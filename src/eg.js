@@ -167,7 +167,7 @@ if(agent.os.name === "naver") {
 			webviewBrowserVersion: /-1/
 		}, {
 			criteria: /iPhone|iPad|android/i,
-			webviewToken: /NAVER|LINE|DAUM|KAKAOTALK|FB_IAB|; wv/i
+			webviewToken: /NAVER|DAUM|; wv/i
 
 		}],
 		defaultString: {
