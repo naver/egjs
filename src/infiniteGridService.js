@@ -1,5 +1,6 @@
 // jscs:disable maximumLineLength
 eg.module("infiniteGridService", [window.jQuery, eg, window, document], function($, ns, global, doc) {
+	var PERSIST_KEY = "__INFINITEGRIDSERVICE_PERSISTKEY__";
 	/**
 	 * Infinite cascading grid layout service for infiniteGrid
 	 * @ko infiniteGrid를 통한 무한 그리드 레이아웃 서비스
@@ -25,7 +26,6 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 			this._topElement;
 			this._bottomElemment;
 
-			this._PERSIST_KEY = "__INFINITEGRIDSERVICE_PERSISTKEY__";
 			this._EVENT_NAMESPACE = ".infiniteGridService" +
 					Math.floor((Math.random() * 100000) + 1);
 
