@@ -4,8 +4,8 @@ egjs는 jQuery기반의 UI 인터랙션, 이펙트, 유틸리티로 구성된 �
 
 > - **데모**: http://codepen.io/egjs/
 > - **API 문서**
-    - Latest : http://jindo.nhncorp.com/eg
-    - For specific version : `http://jindo.nhncorp.com/eg/[VERSION]/`
+    - Latest : http://egjs.navercorp.com/
+    - For specific version : `http://egjs.navercorp.com/[VERSION]/doc`
 
 - [English(영어) readme](README.md)
 
@@ -30,15 +30,15 @@ egjs는 jQuery기반의 UI 인터랙션, 이펙트, 유틸리티로 구성된 �
 
 
 ## Download
-최신버전은 http://jindo.nhncorp.com/eg/dist/latest 에서 다운로드 받으실 수 있다.
+최신버전은 http://egjs.navercorp.com/latest/dist/ 에서 다운로드 받으실 수 있다.
 
 ### Uncompressed (개발버전)
-  - 최신 : http://jindo.nhncorp.com/eg/dist/latest/eg.js  
-  - 버전별 다운로드 :  `http://jindo.nhncorp.com/eg/dist/[VERSION]/eg.js`
+  - 최신 : http://egjs.navercorp.com/latest/dist/eg.js
+  - 버전별 다운로드 :  `http://egjs.navercorp.com/[VERSION]/dist/eg.js`
 
 ### Compressed (제품버전)
-  - 최신 : http://jindo.nhncorp.com/eg/dist/latest/eg.min.js  
-  - 버전별 : `http://jindo.nhncorp.com/eg/dist/[VERSION]/eg.min.js`
+  - 최신 : http://egjs.navercorp.com/latest/dist/eg.min.js
+  - 버전별 : `http://egjs.navercorp.com/[VERSION]/dist/eg.min.js`
 
 ### with Bower
 
