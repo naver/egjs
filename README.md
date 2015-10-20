@@ -4,8 +4,8 @@
 
 > - **Demo**: http://codepen.io/egjs/
 > - **Online API Documentation**
-    - Latest : http://jindo.nhncorp.com/eg
-    - For specific version : `http://jindo.nhncorp.com/eg/[VERSION]/`
+    - Latest : http://egjs.navercorp.com/
+    - For specific version : `http://egjs.navercorp.com/[VERSION]/doc`
 
 - [한국어(Korean) readme](README-ko.md)
 
@@ -29,15 +29,15 @@
 * **scrollEnd** : Trigger event detecting end of scroll's position.
 
 ## Download
-For latest version, check out - http://jindo.nhncorp.com/eg/dist/latest
+For latest version, check out - http://egjs.navercorp.com/latest/dist/
 
 ### Uncompressed (for development)
-  - Latest : http://jindo.nhncorp.com/eg/dist/latest/eg.js  
-  - For specific version :  `http://jindo.nhncorp.com/eg/dist/[VERSION]/eg.js`
+  - Latest : http://egjs.navercorp.com/latest/dist/eg.js  
+  - For specific version :  `http://egjs.navercorp.com/[VERSION]/dist/eg.js  `
 
 ### Compressed (for production)
-  - Latest : http://jindo.nhncorp.com/eg/dist/latest/eg.min.js  
-  - For specific version : `http://jindo.nhncorp.com/eg/dist/[VERSION]/eg.min.js`
+  - Latest : http://egjs.navercorp.com/latest/dist/eg.min.js
+  - For specific version : `http://egjs.navercorp.com/[VERSION]/dist/eg.js`
 
 ### with Bower
 
