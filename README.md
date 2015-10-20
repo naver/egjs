@@ -37,7 +37,7 @@ For latest version, check out - http://egjs.navercorp.com/latest/dist/
 
 ### Compressed (for production)
   - Latest : http://egjs.navercorp.com/latest/dist/eg.min.js
-  - For specific version : `http://egjs.navercorp.com/[VERSION]/dist/eg.js`
+  - For specific version : `http://egjs.navercorp.com/[VERSION]/dist/eg.min.js`
 
 ### with Bower
 
