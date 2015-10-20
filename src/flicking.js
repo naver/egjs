@@ -123,9 +123,9 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 					this._conf.dirData.push(ns["DIRECTION_" + v]);
 				}, this));
 
-			!ns._hasClickBug() && (this._setPointerEvents = function () {
-			});
+			!ns._hasClickBug() && (this._setPointerEvents = function () {});
 
+			this._setCssToMove();
 			this._build();
 			this._bindEvents();
 
@@ -318,8 +318,32 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 			);
 		},
 
+
+		/**
+		 * Set css values to move elements
+		 *
+		 * Need to be initialized before use, to check if browser support transform css property.
+		 * If browser doesn't support transform, then use left/top properties instead.
+		 */
+		_setCssToMove: function () {
+			var elementStyle = this.$wrapper[0].style;
+			var supportTransform =
+				(elementStyle.transform || elementStyle.webkitTransform) !== undefined;
+
+			this._setCssToMove = supportTransform ?
+				function (element, coords) {
+					element.css("transform", ns.translate(
+						coords[0], coords[1], this._conf.useLayerHack
+					));
+				} :	function (element, coords) {
+				element.css({ left: coords[0], top: coords[1] });
+			};
+		},
+
 		/**
 		 * Callback function for applying CSS values to each panels
+		 *
+		 * Need to be initialized before use, to set up for Android 2.x browsers or others.
 		 */
 		_applyPanelsCss: function () {
 			var conf = this._conf;
@@ -347,9 +371,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 			} else {
 				this._applyPanelsCss = function (i, v) {
 					var coords = this._getDataByDirection([(100 * i) + "%", 0]);
-					$(v).css("transform", ns.translate(
-						coords[0], coords[1], this._conf.useLayerHack
-					));
+					this._setCssToMove($(v), coords);
 				};
 			}
 		},
@@ -746,10 +768,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 		 */
 		_setTranslate: function (coords) {
 			coords = this._getCoordsValue(coords);
-
-			this.$container.css("transform", ns.translate(
-				coords.x, coords.y, this._conf.useLayerHack
-			));
+			this._setCssToMove(this.$container, [ coords.x, coords.y ]);
 		},
 
 		/**
