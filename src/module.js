@@ -16,18 +16,18 @@
 	// jscs:disable maximumLineLength
 	var templateMessage = [
 		"[egjs] The {{name}} library must be loaded before {{componentName}}.",
-		"[egjs] For AMD evnronment (like RequireJS), \"{{name}}\" must be declared, which is required by {{componentName}}.",
-		"[egjs] The {{componentName}} in {{index}} argument is missing.\n\rDownload {{name}} from [{{url}}].",
+		"[egjs] For AMD environment (like RequireJS), \"{{name}}\" must be declared, which is required by {{componentName}}.",
+        "[egjs] The {{index}} argument of {{componentName}} is missing.\n\rDownload {{name}} from [{{url}}].",
 		"[egjs] The {{name}} parameter of {{componentName}} is not valid.\n\rPlease check and try again.",
-		"[egjs] The {{componentName}} in {{index}} argument is undefined.\n\rPlease check and try again."
+        "[egjs] The {{index}} argument of {{componentName}} is undefined.\n\rPlease check and try again."
 	];
 
 	// jscs:enable maximumLineLength
 
 	var ordinal = [ "1st", "2nd", "3rd"];
 
-	function changeOdinal(index) {
-		return index > 2 ? index + "th" : ordinal[index];
+	function changeOrdinal(index) {
+		return index > 2 ? (index + 1) + "th" : ordinal[index];
 	}
 
 	function replaceStr(str, obj) {
@@ -56,7 +56,7 @@
 		for (; i < l; i++) {
 			param = di[i];
 			messageInfo = {
-				"index": changeOdinal(i),
+				"index": changeOrdinal(i),
 				"name": param,
 				"componentName": componentName
 			};
