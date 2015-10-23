@@ -6,16 +6,18 @@ module.exports = function(grunt) {
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON("package.json"),
+		gitinfo: grunt.task.run("gitinfo"),
 		banner: "/**\n" +
-			"* <%= pkg.name.replace(/-/g,' ') %>\n" +
-			"* @version <%= pkg.version %>\n" +
+			"* <%= pkg.name %>\n" +
+			"* @version <%= pkg.version %><%= /(?!^master$)(^.*$)/.test(gitinfo.local.branch.current.name) && ' ('+ RegExp.$1 +')' || '' %>\n" +
 			"* @date <%= grunt.template.today('isoDateTime') %>\n" +
-			"* \n" +
+			"* @SHA-1 <%= gitinfo.local.branch.current.shortSHA %>\n" +
+			"*\n" +
 			"* <%= pkg.author %>; <%= pkg.name %> JavaScript library\n" +
 			"* http://egjs.navercorp.com/\n" +
-			"* \n" +
-			"* Released under the <%= _.pluck(pkg.licenses, 'type').join(', ') %> license\n" +
-			"* <%= _.pluck(pkg.licenses, 'url').join(', ') %>\n" +
+			"*\n" +
+			"* Released under the <%= pkg.licenses[0].type %> license\n" +
+			"* <%= pkg.licenses[0].url %>\n" +
 			"*/\n\n",
 		jshint: {
 			files: ["Gruntfile.js", "*.js", "src/**/*.js" ],
