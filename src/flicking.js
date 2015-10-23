@@ -125,7 +125,6 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 
 			!ns._hasClickBug() && (this._setPointerEvents = function () {});
 
-			this._setMoveStyle();
 			this._build();
 			this._bindEvents();
 
@@ -318,28 +317,24 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 			);
 		},
 
-
 		/**
 		 * Set CSS style values to move elements
 		 *
-		 * Need to be initialized before use, to check if browser support transform css property.
+		 * Initialize setting up checking if browser support transform css property.
 		 * If browser doesn't support transform, then use left/top properties instead.
 		 */
-		_setMoveStyle: function () {
-			var elementStyle = this.$wrapper[0].style;
-			var supportTransform =
-				(elementStyle.transform || elementStyle.webkitTransform) !== undefined;
+		_setMoveStyle: (function () {
+			var elStyle = $("<div>")[0].style;
 
-			this._setMoveStyle = supportTransform ?
+			return (elStyle.transform || elStyle.webkitTransform) !== undefined ?
 				function ($element, coords) {
-					$element.css("transform", ns.translate(
-						coords[0], coords[1], this._conf.useLayerHack
-					));
+					$element.css("transform",
+						ns.translate(coords[0], coords[1], this._conf.useLayerHack)
+					);
 				} :	function ($element, coords) {
-					$element.css({ left: coords[0], top: coords[1]
-				});
-			};
-		},
+					$element.css({ left: coords[0], top: coords[1] });
+				};
+		})(),
 
 		/**
 		 * Callback function for applying CSS values to each panels
