@@ -66,16 +66,26 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 	 */
 	function getState() {
 		var stateStr;
+		var state = {};
 		if (isSupportState) {
 			stateStr = history.state;
 
-			// If typeof stateStr is not a "string", it is not a valid state data for Persist module
-			if (typeof stateStr === "string") {
+			// "string", "null" is not a valid
+			if (typeof stateStr === "string" && stateStr !== "null") {
 				try {
-					return JSON.parse(stateStr) || {};
-				} catch (e) {}
+					state = JSON.parse(stateStr);
+
+					// like '[ ... ]', '1', '1.234', '"123"' is also not valid
+					if (typeof state !== "object" || state instanceof Array) {
+						throw new Error("Window.history is not valid form for persist.");
+					}
+				} catch (e) {
+					/* jshint ignore:start */
+					console.warn(e.message);
+					/* jshint ignore:end */
+				}
 			}
-			return {};
+			return state;
 		} else {
 			stateStr = storage.getItem(location.href + CONST_PERSIST);
 
