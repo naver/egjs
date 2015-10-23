@@ -122,7 +122,7 @@ if(agent.os.name === "naver") {
 			criteria: /Chrome|CriOS/,
 			identity: "Chrome"
 		}, {
-			criteria: /android/i,
+			criteria: /Android/,
 			identity: "default"
 		}, {
 			criteria: /iPhone|iPad/,
@@ -153,7 +153,7 @@ if(agent.os.name === "naver") {
 			versionSearch: "OS X",
 			identity: "MAC"
 		}, {
-			criteria: /Android/i,
+			criteria: /Android/,
 			identity: "Android"
 		}],
 
