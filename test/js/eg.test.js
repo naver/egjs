@@ -274,6 +274,56 @@ var ua = [
         "_hasClickBug" : true
     },
 	{
+        // iPhone 9.0
+        "device" : "iPhone 9.0",
+        "ua" : "Mozilla/5.0 (iPhone; CPU iPhone OS 9_0 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13A452 Safari/601.1",
+        "os" : {
+            "name" : "ios",
+            "version" : "9.0"
+        },
+        "browser" : {
+            "name" : "safari",
+            "version" : "9.0"
+        },
+        "isHWAccelerable" : true,
+        "isTransitional" : false,
+        "_hasClickBug" : true
+    },
+	{
+        // iPhone 9.0 - webview (Naver) on iPhone 4S
+        "device" : "iPhone 9.0 - webview (Naver app)",
+        "ua" : "Mozilla/5.0 (iPhone; CPU iPhone OS 9_0 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13A452 NAVER(inapp; search; 450; 6.4.5; 4S)",
+        "os" : {
+            "name" : "ios",
+            "version" : "9.0"
+        },
+        "browser" : {
+            "name" : "safari",
+            "version" : "-1",
+            "webview" : true
+        },
+        "isHWAccelerable" : true,
+        "isTransitional" : false,
+        "_hasClickBug" : true
+    },
+    {
+        // iPhone 9.0 - webview (LINE app)
+        "device" : "iPhone 9.0 - webview (LINE app)",
+        "ua" : "Mozilla/5.0 (iPhone; CPU iPhone OS 9_0 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13A452 Safari Line/5.4.0",
+        "os" : {
+            "name" : "ios",
+            "version" : "9.0"
+        },
+        "browser" : {
+            "name" : "safari",
+            "version" : "-1",
+            "webview" : true
+        },
+        "isHWAccelerable" : true,
+        "isTransitional" : false,
+        "_hasClickBug" : true
+    },
+	{
 		// GalaxyS:2.1
 		"device" : "GalaxyS:2.1",
 		"ua" : "Mozilla/5.0 (Linux;U;Android 2.1;ko-kr;SHW-M110S Build/ÉCLAIR) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17",
@@ -482,7 +532,7 @@ var ua = [
 		"_hasClickBug" : false
 	},
 	{
-        // GalaxyS5 4.4.2 - webview
+        // GalaxyS5 4.4.2 - webview (NAVER app)
         "device" : "GalaxyS5 - webview",
         "ua" : "Mozilla/5.0 (Linux; Android 4.4.2; SM-G900S Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/28.0.1500.94 Mobile Safari/537.36 NAVER(inapp; search; 340; 6.0.5)",
         "os" : {
@@ -526,6 +576,89 @@ var ua = [
         "browser" : {
             "name" : "chrome",
             "version" : "33.0.1750.61",
+            "webview" : true
+        },
+        "isHWAccelerable" : true,
+        "isTransitional" : true,
+        "_hasClickBug" : false
+    },
+	{
+		// GalaxyS6 5.1.1
+		"device" : "GalaxyS6:5.1.1",
+		"ua" : "Mozilla/5.0 (Linux; Android 5.1.1; SAMSUNG SM-G925S Build/LMY47X) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/3.2 Chrome/38.0.2125.102 Mobile Safari/537.36",
+		"os" : {
+			"name" : "android",
+			"version" : "5.1.1"
+		},
+		"browser" : {
+			"name" : "sbrowser",
+			"version" : "38.0.2125.102"
+		},
+		"isHWAccelerable" : true,
+		"isTransitional" : false,
+		"_hasClickBug" : false
+	},
+	{
+		// GalaxyS6:chrome
+		"device" : "GalaxyS6:chrome",
+		"ua" : "Mozilla/5.0 (Linux; Android 5.1.1; SM-G925S Build/LMY47X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.84 Mobile Safari/537.36",
+		"os" : {
+			"name" : "android",
+			"version" : "5.1.1"
+		},
+		"browser" : {
+			"name" : "chrome",
+			"version" : "45.0.2454.84"
+		},
+		"isHWAccelerable" : true,
+		"isTransitional" : true,
+		"_hasClickBug" : false
+	},
+	{
+        // GalaxyS6 5.1.1 - webview (Naver app)
+        "device" : "GalaxyS6 - webview (Naver app)",
+        "ua" : "Mozilla/5.0 (Linux; Android 5.1.1; SM-G925S Build/LMY47X; wv) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.95 Mobile Safari/537.36 NAVER(inapp; search; 390; 6.4.5)",
+        "os" : {
+            "name" : "android",
+			"version" : "5.1.1"
+        },
+        "browser" : {
+            "name" : "chrome",
+            "version" : "45.0.2454.95",
+            "webview" : true
+        },
+        "isHWAccelerable" : true,
+        "isTransitional" : true,
+        "_hasClickBug" : false
+    },
+	{
+        // GalaxyS6 5.1.1 - webview (KAKAOTALK app)
+        "device" : "GalaxyS6 - webview (KAKAOTALK app)",
+        "ua" : "Mozilla/5.0 (Linux; Android 5.1.1; SM-G925S Build/LMY47X; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/45.0.2454.95 Mobile Safari/537.36;KAKAOTALK",
+        "os" : {
+            "name" : "android",
+			"version" : "5.1.1"
+        },
+        "browser" : {
+            "name" : "chrome",
+            "version" : "45.0.2454.95",
+            "webview" : true
+        },
+        "isHWAccelerable" : true,
+        "isTransitional" : true,
+        "_hasClickBug" : false
+    },
+	{
+        // GalaxyS6 5.1.1 - webview (Facebook app)
+        "device" : "GalaxyS6 - webview (Facebook app)",
+        "ua" : "Mozilla/5.0 (Linux; Android 5.1.1; SM-G925S Build/LMY47X; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/45.0.2454.95 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/50.0.0.10.54;]",
+        "os" : {
+            "name" : "android",
+			"version" : "5.1.1"
+        },
+        "browser" : {
+            "name" : "chrome",
+            "version" : "45.0.2454.95",
             "webview" : true
         },
         "isHWAccelerable" : true,
@@ -612,8 +745,6 @@ var ua = [
 		"isTransitional" : false,
 		"_hasClickBug" : false
 	},
-
-
 	{
 		// window && IE
 		"device" : "window && IE",
@@ -692,6 +823,70 @@ var ua = [
 		},
 		"isHWAccelerable" : true,
 		"isTransitional" : true,
+		"_hasClickBug" : false
+	},
+	{
+		// IE11 on Windows 10
+		"device" : "64-bit Windows 8.1 Update && IE11",
+		"ua" : "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko",
+		"os" : {
+			"name" : "window",
+			"version" : "10.0"
+		},
+		"browser" : {
+			"name" : "ie",
+			"version" : "11.0"
+		},
+		"isHWAccelerable" : true,
+		"isTransitional" : false,
+		"_hasClickBug" : false
+	},
+	{
+		// 64-bit Windows 8.1 Update && IE11
+		"device" : "64-bit Windows 8.1 Update && IE11",
+		"ua" : "Mozilla/5.0 (Windows NT 6.3; Win64, x64; Trident/7.0; Touch; rv:11.0) like Gecko",
+		"os" : {
+			"name" : "window",
+			"version" : "6.3"
+		},
+		"browser" : {
+			"name" : "ie",
+			"version" : "11.0"
+		},
+		"isHWAccelerable" : true,
+		"isTransitional" : false,
+		"_hasClickBug" : false
+	},
+	{
+		// 64-bit Windows 8.1 Update && IE11 for the desktop
+		"device" : "64-bit Windows 8.1 Update && IE11 for the desktop",
+		"ua" : "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; Touch; rv:11.0) like Gecko",
+		"os" : {
+			"name" : "window",
+			"version" : "6.3"
+		},
+		"browser" : {
+			"name" : "ie",
+			"version" : "11.0"
+		},
+		"isHWAccelerable" : true,
+		"isTransitional" : false,
+		"_hasClickBug" : false
+	},
+	{
+		// Windows 10 && Microsoft Edge for desktop
+		"device" : "Windows 10 && Microsoft Edge for desktop",
+		"ua" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10240",
+		"os" : {
+			"name" : "window",
+			"version" : "10.0"
+		},
+		"browser" : {
+			"name" : "edge",
+			"version" : "12.10240"
+		},
+		"isHWAccelerable" : true,
+		"isTransitional" : false,
 		"_hasClickBug" : false
 	},
 	{

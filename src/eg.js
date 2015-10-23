@@ -107,21 +107,25 @@ if(agent.os.name === "naver") {
 			criteria: "PhantomJS",
 			identity: "PhantomJS"
 		}, {
-			criteria: /MSIE|Trident|Windows Phone/i,
+			criteria: /Edge/,
+			identity: "Edge",
+			versionSearch: "Edge"
+		}, {
+			criteria: /MSIE|Trident|Windows Phone/,
 			identity: "IE",
 			versionSearch: "IEMobile|MSIE|rv"
 		}, {
-			criteria: "SAMSUNG",
+			criteria: /SAMSUNG|SamsungBrowser/,
 			identity: "SBrowser",
 			versionSearch: "Chrome"
 		}, {
-			criteria: /Chrome|CriOS/i,
+			criteria: /Chrome|CriOS/,
 			identity: "Chrome"
 		}, {
-			criteria: /android/i,
+			criteria: /Android/,
 			identity: "default"
 		}, {
-			criteria: /iPhone|iPad/i,
+			criteria: /iPhone|iPad/,
 			identity: "Safari",
 			versionSearch: "Version"
 		}, {
@@ -133,7 +137,7 @@ if(agent.os.name === "naver") {
 			identity: "Firefox"
 		}],
 		os: [{
-			criteria: /Windows Phone|Windows NT/i,
+			criteria: /Windows Phone|Windows NT/,
 			identity: "Window",
 			versionSearch: "Windows Phone|Windows NT"
 		}, {
@@ -141,7 +145,7 @@ if(agent.os.name === "naver") {
 			identity: "Window",
 			versionAlias: "5.0"
 		}, {
-			criteria: /iPhone|iPad/i,
+			criteria: /iPhone|iPad/,
 			identity: "iOS",
 			versionSearch: "iPhone OS|CPU OS"
 		}, {
@@ -149,7 +153,7 @@ if(agent.os.name === "naver") {
 			versionSearch: "OS X",
 			identity: "MAC"
 		}, {
-			criteria: /android/i,
+			criteria: /Android/,
 			identity: "Android"
 		}],
 
@@ -158,12 +162,13 @@ if(agent.os.name === "naver") {
 		// Android 5.0 && chrome 40+ : when there is a keyword of "; wv" in useragent
 		// Under android 5.0 :  when there is a keyword of "NAVER or Daum" in useragent
 		webview: [{
-			criteria: /iPhone|iPad/i,
+			criteria: /iPhone|iPad/,
 			browserVersionSearch: "Version",
 			webviewBrowserVersion: /-1/
 		}, {
-			criteria: /iPhone|iPad|android/i,
-			webviewToken: /NAVER|DAUM|; wv/i
+			criteria: /iPhone|iPad|Android/,
+			webviewToken: /NAVER|DAUM|; wv/
+
 		}],
 		defaultString: {
 			browser: {
@@ -394,7 +399,7 @@ return defaultVal;
 		// but samsung sbrowser fix it.
 		if (browser.indexOf("chrome") !== -1) {
 			result = browserVersion >= "25";
-		} else if (/ie|firefox|safari|inapp/.test(browser)) {
+		} else if (/ie|edge|firefox|safari|inapp/.test(browser)) {
 			result = true;
 		} else if (agent.os.name.indexOf("android") !== -1) {
 			// for Xiaomi
