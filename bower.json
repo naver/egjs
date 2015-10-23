@@ -1,6 +1,6 @@
 {
   "name": "egjs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "authors": [
     "NAVER corp"
   ],
@@ -27,5 +27,5 @@
     "iscroll": "~5.1.3",
     "sinon": "~1.14.1"
   },
-  "description": "egjs는 jQuery기반의 UI 인터랙션, 이펙트, 유틸리티로 구성된 통합 라이브러리로써 다양한 환경을 지원하는 빠른 웹어플리케이션을 쉽게 개발할 수 있도록 도와줍니다."
+  "description": "Set of UI interactions, effects and utilities components library."
 }
