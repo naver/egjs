@@ -125,7 +125,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 
 			!ns._hasClickBug() && (this._setPointerEvents = function () {});
 
-			this._setCssToMove();
+			this._setMoveStyle();
 			this._build();
 			this._bindEvents();
 
@@ -320,23 +320,24 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 
 
 		/**
-		 * Set css values to move elements
+		 * Set CSS style values to move elements
 		 *
 		 * Need to be initialized before use, to check if browser support transform css property.
 		 * If browser doesn't support transform, then use left/top properties instead.
 		 */
-		_setCssToMove: function () {
+		_setMoveStyle: function () {
 			var elementStyle = this.$wrapper[0].style;
 			var supportTransform =
 				(elementStyle.transform || elementStyle.webkitTransform) !== undefined;
 
-			this._setCssToMove = supportTransform ?
-				function (element, coords) {
-					element.css("transform", ns.translate(
+			this._setMoveStyle = supportTransform ?
+				function ($element, coords) {
+					$element.css("transform", ns.translate(
 						coords[0], coords[1], this._conf.useLayerHack
 					));
-				} :	function (element, coords) {
-				element.css({ left: coords[0], top: coords[1] });
+				} :	function ($element, coords) {
+					$element.css({ left: coords[0], top: coords[1]
+				});
 			};
 		},
 
@@ -371,7 +372,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 			} else {
 				this._applyPanelsCss = function (i, v) {
 					var coords = this._getDataByDirection([(100 * i) + "%", 0]);
-					this._setCssToMove($(v), coords);
+					this._setMoveStyle($(v), coords);
 				};
 			}
 		},
@@ -768,7 +769,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 		 */
 		_setTranslate: function (coords) {
 			coords = this._getCoordsValue(coords);
-			this._setCssToMove(this.$container, [ coords.x, coords.y ]);
+			this._setMoveStyle(this.$container, [ coords.x, coords.y ]);
 		},
 
 		/**
