@@ -9,9 +9,8 @@ module.exports = function(grunt) {
 		gitinfo: grunt.task.run("gitinfo"),
 		banner: "/**\n" +
 			"* <%= pkg.name %>\n" +
-			"* @version <%= pkg.version %><%= /(?!^master$)(^.*$)/.test(gitinfo.local.branch.current.name) && ' ('+ RegExp.$1 +')' || '' %>\n" +
-			"* @date <%= grunt.template.today('isoDateTime') %>\n" +
-			"* @SHA-1 <%= gitinfo.local.branch.current.shortSHA %>\n" +
+			"* @version <%= pkg.version %>\n" +
+			"* @SHA-1 <%= gitinfo.local.branch.current.shortSHA %><%= /(?!^master$)(^.*$)/.test(gitinfo.local.branch.current.name) && ' ('+ RegExp.$1 +')' || '' %>\n" +
 			"*\n" +
 			"* <%= pkg.author %>; <%= pkg.name %> JavaScript library\n" +
 			"* http://egjs.navercorp.com/\n" +
