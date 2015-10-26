@@ -1,134 +1,34 @@
 /*global module:false*/
+function config(name){
+	return require("./config/"+name);
+}
+
+function addInitConfig(configObj){
+	// Add config Step
+	// 1. create config/your_config.js
+	// 2. add your_config in addConfing.
+	var addConfig = ["banner" ,"jshint", "concat", "uglify", "copy",
+	"qunit", "testee", "watch", "jsdoc", "jscs"];
+
+	addConfig.forEach(function(v){
+		configObj[v] = config(v);
+	});
+
+	return configObj;
+}
 module.exports = function(grunt) {
 	"use strict";
 	require("time-grunt")(grunt);
 	require("load-grunt-tasks")(grunt);
-
-	grunt.initConfig({
-		pkg: grunt.file.readJSON("package.json"),
-		gitinfo: grunt.task.run("gitinfo"),
-		banner: ["/**",
-			"* <%= pkg.name %>",
-			"* @version <%= pkg.version %>",
-			"* @SHA-1 <%= gitinfo.local.branch.current.shortSHA %>" +
-			"<%= /(?!^master$)(^.*$)/.test(gitinfo.local.branch.current.name) " +
-			"	&& ' ('+ RegExp.$1 +')' || '' %>",
-			"*",
-			"* <%= pkg.author %>; <%= pkg.name %> JavaScript library",
-			"* http://egjs.navercorp.com/",
-			"*",
-			"* Released under the <%= pkg.licenses[0].type %> license",
-			"* <%= pkg.licenses[0].url %>",
-			"*/\n"].join("\n"),
-		jshint: {
-			files: ["Gruntfile.js", "*.js", "src/**/*.js" ],
-			options: {
-				jshintrc: true,
-				reporter: require("jshint-stylish")
-			}
-		},
-		concat: {
-			options: {
-				banner: "<%=banner%>\"use strict\";\n",
-				process: function(src) {
-					src = src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, "$1"); // remove "use strict";
-					src = src.replace(/#__VERSION__#/g, grunt.config.data.pkg.version); // change version;
-					return src;
-				}
-			},
-			build: {
-				src: ["src/module.js", "src/eg.js", "src/customEvent/*.js", "src/hook/*.js", "src/plugin/*.js", "src/class.js", "src/component.js", "src/visible.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js"],
-				dest: "dist/<%=pkg.outputname%>.js"
-			}
-		},
-		uglify: {
-			options: {
-				banner: "<%=banner%>"
-			},
-			dist: {
-				src: "dist/<%=pkg.outputname%>.js",
-				dest: "dist/<%=pkg.outputname%>.min.js"
-			}
-		},
-		copy: {
-			lib: {
-				expand: true,
-				flatten: true,
-				src: [
-					"bower_components/jquery/jquery.js",
-					"bower_components/hammer.js/hammer.js"
-				],
-				dest: "dist/lib"
-			},
-			doc: {
-				files: [{
-					expand: true,
-					flatten: true,
-					src: ["node_modules/egjs-jsdoc-template/jsdoc-plugin/*.*"],
-					dest: "node_modules/grunt-jsdoc/node_modules/jsdoc/plugins"
-				}]
-			}
-		},
-		qunit: {
-			options: {
-				timeout: 10000,
-				"--web-security": "no",
-				coverage: {
-					disposeCollector: true,
-					src: ["src/**/*.js"],
-					instrumentedFiles: "temp/",
-					htmlReport: "report",
-					coberturaReport: "report",
-					linesThresholdPct: 0
-				},
-				page: {
-					viewportSize: { width: 320, height: 667 }
-				}
-			}
-		},
-		testee : {
-			options: {
-				root: "./",
-				reporter: "Spec"
-			},
-			coverage: {
-				options: {
-					browsers: ["chrome", "firefox"],
-					coverage: {
-						ignore: ["assets/", "bower_components/", "node_modules/", "tc/", "test/"]
-					}
-				},
-				src: ["test/*.test.html"]
-			}
-		},
-		watch: {
-			source: {
-				files: [ "src/**/*.js"],
-				tasks: [ "build" ],
-				options: {
-					spawn: false
-				}
-			}
-		},
-		jsdoc: {
-			dist: {
-				src: ["src/**/*.js", "README.md"],
-				options: {
-					destination: "doc",
-					template: "node_modules/egjs-jsdoc-template",
-					configure: "jsdoc.json"
-				}
-			}
-		},
-		jscs: {
-			src: "<%=concat.build.src%>",
-			options: {
-				config: ".jscsrc"
-			}
-		}
-	});
-
 	grunt.loadNpmTasks("testee");
+
+	var initConfig = {
+		pkg: grunt.file.readJSON("package.json"),
+		gitinfo: grunt.task.run("gitinfo")
+	};
+
+	grunt.initConfig(addInitConfig(initConfig));
+
 
 	grunt.registerTask("test", function() {
 		var eachfile = Array.prototype.slice.apply(arguments);
