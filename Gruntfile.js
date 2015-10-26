@@ -1,17 +1,25 @@
 /*global module:false*/
 module.exports = function(grunt) {
-"use strict";
+	"use strict";
 	require("time-grunt")(grunt);
 	require("load-grunt-tasks")(grunt);
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON("package.json"),
-		banner : [
-			"/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %>\n",
-			"<%= pkg.homepage ? '* ' + pkg.homepage + '\\n' : '' %>",
-			"* Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>;",
-			" Licensed <%= _.pluck(pkg.licenses, 'type').join(", ") %> */\n"
-		].join(""),
+		gitinfo: grunt.task.run("gitinfo"),
+		banner: ["/**",
+			"* <%= pkg.name %>",
+			"* @version <%= pkg.version %>",
+			"* @SHA-1 <%= gitinfo.local.branch.current.shortSHA %>" +
+			"<%= /(?!^master$)(^.*$)/.test(gitinfo.local.branch.current.name) " +
+			"	&& ' ('+ RegExp.$1 +')' || '' %>",
+			"*",
+			"* <%= pkg.author %>; <%= pkg.name %> JavaScript library",
+			"* http://egjs.navercorp.com/",
+			"*",
+			"* Released under the <%= pkg.licenses[0].type %> license",
+			"* <%= pkg.licenses[0].url %>",
+			"*/\n"].join("\n"),
 		jshint: {
 			files: ["Gruntfile.js", "*.js", "src/**/*.js" ],
 			options: {
@@ -22,7 +30,7 @@ module.exports = function(grunt) {
 		concat: {
 			options: {
 				banner: "<%=banner%>\"use strict\";\n",
-				process : function(src) {
+				process: function(src) {
 					src = src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, "$1"); // remove "use strict";
 					src = src.replace(/#__VERSION__#/g, grunt.config.data.pkg.version); // change version;
 					return src;
@@ -37,30 +45,33 @@ module.exports = function(grunt) {
 			options: {
 				banner: "<%=banner%>"
 			},
-			dist : {
+			dist: {
 				src: "dist/<%=pkg.outputname%>.js",
 				dest: "dist/<%=pkg.outputname%>.min.js"
 			}
 		},
-		copy : {
-			lib : {
-				expand : true,
-				flatten : true,
-				src : [
+		copy: {
+			lib: {
+				expand: true,
+				flatten: true,
+				src: [
 					"bower_components/jquery/jquery.js",
 					"bower_components/hammer.js/hammer.js"
 				],
-				dest : "dist/lib"
+				dest: "dist/lib"
 			},
-			doc : {
-				files: [
-					{expand : true, flatten : true, src: ["node_modules/egjs-jsdoc-template/jsdoc-plugin/*.*"], dest: "node_modules/grunt-jsdoc/node_modules/jsdoc/plugins"}
-				]
+			doc: {
+				files: [{
+					expand: true,
+					flatten: true,
+					src: ["node_modules/egjs-jsdoc-template/jsdoc-plugin/*.*"],
+					dest: "node_modules/grunt-jsdoc/node_modules/jsdoc/plugins"
+				}]
 			}
 		},
-		qunit : {
-			options : {
-				timeout : 10000,
+		qunit: {
+			options: {
+				timeout: 10000,
 				"--web-security": "no",
 				coverage: {
 					disposeCollector: true,
@@ -70,9 +81,9 @@ module.exports = function(grunt) {
 					coberturaReport: "report",
 					linesThresholdPct: 0
 				},
-				page : {
-		                viewportSize : { width: 320, height: 667 }
-		            }
+				page: {
+					viewportSize: { width: 320, height: 667 }
+				}
 			}
 		},
 		testee : {
@@ -82,7 +93,7 @@ module.exports = function(grunt) {
 			},
 			coverage: {
 				options: {
-					browsers : ["chrome", "firefox"],
+					browsers: ["chrome", "firefox"],
 					coverage: {
 						ignore: ["assets/", "bower_components/", "node_modules/", "tc/", "test/"]
 					}
@@ -90,24 +101,24 @@ module.exports = function(grunt) {
 				src: ["test/*.test.html"]
 			}
 		},
-		watch : {
-			source : {
-				files : [ "src/**/*.js"],
-				tasks : [ "build" ],
-				options : {
-					spawn : false
+		watch: {
+			source: {
+				files: [ "src/**/*.js"],
+				tasks: [ "build" ],
+				options: {
+					spawn: false
 				}
 			}
 		},
-		jsdoc : {
-				dist : {
-						src: ["src/**/*.js", "README.md"],
-						options: {
-								destination: "doc",
-								template : "node_modules/egjs-jsdoc-template",
-								configure : "jsdoc.json"
-						}
+		jsdoc: {
+			dist: {
+				src: ["src/**/*.js", "README.md"],
+				options: {
+					destination: "doc",
+					template: "node_modules/egjs-jsdoc-template",
+					configure: "jsdoc.json"
 				}
+			}
 		},
 		jscs: {
 			src: "<%=concat.build.src%>",
@@ -126,7 +137,7 @@ module.exports = function(grunt) {
 				return "test/" + v + ".test.html";
 			}, this);
 		} else {
-				eachfile.push("test/*.test.html");
+			eachfile.push("test/*.test.html");
 		}
 		grunt.config.set("qunit.each", eachfile);
 		grunt.log.oklns(grunt.config.get("qunit.each"));
@@ -135,7 +146,7 @@ module.exports = function(grunt) {
 
 	grunt.registerTask("clean", function() {
 		if (grunt.file.exists("doc")) {
-			grunt.file["delete"]("doc", { force : true });
+			grunt.file["delete"]("doc", { force: true });
 		}
 	});
 

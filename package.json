@@ -1,7 +1,7 @@
 {
   "name": "egjs",
-  "version": "0.0.2",
-  "description": "egjs는 jQuery기반의 UI 인터랙션, 이펙트, 유틸리티로 구성된 통합 라이브러리로써 다양한 환경을 지원하는 빠른 웹어플리케이션을 쉽게 개발할 수 있도록 도와줍니다.",
+  "version": "0.0.2-snapshot",
+  "description": "Set of UI interactions, effects and utilities components library.",
   "outputname": "eg",
   "main": "dist/eg.js",
   "scripts": {
@@ -10,7 +10,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://yobi.navercorp.com/Front-End/egjs"
+    "url": "https://oss.navercorp.com/egjs/egjs"
+  },
+  "bugs": {
+    "url": "https://oss.navercorp.com/egjs/egjs/issues"
   },
   "author": "NAVER corp",
   "licenses": [
@@ -28,6 +31,7 @@
     "grunt-contrib-qunit": "^0.7.0",
     "grunt-contrib-uglify": "^0.8.0",
     "grunt-contrib-watch": "^0.6.1",
+    "grunt-gitinfo": "^0.1.7",
     "grunt-jscs": "^2.1.0",
     "grunt-jsdoc": "^0.5.8",
     "grunt-qunit-istanbul": "^0.5.0",
