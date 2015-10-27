@@ -3,15 +3,10 @@ function config(name){
 	return require("./config/"+name);
 }
 
-function addInitConfig(configObj){
-	// Add config Step
-	// 1. create config/your_config.js
-	// 2. add your_config in addConfing.
-	var addConfig = ["banner" ,"jshint", "concat", "uglify", "copy",
-	"qunit", "testee", "watch", "jsdoc", "jscs"];
-
-	addConfig.forEach(function(v){
-		configObj[v] = config(v);
+function addInitConfig(configObj,grunt){
+	grunt.file.expand("./config/*.js").forEach(function(file){
+		file = file.match(/\/(\w*?)\.js/)[1];
+		configObj[file] = config(file);
 	});
 
 	return configObj;
@@ -27,7 +22,7 @@ module.exports = function(grunt) {
 		gitinfo: grunt.task.run("gitinfo")
 	};
 
-	grunt.initConfig(addInitConfig(initConfig));
+	grunt.initConfig(addInitConfig(initConfig,grunt));
 
 
 	grunt.registerTask("test", function() {
