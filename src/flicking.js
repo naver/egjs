@@ -1,5 +1,5 @@
 // jscs:disable validateLineBreaks, maximumLineLength
-eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
+eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], function ($, ns, MC, global, doc) {
 	// jscs:enable validateLineBreaks, maximumLineLength
 	/**
 	 * To build flickable UI
@@ -76,9 +76,8 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 			}, options);
 
 			var padding = this.options.previewPadding;
-			var supportHint = window.CSS &&
-				window.CSS.supports &&
-				window.CSS.supports("will-change", "transform");
+			var supportHint = global.CSS && global.CSS.supports &&
+					global.CSS.supports("will-change", "transform");
 
 			var os = ns.agent().os;
 
@@ -324,7 +323,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 		 * If browser doesn't support transform, then use left/top properties instead.
 		 */
 		_setMoveStyle: (function () {
-			var elStyle = $("<div>")[0].style;
+			var elStyle = doc.documentElement.style;
 
 			return (elStyle.transform || elStyle.webkitTransform) !== undefined ?
 				function ($element, coords) {
