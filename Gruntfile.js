@@ -4,6 +4,7 @@ function config(name){
 }
 
 function addInitConfig(configObj,grunt){
+	// When you add config option that add config file in config folder.
 	grunt.file.expand("./config/*.js").forEach(function(file){
 		file = file.match(/\/(\w*?)\.js/)[1];
 		configObj[file] = config(file);
