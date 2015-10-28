@@ -65,10 +65,29 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 	 * Getter for state
 	 */
 	function getState() {
+		var stateStr;
+		var state = {};
 		if (isSupportState) {
-			return JSON.parse(history.state) || {};
+			stateStr = history.state;
+
+			// "string", "null" is not a valid
+			if (typeof stateStr === "string" && stateStr !== "null") {
+				try {
+					state = JSON.parse(stateStr);
+
+					// like '[ ... ]', '1', '1.234', '"123"' is also not valid
+					if (jQuery.type(state) !== "object" || state instanceof Array) {
+						throw new Error("Window.history is not valid form for persist.");
+					}
+				} catch (e) {
+					/* jshint ignore:start */
+					console.warn(e.message);
+					/* jshint ignore:end */
+				}
+			}
+			return state;
 		} else {
-			var stateStr = storage.getItem(location.href + CONST_PERSIST);
+			stateStr = storage.getItem(location.href + CONST_PERSIST);
 
 			// Note2 (4.3) return value is null
 			return (stateStr && stateStr.length > 0) ? JSON.parse(stateStr) : {};
