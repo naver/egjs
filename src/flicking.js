@@ -1,5 +1,5 @@
 // jscs:disable validateLineBreaks, maximumLineLength
-eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
+eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], function ($, ns, MC, global, doc) {
 	// jscs:enable validateLineBreaks, maximumLineLength
 	/**
 	 * To build flickable UI
@@ -76,9 +76,8 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 			}, options);
 
 			var padding = this.options.previewPadding;
-			var supportHint = window.CSS &&
-				window.CSS.supports &&
-				window.CSS.supports("will-change", "transform");
+			var supportHint = global.CSS && global.CSS.supports &&
+					global.CSS.supports("will-change", "transform");
 
 			var os = ns.agent().os;
 
@@ -123,8 +122,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 					this._conf.dirData.push(ns["DIRECTION_" + v]);
 				}, this));
 
-			!ns._hasClickBug() && (this._setPointerEvents = function () {
-			});
+			!ns._hasClickBug() && (this._setPointerEvents = function () {});
 
 			this._build();
 			this._bindEvents();
@@ -319,7 +317,28 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 		},
 
 		/**
+		 * Set CSS style values to move elements
+		 *
+		 * Initialize setting up checking if browser support transform css property.
+		 * If browser doesn't support transform, then use left/top properties instead.
+		 */
+		_setMoveStyle: (function () {
+			var elStyle = doc.documentElement.style;
+
+			return (elStyle.transform || elStyle.webkitTransform) !== undefined ?
+				function ($element, coords) {
+					$element.css("transform",
+						ns.translate(coords[0], coords[1], this._conf.useLayerHack)
+					);
+				} :	function ($element, coords) {
+					$element.css({ left: coords[0], top: coords[1] });
+				};
+		})(),
+
+		/**
 		 * Callback function for applying CSS values to each panels
+		 *
+		 * Need to be initialized before use, to set up for Android 2.x browsers or others.
 		 */
 		_applyPanelsCss: function () {
 			var conf = this._conf;
@@ -347,9 +366,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 			} else {
 				this._applyPanelsCss = function (i, v) {
 					var coords = this._getDataByDirection([(100 * i) + "%", 0]);
-					$(v).css("transform", ns.translate(
-						coords[0], coords[1], this._conf.useLayerHack
-					));
+					this._setMoveStyle($(v), coords);
 				};
 			}
 		},
@@ -746,10 +763,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord], function ($, ns, MC) {
 		 */
 		_setTranslate: function (coords) {
 			coords = this._getCoordsValue(coords);
-
-			this.$container.css("transform", ns.translate(
-				coords.x, coords.y, this._conf.useLayerHack
-			));
+			this._setMoveStyle(this.$container, [ coords.x, coords.y ]);
 		},
 
 		/**
