@@ -1,4 +1,6 @@
-eg.module("persist", ["jQuery", window, document], function($, global, doc) {
+// jscs:disable maximumLineLength
+eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, doc) {
+	// jscs:enable maximumLineLength
 	/**
 	* Support persist event in jQuery
 	* @ko jQuery custom persist 이벤트 지원
@@ -18,6 +20,7 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 			document.scrollTo(e.state.scrollTop);
 	});
 	*/
+	var eg = ns;
 	var wp = global.performance;
 	var history = global.history;
 	var location = global.location;
@@ -125,6 +128,24 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 		setState(beforeData);
 	}
 	/**
+	* Returns necessity of Persist by checking bfcache.
+	* @ko bfcache가 작동하지않아 Persist 필요여부를 반환한다.
+	* @method eg.needPersist
+    * @param {String} [useragent] useragent string to check.<ko>검사할 유저에이전트 문자열.</ko>
+	* @example
+	eg.needPersist();
+	eg.needPersist(ua);
+	*/
+	eg.needPersist = needPersist;
+	function needPersist(useragent) {
+		var agentOs = eg.agent(useragent).os;
+		if (agentOs.name === "ios" ||
+				(agentOs.name === "android" && parseFloat(agentOs.version) < 4.4)) {
+			return false;
+		}
+		return true;
+	}
+	/**
 	* Saves state and returns current state.
 	* @ko 인자로 넘긴 현재 상태정보를 저장한다.
 	* @method jQuery.persist
@@ -212,6 +233,7 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 		"getState": getState,
 		"setState": setState,
 		"persist": $.persist,
+		"needPersist": needPersist,
 		"GLOBALKEY": GLOBAL_KEY
 	};
 });
