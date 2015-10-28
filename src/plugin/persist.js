@@ -76,7 +76,7 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 					state = JSON.parse(stateStr);
 
 					// like '[ ... ]', '1', '1.234', '"123"' is also not valid
-					if (typeof state !== "object" || state instanceof Array) {
+					if (jQuery.type(state) !== "object" || state instanceof Array) {
 						throw new Error("Window.history is not valid form for persist.");
 					}
 				} catch (e) {
