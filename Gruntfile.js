@@ -1,29 +1,30 @@
 /*global module:false*/
-function config(name){
+function getConfig(name){
 	return require("./config/"+name);
 }
 
-function addInitConfig(configObj,grunt){
-	// When you add config option that add config file in config folder.
-	grunt.file.expand("./config/*.js").forEach(function(file){
-		file = file.match(/\/(\w*?)\.js/)[1];
-		configObj[file] = config(file);
-	});
-
-	return configObj;
-}
 module.exports = function(grunt) {
 	"use strict";
 	require("time-grunt")(grunt);
 	require("load-grunt-tasks")(grunt);
 	grunt.loadNpmTasks("testee");
 
-	var initConfig = {
-		pkg: grunt.file.readJSON("package.json"),
-		gitinfo: grunt.task.run("gitinfo")
+	var config = {
+		"pkg": grunt.file.readJSON("package.json"),
+		"gitinfo": grunt.task.run("gitinfo"),
+		"banner": getConfig("banner"),
+		"concat": getConfig("concat"),
+		"copy": getConfig("copy"),
+		"jscs": getConfig("jscs"),
+		"jsdoc": getConfig("jsdoc"),
+		"jshint": getConfig("jshint"),
+		"qunit": getConfig("qunit"),
+		"testee": getConfig("testee"),
+		"uglify": getConfig("uglify"),
+		"watch": getConfig("watch")
 	};
 
-	grunt.initConfig(addInitConfig(initConfig,grunt));
+	grunt.initConfig(config);
 
 
 	grunt.registerTask("test", function() {
