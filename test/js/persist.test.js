@@ -10,20 +10,32 @@ module("persist", {
 			},
 			history: new History(),
 			JSON: JSON,
-			performance : {
-					navigation : {
-						TYPE_BACK_FORWARD: 2,
-						TYPE_NAVIGATE: 0,
-						TYPE_RELOAD: 1,
-						TYPE_RESERVED: 255,
-						type : 0
-					}
+			performance: {
+				navigation: {
+					TYPE_BACK_FORWARD: 2,
+					TYPE_NAVIGATE: 0,
+					TYPE_RELOAD: 1,
+					TYPE_RESERVED: 255,
+					type: 0
+				}
+			},
+			sessionStorage: {
+				getItem: function(key) {
+					return this.storage[key];
+				},
+				setItem: function(key, val) {
+					this.storage[key] = val;
+				},
+				removeItem: function(key) {
+					delete this.storage[key];
+				}
 			}
 		};
 		this.fakeEvent = {};
 		this.data = {
 			"scrollTop": 100
 		};
+		this.storage = {};
 
 		this.method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 		this.GLOBALKEY = this.method.GLOBALKEY;
@@ -39,7 +51,7 @@ module("persist", {
 		};
 	},
 	teardown: function() {
-		this.fakeWindow.history.replaceState(null, "", "");
+		"replaceState" in this.fakeWindow.history && this.fakeWindow.history.replaceState(null, "", "");
 	}
 });
 
@@ -180,3 +192,11 @@ test("onPageshow : when bfCache miss and BF navigated, persist event must be tri
 	// Then
 	deepEqual(restoredState, clonedData);
  });
+
+test("Test not throwing error for legacy browsers", function() {
+	this.fakeWindow.history = {};
+	delete this.fakeWindow.sessionStorage;
+
+	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
+	ok(!method, "If browser don't have history.state neither web storage, persist shouldn't be defined.");
+});
