@@ -27,7 +27,7 @@ module("persist", {
 					this.storage[key] = val;
 				},
 				removeItem: function(key) {
-					delete this.storage[key];
+					this.storage[key] = undefined;
 				}
 			}
 		};
