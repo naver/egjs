@@ -18,7 +18,8 @@ module("persist", {
 						TYPE_RESERVED: 255,
 						type : 0
 					}
-			}
+			},
+			navigator: {}
 		};
 		this.fakeEvent = {};
 		this.data = {
@@ -186,22 +187,39 @@ test("onPageshow : when bfCache miss and BF navigated, persist event must be tri
 	{
 		"device":  "Android 4.3.0",
 		"ua": "Mozilla/5.0 (Linux; Android 4.3.0; SM-G900S Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.108 Mobile Safari/537.36",
-		"needPersist": false
+		"isNeeded": false
 	},
 	{
 		"device":  "Android 5.1.1",
 		"ua": "Mozilla/5.0 (Linux; Android 5.1.1; SAMSUNG SM-G925S Build/LMY47X) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/3.2 Chrome/38.0.2125.102 Mobile Safari/537.36",
-		"needPersist": true
+		"isNeeded": true
 	},
 	{
 		"device":  "iOS 8.0",
 		"ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12B440",
-		"needPersist": false
+		"isNeeded": false
 	}
 ];
  
 module("extend Agent Test", {
 	setup : function() {
+		this.fakeWindow = {
+			location: {
+				href: ""
+			},
+			history: window.history,
+			JSON: JSON,
+			performance : {
+					navigation : {
+						TYPE_BACK_FORWARD: 2,
+						TYPE_NAVIGATE: 0,
+						TYPE_RELOAD: 1,
+						TYPE_RESERVED: 255,
+						type : 0
+					}
+			},
+			navigator: {}
+		};
 		this.agent = eg.agent;
 	},
 	teardown : function() {
@@ -210,15 +228,16 @@ module("extend Agent Test", {
 });
 
  ua.forEach(function(v,i) {
-	test("eg.needPersist : "+ v.device, function() {
+	test("$.persist.isNeeded : "+ v.device, function() {
 		// Given
+		this.fakeWindow.navigator.userAgent = v.ua; 
 		var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
-		var needPersist;
+		var isNeeded;
 		
 		// When
-		needPersist = method.needPersist(v.ua);
+		isNeeded = method.isNeeded();
 		
 		//Then
-		equal(needPersist, v.needPersist);
+		equal(isNeeded, v.isNeeded);
 	});
 });
