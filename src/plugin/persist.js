@@ -40,10 +40,14 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 						sessionStorage :
 						localStorage;
 			} else {
-				return localStorage;
+				return global.localStorage;
 			}
 		}
 	})();
+
+	if (!isSupportState && !storage) {
+		return;
+	}
 
 	function onPageshow(e) {
 		isPersisted = isPersisted || (e.originalEvent && e.originalEvent.persisted);
