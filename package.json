@@ -38,6 +38,7 @@
     "jshint-stylish": "^1.0.1",
     "load-grunt-tasks": "^3.1.0",
     "testee": "^0.2.0",
-    "time-grunt": "^1.1.0"
+    "time-grunt": "^1.1.0",
+    "jsonfile": "^2.2.3"
   }
 }
