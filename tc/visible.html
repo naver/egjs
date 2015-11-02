@@ -308,7 +308,7 @@ $(function() {
   }
   $("#content").html(html.join(""));
 
-  var visibleView = new eg.Visible({
+  var visibleView = new eg.Visible(document,{
       targetClass : "check_visible",
       expandSize : 0
   }).on("change", function(e) {
@@ -326,8 +326,7 @@ $(function() {
   
   
   if(window.IScroll) {
-	  var visible = new eg.Visible({
-	      wrapper : "#view",
+	  var visible = new eg.Visible("#view",{
 	      targetClass : "check_visible",
 	      expandSize : 0
 	  }).on("change", function(e) {
