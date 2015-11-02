@@ -11,8 +11,7 @@ module("Visible document Test", {
 
 		boxheight = $("#content li").first().height();
 
-		this.inst = new eg.Visible( {
-			wrapper : document,
+		this.inst = new eg.Visible( document, {
 			targetClass : "check_document_visible"
 		});
 	},
@@ -117,8 +116,7 @@ module("Visible refresh Test", {
 
 		boxheight = $("#content li").first().height();
 
-		this.inst = new eg.Visible( {
-			wrapper : document,
+		this.inst = new eg.Visible( document, {
 			targetClass : "check_visible"
 		});
 	},
@@ -150,8 +148,7 @@ test("check added elements", function() {
 module("Visible wrapper Test", {
 	setup : function() {
 		$("#view").show();
-		this.inst = new eg.Visible( {
-			wrapper : "#view",
+		this.inst = new eg.Visible( "#view", {
 			targetClass : "check_visible"
 		});
 		this.scroll = new IScroll("#view");
@@ -202,8 +199,7 @@ module("Visible Test when unsupported getElementsByClassName", {
 		this.originalReviseElements = eg.Visible.prototype._reviseElements;
 		this.originalRefresh = eg.Visible.prototype.refresh;
 		
-		this.inst = new eg.Visible( {
-			wrapper : document,
+		this.inst = new eg.Visible( document, {
 			targetClass : "check_document_visible"
 		});
 

@@ -18,15 +18,14 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 	 * @codepen {"id":"WbWzqq", "ko":"Visible 기본 예제", "en":"Visible basic example", "collectionId":"Ayrabj", "height" : 403}
 	 */
 	ns.Visible = ns.Class.extend(ns.Component, {
-		construct: function(options) {
+		construct: function(element, options) {
 			this.options = {
-				wrapper: doc,
 				targetClass: "check_visible",
 				expandSize: 0
 			};
 			$.extend(this.options, options);
 
-			this._wrapper = $(this.options.wrapper)[0] || doc;
+			this._wrapper = $(element)[0] || doc;
 
 			// this._wrapper is Element, or may be Window
 			if (this._wrapper.nodeType && this._wrapper.nodeType === 1) {
