@@ -151,13 +151,8 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 					}, this));
 		},
 		_fit: function() {
-			var wrapper = this._$wrapper.get(0);
-			var wrapperClientRect = wrapper.getBoundingClientRect();
-			var isFitted = this._infiniteGrid.fit();
-
-			if (isFitted) {
-				var fittedWrapperClientRect = wrapper.getBoundingClientRect();
-				var delta = wrapperClientRect.bottom - fittedWrapperClientRect.bottom;
+			var delta = this._infiniteGrid.fit();
+			if (delta !== 0) {
 				global.scrollTo(0, this._getScrollTop() - delta);
 			}
 		},

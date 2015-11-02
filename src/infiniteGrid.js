@@ -421,6 +421,18 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			this.layout();
 		},
 
+		_getTopItem: function() {
+			var item = null;
+			var min = Infinity;
+			$.each(this.core.getColItems(false), function(i, v) {
+				if (v && v.position.y < min) {
+					min = v.position.y;
+					item = v;
+				}
+			});
+			return item;
+		},
+
 		/**
 		 * Get top element
 		 * @ko 가장 위에 있는 엘리먼트를 반환한다.
@@ -429,16 +441,22 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		 * @return {HTMLElement} element
 		 */
 		getTopElement: function() {
-			var item;
-			var min = Infinity;
-			$.each(this.core.getColItems(false), function(i, v) {
-				if (v && v.position.y < min) {
-					min = v.position.y;
+			var item = this._getTopItem();
+			return item && item.element;
+		},
+
+		_getBottomItem: function() {
+			var item = null;
+			var max = -Infinity;
+			$.each(this.core.getColItems(true), function(i, v) {
+				if (v && v.position.y + v.size.outerHeight > max) {
+					max = v.position.y + v.size.outerHeight;
 					item = v;
 				}
 			});
-			return item ? item.element : null;
+			return item;
 		},
+
 		/**
 		 * Get bottom element
 		 * @ko 가장 아래에 있는 엘리먼트를 반환한다.
@@ -447,16 +465,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		 * @return {HTMLElement} element
 		 */
 		getBottomElement: function() {
-			var item;
-			var max = -Infinity;
-			$.each(this.core.getColItems(true), function(i, v) {
-				if (v && v.position.y + v.size.outerHeight > max) {
-					max = v.position.y + v.size.outerHeight;
-					item = v;
-				}
-			});
-			return item ? item.element : null;
+			var item = this._getBottomItem();
+			return item && item.element;
 		},
+
 		_onlayoutComplete: function(e) {
 			var distance = 0;
 			var isAppend = this._isAppendType;
@@ -613,11 +625,14 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		/**
 		 * Remove empty space that is removed by append action.
 		 * @ko append에 의해 제거된 빈공간을 제거한다.
-		 * @return {Boolean} isFitted if empty space is removed, value is true <ko>빈공간이 제거되면 true값을 반환</ko>
+		 * @return {Number} distance if empty space is removed, value is not zero. <ko>빈공간이 제거되면 0이 아닌 값을 반환</ko>
 		 * @method eg.InfiniteGrid#fit
 		 */
 		fit: function() {
-			return this._fit(true);
+			var item = this._getTopItem();
+			var distance = item ? item.position.y : 0;
+			this._fit(true);
+			return distance;
 		},
 		_reset: function(isLayoutComplete) {
 			if (!isLayoutComplete) {
