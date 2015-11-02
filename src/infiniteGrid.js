@@ -442,7 +442,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		 */
 		getTopElement: function() {
 			var item = this._getTopItem();
-			return item ? item.element : item;
+			return item && item.element;
 		},
 
 		_getBottomItem: function() {
@@ -466,7 +466,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		 */
 		getBottomElement: function() {
 			var item = this._getBottomItem();
-			return item ? item.element : item;
+			return item && item.element;
 		},
 
 		_onlayoutComplete: function(e) {
