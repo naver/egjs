@@ -568,45 +568,20 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 				depaPos: e.depaPos,
 				destPos: e.destPos
 			};
-			var fpStop = function () {
-					e.stop();
-					panel.animating = false;
-				};
 
 			panel.animating = true;
 
-			this._setPhaseValue("start");
+			if (this._setPhaseValue("start", pos) === false) {
+				e.stop();
+			}
+
 			e.hammerEvent && (e.duration = this.options.duration);
 			e.destPos[+!this.options.horizontal] =
 				panel.size * (
 					panel.index + this._conf.indexToMove
 				);
 
-			if (this._isMovable()) {
-				/**
-				 * Before panel changes
-				 * @ko 플리킹이 시작되기 전에 발생하는 이벤트
-				 * @name eg.Flicking#beforeFlickStart
-				 * @event
-				 *
-				 * @param {Object} param
-				 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
-				 * @param {Number} param.index Current panel physical index <ko>현재 패널 물리적 인덱스</ko>
-				 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
-			 	 * @param {Number} param.direction Direction of the panel move (see eg.DIRECTION_* constant) <ko>플리킹 방향 (eg.DIRECTION_* constant 확인)</ko>
-				 * @param {Array} param.depaPos Departure coordinate <ko>출발점 좌표</ko>
-				 * @param {Number} param.depaPos.0 Departure x-coordinate <ko>x 좌표</ko>
-				 * @param {Number} param.depaPos.1 Departure y-coordinate <ko>y 좌표</ko>
-				 * @param {Array} param.destPos Destination coordinate <ko>도착점 좌표</ko>
-				 * @param {Number} param.destPos.0 Destination x-coordinate <ko>x 좌표</ko>
-				 * @param {Number} param.destPos.1 Destination y-coordinate <ko>y 좌표</ko>
-				 */
-				if (!this._triggerEvent("beforeFlickStart", pos)) {
-					fpStop();
-					panel.changed = false;
-				}
-
-			} else {
+			if (!this._isMovable()) {
 				/**
 				 * Before panel restores it's last position
 				 * @ko 플리킹 임계치에 도달하지 못하고 사용자의 액션이 끝났을 경우, 원래 패널로 복원되기 전에 발생하는 이벤트
@@ -628,7 +603,8 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 				conf.customEvent.restore = this._triggerEvent("beforeRestore", pos);
 
 				if (!conf.customEvent.restore) {
-					fpStop();
+					e.stop();
+					panel.animating = false;
 				}
 			}
 		},
@@ -643,18 +619,6 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 			panel.animating = false;
 
 			/**
-			 * After panel changes
-			 * @ko 플리킹으로 패널이 이동된 후 발생하는 이벤트
-			 * @name eg.Flicking#flickEnd
-			 * @event
-			 *
-			 * @param {Object} param
-			 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
-			 * @param {Number} param.index Current panel physical index <ko>현재 패널 물리적 인덱스</ko>
-			 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
-			 * @param {Number} param.direction Direction of the panel move (see eg.DIRECTION_* constant) <ko>플리킹 방향 (eg.DIRECTION_* constant 확인)</ko>
-			 */
-			/**
 			 * After panel restores it's last position
 			 * @ko 플리킹 임계치에 도달하지 못하고 사용자의 액션이 끝났을 경우, 원래 인덱스로 복원된 후 발생하는 이벤트
 			 * @name eg.Flicking#restore
@@ -666,36 +630,67 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 			 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
 			 * @param {Number} param.direction Direction of the panel move (see eg.DIRECTION_* constant) <ko>플리킹 방향 (eg.DIRECTION_* constant 확인)</ko>
 			 */
-			if (panel.changed) {
-				this._triggerEvent("flickEnd");
-			} else if (this._conf.customEvent.restore) {
-				this._triggerEvent("restore");
-			}
+			this._conf.customEvent.restore && this._triggerEvent("restore");
 		},
 
 		/**
 		 * Set value when panel changes
 		 * @param {String} phase - [start|end]
+		 * @param {Object} pos
 		 */
-		_setPhaseValue: function (phase) {
+		_setPhaseValue: function (phase, pos) {
 			var conf = this._conf;
 			var options = this.options;
 			var panel = conf.panel;
 
-			if (~phase.indexOf("start") && (panel.changed = this._isMovable())) {
+			if (phase === "start" && (panel.changed = this._isMovable())) {
 				conf.indexToMove === 0 && this._setPanelNo();
-			}
 
-			if (~phase.indexOf("end")) {
+				/**
+				 * Before panel changes
+				 * @ko 플리킹이 시작되기 전에 발생하는 이벤트
+				 * @name eg.Flicking#beforeFlickStart
+				 * @event
+				 *
+				 * @param {Object} param
+				 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
+				 * @param {Number} param.index Current panel physical index <ko>현재 패널 물리적 인덱스</ko>
+				 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
+				 * @param {Number} param.direction Direction of the panel move (see eg.DIRECTION_* constant) <ko>플리킹 방향 (eg.DIRECTION_* constant 확인)</ko>
+				 * @param {Array} param.depaPos Departure coordinate <ko>출발점 좌표</ko>
+				 * @param {Number} param.depaPos.0 Departure x-coordinate <ko>x 좌표</ko>
+				 * @param {Number} param.depaPos.1 Departure y-coordinate <ko>y 좌표</ko>
+				 * @param {Array} param.destPos Destination coordinate <ko>도착점 좌표</ko>
+				 * @param {Number} param.destPos.0 Destination x-coordinate <ko>x 좌표</ko>
+				 * @param {Number} param.destPos.1 Destination y-coordinate <ko>y 좌표</ko>
+				 */
+				if (!this._triggerEvent("beforeFlickStart", pos)) {
+					return panel.changed = panel.animating = false;
+				}
+			} else if (phase === "end") {
 				if (options.circular && panel.changed) {
 					this._arrangePanels(true, conf.indexToMove);
 				}
 
 				!conf.isAndroid2 && this._setTranslate([-panel.size * panel.index, 0]);
 				conf.touch.distance = conf.indexToMove = 0;
+
+				/**
+				 * After panel changes
+				 * @ko 플리킹으로 패널이 이동된 후 발생하는 이벤트
+				 * @name eg.Flicking#flickEnd
+				 * @event
+				 *
+				 * @param {Object} param
+				 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
+				 * @param {Number} param.index Current panel physical index <ko>현재 패널 물리적 인덱스</ko>
+				 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
+				 * @param {Number} param.direction Direction of the panel move (see eg.DIRECTION_* constant) <ko>플리킹 방향 (eg.DIRECTION_* constant 확인)</ko>
+				 */
+				panel.changed && this._triggerEvent("flickEnd");
 			}
 
-			this._adjustContainerCss(phase === "startend" ? "end" : phase);
+			!(phase === "start" && pos === undefined) && this._adjustContainerCss(phase);
 		},
 
 		/**
@@ -868,34 +863,6 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 		},
 
 		/**
-		 * Move panel to the given direction
-		 * @param {Boolean} next
-		 * @param {Number} duration
-		 */
-		_movePanel: function (next, duration) {
-			var panel = this._conf.panel;
-			var options = this.options;
-
-			if (panel.animating) {
-				return;
-			}
-
-			duration = this._getNumValue(duration, options.duration);
-
-			this._setValueToMove(next);
-
-			if (options.circular ||
-				this[next ? "getNextIndex" : "getPrevIndex"]() != null
-			) {
-				this._setMovableCoord("setBy", [
-					panel.size * (next ? 1 : -1), 0
-				], true, duration);
-
-				!duration && this._setPhaseValue("startend");
-			}
-		},
-
-		/**
 		 * Get current panel position
 		 * @ko 현재 패널의 인덱스 값을 반환한다.
 		 * @method eg.Flicking#getIndex
@@ -991,6 +958,44 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 		},
 
 		/**
+		 * Move panel to the given direction
+		 * @param {Boolean} next
+		 * @param {Number} duration
+		 */
+		_movePanel: function (next, duration) {
+			var panel = this._conf.panel;
+			var options = this.options;
+
+			if (panel.animating) {
+				return;
+			}
+
+			duration = this._getNumValue(duration, options.duration);
+
+			this._setValueToMove(next);
+
+			if (options.circular ||
+				this[next ? "getNextIndex" : "getPrevIndex"]() != null
+			) {
+				this._movePanelByPhase("setBy", [ panel.size * (next ? 1 : -1), 0 ], duration);
+			}
+		},
+
+		/**
+		 * Move panel applying start/end phase value
+		 *
+		 * @param {String} method movableCoord method name
+		 * @param {Object} coords coordinate array value
+		 * @param {Number} duration duration value
+		 * @private
+		 */
+		_movePanelByPhase: function(method, coords, duration) {
+			!duration && this._setPhaseValue("start");
+			this._setMovableCoord(method, coords, true, duration);
+			!duration && this._setPhaseValue("end");
+		},
+
+		/**
 		 * Move to next panel
 		 * @ko 다음 패널로 이동한다.
 		 * @method eg.Flicking#next
@@ -1061,17 +1066,12 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 				panel.no = no;
 				this._conf.indexToMove = indexToMove;
 				this._setValueToMove(indexToMove > 0);
-
-				this._setMovableCoord("setBy", [
-					panel.size * indexToMove, 0
-				], true, duration);
+				this._movePanelByPhase("setBy", [ panel.size * indexToMove, 0 ], duration);
 
 			} else if (movable) {
 				panel.no = panel.index = no;
-				this._setMovableCoord("setTo", [ panel.size * no, 0 ], true, duration);
+				this._movePanelByPhase("setTo", [ panel.size * no, 0 ], duration);
 			}
-
-			movable && !duration && this._setPhaseValue("startend");
 		},
 
 		/**
@@ -1112,7 +1112,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 			if (currPos % panel.size) {
 				this._setPanelNo(true);
 				this._setMovableCoord("setTo", [panel.size * panel.index, 0], true, 0);
-				conf.isAndroid2 && this._adjustContainerCss("end");
+				this._adjustContainerCss("end");
 			}
 		}
 	});
