@@ -151,9 +151,10 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 					}, this));
 		},
 		_fit: function() {
-			var delta = this._infiniteGrid.fit();
-			if (delta !== 0) {
-				global.scrollTo(0, this._getScrollTop() - delta);
+			var scrollTop = this._getScrollTop();
+			var croppedHeight = this._infiniteGrid.fit();
+			if (croppedHeight > 0) {
+				global.scrollTo(0, scrollTop - croppedHeight);
 			}
 		},
 		/**
