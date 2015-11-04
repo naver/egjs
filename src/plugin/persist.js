@@ -1,4 +1,6 @@
-eg.module("persist", ["jQuery", window, document], function($, global, doc) {
+// jscs:disable maximumLineLength
+eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, doc) {
+	// jscs:enable maximumLineLength
 	/**
 	* Support persist event in jQuery
 	* @ko jQuery custom persist 이벤트 지원
@@ -21,6 +23,7 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 	var wp = global.performance;
 	var history = global.history;
 	var location = global.location;
+	var userAgent = global.navigator.userAgent;
 	var JSON = global.JSON;
 	var CONST_PERSIST = "___persist___";
 	var GLOBAL_KEY = "KEY" + CONST_PERSIST;
@@ -128,6 +131,7 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 		beforeData[key] = data;
 		setState(beforeData);
 	}
+
 	/**
 	* Saves state and returns current state.
 	* @ko 인자로 넘긴 현재 상태정보를 저장한다.
@@ -193,6 +197,22 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 		return getStateByKey(key);
 	};
 
+	/**
+	* Returns necessity of Persist by checking bfcache.
+	* @ko Persist 동작 필요여부를 반환한다.
+	* @method $.persist.isApplicable
+	* @example
+	$.persist.isApplicable();
+	*/
+	$.persist.isNeeded = function() {
+		var agentOs = ns.agent(userAgent).os;
+		if (agentOs.name === "ios" ||
+				(agentOs.name === "android" && parseFloat(agentOs.version) < 4.4)) {
+			return false;
+		}
+		return true;
+	};
+
 	// in case of reload
 	!isBackForwardNavigated && reset();
 
@@ -216,6 +236,7 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 		"getState": getState,
 		"setState": setState,
 		"persist": $.persist,
+		"isNeeded": $.persist.isNeeded,
 		"GLOBALKEY": GLOBAL_KEY
 	};
 });

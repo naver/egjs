@@ -19,6 +19,7 @@ module("persist", {
 					type: 0
 				}
 			},
+			navigator: {}
 			sessionStorage: {
 				getItem: function(key) {
 					return this.storage[key];
@@ -37,7 +38,7 @@ module("persist", {
 		};
 		this.storage = {};
 
-		this.method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
+		this.method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
 		this.GLOBALKEY = this.method.GLOBALKEY;
 		/*
 		 *	 Mock History Object
@@ -98,7 +99,8 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 	ht[this.GLOBALKEY] = this.data;
 	this.fakeWindow.performance.navigation.type = 2;	// navigation
 	this.fakeWindow.history.state = JSON.stringify(ht);
-	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
+
+	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
 	deepEqual(method.persist(), this.data);
 
 	// When
@@ -116,7 +118,7 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 	// When
 	this.fakeWindow.performance.navigation.type = 0;	// enter url...
 	this.fakeWindow.history.state = JSON.stringify(ht);
-	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
+	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
 
 	// Then
 	equal(method.persist(), null);	// must reset
@@ -136,7 +138,7 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 	// When
 	this.fakeWindow.performance.navigation.type = 1;
 	this.fakeWindow.history.state = JSON.stringify(ht);
-	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
+	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
 
 	// Then
 	equal(method.persist(), null);
@@ -173,7 +175,7 @@ test("onPageshow : when bfCache miss and BF navigated, persist event must be tri
 		TYPE_RESERVED: 255
 	};
 	this.fakeWindow.performance.navigation.type = 2;
-	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
+	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
 
 	var restoredState = null;
 	$(this.fakeWindow).on("persist", function(e) {
@@ -192,11 +194,70 @@ test("onPageshow : when bfCache miss and BF navigated, persist event must be tri
 	// Then
 	deepEqual(restoredState, clonedData);
  });
-
+ 
 test("Test not throwing error for legacy browsers", function() {
 	this.fakeWindow.history = {};
 	delete this.fakeWindow.sessionStorage;
 
 	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 	ok(!method, "If browser don't have history.state neither web storage, persist shouldn't be defined.");
+});
+ 
+ var ua = [
+	{
+		"device":  "Android 4.3.0",
+		"ua": "Mozilla/5.0 (Linux; Android 4.3.0; SM-G900S Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.108 Mobile Safari/537.36",
+		"isNeeded": false
+	},
+	{
+		"device":  "Android 5.1.1",
+		"ua": "Mozilla/5.0 (Linux; Android 5.1.1; SAMSUNG SM-G925S Build/LMY47X) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/3.2 Chrome/38.0.2125.102 Mobile Safari/537.36",
+		"isNeeded": true
+	},
+	{
+		"device":  "iOS 8.0",
+		"ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12B440",
+		"isNeeded": false
+	}
+];
+ 
+module("extend Agent Test", {
+	setup : function() {
+		this.fakeWindow = {
+			location: {
+				href: ""
+			},
+			history: window.history,
+			JSON: JSON,
+			performance : {
+					navigation : {
+						TYPE_BACK_FORWARD: 2,
+						TYPE_NAVIGATE: 0,
+						TYPE_RELOAD: 1,
+						TYPE_RESERVED: 255,
+						type : 0
+					}
+			},
+			navigator: {}
+		};
+		this.agent = eg.agent;
+	},
+	teardown : function() {
+		eg.agent = this.agent;
+	}
+});
+
+ua.forEach(function(v,i) {
+	test("$.persist.isNeeded : "+ v.device, function() {
+		// Given
+		this.fakeWindow.navigator.userAgent = v.ua; 
+		var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
+		var isNeeded;
+		
+		// When
+		isNeeded = method.isNeeded();
+		
+		//Then
+		equal(isNeeded, v.isNeeded);
+	});
 });

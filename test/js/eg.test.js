@@ -500,8 +500,8 @@ var ua = [
 		"_hasClickBug" : false
 	},
 	{
-		// GalaxyS5:4.5.2
-		"device" : "GalaxyS5:4.5.2",
+		// GalaxyS5:4.4.2
+		"device" : "GalaxyS5:4.4.2",
 		"ua" : "Mozilla/5.0 (Linux; Android 4.4.2; SAMSUNG SM-G900S Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/1.6 Chrome/28.0.1500.94 Mobile Safari/537.36",
 		"os" : {
 			"name" : "android",

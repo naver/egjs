@@ -389,7 +389,7 @@ return defaultVal;
 	 */
 	ns.isHWAccelerable = function() {
 		var result = false;
-		var agent = this.agent();
+		var agent = ns.agent();
 		var osVersion = agent.os.version;
 		var browser = agent.browser.name;
 		var browserVersion = agent.browser.version;
@@ -438,7 +438,7 @@ return defaultVal;
 	 */
 	ns.isTransitional = function() {
 		var result = false;
-		var agent = this.agent();
+		var agent = ns.agent();
 		var browser = agent.browser.name;
 
 		if (/chrome|firefox/.test(browser)) {

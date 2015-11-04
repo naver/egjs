@@ -58,12 +58,9 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 			}
 		},
 		_isEnablePersist: function() {
-			var agent = eg.agent();
 			var enablePersist = true;
 
-			if (!this._options.usePersist ||
-					agent.os.name === "ios" ||
-					(agent.os.name === "android" && parseFloat(agent.os.version) < 4.4)) {
+			if (!this._options.usePersist || eg.needPersist()) {
 				enablePersist = false;
 			}
 
