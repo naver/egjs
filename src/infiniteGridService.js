@@ -14,7 +14,7 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 	ns.InfiniteGridService = ns.Class.extend(ns.Component, {
 		/**
 		 * Constructor
-		 * @param {String} Element selector
+		 * @param {String} element selector
 		 * @param {Object} options
 		 */
 		construct: function(element, options) {
@@ -23,8 +23,8 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 			this._prevScrollTop = 0;
 			this._inserting = false;
 
-			this._topElement;
-			this._bottomElemment;
+			this._topElement = null;
+			this._bottomElemment = null;
 
 			this._EVENT_NAMESPACE = ".infiniteGridService" +
 					Math.floor((Math.random() * 100000) + 1);
@@ -184,11 +184,11 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 		 * Append elements
 		 * @ko 하단에 요소 추가
 		 * @method eg.InfiniteGridService#append
-		 * @param {String|jQuery} DOM Element to append in a target <ko>타겟요소에 추가할 DOM 엘리먼트</ko>
+		 * @param {String|jQuery} elements DOM Element to append in a target <ko>타겟요소에 추가할 DOM 엘리먼트</ko>
 		 * @return {Number} Length The number of elements to prepended <ko>추가한 요소의 갯수</ko>
 		 * @example
-		 *    infiniteGrid.append("<li> contents </li>");
-		 *    infiniteGrid.append($("<li> contents </li>"));
+		 *    infiniteGridService.append("<li> contents </li>");
+		 *    infiniteGridService.append($("<li> contents </li>"));
 		 */
 		append: function(elements) {
 			this._inserting = true;
@@ -198,11 +198,11 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 		 * Prepend elements
 		 * @ko 상단에 요소 추가
 		 * @method eg.InfiniteGridService#preppend
-		 * @param {String|jQuery} DOM Element to append in a target <ko>타겟요소에 추가할 DOM 엘리먼트</ko>
+		 * @param {String|jQuery} elements DOM Element to append in a target <ko>타겟요소에 추가할 DOM 엘리먼트</ko>
 		 * @return {Number} Length The number of elements to prepended <ko>추가한 요소의 갯수</ko>
 		 * @example
-		 *    infiniteGrid.prepend("<li> contents </li>");
-		 *    infiniteGrid.prepend($("<li> contents </li>"));
+		 *    infiniteGridService.prepend("<li> contents </li>");
+		 *    infiniteGridService.prepend($("<li> contents </li>"));
 		 */
 		prepend: function(elements) {
 			this._inserting = true;
@@ -211,13 +211,13 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 		/**
 		 * Append Ajax response elements
 		 * @ko 하단에 Ajax 호출 결과 추가
-		 * @method eg.InfiniteGridService#ajaxAppend
-		 * @param {String} URL A string containing the URL to which the request is sent <ko>요청할 URL</ko>
-		 * @param {Object} [Settings] A set of key/value pairs that configure the Ajax request <ko>Ajax 설정 객체</ko>
-		 * @param {Function} [Callback] A function to be called when the before append. The function receives one argument: data will append <ko>요청 완료 후 실행 할 콜백. 응답 데이터를 파라메터로 받음</ko>
+		 * @method eg.InfiniteGridService#appendAjax
+		 * @param {String} url URL A string containing the URL to which the request is sent <ko>요청할 URL</ko>
+		 * @param {Object} [settings] A set of key/value pairs that configure the Ajax request <ko>Ajax 설정 객체</ko>
+		 * @param {Function} [callback] A function to be called when the before append. The function receives one argument: data will append <ko>요청 완료 후 실행 할 콜백. 응답 데이터를 파라메터로 받음</ko>
 		 * @return {Object} jqXHR
 		 * @example
-		 *    infiniteGrid.ajaxAppend("http://server.com/contents", function(data) {
+		 *    infiniteGridService.ajaxAppend("http://server.com/contents", function(data) {
 		 *        return $(data);
 		 *    } );
 		 */
@@ -228,13 +228,13 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 		/**
 		 * Prepend Ajax response elements
 		 * @ko 상단에 요소 추가
-		 * @method eg.InfiniteGridService#preppend
-		 * @param {String} URL A string containing the URL to which the request is sent <ko>요청할 URL</ko>
-		 * @param {Object} [Settings] A set of key/value pairs that configure the Ajax request <ko>Ajax 설정 객체</ko>
-		 * @param {Function} [Callback] A function to be called when the before append. The function receives one argument: data to prepended <ko>요청 완료 후 실행 할 콜백. 응답 데이터를 파라메터로 받음</ko>
+		 * @method eg.InfiniteGridService#preppendAjax
+		 * @param {String} url URL A string containing the URL to which the request is sent <ko>요청할 URL</ko>
+		 * @param {Object} [settings] A set of key/value pairs that configure the Ajax request <ko>Ajax 설정 객체</ko>
+		 * @param {Function} [callback] A function to be called when the before append. The function receives one argument: data to prepended <ko>요청 완료 후 실행 할 콜백. 응답 데이터를 파라메터로 받음</ko>
 		 * @return {Object} jqXHR
 		 * @example
-			infiniteGrid.ajaxPrepend("http://server.com/contents", function(data) {
+			infiniteGridService.ajaxPrepend("http://server.com/contents", function(data) {
 				return $(data);
 			} );
 		 */
@@ -300,7 +300,7 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 		/**
 		 * Clear elements
 		 * @ko 요소를 지움
-		 * @method eg.infiniteGrid#clear
+		 * @method eg.infiniteGridService#clear
 		 */
 		clear: function() {
 			this._infiniteGrid.clear();
@@ -308,7 +308,7 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 		/**
 		 * Release resources and off custom events
 		 * @ko 모든 커스텀 이벤트와 자원 해제
-		 * @method eg.infiniteGrid#destroy
+		 * @method eg.infiniteGridService#destroy
 		 */
 		destroy: function() {
 			if (this._infiniteGrid) {
