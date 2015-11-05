@@ -1,8 +1,12 @@
 module.exports = {
 	// create changelog
 	changelog: {
-		after: "2015-09-25",
-		before: "",
+		after: "2015-09-25",  // start date
+		before: "",  // end date ('today' when no value has given)
+		issueURL: {
+			enterprise: "https://oss.navercorp.com/egjs/egjs/issues",
+			github: "https://oss.navercorp.com/egjs/egjs/issues"  // http://github.com/naver/egjs/issues
+		},
 		cmd: function() {
 			var before = this.config("exec.changelog.before") || this.template.today("yyyy-mm-dd");
 
@@ -26,6 +30,7 @@ module.exports = {
 					fix: {}
 				};
 
+			// check for duplication
 			var isDuplicated = function(data, val) {
 				for (var i = 0, el; el = data[i]; i++) {
 					if (el.subject === val ) {
@@ -36,15 +41,40 @@ module.exports = {
 				return false;
 			};
 
+			var capitalize = function(val) {
+				return val.charAt(0).toUpperCase() + val.substr(1);
+			};
+
+			// get sorted module name
+			var getModuleName = function(val) {
+				if (val.indexOf(",") === -1) {
+					return capitalize(val);
+				}
+
+				val = val.trim().replace(/\s*,\s*/g, ",").split(",");
+				val.forEach(function(v, i) {
+					val[i] = capitalize(v);
+				});
+
+				return val.sort().join(", ");
+			};
+
+			// get issue url according type
+			var getIssueURL = function(type) {
+				console.log(type)
+				var issueURL = grunt.config("exec.changelog.issueURL");
+				return type === "e" || type !== "g" ? issueURL.enterprise : issueURL.github;
+			};
+
 			parser.parseString("<logs>" + stdout + "</logs>", function(err, result) {
 				if (!result || !result.logs) {
 					return;
 				}
 
 				var rxNewline = /\r?\n/g;
-				var rxBody = /ref\s[#yg]-?([0-9]+)$/i;
+				var rxBody = /ref\s([egy#])-?([0-9]+)$/i;
 				var rxSubject = /^(fix|feat)\s?\((\w+)\)\s*:\s*(.*)/i;
-				var issue, subject, category;
+				var issue, subject, category, module;
 
 				for (var i = 0, el; el = result.logs.item[i]; i++) {
 
@@ -57,16 +87,18 @@ module.exports = {
 						// filter subject which matches with fix or feat format
 						if (subject) {
 							category = logdata[subject[1]];
+							module = getModuleName(subject[2]);
 
-							if (!category[subject[2]]) {
-								category[subject[2]] = [];
+							if (!category[module]) {
+								category[module] = [];
 							}
 
 							// filter duplicated subject
-							if (!isDuplicated(category[subject[2]], subject[3])) {
-								category[subject[2]].push({
-									subject: subject[3],
-									issue: issue[1],
+							if (!isDuplicated(category[module], subject[3])) {
+								category[module].push({
+									subject: capitalize(subject[3]),
+									issueType: issue[1],
+									issueNo: issue[2],
 									hash: el.hash[0]
 								});
 							}
@@ -80,14 +112,8 @@ module.exports = {
 				header: "# <%= version%> release (<%= date %>)\r\n",
 				category: "\r\n## <%= category %> :\r\n",
 				module: "\r\n- **<%= module %>**\r\n",
-				item: [
-					"\t- <%= subject %> (issue [#<%= issue %>](",
-					grunt.config("pkg.bugs.url"),
-					"/<%= issue %>) / commit [<%= hash %>](",
-					grunt.config("pkg.repository.url"),
-					"/commit/<%= hash %>))\r\n"
-				].join("")
-			}
+				item: "\t- <%= subject %> ([#<%= issueNo %>](<%= url %>/<%= issueNo %>))\r\n"
+			};
 
 			var markdown = grunt.template.process(template.header, { data: {
 					version: grunt.config("pkg.version"),
@@ -107,7 +133,8 @@ module.exports = {
 					for (var i = 0, el; el = logdata[x][z][i]; i++) {
 						markdown += grunt.template.process(template.item, { data: {
 							subject: el.subject,
-							issue: el.issue,
+							issueNo: el.issueNo,
+							url: getIssueURL(el.issueType),
 							hash: el.hash
 						}});
 					}
