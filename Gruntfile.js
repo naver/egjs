@@ -11,8 +11,9 @@ module.exports = function(grunt) {
 
 	var config = {
 		"pkg": grunt.file.readJSON("package.json"),
-		"gitinfo": grunt.task.run("gitinfo"),
+		"gitinfo": grunt.task.run("exec:gitinfo"),
 		"banner": getConfig("banner"),
+		"exec": getConfig("exec"),
 		"concat": getConfig("concat"),
 		"copy": getConfig("copy"),
 		"jscs": getConfig("jscs"),
@@ -52,4 +53,5 @@ module.exports = function(grunt) {
 	// grunt.registerTask("build", ["concat", "uglify", "copy:lib", "docBuild"]);
 	grunt.registerTask("default", ["jshint", "jscs", "build", "test"]);
 	grunt.registerTask("check", ["jscs"]);
+	grunt.registerTask("changelog", ["exec:changelog"]);
 };
