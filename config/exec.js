@@ -81,9 +81,9 @@ module.exports = {
 				category: "\r\n## <%= category %> :\r\n",
 				module: "\r\n- **<%= module %>**\r\n",
 				item: [
-					"\t- <%= subject %> ([<%= issue %>](",
+					"\t- <%= subject %> (issue [#<%= issue %>](",
 					grunt.config("pkg.bugs.url"),
-					"/<%= issue %>) / [<%= hash %>](",
+					"/<%= issue %>) / commit [<%= hash %>](",
 					grunt.config("pkg.repository.url"),
 					"/commit/<%= hash %>))\r\n"
 				].join("")
