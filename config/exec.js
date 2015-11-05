@@ -61,7 +61,6 @@ module.exports = {
 
 			// get issue url according type
 			var getIssueURL = function(type) {
-				console.log(type)
 				var issueURL = grunt.config("exec.changelog.issueURL");
 				return type === "e" || type !== "g" ? issueURL.enterprise : issueURL.github;
 			};
