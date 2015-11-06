@@ -106,7 +106,9 @@ test("Option: preview - vertical", function() {
 	equal(wrapperHeight - (padding[0] + padding[1]), panelHeight, "Each panel's height should be same as wrapper element's height");
 });
 
-asyncTest("Option: threshold #1 - (horizontal) when moved more than threshold pixels", function() {
+test("Option: threshold #1 - (horizontal) when moved more than threshold pixels", function(assert) {
+	var done = assert.async();
+
 	// Given
 	var el = $("#mflick2")[0],
 		changedPanelNo = 0, panelNo;
@@ -133,12 +135,14 @@ asyncTest("Option: threshold #1 - (horizontal) when moved more than threshold pi
 		// Then
 		setTimeout(function() {
 			deepEqual(panelNo + 1, changedPanelNo, "Moved to next panel?");
-			start();
+			done();
 		},1000);
     });
 });
 
-asyncTest("Option: threshold #2 - (vertical) when moved more than threshold pixels", function() {
+test("Option: threshold #2 - (vertical) when moved more than threshold pixels", function(assert) {
+	var done = assert.async();
+
 	// Given
 	var el = $("#mflick2")[0],
 		changedPanelNo = 0, panelNo;
@@ -166,12 +170,14 @@ asyncTest("Option: threshold #2 - (vertical) when moved more than threshold pixe
 		// Then
 		setTimeout(function() {
 			deepEqual(panelNo + 1, changedPanelNo, "Moved to next panel?");
-			start();
+			done();
 		},1000);
     });
 });
 
-asyncTest("Option: threshold #3 - (horizontal) when moved less than threshold pixels", function() {
+test("Option: threshold #3 - (horizontal) when moved less than threshold pixels", function(assert) {
+	var done = assert.async();
+
 	// Given
 	var el = $("#mflick2").get(0),
 		changedPanelNo;
@@ -198,12 +204,14 @@ asyncTest("Option: threshold #3 - (horizontal) when moved less than threshold pi
 		// Then
 		setTimeout(function() {
 			deepEqual(panelNo, changedPanelNo, "Not moved to next panel?");
-			start();
+			done();
 		},1000);
     });
 });
 
-asyncTest("Option: threshold #4 - (vertical) when moved less than threshold pixels", function() {
+test("Option: threshold #4 - (vertical) when moved less than threshold pixels", function(assert) {
+	var done = assert.async();
+
 	// Given
 	var el = $("#mflick2").get(0),
 		changedPanelNo;
@@ -231,7 +239,7 @@ asyncTest("Option: threshold #4 - (vertical) when moved less than threshold pixe
 		// Then
 		setTimeout(function() {
 			deepEqual(panelNo, changedPanelNo, "Not moved to next panel?");
-			start();
+			done();
 		},1000);
     });
 });
@@ -425,7 +433,9 @@ test("Method: getTotalCount()", function() {
 	deepEqual(counts, this.inst.$container.children().length, "Returned physical elements total count?");
 });
 
-asyncTest("Method: isPlaying()", function() {
+test("Method: isPlaying()", function(assert) {
+	var done = assert.async();
+
 	// Given
 	var el = $("#mflick3").get(0),
 		that = this;
@@ -448,7 +458,7 @@ asyncTest("Method: isPlaying()", function() {
 		// Then
 		setTimeout(function() {
 			ok(isPlaying, "During the animation must return 'true'");
-			start();
+			done();
 		},500);
     });
 });
@@ -472,7 +482,9 @@ test("Method: next()", function() {
 	deepEqual(element[0], nextElement[0], "The next element is what expected?");
 });
 
-asyncTest("Method: next() - Animation #1", function () {
+test("Method: next() - Animation #1", function (assert) {
+	var done = assert.async();
+
 	// Given
 	this.inst = new eg.Flicking($("#mflick2-1"), {
 		circular : true
@@ -487,16 +499,17 @@ asyncTest("Method: next() - Animation #1", function () {
 		var element = this.inst.getElement(),
 			value = (this.inst._getBasePositionIndex() * 100) + "%";
 
-		// When
 		// Then
 		deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to next panel correctly?");
 		deepEqual(element[0], nextElement[0], "The next element is what expected?");
 
-		start();
+		done();
 	}, this), 400);
 });
 
-asyncTest("Method: next() - Animation #2", function () {
+test("Method: next() - Animation #2", function (assert) {
+	var done = assert.async();
+
 	// Given
 	this.inst = new eg.Flicking($("#mflick2-1"), {
 		circular: true
@@ -516,7 +529,7 @@ asyncTest("Method: next() - Animation #2", function () {
 		deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to next panel correctly?");
 		deepEqual(element[0], nextElement[0], "The next element is what expected?");
 
-		start();
+		done();
 	}, this), 400);
 });
 
@@ -538,7 +551,9 @@ test("Method: prev()", function() {
 	deepEqual(element.html(), prevElement.html(), "The previous element is what expected?");
 });
 
-asyncTest("Method: prev() - Animation #1", function () {
+test("Method: prev() - Animation #1", function (assert) {
+	var done = assert.async();
+
 	// Given
 	this.inst = new eg.Flicking($("#mflick2-1"), {
 		circular : true
@@ -557,11 +572,13 @@ asyncTest("Method: prev() - Animation #1", function () {
 		deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to previous panel correctly?");
 		deepEqual(element.html(), prevElement.html(), "The previous element is what expected?");
 
-		start();
+		done();
 	}, this), 400);
 });
 
-asyncTest("Method: prev() - Animation #2", function () {
+test("Method: prev() - Animation #2", function (assert) {
+	var done = assert.async();
+
 	// Given
 	this.inst = new eg.Flicking($("#mflick2-1"), {
 		circular: true
@@ -580,7 +597,7 @@ asyncTest("Method: prev() - Animation #2", function () {
 		deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to previous panel correctly?");
 		deepEqual(element.html(), prevElement.html(), "The previous element is what expected?");
 
-		start();
+		done();
 	}, this), 400);
 });
 
@@ -640,7 +657,9 @@ test("Method: moveTo()", function() {
 	ok(this.inst.getElement().html().indexOf("Layer 2"), "Moved correctly?");
 });
 
-asyncTest("Method: moveTo() - Animation #1", function() {
+test("Method: moveTo() - Animation #1", function(assert) {
+	var done = assert.async();
+
 	// Given
 	this.inst = new eg.Flicking($("#mflick1"));
 
@@ -654,11 +673,13 @@ asyncTest("Method: moveTo() - Animation #1", function() {
 	setTimeout($.proxy(function() {
 		// Then
 		equal($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Moved to last panel?");
-		start();
+		done();
 	}, this),500);
 });
 
-asyncTest("Method: moveTo() - Animation #2", function() {
+test("Method: moveTo() - Animation #2", function(assert) {
+	var done = assert.async();
+
 	// Given
 	this.inst = new eg.Flicking($("#mflick1"));
 
@@ -672,11 +693,13 @@ asyncTest("Method: moveTo() - Animation #2", function() {
 	setTimeout($.proxy(function () {
 		// Then
 		equal($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Moved to last panel?");
-		start();
+		done();
 	}, this), 500);
 });
 
-asyncTest("Method: moveTo() - Animation #3", function () {
+test("Method: moveTo() - Animation #3", function (assert) {
+	var done = assert.async();
+
 	// Given
 	this.inst = new eg.Flicking($("#mflick3"), {
 		circular : true
@@ -697,11 +720,13 @@ asyncTest("Method: moveTo() - Animation #3", function () {
 		deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
 		ok(this.inst.getElement().html().indexOf("Layer "+ (count - 1)), "Moved correctly?");
 
-		start();
+		done();
 	}, this),500);
 });
 
-asyncTest("Method: moveTo() - Animation #4", function () {
+test("Method: moveTo() - Animation #4", function (assert) {
+	var done = assert.async();
+
 	// Given
 	this.inst = new eg.Flicking($("#mflick3"), {
 		circular : true
@@ -717,7 +742,7 @@ asyncTest("Method: moveTo() - Animation #4", function () {
 		deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
 		ok(this.inst.getElement().html().indexOf("Layer 2"), "Moved correctly?");
 
-		start();
+		done();
 	}, this),500);
 });
 
@@ -753,7 +778,9 @@ test("Method: resize()", function() {
 	notDeepEqual(oldCoordMax, this.inst._mcInst.options.max, "Should be updated MovableCoord's 'max' options value");
 });
 
-asyncTest("Custom events #1 - When changes panel normally", function() {
+test("Custom events #1 - When changes panel normally", function(assert) {
+	var done = assert.async();
+
 	// Given
 	var el = $("#mflick1").get(0),
 		eventOrder = ["beforeFlickStart", "flick", "flickEnd"],
@@ -785,12 +812,14 @@ asyncTest("Custom events #1 - When changes panel normally", function() {
 		// Then
 		setTimeout(function() {
 			deepEqual(eventOrder, eventFired, "Custom events are fired in correct order");
-			start();
+			done();
 		},1000);
     });
 });
 
-asyncTest("Custom events #2 - When stop event on beforeRestore", function() {
+test("Custom events #2 - When stop event on beforeRestore", function(assert) {
+	var done = assert.async();
+
 	// Given
 	var el = $("#mflick1").get(0),
 		eventFired = [],
@@ -828,13 +857,15 @@ asyncTest("Custom events #2 - When stop event on beforeRestore", function() {
 		setTimeout(function() {
 			ok(!called, "restore event should not be triggered");
 			//notEqual(currentTransform, $getTransformValue(inst.$container, true), "the panel should not be restored");
-			start();
+			done();
 		},1000);
     });
 });
 
 
-asyncTest("Custom events #3 - When stop on flick event", function () {
+test("Custom events #3 - When stop on flick event", function (assert) {
+	var done = assert.async();
+
 	// Given
 	var el = $("#mflick1").get(0),
 		eventFired = [],
@@ -870,12 +901,14 @@ asyncTest("Custom events #3 - When stop on flick event", function () {
 		// Then
 		setTimeout(function() {
 			notEqual(translate, $getTransformValue(inst.$container, true), "The panel should not be moved during change");
-			start();
+			done();
 		},800);
     });
 });
 
-asyncTest("Custom events #4 - When stop on beforeFlickStart event", function () {
+test("Custom events #4 - When stop on beforeFlickStart event", function (assert) {
+	var done = assert.async();
+
 	// Given
 	var el = $("#mflick1").get(0),
 		eventFired = [],
@@ -929,9 +962,97 @@ asyncTest("Custom events #4 - When stop on beforeFlickStart event", function () 
 				index: inst._conf.panel.index
 			}, "Restored panel index value?")
 
-			start();
+			done();
 		}, 800);
 	});
+});
+
+test("Custom events #5 - Events fired on move API call when duration is 0", function () {
+	var el = $("#mflick1").get(0),
+		eventFired = [],
+		eventOrder = ["beforeFlickStart", "flick", "flickEnd"],
+		handler = function (e) {
+			var type = e.eventType;
+
+			if (eventFired.indexOf(type) == -1) {
+				eventFired.push(type);
+			}
+		},
+		inst = this.inst = new eg.Flicking(el, { circular: true }).on({
+			beforeFlickStart: handler,
+			flick: handler,
+			flickEnd: handler
+		});
+
+	// When
+	inst.next(0);
+
+	// Then
+	deepEqual(eventFired, eventOrder, "Events are fired in correct order, after calling next()?");
+
+	// When
+	eventFired = [];
+	inst.prev(0);
+
+	// Then
+	deepEqual(eventFired, eventOrder, "Events are fired in correct order, after calling prev()?");
+
+	// When
+	eventFired = [];
+	inst.moveTo(1,0);
+
+	// Then
+	deepEqual(eventFired, eventOrder, "Events are fired in correct order, after calling moveTo()?");
+});
+
+test("Custom events #6 - Events fired on move API call when duration is greater than 0", function (assert) {
+	var done = assert.async();
+	var el = $("#mflick1").get(0),
+		eventFired = {
+			next: [],
+			prev: [],
+			moveTo: []
+		},
+		eventOrder = ["beforeFlickStart", "flick", "flickEnd"],
+		method = "",
+		handler = function (e) {
+			var type = e.eventType,
+				event = eventFired[method];
+
+			if (event.indexOf(type) == -1) {
+				event.push(type);
+			}
+		},
+		inst = this.inst = new eg.Flicking(el, { circular: true }).on({
+			beforeFlickStart: handler,
+			flick: handler,
+			flickEnd: handler
+		});
+
+	// When
+	setTimeout(function() {
+		method = "next";
+		inst.next(10);
+	}, 200);
+
+	// When
+	setTimeout(function() {
+		method = "prev";
+		inst.prev(10);
+	}, 400);
+
+	// When
+	setTimeout(function() {
+		method = "moveTo";
+		inst.moveTo(1, 10);
+	}, 600);
+
+	setTimeout(function() {
+		for(var x in eventFired) {
+			deepEqual(eventFired[x], eventOrder, "Events are fired in correct order, after calling "+ x +"()?");
+		}
+		done();
+	}, 1000);
 });
 
 test("Workaround for buggy link highlighting on android 2.x", function () {

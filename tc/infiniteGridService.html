@@ -172,7 +172,7 @@
 //			jsonp: "callback"
 //		};
 //		infiniteGridService.appendAjax(options);
-		var contents = getContents(offset, limit);
+		var contents = getContents(offset + 1, limit);
 		infiniteGridService.append(contents);
 	});
 
@@ -200,7 +200,7 @@
 //				return $(data);
 //			});
 			var contents = getContents(offset, limit);
-			infiniteGridService.append(contents);
+			infiniteGridService.prepend(contents);
 		}
 	});
 
