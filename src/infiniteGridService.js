@@ -109,24 +109,6 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 			this.trigger("layoutComplete", e);
 			this._inserting = false;
 		},
-		_insertElements: function(mode, elements) {
-			var length = 0;
-			var $elements;
-
-			if (typeof elements === "string") {
-				$elements = $(elements);
-			} else {
-				$elements = elements;
-			}
-
-			if (mode === "append") {
-				length = this._infiniteGrid.append($elements);
-			} else if (mode === "prepend") {
-				length = this._infiniteGrid.prepend($elements);
-			}
-
-			return length;
-		},
 		_insertAjax: function(mode, url, options, callback) {
 			if ($.isFunction(options)) {
 				callback = options;
@@ -135,13 +117,10 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 
 			return $.ajax(url, options)
 					.done($.proxy(function(data) {
-						var $elements;
 						if (callback) {
-							$elements = callback(data);
-						} else {
-							$elements = $(data);
+							data = callback(data);
 						}
-						this._insertElements(mode, $elements);
+						this._infiniteGrid[mode]($(data));
 					}, this))
 					.fail($.proxy(function() {
 						this._inserting = false;
@@ -189,7 +168,7 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 		 */
 		append: function(elements) {
 			this._inserting = true;
-			return this._insertElements("append", elements);
+			return this._infiniteGrid.append($(elements));
 		},
 		/**
 		 * Prepend elements
@@ -203,7 +182,7 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 		 */
 		prepend: function(elements) {
 			this._inserting = true;
-			return this._insertElements("prepend", elements);
+			return this._infiniteGrid.prepend($(elements));
 		},
 		/**
 		 * Append Ajax response elements
