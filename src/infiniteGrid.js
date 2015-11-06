@@ -54,7 +54,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		_getContainerSize: function() {
 			return {
 				height: Math.max.apply(Math, this._appendCols),
-				width: this.size.outerWidth
+				width: this.size.innerWidth
 			};
 		},
 
@@ -106,7 +106,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			}));
 		},
 		_measureColumns: function() {
-			var containerWidth = this.size.outerWidth;
+			var containerWidth = this.size.innerWidth;
 			var columnWidth = this._getColumnWidth();
 			var cols = containerWidth / columnWidth;
 			var excess = columnWidth - containerWidth % columnWidth;
