@@ -58,24 +58,20 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 			}
 		},
 		_isEnablePersist: function() {
-			var enablePersist = true;
-
-			if (!this._options.usePersist || eg.needPersist()) {
-				enablePersist = false;
-			}
-
-			this._isEnablePersist = function () {
-				return enablePersist;
-			};
-
-			return enablePersist;
+			return (this._options.usePersist && $.persist.isNeeded());
 		},
 		_onScroll: function() {
-			if (this._inserting) {
+			if (this._inserting || this._infiniteGrid.isProcessing()) {
 				return;
 			}
 
-			if (this._prevScrollTop < this._getScrollTop()) {
+			var scrollTop = this._getScrollTop();
+
+			if (eg.agent().os.name === "ios" && scrollTop === 0) {
+				return;
+			}
+
+			if (this._prevScrollTop < scrollTop) {
 				if (this._bottomElemment) {
 					var bottomElementBoundingClientRect =
 						this._bottomElemment.getBoundingClientRect();
@@ -86,7 +82,7 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 					}
 				}
 			} else {
-				if (this._infiniteGrid.isRecycling() && this._topElement) {
+				if (this._topElement) {
 					var topElementBoundingClientRect =
 						this._topElement.getBoundingClientRect();
 
@@ -109,24 +105,6 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 			this.trigger("layoutComplete", e);
 			this._inserting = false;
 		},
-		_insertElements: function(mode, elements) {
-			var length = 0;
-			var $elements;
-
-			if (typeof elements === "string") {
-				$elements = $(elements);
-			} else {
-				$elements = elements;
-			}
-
-			if (mode === "append") {
-				length = this._infiniteGrid.append($elements);
-			} else if (mode === "prepend") {
-				length = this._infiniteGrid.prepend($elements);
-			}
-
-			return length;
-		},
 		_insertAjax: function(mode, url, options, callback) {
 			if ($.isFunction(options)) {
 				callback = options;
@@ -135,13 +113,10 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 
 			return $.ajax(url, options)
 					.done($.proxy(function(data) {
-						var $elements;
 						if (callback) {
-							$elements = callback(data);
-						} else {
-							$elements = $(data);
+							data = callback(data);
 						}
-						this._insertElements(mode, $elements);
+						this._infiniteGrid[mode]($(data));
 					}, this))
 					.fail($.proxy(function() {
 						this._inserting = false;
@@ -189,7 +164,7 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 		 */
 		append: function(elements) {
 			this._inserting = true;
-			return this._insertElements("append", elements);
+			return this._infiniteGrid.append($(elements));
 		},
 		/**
 		 * Prepend elements
@@ -203,7 +178,7 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 		 */
 		prepend: function(elements) {
 			this._inserting = true;
-			return this._insertElements("prepend", elements);
+			return this._infiniteGrid.prepend($(elements));
 		},
 		/**
 		 * Append Ajax response elements
@@ -259,7 +234,7 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 					"scrollTop": this._getScrollTop()
 				};
 
-				this.trigger("store", data);
+				this.trigger("beforeStore", data);
 				$.persist(key, data);
 			}
 		},
