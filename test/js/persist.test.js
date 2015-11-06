@@ -202,8 +202,16 @@ test("Test not throwing error for legacy browsers", function() {
 	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
 	ok(!method, "If browser don't have history.state neither web storage, persist shouldn't be defined.");
 });
- 
+
+test("Test for browsers which don't have JSON object", function() {
+	this.fakeWindow.JSON = undefined;
+
+	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
+	ok(!method, "If browser don't have JSON object, persist shouldn't be defined.");
+});
+
 var ua = [
+
 	{
 		"device":  "Android 4.3.0",
 		"ua": "Mozilla/5.0 (Linux; Android 4.3.0; SM-G900S Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.108 Mobile Safari/537.36",
@@ -220,7 +228,7 @@ var ua = [
 		"isNeeded": false
 	}
 ];
- 
+
 module("extend Agent Test", {
 	setup : function() {
 		this.fakeWindow = {
@@ -261,13 +269,13 @@ module("extend Agent Test", {
 ua.forEach(function(v,i) {
 	test("$.persist.isNeeded : "+ v.device, function() {
 		// Given
-		this.fakeWindow.navigator.userAgent = v.ua; 
+		this.fakeWindow.navigator.userAgent = v.ua;
 		var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
 		var isNeeded;
-		
+
 		// When
 		isNeeded = method.isNeeded();
-		
+
 		//Then
 		equal(isNeeded, v.isNeeded);
 	});

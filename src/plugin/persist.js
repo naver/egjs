@@ -48,10 +48,19 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 		}
 	})();
 
-	if (!isSupportState && !storage) {
+	// jscs:disable maximumLineLength
+	/* jshint ignore:start */
+	if (!isSupportState && !storage ||
+		(!JSON && !console.warn(
+			"The JSON object is not supported in your browser.\n" +
+			"For work around use polyfill which can be found at:\n" +
+			"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON#Polyfill")
+		)) {
 		return;
 	}
+	/* jshint ignore:end */
 
+	// jscs:enable maximumLineLength
 	function onPageshow(e) {
 		isPersisted = isPersisted || (e.originalEvent && e.originalEvent.persisted);
 		if (!isPersisted && isBackForwardNavigated) {
