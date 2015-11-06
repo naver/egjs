@@ -70,7 +70,7 @@
 <div class="container">
   	<div class="row">
   		<div id="prepend-loading-bar" class="alert alert-info" role="alert" style="display:none"><span class="glyphicon glyphicon-refresh" aria-hidden="true"> prepending...</span></div>
-		<div id="grid" class="col-md-12"></div>
+		<div id="grid" class="col-md-12" style="visibility:hidden"></div>
 		<div class="cf"></div>
 		<div id="append-loading-bar" class="alert alert-info" role="alert" style="display:none"><span class="glyphicon glyphicon-refresh" aria-hidden="true"> appending...</span></div>
 	</div>
@@ -96,31 +96,25 @@
 <script src="../src/infiniteGridService.js"></script>
 
 <script>
+$(document).ready(function() {
 	function getContents(offset, limit) {
 		var html = "";
-		var colors = ["63a69f", "f2e1ac", "f2836b", "f2594b", "CD2C24"];
 
 		offset = offset || 1;
 		limit = limit || 80;
 
 		var end = offset + limit;
 
-		var _random = function(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
 		for ( ; offset < end; offset ++ ) {
 			html = html +
-                '<div class="col-sm-6 col-md-3" data-offset="' + offset + '">' +
-                    '<div class="thumbnail">' +
-                        '<img src="http://dummyimage.com/' + _random(128, 182) + 'x1:1.65/' + colors[_random(0, colors.length - 1)] + '&text=++0x23' + offset + '++" alt="' + offset + '">' +
-                        '<div class="caption">' +
-                            '<h3>Thumbnail label</h3>' +
-                            '<p>...</p>' +
-                            '<p><a href="http://naver.com/" class="btn btn-primary" role="button">더보기</a>' +
-                        '</div>' +
-                    '</div>' +
-                '</div>';
+				'<div class="col-sm-6 col-md-3" data-offset="' + offset + '"><a href="http://naver.com/">' +
+					'<div class="thumbnail">' +
+						'<img src="http://128.199.120.3:8081/images/' + Math.floor((Math.random() * 40) + 1) + '.jpg" alt="' + offset + '">' +
+						'<div class="caption">' +
+							'<p>Cras justo odio, dapibus ac...</p>' +
+						'</div>' +
+					'</div>' +
+				'</a></div>';
 		}
 
 		return html;
@@ -132,7 +126,7 @@
 	 * @return {Number} offset
 	 */
 	function getOffset(pos) {
-		var offset;
+		var offset = 0;
 
 		if (pos === "first") {
 			offset = $("#grid").children("div").first().data("offset");
@@ -146,7 +140,7 @@
 
 	var contents;
 	var limit = 80;
-	var SERVER_URL = "http://fakeserver-dev-auplatform-1.c9.io/infiniteGrid/items";
+	var SERVER_URL = "http://128.199.120.3:8081/infiniteGrid/items";
 
 	/*
 	 eg.InfiniteGrideService 인스턴스 생성
@@ -216,7 +210,13 @@
 		} else {
 			$("#prepend-loading-bar").hide();
 		}
+		$("#grid").css("visibility", "visible");
 	});
+
+	infiniteGridService.on("beforeStore", function(data) {
+		/// execte
+		//this.setData(data)
+	})
 
 	/*
 	 아이템의 <a> 클릭시 persist 데이터를 저장
@@ -240,6 +240,7 @@
 		var contents = getContents(1, limit);
 		infiniteGridService.append(contents);
 	}
+});
 </script>
 </body>
 </html>
