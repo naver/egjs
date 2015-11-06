@@ -234,7 +234,7 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 					"scrollTop": this._getScrollTop()
 				};
 
-				this.trigger("store", data);
+				this.trigger("beforeStore", data);
 				$.persist(key, data);
 			}
 		},
