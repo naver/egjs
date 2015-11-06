@@ -58,24 +58,20 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 			}
 		},
 		_isEnablePersist: function() {
-			var enablePersist = true;
-
-			if (!this._options.usePersist || eg.needPersist()) {
-				enablePersist = false;
-			}
-
-			this._isEnablePersist = function () {
-				return enablePersist;
-			};
-
-			return enablePersist;
+			return (this._options.usePersist && $.persist.isNeeded());
 		},
 		_onScroll: function() {
-			if (this._inserting) {
+			if (this._inserting || this._infiniteGrid.isProcessing()) {
 				return;
 			}
 
-			if (this._prevScrollTop < this._getScrollTop()) {
+			var scrollTop = this._getScrollTop();
+
+			if (eg.agent().os.name === "ios" && scrollTop === 0) {
+				return;
+			}
+
+			if (this._prevScrollTop < scrollTop) {
 				if (this._bottomElemment) {
 					var bottomElementBoundingClientRect =
 						this._bottomElemment.getBoundingClientRect();
@@ -86,7 +82,7 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 					}
 				}
 			} else {
-				if (this._infiniteGrid.isRecycling() && this._topElement) {
+				if (this._topElement) {
 					var topElementBoundingClientRect =
 						this._topElement.getBoundingClientRect();
 
