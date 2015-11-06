@@ -11,7 +11,7 @@ module.exports = function(grunt) {
 
 	var config = {
 		"pkg": grunt.file.readJSON("package.json"),
-		"gitinfo": grunt.task.run("gitinfo"),
+		/*"gitinfo": grunt.task.run("gitinfo"),*/
 		"banner": getConfig("banner"),
 		"concat": getConfig("concat"),
 		"copy": getConfig("copy"),

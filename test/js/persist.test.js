@@ -210,7 +210,8 @@ test("Test for browsers which don't have JSON object", function() {
 	ok(!method, "If browser don't have JSON object, persist shouldn't be defined.");
 });
 
- var ua = [
+var ua = [
+
 	{
 		"device":  "Android 4.3.0",
 		"ua": "Mozilla/5.0 (Linux; Android 4.3.0; SM-G900S Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.108 Mobile Safari/537.36",
@@ -244,6 +245,17 @@ module("extend Agent Test", {
 						TYPE_RESERVED: 255,
 						type : 0
 					}
+			},
+			sessionStorage: {
+				getItem: function(key) {
+					return this.storage[key];
+				},
+				setItem: function(key, val) {
+					this.storage[key] = val;
+				},
+				removeItem: function(key) {
+					this.storage[key] = undefined;
+				}
 			},
 			navigator: {}
 		};
