@@ -215,11 +215,15 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	*/
 	$.persist.isNeeded = function() {
 		var agentOs = ns.agent(userAgent).os;
+		var isNeeded = true;
 		if (agentOs.name === "ios" ||
 				(agentOs.name === "android" && parseFloat(agentOs.version) < 4.4)) {
-			return false;
+			isNeeded = false;
 		}
-		return true;
+		$.persist.isNeeded = function() {
+			return isNeeded;
+		};
+		return isNeeded;
 	};
 
 	// in case of reload
