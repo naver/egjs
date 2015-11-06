@@ -977,9 +977,9 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 			if (options.circular ||
 				this[next ? "getNextIndex" : "getPrevIndex"]() != null
 			) {
-				this._movePanelByPhase("setBy",
-					[ panel.size * (next ? 1 : -1), 0 ],
-					duration);
+				this._movePanelByPhase("setBy", [
+					panel.size * (next ? 1 : -1), 0
+				], duration);
 			}
 		},
 
