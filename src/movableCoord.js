@@ -383,7 +383,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			if (!this._isInterrupting() || !this._status.moveDistance) {
 				return;
 			}
-			
+
 			// Abort the animating post process, when "tap" occurs.
 			if (e.type === "tap") {
 				var pos = this._pos;
