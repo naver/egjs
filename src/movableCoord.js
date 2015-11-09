@@ -395,7 +395,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 
 			// Abort the animating post process,
 			// when "tap" occurs or velocity is zero at inside border.
-			if (e.type === "tap" || (e.velocity === 0 && !this._status.releaseOutside)) {
+			if (e.type === "tap" || (e.velocity === 0 && !releaseOutside)) {
 				this._status.moveDistance = null;
 				this.trigger("release", {
 					depaPos: pos.concat(),
