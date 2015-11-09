@@ -14,6 +14,48 @@ eg.module("component", [eg], function(ns) {
 			this.eventHandler = {};
 		},
 		/**
+		 * The method set options.
+		 * @ko 옵션을 설정한다.
+		 * @method eg.Component#option
+		 * @param {String} key
+		 * @param {Object} value
+		 * @return {Boolean}
+		 * @example
+			var Some = eg.Class.extend(eg.Component);
+			var some = new Some({
+				"foo": 1,
+				"bar": 2,
+			});
+			some.option("foo"); // return 1
+			some.option("foo",3); // return some instance
+			some.option(); // return options object.
+			some.option({
+				"foo" : 10,
+				"bar" : 20,
+				"baz" : 30
+			}); // return some instance.
+		 */
+		option: function(key, value) {
+			if (arguments.length >= 2) {
+				this.options[key] = value;
+				return this;
+			}
+
+			if (typeof key === "string") {
+				return this.options[key];
+			}
+
+			if (arguments.length === 0) {
+				return this.options;
+			}
+
+			for (var i in key) {
+				this.options[i] = key[i];
+			}
+
+			return this;
+		},
+		/**
 		 * The event fire with custom event.
 		 * @ko 커스텀 이벤트를 실행합니다.
 		 * @method eg.Component#trigger
