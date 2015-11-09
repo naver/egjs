@@ -196,18 +196,34 @@ test("onPageshow : when bfCache miss and BF navigated, persist event must be tri
  });
  
 test("Test not throwing error for legacy browsers", function() {
+	// Given
 	this.fakeWindow.history = {};
 	delete this.fakeWindow.sessionStorage;
 
+	// When
 	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
+
+	// Then
 	ok(!method, "If browser don't have history.state neither web storage, persist shouldn't be defined.");
 });
 
 test("Test for browsers which don't have JSON object", function() {
+	// Given
 	this.fakeWindow.JSON = undefined;
+	console.oldWarn = console.warn;
+	var callCount;
+	console.warn = function(msg){
+		callCount++;
+	}
 
+	// When
 	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
+
+	// Then
 	ok(!method, "If browser don't have JSON object, persist shouldn't be defined.");
+	equal(callCount, 1);
+
+	console.warn = console.oldWarn;
 });
 
 var ua = [
