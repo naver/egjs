@@ -381,12 +381,13 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 		// panend event handler
 		_panend: function(e) {
 			var pos = this._pos;
+			var releaseOutside;
 
 			if (!this._isInterrupting() || !this._status.moveDistance) {
 				return;
 			}
 
-			this._status.releaseOutside = this._isOutside(
+			releaseOutside = this._isOutside(
 				pos,
 				this.options.min,
 				this.options.max
