@@ -211,9 +211,9 @@ test("Test for browsers which don't have JSON object", function() {
 	// Given
 	this.fakeWindow.JSON = undefined;
 	console.oldWarn = console.warn;
-	var message;
+	var callCount;
 	console.warn = function(msg){
-		message = msg;
+		callCount++;
 	}
 
 	// When
@@ -221,9 +221,7 @@ test("Test for browsers which don't have JSON object", function() {
 
 	// Then
 	ok(!method, "If browser don't have JSON object, persist shouldn't be defined.");
-	equal(message, "The JSON object is not supported in your browser.\n" +
-				   "For work around use polyfill which can be found at:\n" +
-				   "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON#Polyfill");
+	equal(callCount, 1);
 
 	console.warn = console.oldWarn;
 });
