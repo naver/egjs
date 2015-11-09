@@ -1,5 +1,5 @@
-(function(global) {
-	global.eg = {};
+(function(global, ns) {
+	global[ns] = {};
 
 	var dependency = {
 		"jQuery": {
@@ -144,7 +144,7 @@
 	 * Regist module.
 	 * @private
 	 */
-	global.eg.module = function(name, di, fp) {
+	global[ns].module = function(name, di, fp) {
 		var result = checkDependency(name, di);
 
 		if (result[1].length) {
@@ -153,4 +153,4 @@
 			fp.apply(global, result[0]);
 		}
 	};
-})(window);
+})(window, "eg");
