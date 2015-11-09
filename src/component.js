@@ -9,9 +9,51 @@ eg.module("component", [eg], function(ns) {
 	 */
 	ns.Component = ns.Class({
 		construct: function() {
-			// The reference count is not support yet.
+			// The reference count does not support yet.
 			// this.constructor.$count = (this.constructor.$count || 0) + 1;
 			this.eventHandler = {};
+		},
+		/**
+		 * Get or set option.
+		 * @ko 옵션을 관리한다.
+		 * @method eg.Component#option
+		 * @param {String} key
+		 * @param {Object} value
+		 * @return {Instance|Object}
+		 * @example
+			var Some = eg.Class.extend(eg.Component);
+			var some = new Some({
+				"foo": 1,
+				"bar": 2,
+			});
+			some.option("foo"); // return 1
+			some.option("foo",3); // return some instance
+			some.option(); // return options object.
+			some.option({
+				"foo" : 10,
+				"bar" : 20,
+				"baz" : 30
+			}); // return some instance.
+		 */
+		option: function(key, value) {
+			if (arguments.length >= 2) {
+				this.options[key] = value;
+				return this;
+			}
+
+			if (typeof key === "string") {
+				return this.options[key];
+			}
+
+			if (arguments.length === 0) {
+				return this.options;
+			}
+
+			for (var i in key) {
+				this.options[i] = key[i];
+			}
+
+			return this;
 		},
 		/**
 		 * The event fire with custom event.

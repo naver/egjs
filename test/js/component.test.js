@@ -1,6 +1,10 @@
 module("Component Test");
 
-var TestClass = eg.Class.extend(eg.Component,{});
+var TestClass = eg.Class.extend(eg.Component,{
+	"construct" : function(option){
+		this.options = option;
+	}
+});
 function noop() {}
 
 module("on method", {
@@ -301,4 +305,50 @@ test("Event existence/nonexistence",function(){
 	var result2 = this.oClass.hasOn("test2");
 	//Then
 	ok( !result2, "Event nonexistence.");
+});
+
+
+
+module("option method", {
+	setup : function(){
+		this.oClass = new TestClass({
+			"foo": 1,
+			"bar": 2
+		});
+	}
+});
+
+test("Option method should be support 4 features.",function(){
+	//Given
+	//When
+	var result = this.oClass.option("foo");
+	//Then
+	ok( result, 1);
+
+	//Given
+	//When
+	var result = this.oClass.option("foo",2);
+	//Then
+	equal( this.oClass.option("foo"), 2);
+	ok( result instanceof TestClass );
+
+	//Given
+	//When
+	var result = this.oClass.option({
+		"foo": 3,
+		"bar": 4
+	});
+	//Then
+	equal( this.oClass.option("foo"), 3);
+	equal( this.oClass.option("bar"), 4);
+	ok( result instanceof TestClass );
+
+	//Given
+	//When
+	var result = this.oClass.option();
+	//Then
+	deepEqual( result, {
+		"foo": 3,
+		"bar": 4
+	});
 });
