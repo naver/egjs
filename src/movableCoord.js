@@ -380,22 +380,30 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 
 		// panend event handler
 		_panend: function(e) {
+			var pos = this._pos;
+
 			if (!this._isInterrupting() || !this._status.moveDistance) {
 				return;
 			}
 
-			// Abort the animating post process, when "tap" occurs.
-			if (e.type === "tap") {
-				var pos = this._pos;
-				var param = {
+			this._status.releaseOutside = this._isOutside(
+				pos,
+				this.options.min,
+				this.options.max
+			);
+
+			// Abort the animating post process,
+			// when "tap" occurs or velocity is zero at inside border.
+			if (e.type === "tap" || (e.velocity === 0 && !this._status.releaseOutside)) {
+				this._status.moveDistance = null;
+				this.trigger("release", {
 					depaPos: pos.concat(),
 					destPos: pos.concat(),
 					hammerEvent: e || null
-				};
-				this._status.moveDistance = null;
-				this.trigger("release", param);
+				});
 				return;
 			}
+
 			var direction = this._subOptions.direction;
 			var scale = this._subOptions.scale;
 			var vX =  Math.abs(e.velocityX);
