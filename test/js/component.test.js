@@ -329,7 +329,8 @@ test("Option method should be support 4 features.",function(){
 	//When
 	var result = this.oClass.option("foo",2);
 	//Then
-	ok( this.oClass.option("foo"), 2);
+	equal( this.oClass.option("foo"), 2);
+	ok( result instanceof TestClass );
 
 	//Given
 	//When
@@ -338,8 +339,9 @@ test("Option method should be support 4 features.",function(){
 		"bar": 4
 	});
 	//Then
-	ok( this.oClass.option("foo"), 3);
-	ok( this.oClass.option("bar"), 4);
+	equal( this.oClass.option("foo"), 3);
+	equal( this.oClass.option("bar"), 4);
+	ok( result instanceof TestClass );
 
 	//Given
 	//When
