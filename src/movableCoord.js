@@ -383,6 +383,19 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			if (!this._isInterrupting() || !this._status.moveDistance) {
 				return;
 			}
+			
+			// Abort the animating post process, when "tap" occurs.
+			if (e.type === "tap") {
+				var pos = this._pos;
+				var param = {
+					depaPos: pos.concat(),
+					destPos: pos.concat(),
+					hammerEvent: e || null
+				};
+				this._status.moveDistance = null;
+				this.trigger("release", param);
+				return;
+			}
 			var direction = this._subOptions.direction;
 			var scale = this._subOptions.scale;
 			var vX =  Math.abs(e.velocityX);
