@@ -9,17 +9,17 @@ eg.module("component", [eg], function(ns) {
 	 */
 	ns.Component = ns.Class({
 		construct: function() {
-			// The reference count is not support yet.
+			// The reference count does not support yet.
 			// this.constructor.$count = (this.constructor.$count || 0) + 1;
 			this.eventHandler = {};
 		},
 		/**
-		 * The method set options.
-		 * @ko 옵션을 설정한다.
+		 * Get or set option.
+		 * @ko 옵션을 관리한다.
 		 * @method eg.Component#option
 		 * @param {String} key
 		 * @param {Object} value
-		 * @return {Boolean}
+		 * @return {Instance|Object}
 		 * @example
 			var Some = eg.Class.extend(eg.Component);
 			var some = new Some({
