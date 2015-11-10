@@ -981,6 +981,8 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 					panel.size * (next ? 1 : -1), 0
 				], duration);
 			}
+
+			return this;
 		},
 
 		/**
@@ -1002,9 +1004,10 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 		 * @ko 다음 패널로 이동한다.
 		 * @method eg.Flicking#next
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
+		 * @return {Object} instance of itself
 		 */
 		next: function (duration) {
-			this._movePanel(true, duration);
+			return this._movePanel(true, duration);
 		},
 
 		/**
@@ -1012,9 +1015,10 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 		 * @ko 이전 패널로 이동한다.
 		 * @method eg.Flicking#prev
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
+		 * @return {Object} instance of itself
 		 */
 		prev: function (duration) {
-			this._movePanel(false, duration);
+			return this._movePanel(false, duration);
 		},
 
 		/**
@@ -1023,6 +1027,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 		 * @method eg.Flicking#moveTo
 		 * @param {Number} no logical panel index
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
+		 * @return {Object} instance of itself
 		 */
 		moveTo: function (no, duration) {
 			var panel = this._conf.panel;
@@ -1039,7 +1044,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 				no === panel.no ||
 				panel.animating
 			) {
-				return;
+				return this;
 			}
 
 			duration = this._getNumValue(duration, options.duration);
@@ -1074,12 +1079,15 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 				panel.no = panel.index = no;
 				this._movePanelByPhase("setTo", [ panel.size * no, 0 ], duration);
 			}
+
+			return this;
 		},
 
 		/**
 		 * Update panel size according current viewport
 		 * @ko 패널 사이즈 정보를 갱신한다.
 		 * @method eg.Flicking#resize
+		 * @return {Object} instance of itself
 		 */
 		resize: function () {
 			var conf = this._conf;
@@ -1099,11 +1107,14 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 				this._applyPanelsPos();
 				this._adjustContainerCss("end");
 			}
+
+			return this;
 		},
 
 		/**
 		 * Restore panel in its right position
 		 * @ko 패널의 위치가 올바로 위치하지 않게 되는 경우, 제대로 위치하도록 보정한다.
+		 * @return {Object} instance of itself
 		 */
 		restore: function () {
 			var conf = this._conf;
@@ -1116,6 +1127,8 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 				this._setMovableCoord("setTo", [panel.size * panel.index, 0], true, 0);
 				this._adjustContainerCss("end");
 			}
+
+			return this;
 		}
 	});
 });

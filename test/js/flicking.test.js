@@ -1092,3 +1092,42 @@ test("Workaround for buggy link highlighting on android 2.x", function () {
 	// Then
 	ok(leftValue && parseInt(leftValue, 10) > 0, "Panel should be moved using left property instead of translate.");
 });
+
+test("Check public methods return", function (assert) {
+	var done = assert.async();
+	var inst = new eg.Flicking("#mflick1", { circular: true });
+	var instance = [];
+
+	// When
+	setTimeout(function() {
+		instance.push({ method: "next()", data: inst.next(0) });
+	}, 100);
+
+	// When
+	setTimeout(function() {
+		instance.push({ method: "prev()", data: inst.prev(0) });
+	}, 200);
+
+	// When
+	setTimeout(function() {
+		instance.push({ method: "moveTo()", data: inst.moveTo(1,0) });
+	}, 300);
+
+	// When
+	setTimeout(function() {
+		instance.push({ method: "resize()", data: inst.resize() });
+	}, 400);
+
+	// When
+	setTimeout(function() {
+		instance.push({ method: "restore()", data: inst.restore() });
+	}, 500);
+
+	setTimeout(function() {
+		instance.forEach(function(v,i) {
+			deepEqual(v.data, inst, v.method + " is returning instance it self?");
+		});
+		done();
+	}, 1200);
+
+});
