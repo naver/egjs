@@ -194,7 +194,7 @@ test("onPageshow : when bfCache miss and BF navigated, persist event must be tri
 	// Then
 	deepEqual(restoredState, clonedData);
  });
- 
+
 test("Test not throwing error for legacy browsers", function() {
 	// Given
 	this.fakeWindow.history = {};
@@ -211,7 +211,7 @@ test("Test for browsers which don't have JSON object", function() {
 	// Given
 	this.fakeWindow.JSON = undefined;
 	console.oldWarn = console.warn;
-	var callCount;
+	var callCount=0;
 	console.warn = function(msg){
 		callCount++;
 	}
