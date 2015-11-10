@@ -310,6 +310,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		 * @ko infiniteGrid의 현재상태를 설정한다.
 		 * @method eg.InfiniteGrid#setStatus
 		 * @param {Object} status Object
+		 * @return {Instance}
 		 */
 		setStatus: function(status) {
 			this.core.element.style.cssText = status.cssText;
@@ -317,6 +318,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			this.core.items = this.core.itemize(this.core.$element.children().toArray());
 			this.core.clone(this.core, status.core);
 			$.extend(this, status.data);
+			return this;
 		},
 		/**
 		 * Check if element is appending or prepending
@@ -357,6 +359,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		 * Rearrang layout
 		 * @ko 레이아웃을 재배치한다.
 		 * @method eg.InfiniteGrid#layout
+		 * @return {Instance}
 		 */
 		layout: function() {
 			this._isProcessing = true;
@@ -367,6 +370,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 				v.isAppend = true;
 			}
 			this.core.layout();
+			return this;
 		},
 		/**
 		 * Append elemensts
@@ -413,12 +417,15 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		 * Clear elements and data
 		 * @ko 엘리먼트와 데이터를 지운다.
 		 * @method eg.InfiniteGrid#clear
+		 * @return {Instance}
 		 */
 		clear: function() {
 			this.core.$element.empty();
 			this.core.items.length = 0;
 			this._reset();
 			this.layout();
+			return this;
+
 		},
 
 		_getTopItem: function() {
@@ -625,8 +632,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		/**
 		 * Remove empty space that is removed by append action.
 		 * @ko append에 의해 제거된 빈공간을 제거한다.
-		 * @return {Number} distance if empty space is removed, value is not zero. <ko>빈공간이 제거되면 0이 아닌 값을 반환</ko>
 		 * @method eg.InfiniteGrid#fit
+		 * @return {Number} distance if empty space is removed, value is not zero. <ko>빈공간이 제거되면 0이 아닌 값을 반환</ko>
 		 */
 		fit: function() {
 			var item = this._getTopItem();

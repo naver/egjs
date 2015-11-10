@@ -408,3 +408,16 @@ asyncTest("check a count of remove contents", function() {
 	});
 	this.inst.append(getContent("append",2000));
 });
+
+
+test("Check public methods return", function () {
+	// Given
+	// When
+	this.inst = new eg.InfiniteGrid("#grid");
+	var beforeStatus = this.inst.getStatus();
+
+	// Then
+	equal(this.inst.setStatus(beforeStatus), this.inst, "return instance");
+	equal(this.inst.layout(), this.inst, "return instance");
+	equal(this.inst.clear(), this.inst, "return instance");
+});

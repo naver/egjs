@@ -96,13 +96,14 @@ test("bind with inputType", function() {
 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
 
 	// When
-	this.inst.bind($el, {
+	var returnVal = this.inst.bind($el, {
 		direction : eg.DIRECTION_ALL,
 		inputType : null
 	});
 
 	// Then
 	var key = $el.data(eg.MovableCoord.KEY);
+	equal(returnVal, this.inst, "return instance" );
 	equal(before, undefined, "key data value is 'undefined'' before call bind method" );
 	equal(key, undefined, "key data value is 'undefined' after call bind method" );
 	equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "nothing" );
@@ -118,10 +119,11 @@ test("unbind", function() {
 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
 
 	// When
-	this.inst.unbind($el);
+	var returnVal = this.inst.unbind($el);
 
 	// Then
 	var key = $el.data(eg.MovableCoord.KEY);
+	equal(returnVal, this.inst, "return instance" );
 	notEqual(before, key, "key data value was changed after call 'unbind' method" );
 	equal(key, undefined, "key data value is 'undefined'' after call bind method" );
 	equal(beforeHammerCount-1, Object.keys(this.inst._hammers).length, "removed hammer instance after call bind method" );
@@ -251,22 +253,27 @@ asyncTest("setTo : check 'change' event", function() {
 });
 
 test("setBy", function() {
+
 	// Given
 	// When
-	this.inst.setBy(20, 20);
+	var resultVal = this.inst.setBy(20, 20);
 	// Then
+	equal(resultVal, this.inst, "return instance");
 	deepEqual(this.inst.get(), [20, 20], "set to position 20,20 relatively");
 	// When
-	this.inst.setBy(-10, -10);
+	resultVal = this.inst.setBy(-10, -10);
 	// Then
+	equal(resultVal, this.inst, "return instance");
 	deepEqual(this.inst.get(), [10, 10], "set to position -10,-10 relatively");
 	// When
-	this.inst.setBy(-1000, -1000);
+	resultVal = this.inst.setBy(-1000, -1000);
 	// Then
+	equal(resultVal, this.inst, "return instance");
 	deepEqual(this.inst.get(), [0, 0], "if position parameters was out of range, set to position min or max values.");
 	// When
-	this.inst.setBy(1000, 1000);
+	resultVal = this.inst.setBy(1000, 1000);
 	// Then
+	equal(resultVal, this.inst, "return instance");
 	deepEqual(this.inst.get(), [300, 400], "if position parameters was out of range, set to position min or max values.");
 });
 
@@ -551,8 +558,8 @@ asyncTest("slow movement test (almost no-velocity), using tap gesture", function
 			start();
 		},1000);
     	});
-});    	
-    	
+});
+
 asyncTest("slow movement test (no-velocity), release outside", function() {
 	//Given
 	var el = $("#area").get(0);
