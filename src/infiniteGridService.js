@@ -284,12 +284,10 @@ eg.module("infiniteGridService", [window.jQuery, eg, window, document], function
 		 */
 		destroy: function() {
 			if (this._infiniteGrid) {
+				this.deactivate();
 				this._infiniteGrid.destroy();
 				this._infiniteGrid = null;
 			}
-
-			this.deactivate();
-			this.off();
 		}
 	});
 });
