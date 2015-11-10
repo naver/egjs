@@ -981,6 +981,8 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 					panel.size * (next ? 1 : -1), 0
 				], duration);
 			}
+
+			return this;
 		},
 
 		/**
@@ -1004,7 +1006,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
 		 */
 		next: function (duration) {
-			this._movePanel(true, duration);
+			return this._movePanel(true, duration);
 		},
 
 		/**
@@ -1014,7 +1016,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
 		 */
 		prev: function (duration) {
-			this._movePanel(false, duration);
+			return this._movePanel(false, duration);
 		},
 
 		/**
@@ -1039,7 +1041,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 				no === panel.no ||
 				panel.animating
 			) {
-				return;
+				return this;
 			}
 
 			duration = this._getNumValue(duration, options.duration);
@@ -1074,6 +1076,8 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 				panel.no = panel.index = no;
 				this._movePanelByPhase("setTo", [ panel.size * no, 0 ], duration);
 			}
+
+			return this;
 		},
 
 		/**
@@ -1099,6 +1103,8 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 				this._applyPanelsPos();
 				this._adjustContainerCss("end");
 			}
+
+			return this;
 		},
 
 		/**
@@ -1116,6 +1122,8 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 				this._setMovableCoord("setTo", [panel.size * panel.index, 0], true, 0);
 				this._adjustContainerCss("end");
 			}
+
+			return this;
 		}
 	});
 });
