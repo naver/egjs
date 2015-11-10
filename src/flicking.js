@@ -1131,8 +1131,9 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 			return this;
 		}
 	});
-	var events = ["beforeFlickStart", "beforeRestore", "flick", "flickEnd", "restore"];
-	ns.Flicking.events = function(){
+	var events = ["beforeFlickStart", "beforeRestore",
+					"flick", "flickEnd", "restore"];
+	ns.Flicking.events = function() {
 		return events;
-	}
+	};
 });

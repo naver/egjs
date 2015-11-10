@@ -178,7 +178,7 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 	});
 
 	var events = ["change"];
-	ns.Visible.events = function(){
+	ns.Visible.events = function() {
 		return events;
-	}
+	};
 });

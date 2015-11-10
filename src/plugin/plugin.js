@@ -1,7 +1,7 @@
-eg.module("plugin", ["jQuery", eg, window], function($, ns, global) {
+eg.module("plugin", ["jQuery", eg], function($, ns) {
 
 	function capitalizeFirstLetter(str) {
-	    return str.charAt(0).toUpperCase() + str.slice(1);
+		return str.charAt(0).toUpperCase() + str.slice(1);
 	}
 	/**
 	* This method support plugin interface of jQuery. jQuery plugin object have to get events method that must returns events name array.
@@ -54,7 +54,7 @@ eg.module("plugin", ["jQuery", eg, window], function($, ns, global) {
 	*/
 
 	/* @example
-	// set custom event 
+	// set custom event
 	function noop(){
 		// do something.
 	}
@@ -67,83 +67,83 @@ eg.module("plugin", ["jQuery", eg, window], function($, ns, global) {
 		var events;
 		var beforeCustom;
 
-		if( obj ){
+		if (obj) {
 			ns[upperCaseName] = obj;
 		}
 
-		if(!ns[upperCaseName]){
-			throw new Error("Not found "+upperCaseName+" object in eg.");
+		// jscs:disable validateLineBreaks, maximumLineLength
+		if (!ns[upperCaseName]) {
+			throw new Error("Not found " + upperCaseName + " object in eg.");
 		}
 
-		if(!ns[upperCaseName].events){
-			throw new Error("Not found events function in eg."+upperCaseName+". If eg."+upperCaseName+" will make plugin that have to make events function.");
+		if (!ns[upperCaseName].events) {
+			throw new Error("Not found events function in eg." + upperCaseName + ". If eg." + upperCaseName + " will make plugin that have to make events function.");
 		}
 
-		if( $.fn[ name ] ){
-			throw new Error(upperCaseName+" has already registered. so eg."+upperCaseName+" can`t register for plugin.");
+		if ($.fn[name]) {
+			throw new Error(upperCaseName + " has already registered. so eg." + upperCaseName + " can`t register for plugin.");
 		}
+
+		// jscs:enable validateLineBreaks, maximumLineLength
 
 		events = ns[upperCaseName].events();
 
 		// Extend method.
-		$.fn[ name ] = function( options ) {
+		$.fn[name] = function(options) {
 			var ins;
 			var result;
-			if(typeof options === "string")	{
-				ins = this.data("eg-"+name);
-				result = ins[options].apply(ins, Array.prototype.slice.call(arguments,1));
+			if (typeof options === "string") {
+				ins = this.data("eg-" + name);
+				result = ins[options].apply(ins, Array.prototype.slice.call(arguments, 1));
 				return result === ins ? this : result;
 			}
 
-			if( options === undefined || $.isPlainObject( options )){
-				this.data("eg-"+name, new ns[upperCaseName](this, options||{} ));	
+			if (options === undefined || $.isPlainObject(options)) {
+				this.data("eg-" + name, new ns[upperCaseName](this, options || {}));
 			}
 			return this;
-		}
+		};
 
 		// Extend event.
-		for (var i=0, l = events.length; i < l; i++) {
-			if( (beforeCustom = $.event.special[events[i]]) ){
-				$.event.special[events[i]]["oldtrigger"] = beforeCustom.trigger;
-				$.event.special[events[i]]["oldadd"]  = beforeCustom.add;
-				$.event.special[events[i]]["oldremove"]  = beforeCustom.remove;
+		for (var i = 0, l = events.length; i < l; i++) {
+			/*jshint loopfunc: true */
+			if ((beforeCustom = $.event.special[events[i]])) {
+				$.event.special[events[i]].oldtrigger = beforeCustom.trigger;
+				$.event.special[events[i]].oldadd  = beforeCustom.add;
+				$.event.special[events[i]].oldremove  = beforeCustom.remove;
 			} else {
-				$.event.special[events[i]] = {};	
-			}
-			
-			$.event.special[events[i]].trigger = function(event, param){
-				var returnType = $.event.special[event.type].oldtrigger && $.event.special[event.type].oldtrigger.call(this,event, param);
-
-				if( name === event.namespace ){
-					$(this).data("eg-"+name).trigger(event.type, param);
-					returnType = false;
-				}
-				
-				return returnType;
+				$.event.special[events[i]] = {};
 			}
 
-			$.event.special[events[i]].add = function(event){
-				var returnType = $.event.special[event.type].oldadd && $.event.special[event.type].oldadd.call(this,event);
-				if( name === event.namespace ){
-					$(this).data("eg-"+name).on(event.type,event.handler);
+			$.event.special[events[i]].trigger = function(event, param) {
+				var returnType = $.event.special[event.type].oldtrigger &&
+									$.event.special[event.type].oldtrigger.call(this, event, param);
+				if (name === event.namespace) {
+					$(this).data("eg-" + name).trigger(event.type, param);
 					returnType = false;
 				}
 				return returnType;
-			}
+			};
 
-			$.event.special[events[i]].remove = function(event){
-				var returnType = $.event.special[event.type].oldremove && $.event.special[event.type].oldremove.call(this,event);
-				if( name === event.namespace ){
-					$(this).data("eg-"+name).off(event.type,event.handler);
+			$.event.special[events[i]].add = function(event) {
+				var returnType = $.event.special[event.type].oldadd &&
+									$.event.special[event.type].oldadd.call(this, event);
+				if (name === event.namespace) {
+					$(this).data("eg-" + name).on(event.type, event.handler);
 					returnType = false;
 				}
 				return returnType;
-			}
+			};
+
+			$.event.special[events[i]].remove = function(event) {
+				var returnType = $.event.special[event.type].oldremove &&
+									$.event.special[event.type].oldremove.call(this, event);
+				if (name === event.namespace) {
+					$(this).data("eg-" + name).off(event.type, event.handler);
+					returnType = false;
+				}
+				return returnType;
+			};
 		}
-		
-	}
+	};
 });
-
-eg.plugin("flicking");
-eg.plugin("visible");
-eg.plugin("infiniteGrid");

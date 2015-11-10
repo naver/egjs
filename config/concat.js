@@ -10,7 +10,7 @@ module.exports = {
 		}
 	},
 	build: {
-		src: ["src/module.js", "src/eg.js", "src/customEvent/*.js", "src/hook/*.js", "src/plugin/*.js", "src/class.js", "src/component.js", "src/visible.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js", "src/plugin/plugin.js"],
+		src: ["src/module.js", "src/eg.js", "src/customEvent/*.js", "src/hook/*.js", "src/plugin/persist.js", "src/class.js", "src/component.js", "src/visible.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js", "src/plugin/plugin.js", "src/plugin/apply.js"],
 		dest: "dist/<%=pkg.outputname%>.js"
 	}
 };
