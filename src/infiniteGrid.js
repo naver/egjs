@@ -705,4 +705,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			this.off();
 		}
 	});
+	var events = ["layoutComplete"];
+	ns.InfiniteGrid.events = function(){
+		return events;
+	}
 });

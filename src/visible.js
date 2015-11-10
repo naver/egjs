@@ -176,4 +176,9 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 			this._wrapper = this._timer = null;
 		}
 	});
+
+	var events = ["change"];
+	ns.Visible.events = function(){
+		return events;
+	}
 });
