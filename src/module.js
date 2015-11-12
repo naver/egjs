@@ -144,65 +144,7 @@
 	function capitalizeFirstLetter(str) {
 		return str.charAt(0).toUpperCase() + str.slice(1);
 	}
-	/**
-	* This method support plugin interface of jQuery. jQuery plugin object have to get events method that must returns events name array.
-	* @ko jQuery의 플러그인 인터페이스 지원. jQuery plugin 객체는 events 메서드를 가져야 한다. events메서드는 events이름들을 반환해야 한다.
-	* @name eg#plugin
-	* @event
-	* @param {Name} name plugin name <ko>플러그인 이름</ko>
-	* @param {Object} [obj="eg[name]"]  plugin Object <ko>플러그인 객체</ko>
-	*
-	* @support {"ie": "7+", "ch" : "latest", "ff" : "1.5+",  "sf" : "latest", "ios" : "7+", "an" : "2.2+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
-	*
-	* @example
-	eg.Sample = eg.Class.extend(eg.Component, {
-		"construct": function(ele,option){
-			this.options = option;
-			this.ele = ele;
-		},
-		"setNum": function( num ){
-			this.options.num = num;
-			return this;
-		},
-		"getNum": function( ){
-			return this.options.num;
-		}
-	});
-	eg.Sample.events = function(){
-		return ["some","thing"];
-	};
-	*/
 
-	/* @example
-	eg.plugin("sample");
-	// or
-	eg.plugin("sample", eg.Sample);
-	*/
-
-	/* @example
-	// create instance
-	$("#some").sample({
-		num: 1
-	});
-	*/
-
-	/* @example
-	// instance method call.
-	$("#some").sample("getNum"); // return 1
-
-	// instance method call with param.
-	$("#some").sample("setNum", 2); // return $("#some")
-	*/
-
-	/* @example
-	// set custom event
-	function noop(){
-		// do something.
-	}
-	$("#some").on("some.sample",noop);
-	$("#some").trigger("some.sample");
-	$("#some").off("some.sample",noop);
-	*/
 	function plugin(name) {
 		var upperCamelCase = capitalizeFirstLetter(name);
 		var events;
