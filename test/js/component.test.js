@@ -352,3 +352,16 @@ test("Option method should be support 4 features.",function(){
 		"bar": 4
 	});
 });
+
+module("instance method", {
+	setup : function(){
+		this.oClass = new TestClass();
+	}
+});
+
+test("should be return self instance.",function(){
+	//Given
+	//When
+	//Then
+	ok( this.oClass.instance(), this.oClass);
+});

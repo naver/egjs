@@ -1,4 +1,7 @@
 eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
+	var EVENTS = {
+		"change": "change"
+	};
 	/**
 	 * It check element is visible within the specific element or viewport, regardless of the scroll position
 	 * @ko scroll 위치와 상관없이 특정 엘리먼트나 viewport 안에 엘리먼트가 보이는지 확인한다.
@@ -165,7 +168,7 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 			 * @param {Array} visible The visible elements (the element type is `HTMLElement`) <ko>보여지게 된 엘리먼트들 </ko>
 			 * @param {Array} invisible The invisible elements (the element type is `HTMLElement`) <ko>안 보여지게 된 엘리먼트들 </ko>
 			 */
-			this.trigger("change", {
+			this.trigger(EVENTS.change, {
 				visible: visibles,
 				invisible: invisibles
 			});
@@ -177,8 +180,7 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 		}
 	});
 
-	var events = ["change"];
-	ns.Visible.events = function() {
-		return events;
+	ns.Visible._events = function() {
+		return EVENTS;
 	};
 });

@@ -206,6 +206,15 @@ eg.module("component", [eg], function(ns) {
 			}
 
 			return this;
+		},
+		/**
+		 * It method return self instance.
+		 * @ko 자신의 인스턴스를 반환한다.
+		 * @method eg.Component#instance
+		 * @return {Instance}
+		 */
+		instance: function() {
+			return this;
 		}
 	});
 });

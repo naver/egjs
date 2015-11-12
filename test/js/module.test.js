@@ -146,3 +146,173 @@ QUnit.test( "Check parameters ordinal numbers.", function( assert ) {
 
   });
 });
+
+module("plugin", {
+  setup : function(){
+    eg.module("sample",[eg],function(ns) {
+      ns.Sample = ns.Class.extend(ns.Component, {
+        "construct": function(ele,option){
+          this.options = option;
+          this.ele = ele;
+        },
+        "setNum": function( num ){
+          this.options.num = num;
+          return this;
+        },
+        "getNum": function( num ){
+          return this.options.num;
+        }
+      });
+      ns.Sample._events = function(){
+        return {
+          "some": "some",
+          "thing": "thing"
+        }
+      }
+    });
+  },
+  "teardown" : function(){
+    eg.Sample = undefined;
+    $.fn[ "sample" ] = undefined;
+    $.event.special["sample:some"] = undefined;
+    $.event.special["sample:thing"] = undefined;
+  }
+});
+
+test("Already registered name that should be throw Error.",function( assert ){
+  // Given
+  // When
+  assert.throws(
+    function() {
+      eg.module("sample",[eg],function(ns) {
+        ns.Sample = ns.Class.extend(ns.Component, {
+          "construct": function(ele,option){
+            this.options = option;
+            this.ele = ele;
+          },
+          "setNum": function( num ){
+            this.options.num = num;
+            return this;
+          },
+          "getNum": function( num ){
+            return this.options.num;
+          }
+        });
+        ns.Sample._events = function(){
+          return {
+            "some": "some",
+            "thing": "thing"
+          }
+        }
+      });
+    },
+    function( err ) {
+      // Then
+      return err.toString() === "Error: Sample has already registered. so eg.Sample can`t register for plugin.";
+      }
+  )
+  
+});
+
+
+test("none parameter.",function( assert ){
+  // Given
+  // When
+  $("#foo").sample();
+  // Then
+
+  ok($("#foo").data("eg-sample") instanceof eg.Sample);
+  equal($("#foo").data("eg-sample").ele[0], $("#foo")[0]);
+  
+});
+
+test("has options parameter.",function( assert ){
+  // Given
+  // When
+  $("#foo").sample({
+    "num": 1,
+    "bar" : "bar"
+  });
+
+  // Then
+  ok($("#foo").data("eg-sample") instanceof eg.Sample);
+  equal($("#foo").data("eg-sample").option("num"), 1);
+});
+
+test("call instance method",function( assert ){
+  // Given
+  $("#foo").sample({
+    "num": 1,
+    "bar" : "bar"
+  });
+  // When
+  // Then
+  equal($("#foo").sample("getNum"),1);
+});
+
+test("If component returned instance that The plugin returned jQuery instance.",function( assert ){
+  // Given
+  $("#foo").sample({
+    "num": 1,
+    "bar" : "bar"
+  });
+  // When
+  // Then
+  equal($("#foo").sample("setNum",2)[0],$("#foo")[0]);
+  equal($("#foo").sample("getNum"),2);
+});
+
+test("should be set special events",function( assert ){
+  // Given
+  $("#foo").sample({
+    "num": 1,
+    "bar" : "bar"
+  });
+  // When
+  // Then
+  ok(!!$.event.special["sample:some"]);
+  ok(!!$.event.special["sample:thing"]);
+});
+
+test("custom event trigger/on",function( assert ){
+  // Given
+  $("#foo").sample({
+    "num": 1,
+    "bar" : "bar"
+  });
+  var count = 0;
+  function noop(){
+    count++;
+  }
+  $("#foo").on("sample:some",noop);
+
+  // When
+  $("#foo").trigger("sample:some");
+
+  // Then
+  equal(count,1);
+
+});
+
+test("custom event off",function( assert ){
+  // Given
+  $("#foo").sample({
+    "num": 1,
+    "bar" : "bar"
+  });
+  var count = 0;
+  function noop(){
+    count++;
+  }
+  $("#foo").on("sample:some",noop);
+  $("#foo").trigger("sample:some");
+  equal(count,1);
+
+  // When
+  $("#foo").off("sample:some",noop);
+  $("#foo").trigger("sample:some");
+
+  // Then
+  equal(count,1); 
+  
+});
