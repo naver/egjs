@@ -1,9 +1,6 @@
 // jscs:disable maximumLineLength
 eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, doc) {
 	// jscs:enable maximumLineLength
-	/**
-	* @support {"ie": "9+", "ch" : "latest", "ff" : "1.5+",  "sf" : "latest", "ios" : "7+", "an" : "2.2+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
-	*/
 	var wp = global.performance;
 	var history = global.history;
 	var location = global.location;
@@ -129,7 +126,8 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	* Saves state and returns current state.
 	* @ko 인자로 넘긴 현재 상태정보를 저장한다.
 	* @method jQuery.persist
-    * @param {Object} state State object to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체</ko>
+	* @support {"ie": "9+", "ch" : "latest", "ff" : "1.5+",  "sf" : "latest", "ios" : "7+", "an" : "2.2+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
+	* @param {Object} state State object to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체</ko>
 	* @example
 	$("a").on("click",function(e){
 		e.preventdefault();
