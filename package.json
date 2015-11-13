@@ -1,6 +1,6 @@
 {
   "name": "egjs",
-  "version": "0.0.2-snapshot",
+  "version": "0.0.3-rc",
   "description": "Set of UI interactions, effects and utilities components library.",
   "outputname": "eg",
   "main": "dist/eg.js",
