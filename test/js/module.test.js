@@ -161,14 +161,14 @@ module("plugin", {
         },
         "getNum": function( num ){
           return this.options.num;
-        }
-      });
-      ns.Sample._events = function(){
-        return {
+        },
+        "_events" : function(){
+          return {
           "some": "some",
           "thing": "thing"
+          }
         }
-      }
+      });
     });
   },
   "teardown" : function(){
@@ -196,14 +196,14 @@ test("Already registered name that should be throw Error.",function( assert ){
           },
           "getNum": function( num ){
             return this.options.num;
+          },
+          "_events" : function(){
+            return {
+              "some": "some",
+              "thing": "thing"
+            }
           }
         });
-        ns.Sample._events = function(){
-          return {
-            "some": "some",
-            "thing": "thing"
-          }
-        }
       });
     },
     function( err ) {

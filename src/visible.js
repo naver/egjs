@@ -1,7 +1,4 @@
 eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
-	var EVENTS = {
-		"change": "change"
-	};
 	/**
 	 * It check element is visible within the specific element or viewport, regardless of the scroll position
 	 * @ko scroll 위치와 상관없이 특정 엘리먼트나 viewport 안에 엘리먼트가 보이는지 확인한다.
@@ -20,7 +17,13 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 	 *
 	 * @codepen {"id":"WbWzqq", "ko":"Visible 기본 예제", "en":"Visible basic example", "collectionId":"Ayrabj", "height" : 403}
 	 */
+	var EVENTS = {
+		"change": "change"
+	};
 	ns.Visible = ns.Class.extend(ns.Component, {
+		_events: function() {
+			return EVENTS;
+		},
 		construct: function(element, options) {
 			this.options = {
 				targetClass: "check_visible",

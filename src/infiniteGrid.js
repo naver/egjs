@@ -200,9 +200,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		}
 	});
 
-	var EVENTS = {
-		"layoutComplete": "layoutComplete"
-	};
 	/**
 	 * To build Grid layout UI
 	 * InfiniteGrid is composed of Outlayer. but this component supports recycle-dom.
@@ -256,8 +253,13 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		});
 	 	</script>
 	 */
-
+	var EVENTS = {
+		"layoutComplete": "layoutComplete"
+	};
 	ns.InfiniteGrid = ns.Class.extend(ns.Component, {
+		_events: function() {
+			return EVENTS;
+		},
 		construct: function(el, options) {
 			var opts = $.extend({
 				"isEqualSize": false,
@@ -709,7 +711,4 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			this.off();
 		}
 	});
-	ns.InfiniteGrid._events = function() {
-		return EVENTS;
-	};
 });

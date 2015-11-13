@@ -150,7 +150,7 @@
 		var events;
 		var componentMethodNames;
 
-		if (!(eg[upperCamelCase] && eg[upperCamelCase]._events)) {
+		if (!(eg[upperCamelCase] && eg[upperCamelCase].prototype._events)) {
 			return false;
 		}
 
@@ -182,7 +182,7 @@
 			add: "on",
 			remove: "off"
 		};
-		events = eg[upperCamelCase]._events();
+		events = eg[upperCamelCase].prototype._events();
 
 		for (var i in events) {
 			for (var j in componentMethodNames) {

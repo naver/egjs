@@ -1,13 +1,6 @@
 // jscs:disable validateLineBreaks, maximumLineLength
 eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], function ($, ns, MC, global, doc) {
 	// jscs:enable validateLineBreaks, maximumLineLength
-	var EVENTS = {
-		"beforeFlickStart": "beforeFlickStart",
-		"beforeRestore": "beforeRestore",
-		"flick": "flick",
-		"flickEnd": "flickEnd",
-		"restore": "restore"
-	};
 	/**
 	 * To build flickable UI
 	 * @group egjs
@@ -59,7 +52,17 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 	 	);
 	 	</script>
 	 */
+	var EVENTS = {
+		"beforeFlickStart": "beforeFlickStart",
+		"beforeRestore": "beforeRestore",
+		"flick": "flick",
+		"flickEnd": "flickEnd",
+		"restore": "restore"
+	};
 	ns.Flicking = ns.Class.extend(ns.Component, {
+		_events: function() {
+			return EVENTS;
+		},
 		/**
 		 * Constructor
 		 * @param {HTMLElement|String|jQuery} element - base element
@@ -1138,7 +1141,4 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 			return this;
 		}
 	});
-	ns.Flicking._events = function() {
-		return EVENTS;
-	};
 });
