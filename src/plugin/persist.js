@@ -2,23 +2,7 @@
 eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, doc) {
 	// jscs:enable maximumLineLength
 	/**
-	* Support persist event in jQuery
-	* @ko jQuery custom persist 이벤트 지원
-	* @name jQuery#persist
-	* @event
-	* @param {Event} e event <ko>이벤트 객체</ko>
-	* @param {Object} e.state state info to be restored <ko>복원되어야 하는 상태의 정보</ko>
-	*
 	* @support {"ie": "9+", "ch" : "latest", "ff" : "1.5+",  "sf" : "latest", "ios" : "7+", "an" : "2.2+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
-	*
-	* @example
-	$(window).on("persist",function(e){
-		// restore state
-		if(e.state.flickingPage)
-			oSlideFlicking.moveTo(e.state.flickingPage);
-		if(e.state.scrollTop)
-			document.scrollTo(e.state.scrollTop);
-	});
 	*/
 	var wp = global.performance;
 	var history = global.history;
