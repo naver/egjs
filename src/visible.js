@@ -17,7 +17,13 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 	 *
 	 * @codepen {"id":"WbWzqq", "ko":"Visible 기본 예제", "en":"Visible basic example", "collectionId":"Ayrabj", "height" : 403}
 	 */
+	var EVENTS = {
+		"change": "change"
+	};
 	ns.Visible = ns.Class.extend(ns.Component, {
+		_events: function() {
+			return EVENTS;
+		},
 		construct: function(element, options) {
 			this.options = {
 				targetClass: "check_visible",
@@ -165,7 +171,7 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 			 * @param {Array} visible The visible elements (the element type is `HTMLElement`) <ko>보여지게 된 엘리먼트들 </ko>
 			 * @param {Array} invisible The invisible elements (the element type is `HTMLElement`) <ko>안 보여지게 된 엘리먼트들 </ko>
 			 */
-			this.trigger("change", {
+			this.trigger(EVENTS.change, {
 				visible: visibles,
 				invisible: invisibles
 			});
@@ -176,4 +182,8 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 			this._wrapper = this._timer = null;
 		}
 	});
+
+	ns.Visible._events = function() {
+		return EVENTS;
+	};
 });

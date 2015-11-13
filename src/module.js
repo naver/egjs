@@ -1,5 +1,6 @@
-(function(global, ns) {
-	global[ns] = {};
+(function(global, ns, jQueryName) {
+	var eg = global[ns] = {};
+	var $ = global[jQueryName];
 
 	var dependency = {
 		"jQuery": {
@@ -140,17 +141,82 @@
 		return [paramList, message];
 	}
 
+	function capitalizeFirstLetter(str) {
+		return str.charAt(0).toUpperCase() + str.slice(1);
+	}
+
+	function plugin(name) {
+		var upperCamelCase = capitalizeFirstLetter(name);
+		var events;
+		var componentMethodNames;
+
+		if (!(eg[upperCamelCase] && eg[upperCamelCase].prototype._events)) {
+			return false;
+		}
+
+		// jscs:disable validateLineBreaks, maximumLineLength
+		if ($.fn[name]) {
+			throw new Error(upperCamelCase + " has already registered. so " + ns + "." + upperCamelCase + " can`t register for plugin.");
+		}
+
+		// jscs:enable validateLineBreaks, maximumLineLength
+
+		// Extend method.
+		$.fn[name] = function(options) {
+			var ins;
+			var result;
+			if (typeof options === "string") {
+				ins = this.data(ns + "-" + name);
+				result = ins[options].apply(ins, Array.prototype.slice.call(arguments, 1));
+				return result === ins ? this : result;
+			}
+
+			if (options === undefined || $.isPlainObject(options)) {
+				this.data(ns + "-" + name, new eg[upperCamelCase](this, options || {}));
+			}
+			return this;
+		};
+
+		componentMethodNames = {
+			trigger: "trigger",
+			add: "on",
+			remove: "off"
+		};
+		events = eg[upperCamelCase].prototype._events();
+
+		for (var i in events) {
+			for (var j in componentMethodNames) {
+				$.event.special[name + ":" + events[i]] = {};
+
+				// jscs:disable validateLineBreaks, maximumLineLength
+				/*jshint loopfunc: true */
+				$.event.special[name + ":" + events[i]][j] = (function(componentMethodName) {
+					return function(event, param) {
+						$(this).data(ns + "-" + name)[componentMethodName](
+							event.type,
+							componentMethodName === "trigger" ? param : event.handler
+						);
+						return false;
+					};
+				})(componentMethodNames[j]);
+
+				// jscs:enable validateLineBreaks, maximumLineLength
+			}
+		}
+	}
+
 	/**
 	 * Regist module.
 	 * @private
 	 */
-	global[ns].module = function(name, di, fp) {
+	eg.module = function(name, di, fp) {
 		var result = checkDependency(name, di);
 
 		if (result[1].length) {
 			throw new Error(result[1].join("\n\r"));
 		} else {
 			fp.apply(global, result[0]);
+			plugin(name);
 		}
 	};
-})(window, "eg");
+})(window, "eg", "jQuery");
