@@ -1,4 +1,4 @@
-(function(global, ns, jQueryName) {
+(function(jQueryName, ns, global) {
 	var eg = global[ns] = {};
 	var $ = global[jQueryName];
 
@@ -219,4 +219,4 @@
 			plugin(name);
 		}
 	};
-})(window, "eg", "jQuery");
+})("eg", "jQuery", window);
