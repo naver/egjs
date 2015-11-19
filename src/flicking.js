@@ -387,8 +387,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 					var coords = this._getDataByDirection([
 						SUPPORT_TRANSFORM ?
 							(100 * i) + "%" :
-							(this._conf.panel.size * i) + "px"
-						, 0]);
+							(this._conf.panel.size * i) + "px", 0]);
 
 					this._setMoveStyle($(v), coords);
 				};
