@@ -52,6 +52,8 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 	 	);
 	 	</script>
 	 */
+
+	// define custom events name
 	var EVENTS = {
 		"beforeFlickStart": "beforeFlickStart",
 		"beforeRestore": "beforeRestore",
@@ -59,6 +61,20 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 		"flickEnd": "flickEnd",
 		"restore": "restore"
 	};
+
+	// check for css transform support
+	var SUPPORT_TRANSFORM = doc.documentElement.style;
+	SUPPORT_TRANSFORM = "transform" in SUPPORT_TRANSFORM ||
+		"webkitTransform" in SUPPORT_TRANSFORM;
+
+	// check for will-change support
+	var SUPPORT_WILLCHANGE = global.CSS && global.CSS.supports &&
+		global.CSS.supports("will-change", "transform");
+
+	// check for Android 2.x
+	var IS_ANDROID2 = ns.agent().os;
+	IS_ANDROID2 = IS_ANDROID2.name === "android" && /^2\./.test(IS_ANDROID2.version);
+
 	ns.Flicking = ns.Class.extend(ns.Component, {
 		_events: function() {
 			return EVENTS;
@@ -86,10 +102,6 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 			}, options);
 
 			var padding = this.options.previewPadding;
-			var supportHint = global.CSS && global.CSS.supports &&
-					global.CSS.supports("will-change", "transform");
-
-			var os = ns.agent().os;
 
 			if (typeof padding === "number") {
 				padding = this.options.previewPadding = [ padding, padding ];
@@ -117,13 +129,12 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 					direction: null	// touch direction
 				},
 				customEvent: {},		// for custom event return value
-				useLayerHack: this.options.hwAccelerable && !supportHint,
+				useLayerHack: this.options.hwAccelerable && !SUPPORT_WILLCHANGE,
 				dirData: [],
 				indexToMove: 0,
 				triggerFlickEvent: true,
 
 				// For buggy link highlighting on Android 2.x
-				isAndroid2: os.name === "android" && /^2\./.test(os.version),
 				$dummyAnchor: null
 			};
 
@@ -140,7 +151,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 			this._applyPanelsCss();
 			this._arrangePanels();
 
-			this.options.hwAccelerable && supportHint && this._setHint();
+			this.options.hwAccelerable && SUPPORT_WILLCHANGE && this._setHint();
 			this._adjustContainerCss("end");
 		},
 
@@ -333,9 +344,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 		 * If browser doesn't support transform, then use left/top properties instead.
 		 */
 		_setMoveStyle: (function () {
-			var elStyle = doc.documentElement.style;
-
-			return (elStyle.transform || elStyle.webkitTransform) !== undefined ?
+			return SUPPORT_TRANSFORM ?
 				function ($element, coords) {
 					$element.css("transform",
 						ns.translate(coords[0], coords[1], this._conf.useLayerHack)
@@ -354,7 +363,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 			var conf = this._conf;
 			var dummyAnchorClassName = "__dummy_anchor";
 
-			if (conf.isAndroid2) {
+			if (IS_ANDROID2) {
 				conf.$dummyAnchor = $("." + dummyAnchorClassName);
 
 				!conf.$dummyAnchor.length && this.$wrapper.append(
@@ -375,7 +384,12 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 				};
 			} else {
 				this._applyPanelsCss = function (i, v) {
-					var coords = this._getDataByDirection([(100 * i) + "%", 0]);
+					var coords = this._getDataByDirection([
+						SUPPORT_TRANSFORM ?
+							(100 * i) + "%" :
+							(this._conf.panel.size * i) + "px"
+						, 0]);
+
 					this._setMoveStyle($(v), coords);
 				};
 			}
@@ -398,7 +412,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 			var container = this.$container;
 			var value;
 
-			if (conf.isAndroid2) {
+			if (IS_ANDROID2) {
 				if (!coords) {
 					coords = [-panel.size * panel.index, 0];
 				}
@@ -682,7 +696,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 					this._arrangePanels(true, conf.indexToMove);
 				}
 
-				!conf.isAndroid2 && this._setTranslate([-panel.size * panel.index, 0]);
+				!IS_ANDROID2 && this._setTranslate([-panel.size * panel.index, 0]);
 				conf.touch.distance = conf.indexToMove = 0;
 
 				/**
@@ -767,6 +781,12 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 		 * @param {Array} coords coordinate x,y value
 		 */
 		_setTranslate: function (coords) {
+			var options = this.options;
+
+			if (!SUPPORT_TRANSFORM && !options.horizontal) {
+				coords[0] += options.previewPadding[0];
+			}
+
 			coords = this._getCoordsValue(coords);
 			this._setMoveStyle(this.$container, [ coords.x, coords.y ]);
 		},
@@ -1113,7 +1133,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 			this._mcInst.options.max = maxCoords;
 			this._setMovableCoord("setTo", [width * panel.index, 0], true, 0);
 
-			if (conf.isAndroid2) {
+			if (IS_ANDROID2) {
 				this._applyPanelsPos();
 				this._adjustContainerCss("end");
 			}

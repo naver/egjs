@@ -1056,6 +1056,7 @@ test("Custom events #6 - Events fired on move API call when duration is greater 
 });
 
 test("Workaround for buggy link highlighting on android 2.x", function () {
+	// Given
 	eg.hook.agent = function () {
 		return {
 			// GalaxyS:2.3.4
@@ -1075,9 +1076,10 @@ test("Workaround for buggy link highlighting on android 2.x", function () {
 		};
 	};
 
+	eg.invoke("flicking",[null, eg]);
+
 	// When
 	var inst = this.inst = new eg.Flicking("#mflick1"),
-		re = /translate\(0(px)?,\s?0(px)?\)/,
 		$dummyAnchor = $(inst.$wrapper).find("> a:last-child")[0],
 		leftValue;
 
@@ -1130,4 +1132,27 @@ test("Check public methods return", function (assert) {
 		done();
 	}, 1200);
 
+});
+
+test("Check panel move method, depending existence of css transform property", function () {
+	// when
+	var inst = new eg.Flicking("#mflick1", { circular: true });
+	inst.next(0);
+
+	// Then
+	ok($getTransformValue(inst.$container).indexOf("translate") >= 0, "When support transform, should use translate to move.");
+
+	// When
+	var fakeDoc = {
+		documentElement : {
+			style: {}
+		}
+	};
+
+	eg.invoke("flicking",[null, null, null, null, fakeDoc]);
+	var inst2 = new eg.Flicking("#mflick2", { circular: true });
+	inst2.next(0);
+
+	// Then
+	ok(inst2.$container[0].style.left.length > 0, "When doesn't support transform, should use left/top to move.");
 });
