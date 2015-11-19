@@ -1,5 +1,7 @@
 // jscs:disable validateLineBreaks, maximumLineLength
 eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], function ($, ns, MC, global, doc) {
+	"use strict";
+
 	// jscs:enable validateLineBreaks, maximumLineLength
 	/**
 	 * To build flickable UI

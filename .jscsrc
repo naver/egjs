@@ -26,6 +26,7 @@
 	"requireDotNotation": { "allExcept": [ "snake_case" ] },
 	// "requireMultipleVarDecl" : "onevar",
 	"requireOperatorBeforeLineBreak" : true,
+	"requirePaddingNewLinesAfterUseStrict" : true,
 	"requirePaddingNewLinesBeforeLineComments" : {"allExcept":"firstAfterCurly"},
 	"requireParenthesesAroundIIFE" : true,
 	"requireSemicolons" : true,

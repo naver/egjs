@@ -1,5 +1,7 @@
 // jscs:disable maximumLineLength
 eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
+	"use strict";
+
 	var SUPPORT_TOUCH = ("ontouchstart" in window);
 
 	// jscs:enable maximumLineLength

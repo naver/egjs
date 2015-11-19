@@ -1,5 +1,7 @@
 // jscs:disable maximumLineLength
 eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
+	"use strict";
+
 	// jscs:eable maximumLineLength
 	/**
 	* Support scrollEnd event in jQuery

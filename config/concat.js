@@ -4,6 +4,7 @@ module.exports = {
 	options: {
 		banner: "<%=banner%>\"use strict\";\n",
 		process: function(src) {
+			src = src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, "$1"); // remove "use strict";
 			src = src.replace(/#__VERSION__#/g, jsonfile.readFileSync("package.json").version); // change version;
 			return src;
 		}
