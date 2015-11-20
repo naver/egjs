@@ -387,8 +387,7 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 					var coords = this._getDataByDirection([
 						SUPPORT_TRANSFORM ?
 							(100 * i) + "%" :
-							(this._conf.panel.size * i) + "px"
-						, 0]);
+							(this._conf.panel.size * i) + "px", 0]);
 
 					this._setMoveStyle($(v), coords);
 				};
@@ -605,7 +604,9 @@ eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], functio
 					panel.index + this._conf.indexToMove
 				);
 
-			if (!this._isMovable()) {
+			if (this._isMovable()) {
+				conf.customEvent.restore = false;
+			} else {
 				/**
 				 * Before panel restores it's last position
 				 * @ko 플리킹 임계치에 도달하지 못하고 사용자의 액션이 끝났을 경우, 원래 패널로 복원되기 전에 발생하는 이벤트
