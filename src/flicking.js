@@ -1,5 +1,5 @@
 // jscs:disable validateLineBreaks, maximumLineLength
-eg.module("flicking", ["jQuery", eg, eg.MovableCoord, window, document], function ($, ns, MC, global, doc) {
+eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], function ($, ns, global, doc, MC) {
 	"use strict";
 
 	// jscs:enable validateLineBreaks, maximumLineLength

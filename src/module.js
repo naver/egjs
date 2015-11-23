@@ -1,4 +1,4 @@
-(function(global, ns, jQueryName) {
+(function(jQueryName, ns, global) {
 	"use strict";
 
 	var eg = global[ns] = {};
@@ -221,4 +221,4 @@
 			plugin(name);
 		}
 	};
-})(window, "eg", "jQuery");
+})("jQuery", "eg", window);
