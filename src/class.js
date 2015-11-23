@@ -1,5 +1,6 @@
 eg.module("class", [eg], function(ns) {
 	"use strict";
+
 	/**
 	 *
 	 * Class

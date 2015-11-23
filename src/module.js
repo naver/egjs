@@ -1,4 +1,6 @@
 (function(global, ns, jQueryName) {
+	"use strict";
+
 	var eg = global[ns] = {};
 	var $ = global[jQueryName];
 

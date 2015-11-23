@@ -1,5 +1,7 @@
 // jscs:disable maximumLineLength
 eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, global, Outlayer) {
+	"use strict";
+
 	// jscs:enable validateLineBreaks, maximumLineLength
 	if (!Outlayer) {
 		ns.InfiniteGrid = ns.Class({});
