@@ -211,7 +211,7 @@
 		/* jshint ignore:start */
 		if (global.console || global.console.warn) {
 			warn = function(msg) {
-				console.warn(msg);
+				global.console.warn(msg);
 			};
 		} else {
 			warn = function(msg) {
