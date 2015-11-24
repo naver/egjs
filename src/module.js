@@ -20,9 +20,9 @@
 	var templateMessage = [
 		"[egjs] The {{name}} library must be loaded before {{componentName}}.",
 		"[egjs] For AMD environment (like RequireJS), \"{{name}}\" must be declared, which is required by {{componentName}}.",
-        "[egjs] The {{index}} argument of {{componentName}} is missing.\n\rDownload {{name}} from [{{url}}].",
-		"[egjs] The {{name}} parameter of {{componentName}} is not valid.\n\rPlease check and try again.",
-        "[egjs] The {{index}} argument of {{componentName}} is undefined.\n\rPlease check and try again."
+        "[egjs] The {{index}} argument of {{componentName}} is missing.\r\nDownload {{name}} from [{{url}}].",
+		"[egjs] The {{name}} parameter of {{componentName}} is not valid.\r\nPlease check and try again.",
+        "[egjs] The {{index}} argument of {{componentName}} is undefined.\r\nPlease check and try again."
 	];
 
 	// jscs:enable maximumLineLength
@@ -207,6 +207,20 @@
 		}
 	}
 
+	var warn = function(msg) {
+		/* jshint ignore:start */
+		if (global.console || global.console.warn) {
+			warn = function(msg) {
+				console.warn(msg);
+			};
+		} else {
+			warn = function(msg) {
+			};
+		}
+		/* jshint ignore:end */
+		warn(msg);
+	};
+
 	/**
 	 * Regist module.
 	 * @private
@@ -215,7 +229,7 @@
 		var result = checkDependency(name, di);
 
 		if (result[1].length) {
-			window.console||console.warn||console.warn(result[1].join("\n\r"));
+			warn(result[1].join("\r\n"));
 		} else {
 			fp.apply(global, result[0]);
 			plugin(name);
