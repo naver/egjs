@@ -1,4 +1,6 @@
-(function(global, ns, jQueryName) {
+(function(jQueryName, ns, global) {
+	"use strict";
+
 	var eg = global[ns] = {};
 	var $ = global[jQueryName];
 
@@ -213,10 +215,10 @@
 		var result = checkDependency(name, di);
 
 		if (result[1].length) {
-			throw new Error(result[1].join("\n\r"));
+			window.console||console.warn||console.warn(result[1].join("\n\r"));
 		} else {
 			fp.apply(global, result[0]);
 			plugin(name);
 		}
 	};
-})(window, "eg", "jQuery");
+})("jQuery", "eg", window);
