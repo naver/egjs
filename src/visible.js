@@ -150,10 +150,12 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 			area.left -= expandSize;
 			area.bottom += expandSize;
 			area.right += expandSize;
-
 			for (var i = this._targets.length - 1, target, targetArea, after, before;
 					target = this._targets[i] ; i--) {
 				targetArea = target.getBoundingClientRect();
+				if (targetArea.width === 0 && targetArea.height === 0) {
+					continue;
+				}
 				if (this._reviseElements(target, i)) {
 					before = !!target.__VISIBLE__;
 					target.__VISIBLE__ = after = !(
