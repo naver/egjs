@@ -1,9 +1,10 @@
 {
   "name": "egjs",
-  "version": "0.0.3-rc",
+  "version": "0.0.3-snapshot",
   "description": "Set of UI interactions, effects and utilities components library.",
   "outputname": "eg",
   "main": "dist/eg.js",
+  "homepage": "http://egjs.navercorp.com",
   "scripts": {
     "test": "grunt",
     "fakeserver": "node test/fakeserver/app.js"
