@@ -1202,7 +1202,7 @@ test("Check panel move method, depending existence of css transform property", f
 		}
 	};
 
-	eg.invoke("flicking",[null, null, null, null, fakeDoc]);
+	eg.invoke("flicking",[null, null, null, fakeDoc]);
 	var inst2 = new eg.Flicking("#mflick2", { circular: true });
 	inst2.next(0);
 
