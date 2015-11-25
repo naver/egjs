@@ -1,7 +1,20 @@
+
 QUnit.module( "module", {
   beforeEach: function() {
     window.require = undefined;
     window.jQuery = undefined;
+    this.beforeWarn = window.console.warn;
+    this.msg = "";
+    window.console.warn = function(msg){
+      this.msg = msg;
+    }
+    window.console.getWarn = function(){
+      return this.msg;
+    }
+  },
+  afterEach: function() {
+    window.console.warn = this.beforeWarn;
+    delete window.console.getWarn;
   }
 });
 
@@ -9,12 +22,11 @@ QUnit.test( "When a parameter is undefined.", function( assert ) {
   //Given
   var param = [window.something];
   //When
+  eg.module("test",param,function($) {});
   //Then
-  assert.throws(
-    function() {
-      throw eg.module("test",param,function($) {});
-    },
-    new Error("[egjs] The 1st argument of test is undefined.\n\rPlease check and try again.")
+  assert.equal(
+    console.getWarn(),
+    "[egjs] The 1st argument of test is undefined.\r\nPlease check and try again."
   );
 });
 
@@ -22,12 +34,11 @@ QUnit.test( "The dependency library was not registered.", function( assert ) {
   //Given
   var param = ["notRegist"];
   //When
+  eg.module("test",param,function($) {});
   //Then
-  assert.throws(
-    function() {
-      throw eg.module("test",param,function($) {});
-    },
-    new Error("[egjs] The notRegist parameter of test is not valid.\n\rPlease check and try again.")
+  assert.equal(
+    console.getWarn(),
+    "[egjs] The notRegist parameter of test is not valid.\r\nPlease check and try again."
   );
 });
 
@@ -35,13 +46,13 @@ QUnit.test( "The dependency library was registered, but it does not use AMD", fu
   //Given
   var param = ["jQuery"];
   //When
+  eg.module("notUseAmd",param,function($) {});
   //Then
-  assert.throws(
-    function() {
-      throw eg.module("notUseAmd",param,function($) {});
-    },
-    new Error("[egjs] The 1st argument of notUseAmd is missing.\n\rDownload jQuery from [http://jquery.com/].")
+  assert.equal(
+    console.getWarn(),
+    "[egjs] The 1st argument of notUseAmd is missing.\r\nDownload jQuery from [http://jquery.com/]."
   );
+
 });
 
 QUnit.test( "The dependency library was registered, but not defined in AMD.", function( assert ) {
@@ -54,12 +65,11 @@ QUnit.test( "The dependency library was registered, but not defined in AMD.", fu
     return false;
   }
   //When
+  eg.module("notRegisteAmd",param,function($) {});
   //Then
-  assert.throws(
-    function() {
-      throw eg.module("notRegisteAmd",param,function($) {});
-    },
-    new Error("[egjs] For AMD environment (like RequireJS), \"jQuery\" must be declared, which is required by notRegisteAmd."  )
+  assert.equal(
+    console.getWarn(),
+    "[egjs] For AMD environment (like RequireJS), \"jQuery\" must be declared, which is required by notRegisteAmd."
   );
 });
 
@@ -76,12 +86,11 @@ QUnit.test( "The dependency library was registered and defined in AMD, but not l
     return false;
   }
   //When
+  eg.module("notLoadAmd",param,function($) {});
   //Then
-  assert.throws(
-    function() {
-      throw eg.module("notLoadAmd",param,function($) {});
-    },
-    new Error("[egjs] The jQuery library must be loaded before notLoadAmd."  )
+  assert.equal(
+    console.getWarn(),
+    "[egjs] The jQuery library must be loaded before notLoadAmd."
   );
 });
 
@@ -129,19 +138,19 @@ QUnit.test( "When a parameter is string and not loaded as AMD.", function( asser
 QUnit.test( "Check parameters ordinal numbers.", function( assert ) {
   //Given
   var param = [ 1, 1, 1, 1, 1 ];
-  //When
-
+  
   [ "1st", "2nd", "3rd", "4th", "5th" ].forEach(function(v,i) {
-    //Then
-    assert.throws(
-        function() {
-          var arr = param.concat();
-          arr[i] = window.something;
 
-          throw eg.module("test",arr,function($) {});
-        },
-        new Error("[egjs] The "+ v +" argument of test is undefined.\n\rPlease check and try again."),
-        "Ordinal number for "+ i +" is "+ v +"?"
+    //When
+    var arr = param.concat();
+    arr[i] = window.something;
+    eg.module("test",arr,function($) {});
+    //Then
+
+    assert.equal(
+      console.getWarn(),
+      "[egjs] The "+ v +" argument of test is undefined.\r\nPlease check and try again.",
+      "Ordinal number for "+ i +" is "+ v +"?"
     );
 
   });
