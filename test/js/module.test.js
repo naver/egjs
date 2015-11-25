@@ -138,7 +138,6 @@ QUnit.test( "When a parameter is string and not loaded as AMD.", function( asser
 QUnit.test( "Check parameters ordinal numbers.", function( assert ) {
   //Given
   var param = [ 1, 1, 1, 1, 1 ];
-  
   [ "1st", "2nd", "3rd", "4th", "5th" ].forEach(function(v,i) {
 
     //When
@@ -220,7 +219,7 @@ test("Already registered name that should be throw Error.",function( assert ){
       return err.toString() === "Error: Sample has already registered. so eg.Sample can`t register for plugin.";
       }
   )
-  
+
 });
 
 
@@ -232,7 +231,7 @@ test("none parameter.",function( assert ){
 
   ok($("#foo").data("eg-sample") instanceof eg.Sample);
   equal($("#foo").data("eg-sample").ele[0], $("#foo")[0]);
-  
+
 });
 
 test("has options parameter.",function( assert ){
@@ -322,6 +321,6 @@ test("custom event off",function( assert ){
   $("#foo").trigger("sample:some");
 
   // Then
-  equal(count,1); 
-  
+  equal(count,1);
+
 });

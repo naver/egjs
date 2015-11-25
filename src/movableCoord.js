@@ -384,45 +384,37 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 		// panend event handler
 		_panend: function(e) {
 			var pos = this._pos;
-			var releaseOutside;
 
 			if (!this._isInterrupting() || !this._status.moveDistance) {
 				return;
 			}
 
-			releaseOutside = this._isOutside(
-				pos,
-				this.options.min,
-				this.options.max
-			);
-
 			// Abort the animating post process,
-			// when "tap" occurs or velocity is zero at inside border.
-			if (e.type === "tap" || (e.velocity === 0 && !releaseOutside)) {
-				this._status.moveDistance = null;
+			// when "tap" occurs
+			if (e.type === "tap") {
+				this._setInterrupt(false);
 				this.trigger("release", {
 					depaPos: pos.concat(),
 					destPos: pos.concat(),
 					hammerEvent: e || null
 				});
-				return;
+			} else {
+				var direction = this._subOptions.direction;
+				var scale = this._subOptions.scale;
+				var vX =  Math.abs(e.velocityX);
+				var vY = Math.abs(e.velocityY);
+
+				// console.log(e.velocityX, e.velocityY, e.deltaX, e.deltaY);
+				!(direction & ns.DIRECTION_HORIZONTAL) && (vX = 0);
+				!(direction & ns.DIRECTION_VERTICAL) && (vY = 0);
+
+				this._animateBy(
+					this._getNextOffsetPos([
+						vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
+						vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
+					]),
+				this._animationEnd, false, null, e);
 			}
-
-			var direction = this._subOptions.direction;
-			var scale = this._subOptions.scale;
-			var vX =  Math.abs(e.velocityX);
-			var vY = Math.abs(e.velocityY);
-
-			// console.log(e.velocityX, e.velocityY, e.deltaX, e.deltaY);
-			!(direction & ns.DIRECTION_HORIZONTAL) && (vX = 0);
-			!(direction & ns.DIRECTION_VERTICAL) && (vY = 0);
-
-			this._animateBy(
-				this._getNextOffsetPos([
-					vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
-					vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
-				]),
-			this._animationEnd, false, null, e);
 			this._status.moveDistance = null;
 		},
 

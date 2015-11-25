@@ -1055,7 +1055,61 @@ test("Custom events #6 - Events fired on move API call when duration is greater 
 	}, 1000);
 });
 
+test("Custom events #7 - Check for continuous action: 1)restore, 2)flick ", function(assert) {
+	var done = assert.async();
+
+	// Given
+	var el = $("#mflick1").get(0),
+		eventFired = [],
+		handler = function(e) {
+			var type = e.eventType;
+
+			if(eventFired.indexOf(type) == -1) {
+				!e.holding && eventFired.push(type);
+			}
+		};
+
+	this.inst = new eg.Flicking(el).on({
+		beforeFlickStart: handler,
+		flick : handler,
+		flickEnd : handler,
+		beforeRestore : handler,
+		restore : handler
+	});
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [0, 0],
+		deltaX: -30,
+		deltaY: 0,
+		duration: 500,
+		easing: "linear"
+	}, function() {
+		// Then
+		setTimeout(function() {
+			deepEqual(["beforeRestore", "flick", "restore"], eventFired, "Custom events for restoring are fired in correct order");
+			eventFired = [];
+
+			// When
+			Simulator.gestures.pan(el, {
+				pos: [0, 0],
+				deltaX: -70,
+				deltaY: 0,
+				duration: 500,
+				easing: "linear"
+			}, function() {
+				// Then
+				setTimeout(function() {
+					deepEqual(["beforeFlickStart", "flick", "flickEnd"], eventFired, "Custom events for normal moves are fired in correct order");
+					done();
+				},1000);
+			});
+		},1000);
+	});
+});
+
 test("Workaround for buggy link highlighting on android 2.x", function () {
+	// Given
 	eg.hook.agent = function () {
 		return {
 			// GalaxyS:2.3.4
@@ -1075,9 +1129,10 @@ test("Workaround for buggy link highlighting on android 2.x", function () {
 		};
 	};
 
+	eg.invoke("flicking",[null, eg]);
+
 	// When
 	var inst = this.inst = new eg.Flicking("#mflick1"),
-		re = /translate\(0(px)?,\s?0(px)?\)/,
 		$dummyAnchor = $(inst.$wrapper).find("> a:last-child")[0],
 		leftValue;
 
@@ -1130,4 +1185,27 @@ test("Check public methods return", function (assert) {
 		done();
 	}, 1200);
 
+});
+
+test("Check panel move method, depending existence of css transform property", function () {
+	// when
+	var inst = new eg.Flicking("#mflick1", { circular: true });
+	inst.next(0);
+
+	// Then
+	ok($getTransformValue(inst.$container).indexOf("translate") >= 0, "When support transform, should use translate to move.");
+
+	// When
+	var fakeDoc = {
+		documentElement : {
+			style: {}
+		}
+	};
+
+	eg.invoke("flicking",[null, null, null, null, fakeDoc]);
+	var inst2 = new eg.Flicking("#mflick2", { circular: true });
+	inst2.next(0);
+
+	// Then
+	ok(inst2.$container[0].style.left.length > 0, "When doesn't support transform, should use left/top to move.");
 });

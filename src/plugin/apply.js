@@ -1,5 +1,4 @@
 /**
- * @namespace jQuery
  * @group jQuery Extension
  */
 /**

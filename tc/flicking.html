@@ -290,7 +290,7 @@ var elLog1 = $("#log1"), elLog2 = $('#log2'), i = 1;
 function methodLog(el, v) {
 	var arr = [];
 
-	if(typeof v == "object") {
+	if(v instanceof jQuery) {
 		v.each(function(i) { arr.push($(this).find("p").html()); });
 	} else {
 		arr = [ v ];
