@@ -209,7 +209,7 @@
 
 	var warn = function(msg) {
 		/* jshint ignore:start */
-		if (global.console || global.console.warn) {
+		if (global.console && global.console.warn) {
 			warn = function(msg) {
 				global.console.warn(msg);
 			};
