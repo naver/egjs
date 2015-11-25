@@ -1,4 +1,6 @@
 eg.module("eg", ["jQuery", eg, window], function($, ns, global) {
+	"use strict";
+
 	var raf = global.requestAnimationFrame || global.webkitRequestAnimationFrame ||
 				global.mozRequestAnimationFrame || global.msRequestAnimationFrame;
 	var caf = global.cancelAnimationFrame || global.webkitCancelAnimationFrame ||

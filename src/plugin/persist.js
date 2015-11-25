@@ -1,5 +1,7 @@
 // jscs:disable maximumLineLength
 eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, doc) {
+	"use strict";
+
 	// jscs:enable maximumLineLength
 	var wp = global.performance;
 	var history = global.history;

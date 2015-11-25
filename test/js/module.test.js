@@ -138,7 +138,6 @@ QUnit.test( "When a parameter is string and not loaded as AMD.", function( asser
 QUnit.test( "Check parameters ordinal numbers.", function( assert ) {
   //Given
   var param = [ 1, 1, 1, 1, 1 ];
-
   [ "1st", "2nd", "3rd", "4th", "5th" ].forEach(function(v,i) {
 
     //When

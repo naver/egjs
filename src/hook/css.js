@@ -1,4 +1,6 @@
 eg.module("css", ["jQuery", document], function($, doc) {
+	"use strict";
+
 	/**
 	 * Apply css prefix cssHooks
 	 * @ko css prefix cssHooks 적용
