@@ -90,7 +90,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 		 * @method eg.MovableCoord#bind
 		 * @param {HTMLElement|String|jQuery} element  A target element. <ko>movableCoord을 사용하기 위한 엘리먼트</ko>
 		 * @param {Object} options
-		 * @param {Number} [options.direction=eg.DIRECTION_ALL] The controllable directions. <ko>움직일수 있는 방향</ko>
+		 * @param {Number} [options.direction=eg.MovableCoord.DIRECTION_ALL] The controllable directions. <ko>움직일수 있는 방향</ko>
 		 * @param {Array} options.scale The moving scale. <ko>이동 배율</ko>
 		 * @param {Number} [options.scale.0=1] x-scale <ko>x축 배율</ko>
 		 * @param {Number} [options.scale.1=1] y-scale <ko>y축 배율</ko>
@@ -102,9 +102,9 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 		 */
 		bind: function(el, options) {
 			var $el = $(el);
-			var keyValue = $el.data(ns.MovableCoord.KEY);
+			var keyValue = $el.data(ns.MovableCoord._KEY);
 			var subOptions = {
-				direction: ns.DIRECTION_ALL,
+				direction: ns.MovableCoord.DIRECTION_ALL,
 				scale: [ 1, 1 ],
 				thresholdAngle: 45,
 				interruptable: true,
@@ -128,7 +128,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 					subOptions,
 					inputClass
 				);
-				$el.data(ns.MovableCoord.KEY, keyValue);
+				$el.data(ns.MovableCoord._KEY, keyValue);
 			}
 			return this;
 		},
@@ -201,11 +201,11 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 		 */
 		unbind: function(el) {
 			var $el = $(el);
-			var key = $el.data(ns.MovableCoord.KEY);
+			var key = $el.data(ns.MovableCoord._KEY);
 			if (key) {
 				this._hammers[key].destroy();
 				delete this._hammers[key];
-				$el.data(ns.MovableCoord.KEY, null);
+				$el.data(ns.MovableCoord._KEY, null);
 			}
 			return this;
 		},
@@ -322,16 +322,16 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			}
 
 			// not support offset properties in Hammerjs - end
-			if (direction === ns.DIRECTION_ALL ||
-				(direction & ns.DIRECTION_HORIZONTAL &&
-				userDirection & ns.DIRECTION_HORIZONTAL)
+			if (direction === ns.MovableCoord.DIRECTION_ALL ||
+				(direction & ns.MovableCoord.DIRECTION_HORIZONTAL &&
+				userDirection & ns.MovableCoord.DIRECTION_HORIZONTAL)
 			) {
 				this._status.moveDistance[0] += (e.offsetX * scale[0]);
 				prevent = true;
 			}
-			if (direction === ns.DIRECTION_ALL ||
-				(direction & ns.DIRECTION_VERTICAL &&
-				userDirection & ns.DIRECTION_VERTICAL)
+			if (direction === ns.MovableCoord.DIRECTION_ALL ||
+				(direction & ns.MovableCoord.DIRECTION_VERTICAL &&
+				userDirection & ns.MovableCoord.DIRECTION_VERTICAL)
 			) {
 				this._status.moveDistance[1] += (e.offsetY * scale[1]);
 				prevent = true;
@@ -405,8 +405,8 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 				var vY = Math.abs(e.velocityY);
 
 				// console.log(e.velocityX, e.velocityY, e.deltaX, e.deltaY);
-				!(direction & ns.DIRECTION_HORIZONTAL) && (vX = 0);
-				!(direction & ns.DIRECTION_VERTICAL) && (vY = 0);
+				!(direction & ns.MovableCoord.DIRECTION_HORIZONTAL) && (vX = 0);
+				!(direction & ns.MovableCoord.DIRECTION_VERTICAL) && (vY = 0);
 
 				this._animateBy(
 					this._getNextOffsetPos([
@@ -427,11 +427,11 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 		_getDirection: function(angle) {
 			var thresholdAngle = this._subOptions.thresholdAngle;
 			if (thresholdAngle < 0 || thresholdAngle > 90) {
-				return ns.DIRECTION_NONE;
+				return ns.MovableCoord.DIRECTION_NONE;
 			}
 			angle = Math.abs(angle);
 			return angle > thresholdAngle && angle < 180 - thresholdAngle ?
-					ns.DIRECTION_VERTICAL : ns.DIRECTION_HORIZONTAL;
+					ns.MovableCoord.DIRECTION_VERTICAL : ns.MovableCoord.DIRECTION_HORIZONTAL;
 		},
 
 		_animationEnd: function() {
@@ -830,5 +830,59 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			}
 		}
 	});
-	ns.MovableCoord.KEY = "__MOVABLECOORD__";
+	ns.MovableCoord._KEY = "__MOVABLECOORD__";
+	/**
+	 * @name eg.MovableCoord.DIRECTION_NONE
+	 * @constant
+	 * @type {Number}
+	 */
+	ns.MovableCoord.DIRECTION_NONE = 1;
+	/**
+	 * @name eg.MovableCoord.DIRECTION_LEFT
+	 * @constant
+	 * @type {Number}
+	*/
+	ns.MovableCoord.DIRECTION_LEFT = 2;
+	/**
+	 * @name eg.MovableCoord.DIRECTION_RIGHT
+	 * @constant
+	 * @type {Number}
+	*/
+	ns.MovableCoord.DIRECTION_RIGHT = 4;
+	/**
+	 * @name eg.MovableCoord.DIRECTION_UP
+	 * @constant
+	 * @type {Number}
+	  */
+	ns.MovableCoord.DIRECTION_UP = 8;
+	/**
+	 * @name eg.MovableCoord.DIRECTION_DOWN
+	 * @constant
+	 * @type {Number}
+	*/
+	ns.MovableCoord.DIRECTION_DOWN = 16;
+	/**
+	 * @name eg.MovableCoord.DIRECTION_HORIZONTAL
+	 * @constant
+	 * @type {Number}
+	*/
+	ns.MovableCoord.DIRECTION_HORIZONTAL = 2 | 4;
+	/**
+	 * @name eg.MovableCoord.DIRECTION_VERTICAL
+	 * @constant
+	 * @type {Number}
+	*/
+	ns.MovableCoord.DIRECTION_VERTICAL = 8 | 16;
+
+	// jscs:disable validateLineBreaks, maximumLineLength
+
+	/**
+	 * @name eg.MovableCoord.DIRECTION_ALL
+	 * @constant
+	 * @type {Number}
+	*/
+	ns.MovableCoord.DIRECTION_ALL = ns.MovableCoord.DIRECTION_HORIZONTAL | ns.MovableCoord.DIRECTION_VERTICAL;
+
+	// jscs:enable validateLineBreaks, maximumLineLength
+
 });

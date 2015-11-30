@@ -74,16 +74,16 @@ module("movableCoord bind/unbind Test", {
 test("bind", function() {
 	// Given
 	var $el = jQuery("#area");
-	var before = $el.data(eg.MovableCoord.KEY);
+	var before = $el.data(eg.MovableCoord._KEY);
 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
 
 	// When
 	this.inst.bind($el, {
-		direction : eg.DIRECTION_ALL
+		direction : eg.MovableCoord.DIRECTION_ALL
 	});
 
 	// Then
-	var key = $el.data(eg.MovableCoord.KEY);
+	var key = $el.data(eg.MovableCoord._KEY);
 	equal(before, undefined, "key data value is 'undefined'' before call bind method" );
 	notEqual(key, undefined, "key data value is something after call bind method" );
 	equal(beforeHammerCount+1, Object.keys(this.inst._hammers).length, "added hammer instance after call bind method" );
@@ -92,17 +92,17 @@ test("bind", function() {
 test("bind with inputType", function() {
 	// Given
 	var $el = jQuery("#area");
-	var before = $el.data(eg.MovableCoord.KEY);
+	var before = $el.data(eg.MovableCoord._KEY);
 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
 
 	// When
 	var returnVal = this.inst.bind($el, {
-		direction : eg.DIRECTION_ALL,
+		direction : eg.MovableCoord.DIRECTION_ALL,
 		inputType : null
 	});
 
 	// Then
-	var key = $el.data(eg.MovableCoord.KEY);
+	var key = $el.data(eg.MovableCoord._KEY);
 	equal(returnVal, this.inst, "return instance" );
 	equal(before, undefined, "key data value is 'undefined'' before call bind method" );
 	equal(key, undefined, "key data value is 'undefined' after call bind method" );
@@ -113,16 +113,16 @@ test("unbind", function() {
 	// Given
 	var $el = jQuery("#area");
 	this.inst.bind($el, {
-		direction : eg.DIRECTION_ALL
+		direction : eg.MovableCoord.DIRECTION_ALL
 	});
-	var before = $el.data(eg.MovableCoord.KEY);
+	var before = $el.data(eg.MovableCoord._KEY);
 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
 
 	// When
 	var returnVal = this.inst.unbind($el);
 
 	// Then
-	var key = $el.data(eg.MovableCoord.KEY);
+	var key = $el.data(eg.MovableCoord._KEY);
 	equal(returnVal, this.inst, "return instance" );
 	notEqual(before, key, "key data value was changed after call 'unbind' method" );
 	equal(key, undefined, "key data value is 'undefined'' after call bind method" );
@@ -133,17 +133,17 @@ test("unbind with inputType", function() {
 	// Given
 	var $el = jQuery("#area");
 	this.inst.bind($el, {
-		direction : eg.DIRECTION_ALL,
+		direction : eg.MovableCoord.DIRECTION_ALL,
 		inputType : []
 	});
-	var before = $el.data(eg.MovableCoord.KEY);
+	var before = $el.data(eg.MovableCoord._KEY);
 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
 
 	// When
 	this.inst.unbind($el);
 
 	// Then
-	var key = $el.data(eg.MovableCoord.KEY);
+	var key = $el.data(eg.MovableCoord._KEY);
 	equal(before, undefined, "key data value is 'undefined'' after call 'unbind' method" );
 	equal(key, undefined, "key data value is 'undefined'' after call bind method" );
 	equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "nothing" );
@@ -153,21 +153,21 @@ test("one element, double bind", function() {
 	// Given
 	var $el = jQuery("#area");
 	this.inst.bind($el, {
-		direction : eg.DIRECTION_ALL
+		direction : eg.MovableCoord.DIRECTION_ALL
 	});
 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
-	var before = $el.data(eg.MovableCoord.KEY);
+	var before = $el.data(eg.MovableCoord._KEY);
 	var beforeHammerInstance = this.inst._hammers[before];
 
 	// When
 	this.inst.bind($el, {
-		direction : eg.DIRECTION_HORIZONTAL
+		direction : eg.MovableCoord.DIRECTION_HORIZONTAL
 	});
 
 	// Then
-	var key = $el.data(eg.MovableCoord.KEY);
+	var key = $el.data(eg.MovableCoord._KEY);
 	equal(before, key, "key data value is same" );
-	equal(this.inst._hammers[key].get("pan").options.direction, eg.DIRECTION_HORIZONTAL, "options was changed" );
+	equal(this.inst._hammers[key].get("pan").options.direction, eg.MovableCoord.DIRECTION_HORIZONTAL, "options was changed" );
 	deepEqual(beforeHammerInstance, this.inst._hammers[key], "recycle hammer instance" );
 	equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "hammer instance count is same" );
 });
@@ -998,27 +998,27 @@ test("check user's direction", function() {
 	this.inst._subOptions.thresholdAngle = 45;
 
 	// Then
-	equal(this.inst._getDirection(0), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal")
-	equal(this.inst._getDirection(20), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal")
-	equal(this.inst._getDirection(45), eg.DIRECTION_HORIZONTAL, "check if a directgion is horizontal");
-	equal(this.inst._getDirection(100), eg.DIRECTION_VERTICAL, "check if a direction is vertical");
-	equal(this.inst._getDirection(134), eg.DIRECTION_VERTICAL, "check if a direction is vertical");
-	equal(this.inst._getDirection(135), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
-	equal(this.inst._getDirection(136), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
-	equal(this.inst._getDirection(180), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	equal(this.inst._getDirection(0), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal")
+	equal(this.inst._getDirection(20), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal")
+	equal(this.inst._getDirection(45), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a directgion is horizontal");
+	equal(this.inst._getDirection(100), eg.MovableCoord.DIRECTION_VERTICAL, "check if a direction is vertical");
+	equal(this.inst._getDirection(134), eg.MovableCoord.DIRECTION_VERTICAL, "check if a direction is vertical");
+	equal(this.inst._getDirection(135), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	equal(this.inst._getDirection(136), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	equal(this.inst._getDirection(180), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
 
 	// When
 	this.inst._subOptions.thresholdAngle = 20;
 
 	// Then
-	equal(this.inst._getDirection(0), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal")
-	equal(this.inst._getDirection(10), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
-	equal(this.inst._getDirection(20), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
-	equal(this.inst._getDirection(30), eg.DIRECTION_VERTICAL, "check if a direction is vertical");
-	equal(this.inst._getDirection(50), eg.DIRECTION_VERTICAL, "check if a direction is vertical");
-	equal(this.inst._getDirection(160), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
-	equal(this.inst._getDirection(161), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
-	equal(this.inst._getDirection(180), eg.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	equal(this.inst._getDirection(0), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal")
+	equal(this.inst._getDirection(10), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	equal(this.inst._getDirection(20), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	equal(this.inst._getDirection(30), eg.MovableCoord.DIRECTION_VERTICAL, "check if a direction is vertical");
+	equal(this.inst._getDirection(50), eg.MovableCoord.DIRECTION_VERTICAL, "check if a direction is vertical");
+	equal(this.inst._getDirection(160), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	equal(this.inst._getDirection(161), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	equal(this.inst._getDirection(180), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
 });
 
 
@@ -1035,7 +1035,7 @@ asyncTest("movement direction test (DIRECTION_ALL)", function() {
 		}
 	});
 	this.inst.bind(el, {
-		direction : eg.DIRECTION_ALL
+		direction : eg.MovableCoord.DIRECTION_ALL
 	});
 
 	// When
@@ -1064,7 +1064,7 @@ asyncTest("movement direction test (DIRECTION_HORIZONTAL)", function() {
 		}
 	});
 	this.inst.bind(el, {
-		direction : eg.DIRECTION_HORIZONTAL
+		direction : eg.MovableCoord.DIRECTION_HORIZONTAL
 	});
 
 	// When
@@ -1093,7 +1093,7 @@ asyncTest("movement direction test (DIRECTION_VERTICAL)", function() {
 		}
 	});
 	this.inst.bind(el, {
-		direction : eg.DIRECTION_VERTICAL
+		direction : eg.MovableCoord.DIRECTION_VERTICAL
 	});
 
 	// When
