@@ -158,7 +158,7 @@
 
 		// jscs:disable validateLineBreaks, maximumLineLength
 		if ($.fn[name]) {
-			throw new Error(upperCamelCase + " has already registered. so " + ns + "." + upperCamelCase + " can`t register for plugin.");
+			throw new Error("The name '" + upperCamelCase + "' has already been used and registered as plugin. Try with different one.");
 		}
 
 		// jscs:enable validateLineBreaks, maximumLineLength

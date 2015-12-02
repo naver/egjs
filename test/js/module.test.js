@@ -216,7 +216,7 @@ test("Already registered name that should be throw Error.",function( assert ){
     },
     function( err ) {
       // Then
-      return err.toString() === "Error: Sample has already registered. so eg.Sample can`t register for plugin.";
+      return err.toString() === "Error: The name 'Sample' has already been used and registered as plugin. Try with different one.";
       }
   )
 
