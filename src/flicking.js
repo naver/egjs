@@ -142,7 +142,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 
 			$([["LEFT", "RIGHT"], ["DOWN", "UP"]][+!this.options.horizontal]).each(
 				$.proxy(function (i, v) {
-					this._conf.dirData.push(ns.MovableCoord["DIRECTION_" + v]);
+					this._conf.dirData.push(MC["DIRECTION_" + v]);
 				}, this));
 
 			!ns._hasClickBug() && (this._setPointerEvents = function () {});
@@ -219,7 +219,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				deceleration: options.deceleration
 			}).bind(this.$wrapper, {
 				scale: this._getDataByDirection([-1, 0]),
-				direction: ns.MovableCoord["DIRECTION_" +
+				direction: MC["DIRECTION_" +
 					(horizontal ? "HORIZONTAL" : "VERTICAL")],
 				interruptable: false,
 				inputType: options.inputType
