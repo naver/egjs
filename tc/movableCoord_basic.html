@@ -71,16 +71,16 @@ var $dot = $("#dot"),
   });
 
 inst.bind("#area", {
-  direction : eg.DIRECTION_ALL,
+  direction : eg.MovableCoord.DIRECTION_ALL,
   scale : [ 0.5, 1],
   maximumSpeed : 50
 }).
 bind("#hmove", {
-  direction : eg.DIRECTION_HORIZONTAL,
+  direction : eg.MovableCoord.DIRECTION_HORIZONTAL,
   maximumSpeed : 50
 }).
 bind("#vmove", {
-  direction : eg.DIRECTION_VERTICAL,
+  direction : eg.MovableCoord.DIRECTION_VERTICAL,
   maximumSpeed : 50
 });
 

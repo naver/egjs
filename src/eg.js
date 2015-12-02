@@ -502,55 +502,6 @@ return defaultVal;
 		caf(key);
 	};
 
-	/**
-	 * @name eg.DIRECTION_NONE
-	 * @constant
-		 * @type {Number}
-	   */
-	ns.DIRECTION_NONE = 1;
-	/**
-	 * @name eg.DIRECTION_LEFT
-	 * @constant
-		 * @type {Number}
-	   */
-	ns.DIRECTION_LEFT = 2;
-	/**
-	 * @name eg.DIRECTION_RIGHT
-	 * @constant
-		 * @type {Number}
-	   */
-	ns.DIRECTION_RIGHT = 4;
-	/**
-	 * @name eg.DIRECTION_UP
-	 * @constant
-		 * @type {Number}
-	   */
-	ns.DIRECTION_UP = 8;
-	/**
-	 * @name eg.DIRECTION_DOWN
-	 * @constant
-		 * @type {Number}
-	   */
-	ns.DIRECTION_DOWN = 16;
-	/**
-	 * @name eg.DIRECTION_HORIZONTAL
-	 * @constant
-		 * @type {Number}
-	   */
-	ns.DIRECTION_HORIZONTAL = ns.DIRECTION_LEFT | ns.DIRECTION_RIGHT;
-	/**
-	 * @name eg.DIRECTION_VERTICAL
-	 * @constant
-		 * @type {Number}
-	   */
-	ns.DIRECTION_VERTICAL = ns.DIRECTION_UP | ns.DIRECTION_DOWN;
-	/**
-	 * @name eg.DIRECTION_ALL
-	 * @constant
-		 * @type {Number}
-	   */
-	ns.DIRECTION_ALL = ns.DIRECTION_HORIZONTAL | ns.DIRECTION_VERTICAL;
-
 	$.extend($.easing, {
 		easeOutCubic: function(p) {
 			return 1 - Math.pow(1 - p, 3);
