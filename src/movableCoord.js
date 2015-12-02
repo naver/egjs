@@ -56,7 +56,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 	 *
 	 * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
 	 */
-	ns.MovableCoord = ns.Class.extend(ns.Component, {
+	var MC = ns.MovableCoord = ns.Class.extend(ns.Component, {
 		construct: function(options) {
 			this.options = {
 				min: [0, 0],
@@ -102,9 +102,9 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 		 */
 		bind: function(el, options) {
 			var $el = $(el);
-			var keyValue = $el.data(ns.MovableCoord._KEY);
+			var keyValue = $el.data(MC._KEY);
 			var subOptions = {
-				direction: ns.MovableCoord.DIRECTION_ALL,
+				direction: MC.DIRECTION_ALL,
 				scale: [ 1, 1 ],
 				thresholdAngle: 45,
 				interruptable: true,
@@ -128,7 +128,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 					subOptions,
 					inputClass
 				);
-				$el.data(ns.MovableCoord._KEY, keyValue);
+				$el.data(MC._KEY, keyValue);
 			}
 			return this;
 		},
@@ -201,11 +201,11 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 		 */
 		unbind: function(el) {
 			var $el = $(el);
-			var key = $el.data(ns.MovableCoord._KEY);
+			var key = $el.data(MC._KEY);
 			if (key) {
 				this._hammers[key].destroy();
 				delete this._hammers[key];
-				$el.data(ns.MovableCoord._KEY, null);
+				$el.data(MC._KEY, null);
 			}
 			return this;
 		},
@@ -322,16 +322,16 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			}
 
 			// not support offset properties in Hammerjs - end
-			if (direction === ns.MovableCoord.DIRECTION_ALL ||
-				(direction & ns.MovableCoord.DIRECTION_HORIZONTAL &&
-				userDirection & ns.MovableCoord.DIRECTION_HORIZONTAL)
+			if (direction === MC.DIRECTION_ALL ||
+				(direction & MC.DIRECTION_HORIZONTAL &&
+				userDirection & MC.DIRECTION_HORIZONTAL)
 			) {
 				this._status.moveDistance[0] += (e.offsetX * scale[0]);
 				prevent = true;
 			}
-			if (direction === ns.MovableCoord.DIRECTION_ALL ||
-				(direction & ns.MovableCoord.DIRECTION_VERTICAL &&
-				userDirection & ns.MovableCoord.DIRECTION_VERTICAL)
+			if (direction === MC.DIRECTION_ALL ||
+				(direction & MC.DIRECTION_VERTICAL &&
+				userDirection & MC.DIRECTION_VERTICAL)
 			) {
 				this._status.moveDistance[1] += (e.offsetY * scale[1]);
 				prevent = true;
@@ -405,8 +405,8 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 				var vY = Math.abs(e.velocityY);
 
 				// console.log(e.velocityX, e.velocityY, e.deltaX, e.deltaY);
-				!(direction & ns.MovableCoord.DIRECTION_HORIZONTAL) && (vX = 0);
-				!(direction & ns.MovableCoord.DIRECTION_VERTICAL) && (vY = 0);
+				!(direction & MC.DIRECTION_HORIZONTAL) && (vX = 0);
+				!(direction & MC.DIRECTION_VERTICAL) && (vY = 0);
 
 				this._animateBy(
 					this._getNextOffsetPos([
@@ -427,11 +427,11 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 		_getDirection: function(angle) {
 			var thresholdAngle = this._subOptions.thresholdAngle;
 			if (thresholdAngle < 0 || thresholdAngle > 90) {
-				return ns.MovableCoord.DIRECTION_NONE;
+				return MC.DIRECTION_NONE;
 			}
 			angle = Math.abs(angle);
 			return angle > thresholdAngle && angle < 180 - thresholdAngle ?
-					ns.MovableCoord.DIRECTION_VERTICAL : ns.MovableCoord.DIRECTION_HORIZONTAL;
+					MC.DIRECTION_VERTICAL : MC.DIRECTION_HORIZONTAL;
 		},
 
 		_animationEnd: function() {
@@ -830,59 +830,54 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			}
 		}
 	});
-	ns.MovableCoord._KEY = "__MOVABLECOORD__";
+	MC._KEY = "__MOVABLECOORD__";
 	/**
 	 * @name eg.MovableCoord.DIRECTION_NONE
 	 * @constant
 	 * @type {Number}
 	 */
-	ns.MovableCoord.DIRECTION_NONE = 1;
+	MC.DIRECTION_NONE = 1;
 	/**
 	 * @name eg.MovableCoord.DIRECTION_LEFT
 	 * @constant
 	 * @type {Number}
 	*/
-	ns.MovableCoord.DIRECTION_LEFT = 2;
+	MC.DIRECTION_LEFT = 2;
 	/**
 	 * @name eg.MovableCoord.DIRECTION_RIGHT
 	 * @constant
 	 * @type {Number}
 	*/
-	ns.MovableCoord.DIRECTION_RIGHT = 4;
+	MC.DIRECTION_RIGHT = 4;
 	/**
 	 * @name eg.MovableCoord.DIRECTION_UP
 	 * @constant
 	 * @type {Number}
 	  */
-	ns.MovableCoord.DIRECTION_UP = 8;
+	MC.DIRECTION_UP = 8;
 	/**
 	 * @name eg.MovableCoord.DIRECTION_DOWN
 	 * @constant
 	 * @type {Number}
 	*/
-	ns.MovableCoord.DIRECTION_DOWN = 16;
+	MC.DIRECTION_DOWN = 16;
 	/**
 	 * @name eg.MovableCoord.DIRECTION_HORIZONTAL
 	 * @constant
 	 * @type {Number}
 	*/
-	ns.MovableCoord.DIRECTION_HORIZONTAL = 2 | 4;
+	MC.DIRECTION_HORIZONTAL = 2 | 4;
 	/**
 	 * @name eg.MovableCoord.DIRECTION_VERTICAL
 	 * @constant
 	 * @type {Number}
 	*/
-	ns.MovableCoord.DIRECTION_VERTICAL = 8 | 16;
-
-	// jscs:disable validateLineBreaks, maximumLineLength
+	MC.DIRECTION_VERTICAL = 8 | 16;
 
 	/**
 	 * @name eg.MovableCoord.DIRECTION_ALL
 	 * @constant
 	 * @type {Number}
 	*/
-	ns.MovableCoord.DIRECTION_ALL = ns.MovableCoord.DIRECTION_HORIZONTAL | ns.MovableCoord.DIRECTION_VERTICAL;
-
-	// jscs:enable validateLineBreaks, maximumLineLength
-
+	MC.DIRECTION_ALL = MC.DIRECTION_HORIZONTAL | MC.DIRECTION_VERTICAL;
 });
