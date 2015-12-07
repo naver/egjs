@@ -8,21 +8,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		return;
 	}
 
-	// for IE -- start
-	var hasEventListener = !!global.addEventListener;
-	var eventPrefix = hasEventListener ? "" : "on";
-	var bindMethod = hasEventListener ? "addEventListener" : "attachEvent";
-	var unbindMethod = hasEventListener ? "removeEventListener" : "detachEvent";
-	function bindImage(ele, callback) {
-		ele[bindMethod](eventPrefix + "load", callback, true);
-		ele[bindMethod](eventPrefix + "error", callback, true);
-	}
-	function unbindImage(ele, callback) {
-		ele[unbindMethod](eventPrefix + "load", callback, true);
-		ele[unbindMethod](eventPrefix + "error", callback, true);
-	}
-
-	// for IE -- end
 	function clone(target, source, what) {
 		var s;
 		$.each(what, function(i, v) {
@@ -675,29 +660,17 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		_waitImageLoaded: function(items, needCheck) {
 			var core = this.core;
 			var checkCount = needCheck.length;
-			var onCheck;
-
-			if (hasEventListener) {
-				onCheck = function() {
+			var onCheck = function(e) {
 					checkCount--;
-					if (checkCount <= 0) {
-						unbindImage(core.element, onCheck);
-						core.layoutItems(items, true);
-					}
+					$(e.target).off("load").off("error");
+					checkCount <= 0 && core.layoutItems(items, true);
 				};
-				bindImage(this.core.element, onCheck);
-			} else {
-				onCheck = function(e) {
-					checkCount--;
-					unbindImage(e.srcElement, onCheck);
-					if (checkCount <= 0) {
-						core.layoutItems(items, true);
-					}
-				};
-				$.each(needCheck, function(k, v) {
-					bindImage(v, onCheck);
+			$.each(needCheck, function(k, v) {
+				$(v).on({
+					"load": onCheck,
+					"error": onCheck
 				});
-			}
+			});
 		},
 		/**
 		 * Release resources and off custom events
