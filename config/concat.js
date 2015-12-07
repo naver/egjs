@@ -4,7 +4,7 @@ var version = jsonfile.readFileSync("package.json").version;
 
 module.exports = {
 	options: {
-		banner: "<%=banner%>\"use strict\";\n",
+		banner: "<%=banner.common %>\"use strict\";\n",
 		process: function(src) {
 			// remove "use strict";
 			// change version;

@@ -1,16 +1,24 @@
-module.exports = ["/**",
-"* <%= pkg.name %>",
-"* @version <%= pkg.version %>",
-"* @SHA-1 <%= gitinfo.shortSHA %>" +
-"<%= /(?!^master$)(^.*$)/.test(gitinfo.branchName) " +
-"	&& ' ('+ RegExp.$1 +')' || '' %>",
-"*",
-"* <%= pkg.author %>; <%= pkg.name %> JavaScript library",
-"* <%= pkg.homepage %>",
-"*",
-"* Released under the <%= pkg.licenses[0].type %> license",
-"* <%= pkg.licenses[0].url %>",
-"*",
-"* For custom build use egjs-cli",
-"* <%= pkg.customdownload %>",
-"*/\n"].join("\n");
+module.exports = {
+	common : ["/**",
+		"* <%= pkg.name %>",
+		"* @version <%= pkg.version %>",
+		"* @SHA-1 <%= gitinfo.shortSHA %>" +
+		"<%= /(?!^master$)(^.*$)/.test(gitinfo.branchName) " +
+		"	&& ' ('+ RegExp.$1 +')' || '' %>",
+		"*",
+		"* <%= pkg.author %>; <%= pkg.name %> JavaScript library",
+		"* <%= pkg.homepage %>",
+		"*",
+		"* Released under the <%= pkg.licenses[0].type %> license",
+		"* <%= pkg.licenses[0].url %>",
+		"*",
+		"* For custom build use egjs-cli",
+		"* <%= pkg.customdownload %>",
+		"*/\n"].join("\n"),
+	pkgd : [
+		"/**",
+		"* All-in-one packaged file for ease use of [ egjs | eg.flicking | eg.infiniteGrid ] with below dependencies.",
+		"* NOTE: This is not an official distribution file and is only for user convenience.",
+		"*",
+		"* "].join("\n")
+};
