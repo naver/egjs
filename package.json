@@ -5,6 +5,7 @@
   "outputname": "eg",
   "main": "dist/eg.js",
   "homepage": "http://egjs.navercorp.com",
+  "customdownload" : "https://oss.navercorp.com/egjs/egjs-cli",
   "scripts": {
     "test": "grunt",
     "fakeserver": "node test/fakeserver/app.js"

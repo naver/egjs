@@ -10,4 +10,6 @@ module.exports = ["/**",
 "*",
 "* Released under the <%= pkg.licenses[0].type %> license",
 "* <%= pkg.licenses[0].url %>",
-"*/\n\n"].join("\n");
+"*",
+"* You can customize download by using egjs-cli (<%= pkg.customdownload %>)",
+"*/\n"].join("\n");
