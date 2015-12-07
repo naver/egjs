@@ -153,6 +153,16 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 		}
 	};
 
+	/**
+	 * Check if device is in portrait mode
+	 * @ko 해당 기기가 portait(수직방향) 모드일 경우, true을 반환한다.
+	 * @method eg#isPortrait
+	 * @return {Boolean}
+	 * @example
+eg.isPortrait();  // Check if device is in portrait mode
+	*/
+	ns.isPortrait = isVertical;
+
 	return {
 		"orientationChange": orientationChange,
 		"isVertical": isVertical,
