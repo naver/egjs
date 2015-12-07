@@ -9,7 +9,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 	// ns.__checkLibrary__( !("Hammer" in window), "You must download Hammerjs. (http://hammerjs.github.io/)\n\ne.g. bower install hammerjs");
 	// ns.__checkLibrary__( !("easeOutQuint" in $.easing), "You must download jQuery Easing Plugin(http://gsgd.co.uk/sandbox/jquery/easing/)\n\ne.g. bower install jquery.easing");
 	/**
-	 * The MovableCoord can control coordinate by user's action.
+	 * Easily get computed coordinate values according user actions.
 	 * @group egjs
 	 * @ko MovableCoord는 사용자 행동에 의해, 좌표계를 제어할 수 있다.
 	 * @class
@@ -46,13 +46,13 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 	 * @param {Number} [options.maximumDuration=Infinity] The maximum duration. <ko>최대 좌표 이동 시간</ko>
 	 * @param {Number} [options.deceleration=0.0006] deceleration This value can be altered to change the momentum animation duration. higher numbers make the animation shorter. <ko>감속계수. 높을값이 주어질수록 애니메이션의 동작 시간이 짧아진다.</ko>
 	 * @see Hammerjs {@link http://hammerjs.github.io}
-	 * @see There is usability issue due to default css properties ({@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}) of the Hammerjs. Therefore, movableCoord removes css properties.
+	 * @see There is usability issue due to default CSS properties ({@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}) settings from Hammerjs. movableCoord removes that settings to fix.
 	 * <ko>Hammerjs의 기본 CSS 속성({@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}) 으로 인해 사용성 이슈가 있다. 따라서, movableCoord는 hammerjs의 기본 CSS 속성을 제거하였다.</ko>
 	 *
 	 * @codepen {"id":"bdVybg", "ko":"MovableCoord 기본 예제", "en":"MovableCoord basic example", "collectionId":"AKpkGW", "height": 403}
 	 *
 	 * @see Easing Functions Cheat Sheet {@link http://easings.net/}
-	 * @see If you want to use another easing function then should be import jQuery easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/}) or jQuery UI easing.({@link https://jqueryui.com/easing/})<ko>다른 easing 함수를 사용하고 싶다면, jQuery easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/})이나, jQuery UI easing({@link https://jqueryui.com/easing/}) 라이브러리를 삽입해야 한다.</ko>
+	 * @see To use other easing functions, import jQuery easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/}) or jQuery UI easing.({@link https://jqueryui.com/easing/})<ko>다른 easing 함수를 사용하고 싶다면, jQuery easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/})이나, jQuery UI easing({@link https://jqueryui.com/easing/}) 라이브러리를 삽입해야 한다.</ko>
 	 *
 	 * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
 	 */
@@ -73,8 +73,8 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 				grabOutside: false,		// check whether user's action started on outside
 				curHammer: null,		// current hammer instance
 				moveDistance: null,		// a position of the first user's action
-				animationParam: null,	// animation infomation
-				prevented: false		// check whether the animation event was prevented
+				animationParam: null,	// animation information
+				prevented: false		//  check whether the animation event was prevented
 			};
 			this._hammers = {};
 			this._pos = this.options.min.concat();
@@ -85,7 +85,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			this._panend = $.proxy(this._panend, this);	// for caching
 		},
 		/**
-		 * Attach a element to an use for the movableCoord.
+		 * Bind element
 		 * @ko movableCoord을 사용하기 위한 엘리먼트를 등록한다.
 		 * @method eg.MovableCoord#bind
 		 * @param {HTMLElement|String|jQuery} element  A target element. <ko>movableCoord을 사용하기 위한 엘리먼트</ko>
@@ -186,7 +186,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 		},
 
 		/**
-		 * Dettach a element to an use for the movableCoord.
+		 * Unbind element
 		 * @ko movableCoord을 사용하기 위한 엘리먼트를 해제한다.
 		 * @method eg.MovableCoord#unbind
 		 * @param {HTMLElement|String|jQuery} element The target element.<ko>movableCoord을 사용하기 위한 설정한 엘리먼트</ko>
@@ -344,7 +344,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 				this._status.grabOutside = false;
 			}
 
-			// when move pointer is holded outside
+			// when move pointer is held in outside
 			if (this._status.grabOutside) {
 				tn = min[0] - out[3], tx = max[0] + out[1], tv = pos[0];
 				pos[0] = tv > tx ? tx : (tv < tn ? tn : tv);
@@ -352,8 +352,8 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 				pos[1] = tv > tx ? tx : (tv < tn ? tn : tv);
 			} else {
 
-				// when start pointer is holded inside
-				// get a initialization slop value to prevent smooth animation.
+				// when start pointer is held in inside
+				// get a initialization slope value to prevent smooth animation.
 				var initSlope = this._initSlope();
 				if (pos[1] < min[1]) { // up
 					tv = (min[1] - pos[1]) / (out[0] * initSlope);
@@ -382,8 +382,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 				return;
 			}
 
-			// Abort the animating post process,
-			// when "tap" occurs
+			// Abort the animating post process when "tap" occurs
 			if (e.type === "tap") {
 				this._setInterrupt(false);
 				this.trigger("release", {
@@ -460,7 +459,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 				normalPos / this.options.deceleration * 2
 			);
 
-			// when duration was under 100, duration is zero
+			// when duration is under 100, then value is zero
 			return duration < 100 ? 0 : duration;
 		},
 
@@ -543,11 +542,9 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			this._afterReleaseProcess(param, callback, isBounce, duration);
 		},
 
-		// when user release a finger or poiner or mouse
+		// when user release a finger, pointer or mouse
 		_afterReleaseProcess: function(param, callback, isBounce, duration) {
-			/*
-			caution:: update option values because options was changed by "release" event
-			 */
+			// caution: update option values, due to value was changed by "release" event
 			var pos = this._pos;
 			var min = this.options.min;
 			var max = this.options.max;
@@ -702,7 +699,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 		},
 
 		/**
-		 * Get current positions
+		 * Get current position
 		 * @ko 현재 위치를 반환한다.
 		 * @method eg.MovableCoord#get
 		 * @return {Array} pos
@@ -714,9 +711,9 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 		},
 
 		/**
-		 * Set to position
+		 * Set to absolute position
 		 *
-		 * If a duration was greater than zero, 'change' event was triggered for duration.
+		 * When duration is greater than zero, 'change' event is triggered
 		 * @ko 위치를 설정한다. 만약, duration이 0보다 크다면 'change' 이벤트가 발생한다.
 		 * @method eg.MovableCoord#setTo
 		 * @param {Number} x x-coordinate <ko>이동할 x좌표</ko>
@@ -762,7 +759,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 		/**
 		 * Set to relative position
 		 *
-		 * If a duration was greater than zero, 'change' event was triggered for duration
+		 * When duration is greater than zero, 'change' event is triggered
 		 * @ko 현재를 기준으로 위치를 설정한다. 만약, duration이 0보다 크다면 'change' 이벤트가 발생한다.
 		 * @method eg.MovableCoord#setBy
 		 * @param {Number} x x-coordinate <ko>이동할 x좌표</ko>
@@ -803,7 +800,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 		},
 
 		/**
-		 * Release resources and off custom events
+		 * Release resources and unbind custom events
 		 * @ko 모든 커스텀 이벤트와 자원을 해제한다.
 		 * @method eg.MovableCoord#destroy
 		 */

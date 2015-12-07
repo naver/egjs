@@ -8,7 +8,7 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 	 * @group jQuery Extension
 	 */
 	/**
-	 * Support rotate event in jQuery
+	 * Add rotate event support in jQuery
 	 *
 	 * @ko jQuery custom rotate 이벤트 지원
 	 * @name jQuery#rotate
@@ -29,20 +29,25 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 	var agent = ns.agent();
 	var isMobile = /android|ios/.test(agent.os.name);
 
-	/*
-	 * This orientationChange method is return event name for bind orientationChange event.
+	/**
+	 * Return event name string for orientationChange according browser support
 	 */
 	var orientationChange = function() {
 		var type;
 		/**
-		 * Android Bug
-		 * Android 2.4 has orientationchange but It use change width, height. so Delay 500ms use setTimeout.
-		 *  : If android 2.3 made samsung bind resize on window then change rotate then below version browser.
-		 * Twice fire orientationchange in android 2.2. (First time change widht, height, second good.)
-		 * Below version use resize.
+		 * Some platform/broswer returns previous widht/height state value. For workaround, give some delays.
 		 *
-		 * In app bug
-		 * If fire orientationChange in app then change width, height. so delay 200ms using setTimeout.
+		 * Android bug:
+		 * - Andorid 2.3 - Has orientationchange with bug. Needs 500ms delay.
+		 *
+		 *   Note: Samsung's branded Android 2.3
+		 *   When check orientationchange using resize event, could cause browser crash if user binds resize event on window
+		 *
+		 * - Android 2.2 - orientationchange fires twice(at first time width/height are not updated, but second returns well)
+		 * - Lower than 2.2 - use resize event
+		 *
+		 * InApp bug:
+		 * - Set 200ms delay
 		 */
 		if ((agent.os.name === "android" && agent.os.version === "2.1")) {//|| htInfo.galaxyTab2)
 			type = "resize";
@@ -56,8 +61,8 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 		return type;
 
 	};
-	/*
-	* If viewport is vertical return true else return false.
+	/**
+	* When viewport orientation is portrait, return true otherwise false
 	*/
 	function isVertical() {
 		var eventName = orientationChange();
@@ -92,8 +97,8 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 		return vertical;
 	}
 
-	/*
-	* Trigger that rotate event on an element.
+	/**
+	* Trigger rotate event
 	*/
 	function triggerRotate() {
 		var currentVertical = isVertical();
@@ -105,8 +110,8 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 		}
 	}
 
-	/*
-	* Trigger event handler.
+	/**
+	* Trigger event handler
 	*/
 	function handler(e) {
 
@@ -127,7 +132,7 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 						handler(e);
 					}, 500);
 
-					// When fire orientationchange if width not change then again call handler after 300ms.
+					// When width value wasn't changed after firing orientationchange, then call handler again after 300ms.
 					return false;
 				}
 				beforeScreenWidth = screenWidth;

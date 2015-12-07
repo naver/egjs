@@ -35,8 +35,8 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	/* jshint ignore:start */
 	if (!isSupportState && !storage ||
 		(!JSON && !console.warn(
-			"The JSON object is not supported in your browser.\n" +
-			"For work around use polyfill which can be found at:\n" +
+			"The JSON object is not supported in your browser.\r\n" +
+			"For work around use polyfill which can be found at:\r\n" +
 			"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON#Polyfill")
 		)) {
 		return;
@@ -61,7 +61,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	}
 
 	/*
-	 * Getter for state
+	 * Get state value
 	 */
 	function getState() {
 		var stateStr;
@@ -76,7 +76,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 
 					// like '[ ... ]', '1', '1.234', '"123"' is also not valid
 					if (jQuery.type(state) !== "object" || state instanceof Array) {
-						throw new Error("Window.history is not valid form for persist.");
+						throw new Error("window.history has no valid format data to be handled in persist.");
 					}
 				} catch (e) {
 					/* jshint ignore:start */
@@ -88,7 +88,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 		} else {
 			stateStr = storage.getItem(location.href + CONST_PERSIST);
 
-			// Note2 (4.3) return value is null
+			// Note2 (Android 4.3) return value is null
 			return (stateStr && stateStr.length > 0) ? JSON.parse(stateStr) : {};
 		}
 	}
@@ -103,7 +103,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	}
 
 	/*
-	 * Setter for state
+	 * Set state value
 	 */
 	function setState(state) {
 		if (isSupportState) {
@@ -125,7 +125,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	}
 
 	/**
-	* Saves state and returns current state.
+	* Save current state
 	* @ko 인자로 넘긴 현재 상태정보를 저장한다.
 	* @method jQuery.persist
 	* @support {"ie": "9+", "ch" : "latest", "ff" : "1.5+",  "sf" : "latest", "ios" : "7+", "an" : "2.2+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
@@ -138,7 +138,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	});
 	*/
 	/**
-	* Saves state and returns current state.
+	* Return current state
 	* @ko 인자로 넘긴 현재 상태정보를 반환한다.
 	* @method jQuery.persist
 	* @return {Object} state Stored state object <ko>복원을 위해 저장되어있는 상태 객체</ko>
@@ -150,7 +150,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	});
 	*/
 	/**
-	* Saves state and returns current state.
+	* Save current state
 	* @ko 인자로 넘긴 현재 상태정보를 저장한다.
 	* @method jQuery.persist
     * @param {String} key State key to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체의 키</ko>
@@ -164,7 +164,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	});
 	*/
 	/**
-	* Saves state and returns current state.
+	* Return current state
 	* @ko 인자로 넘긴 현재 상태정보를 반환한다.
 	* @method jQuery.persist
 	* @param {String} key State key to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체의 키</ko>
@@ -191,7 +191,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	};
 
 	/**
-	* Returns necessity of Persist by checking bfcache.
+	* Return persist needs by checking bfCache support
 	* @ko Persist 동작 필요여부를 반환한다.
 	* @method $.persist.isApplicable
 	* @example

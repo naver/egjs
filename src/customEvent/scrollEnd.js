@@ -4,7 +4,7 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 
 	// jscs:eable maximumLineLength
 	/**
-	* Support scrollEnd event in jQuery
+	* Add scrollEnd event support in jQuery
 	* @ko jQuery custom scrollEnd 이벤트 지원
 	* @name jQuery#scrollEnd
 	* @event
@@ -41,22 +41,22 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 	};
 
 	/**
-	 * iOS & safari :
-	 * 		Below iOS7, Scroll event occurs once when the scroll is stopped.
-	 * 		Since iOS8, Scroll event occurs every time scroll
+	 * iOS & Safari:
+	 * 		iOS7 and lower, scroll event occurs once when the scroll is stopped
+	 * 		iOS8 and upper, scroll event occurs on every scroll
 	 * 		Scroll event occurs when the rotation
-	 * android :
-	 *		Scroll event occurs every time scroll
-	 *		Scroll event occurs when the rotation
+	 * Android:
+	 *		Scroll event occurs on every scroll
+	 *		Scroll event occurs on rotation and should be ignored to handle
 	 * @ko
-	 * iOS & safari :
+	 * iOS & Safari :
 	 *		iOS 7.x 이하에서는 스크롤이 멈췄을때 scroll 이벤트 한번 발생
 	 *      iOS 8.x 이상에서는 scroll 이벤트가 android 와 동일하게 스크롤시 매번 발생
 	 *		회전시 scroll 이벤트가 발생되어 이를 무시처리해야함
 	 *		(orientationchange 에 의해 발생하는 scroll 이벤트 1회만 무시)
-	 * android :
+	 * Android :
 	 *		스크롤시 scroll 이벤트 매번 발생
-	 *		회전시 scroll 이벤트가 발생되어 이를 무시처리해야함
+	 *		회전시 scroll 이벤트가 발생되어 이를 무시 처리해야 함
 	 */
 
 	function getDeviceType() {

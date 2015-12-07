@@ -204,8 +204,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 
 	/**
 	 * To build Grid layout UI
-	 * InfiniteGrid is composed of Outlayer. but this component supports recycle-dom.
-	 * the more you add contents, a number of DOM are fixed.
+	 * InfiniteGrid is composed using Outlayer and supports recycle-dom.
+	 * DOM elements are fixed even contents are added infinitely.
 	 * @group egjs
 	 * @ko 그리드 레이아웃을 구성하는 UI 컴포넌트. InfiniteGrid는 Outlayer로 구성되어 있다. 하지만, 이 컴포넌트는 recycle-dom을 지원한다.
 	 * 컨텐츠를 계속 증가하면 할수록 일정한 DOM 개수를 유지할수 있다.
@@ -314,7 +314,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			};
 		},
 		/**
-		 * Set to current status
+		 * Set current status
 		 * @ko infiniteGrid의 현재상태를 설정한다.
 		 * @method eg.InfiniteGrid#setStatus
 		 * @param {Object} status Object
@@ -338,7 +338,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			return this._isProcessing;
 		},
 		/**
-		 * Check if elements are recycling mode
+		 * Check if elements are in recycling mode
 		 * @ko recycle 모드 여부를 반환한다.
 		 * @method eg.InfiniteGrid#isRecycling
 		 * @return {Boolean}
@@ -364,7 +364,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			return result;
 		},
 		/**
-		 * Rearrang layout
+		 * Rearrange layout
 		 * @ko 레이아웃을 재배치한다.
 		 * @method eg.InfiniteGrid#layout
 		 * @return {Instance}
@@ -381,7 +381,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			return this;
 		},
 		/**
-		 * Append elemensts
+		 * Append elements
 		 * @ko 엘리먼트를 append 한다.
 		 * @method eg.InfiniteGrid#append
 		 * @param {Array} elements to be appended elements <ko>append될 엘리먼트 배열</ko>
@@ -401,7 +401,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			return elements.length;
 		},
 		/**
-		 * Prepend elemensts
+		 * Prepend elements
 		 * @ko 엘리먼트를 prepend 한다.
 		 * @method eg.InfiniteGrid#prepend
 		 * @param {Array} elements to be prepended elements <ko>prepend될 엘리먼트 배열</ko>
@@ -449,7 +449,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		},
 
 		/**
-		 * Get top element
+		 * Get the first element at the top
 		 * @ko 가장 위에 있는 엘리먼트를 반환한다.
 		 * @method eg.InfiniteGrid#getTopElement
 		 *
@@ -473,7 +473,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		},
 
 		/**
-		 * Get bottom element
+		 * Get the last element at the bottom
 		 * @ko 가장 아래에 있는 엘리먼트를 반환한다.
 		 * @method eg.InfiniteGrid#getBottomElement
 		 *
@@ -638,7 +638,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		},
 
 		/**
-		 * Remove empty space that is removed by append action.
+		 * Remove white space which was removed by append action.
 		 * @ko append에 의해 제거된 빈공간을 제거한다.
 		 * @method eg.InfiniteGrid#fit
 		 * @return {Number} distance if empty space is removed, value is not zero. <ko>빈공간이 제거되면 0이 아닌 값을 반환</ko>
@@ -700,7 +700,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			}
 		},
 		/**
-		 * Release resources and off custom events
+		 * Release resources and unbind custom events
 		 * @ko 모든 커스텀 이벤트와 자원을 해제한다.
 		 * @method eg.InfiniteGrid#destroy
 		 */

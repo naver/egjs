@@ -62,8 +62,8 @@ eg.module("eg", ["jQuery", eg, window], function($, ns, global) {
 		// agent : null
 	};
 	/**
-	* Get Agent Information
-	* This method is return cached value.
+	* Get browser agent information
+	*
 	* @ko Agent 정보를 반환한다. 값은 캐싱된다.
 	* @method eg#agent
 	* @return {Object} agent
@@ -159,10 +159,10 @@ if(agent.os.name === "naver") {
 			identity: "Android"
 		}],
 
-		// Check Webview
-		// ios : In the absence of version
-		// Android 5.0 && chrome 40+ : when there is a keyword of "; wv" in useragent
-		// Under android 5.0 :  when there is a keyword of "NAVER or Daum" in useragent
+		// Webview check condition
+		// ios: If has no version information
+		// Android 5.0 && chrome 40+: Presence of "; wv" in userAgent
+		// Under android 5.0:  Presence of "NAVER" or "Daum" in userAgent
 		webview: [{
 			criteria: /iPhone|iPad/,
 			browserVersionSearch: "Version",
@@ -350,7 +350,8 @@ if(agent.os.name === "naver") {
 	};
 
 	/**
-	 * Get a translate string.
+	 * Get a translate string
+	 *
 	 * @ko translate 문자를 반환한다.
 	 * @method eg#translate
 	 * @param {String} x x-coordinate <ko>x 좌표</ko>
@@ -369,13 +370,13 @@ eg.translate('10px', '200%', true);  // translate3d(10px,200%,0);
 	};
 
 	/**
-	 * If your device could use a hardware acceleration, this method returns "true"
-	 * This method is return cached value.
+	 * Check hardware acceleration support
+	 *
 	 * @ko 해당 기기에서 하드웨어 가속을 할 수 있다면 true을 반환하며, 값은 캐싱된다.
 	 * @method eg#isHWAccelerable
 	 * @return {Boolean}
 	 * @example
-eg.isHWAccelerable();  // if your device could use a hardware acceleration, this method returns "true".
+eg.isHWAccelerable();  // Returns 'true' when supports hardware acceleration
 
 // also, you can control return value
 eg.hook.isHWAccelerable = function(defalutVal,agent) {
@@ -397,8 +398,7 @@ return defaultVal;
 		var browserVersion = agent.browser.version;
 		var useragent;
 
-		// chrome (less then 25) has a text blur bug.
-		// but samsung sbrowser fix it.
+		// chrome 25- has a text blur bug (except Samsung's sbrowser)
 		if (browser.indexOf("chrome") !== -1) {
 			result = browserVersion >= "25";
 		} else if (/ie|edge|firefox|safari|inapp/.test(browser)) {
@@ -418,13 +418,13 @@ return defaultVal;
 	};
 
 	/**
-	 * If your device could use a css transtion, this method returns "true"
-	 * This method is return cached value.
+	 * Check CSS transition support
+	 *
 	 * @ko 해당 기기에서 css transtion을 할 수 있다면 true을 반환하며, 값은 캐싱된다.
 	 * @method eg#isTransitional
 	 * @return {Boolean}
 	 * @example
-eg.isTransitional();  // if your device could use a css transtion, this method returns "true".
+eg.isTransitional();  // Returns 'true' when supports CSS transition
 
 // also, you can control return value
 eg.hook.isTransitional = function(defaultVal, agent) {
