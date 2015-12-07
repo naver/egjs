@@ -660,13 +660,13 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		_waitImageLoaded: function(items, needCheck) {
 			var core = this.core;
 			var checkCount = needCheck.length;
-
+			var onCheck = function(e) {
+				checkCount--;
+				$(e.target).off("load error");
+				checkCount <= 0 && core.layoutItems(items, true);
+			};
 			$.each(needCheck, function(k, v) {
-				$(v).on("load error", function(e) {
-					checkCount--;
-					$(e.target).off("load error");
-					checkCount <= 0 && core.layoutItems(items, true);
-				});
+				$(v).on("load error", onCheck);
 			});
 		},
 		/**
