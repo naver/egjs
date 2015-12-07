@@ -2,7 +2,7 @@
 eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 	"use strict";
 
-	var SUPPORT_TOUCH = ("ontouchstart" in window);
+	var SUPPORT_TOUCH = "ontouchstart" in window;
 
 	// jscs:enable maximumLineLength
 	// It is scheduled to be removed in case of build process.
@@ -70,14 +70,14 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			};
 			this._reviseOptions(options);
 			this._status = {
-				grabOutside: false,	// check whether user's action started on outside
+				grabOutside: false,		// check whether user's action started on outside
 				curHammer: null,		// current hammer instance
-				moveDistance: null,	// a position of the first user's action
-				animationParam: null,		// animation infomation
-				prevented: false		//  check whether the animation event was prevented
+				moveDistance: null,		// a position of the first user's action
+				animationParam: null,	// animation infomation
+				prevented: false		// check whether the animation event was prevented
 			};
 			this._hammers = {};
-			this._pos = [ this.options.min[0], this.options.min[1] ];
+			this._pos = this.options.min.concat();
 			this._subOptions = {};
 			this._raf = null;
 			this._animationEnd = $.proxy(this._animationEnd, this);	// for caching
@@ -168,9 +168,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 				}, this))
 				.on("panstart panmove", this._panmove)
 				.on("panend tap", this._panend);
-			} catch (e) {
-				// console.log(e);
-			}
+			} catch (e) {}
 		},
 
 		_convertInputType: function(inputType) {
@@ -180,16 +178,11 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			$.each(inputType, function(i, v) {
 				switch (v) {
 					case "mouse" : hasMouse = true; break;
-					case "touch" : hasTouch = SUPPORT_TOUCH; break;
+					case "touch" : hasTouch = SUPPORT_TOUCH;
 				}
 			});
-			if (hasTouch) {
-				return HM.TouchInput;
-			}
-			if (hasMouse) {
-				return HM.MouseInput;
-			}
-			return null;
+
+			return hasTouch && HM.TouchInput || hasMouse && HM.MouseInput || null;
 		},
 
 		/**
@@ -625,8 +618,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			// You can't stop the 'animationStart' event when 'circular' is true.
 			if (isCircular && !retTrigger) {
 				throw new Error(
-					"You can't stop the 'animation' " +
-					"event when 'circular' is true."
+					"You can't stop the 'animation' event when 'circular' is true."
 				);
 			}
 			animationParam.depaPos = pos;
@@ -673,11 +665,8 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 				key = options[v];
 				if (key != null) {
 					if ($.isArray(key)) {
-						if (key.length === 2) {
-							options[v] = [ key[0], key[1], key[0], key[1] ];
-						} else {
-							options[v] = [ key[0], key[1], key[2], key[3] ];
-						}
+						options[v] = key.length === 2 ?
+							key.concat(key) : key.concat();
 					} else if (/string|number|boolean/.test(typeof key)) {
 						options[v] = [ key, key, key, key ];
 					} else {
@@ -790,11 +779,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 		},
 
 		_easing: function(p) {
-			if (p > 1) {
-				return 1;
-			} else {
-				return this.options.easing(p, p, 0, 1, 1);
-			}
+			return p > 1 ? 1 : this.options.easing(p, p, 0, 1, 1);
 		},
 
 		_initSlope: function() {
