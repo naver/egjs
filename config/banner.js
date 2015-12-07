@@ -11,5 +11,6 @@ module.exports = ["/**",
 "* Released under the <%= pkg.licenses[0].type %> license",
 "* <%= pkg.licenses[0].url %>",
 "*",
-"* You can customize download by using egjs-cli (<%= pkg.customdownload %>)",
+"* For custom build use egjs-cli",
+"* <%= pkg.customdownload %>",
 "*/\n"].join("\n");
