@@ -211,34 +211,34 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 	 *  @see Outlayer {@link https://github.com/metafizzy/outlayer}
 	 *
 	 * @example
-	 	<!-- HTML -->
+		<!-- HTML -->
 		<ul id="grid">
-		    <li class="item">
-		      <div>테스트1</div>
-		    </li>
-		    <li class="item">
-		      <div>테스트2</div>
-		    </li>
-		    <li class="item">
-		      <div>테스트3</div>
-		    </li>
-		    <li class="item">
-		      <div>테스트4</div>
-		    </li>
-		    <li class="item">
-		      <div>테스트5</div>
-		    </li>
-		    <li class="item">
-		      <div>테스트6</div>
-		    </li>
-	  	</ul>
+			<li class="item">
+			  <div>테스트1</div>
+			</li>
+			<li class="item">
+			  <div>테스트2</div>
+			</li>
+			<li class="item">
+			  <div>테스트3</div>
+			</li>
+			<li class="item">
+			  <div>테스트4</div>
+			</li>
+			<li class="item">
+			  <div>테스트5</div>
+			</li>
+			<li class="item">
+			  <div>테스트6</div>
+			</li>
+		</ul>
 		<script>
-	 	var some = new eg.InfiniteGrid("#grid", {
-		    itemSelector : ".item"
+		var some = new eg.InfiniteGrid("#grid", {
+			itemSelector : ".item"
 		}).on("layoutComplete", function(e) {
 			// ...
 		});
-	 	</script>
+		</script>
 	 */
 	var EVENTS = {
 		"layoutComplete": "layoutComplete"
@@ -660,15 +660,12 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		_waitImageLoaded: function(items, needCheck) {
 			var core = this.core;
 			var checkCount = needCheck.length;
-			var onCheck = function(e) {
-					checkCount--;
-					$(e.target).off("load").off("error");
-					checkCount <= 0 && core.layoutItems(items, true);
-				};
+
 			$.each(needCheck, function(k, v) {
-				$(v).on({
-					"load": onCheck,
-					"error": onCheck
+				$(v).on("load error", function(e) {
+					checkCount--;
+					$(e.target).off("load error");
+					checkCount <= 0 && core.layoutItems(items, true);
 				});
 			});
 		},
