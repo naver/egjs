@@ -47,6 +47,7 @@ Ref g-IssueNo
     - ex) ```style(all): Removed unnecessary console.log```
 
 - **Referencing issue**:
+
   Basically, all of your commits should reference an issue.
   Put github issue number related with that commit.
   
