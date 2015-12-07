@@ -55,7 +55,7 @@ eg.module("eg", ["jQuery", eg, window], function($, ns, global) {
 	 * @description version infomation
 	 * @ko 버전 정보
 	 */
-	ns.VERSION = "#VERSION#";
+	ns.VERSION = "#__VERSION__#";
 	ns.hook =  {
 		// isHWAccelerable : null,
 		// isTransitional 	: null,
