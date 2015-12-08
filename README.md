@@ -4,7 +4,7 @@
 
 > - **Demo**: http://codepen.io/egjs/
 > - **Online API Documentation**
-    - Latest : https://github.com/egjs/egjs
+    - Latest : https://egjs.github.io/latest/doc
     - For specific version : `https://egjs.github.io/[VERSION]/doc`
 
 - [한국어(Korean) readme](README-ko.md)
