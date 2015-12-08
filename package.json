@@ -4,26 +4,22 @@
   "description": "Set of UI interactions, effects and utilities components library.",
   "outputname": "eg",
   "main": "dist/eg.js",
-  "homepage": "http://egjs.navercorp.com",
-  "customdownload" : "https://oss.navercorp.com/egjs/egjs-cli",
+  "homepage": "http://egjs.github.io",
+  "customdownload" : "https://github.com/egjs/egjs-cli",
   "scripts": {
     "test": "grunt",
     "fakeserver": "node test/fakeserver/app.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://oss.navercorp.com/egjs/egjs"
+    "url": "https://github.com/egjs/egjs"
   },
   "bugs": {
-    "url": "https://oss.navercorp.com/egjs/egjs/issues"
+    "url": "https://github.com/egjs/egjs/issues"
   },
   "author": "NAVER corp",
-  "licenses": [
-    {
-      "type": "LGPL v2",
-      "url": "https://www.gnu.org/licenses/old-licenses/lgpl-2.0.html"
-    }
-  ],
+  "licenseUrl" : "https://egjs.github.io/license",
+  "license": "MIT",
   "devDependencies": {
     "egjs-jsdoc-template": "git+http://oss.navercorp.com/egjs/egjs-jsdoc-template#master",
     "grunt": "^0.4.5",
