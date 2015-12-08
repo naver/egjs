@@ -61,7 +61,7 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 		 * Update targets
 		 * @ko target들을 갱신한다.
 		 * @method eg.Visible#refresh
-		 * @return {Instance}
+		 * @return {eg.Visible}
 		 *
 		 * @remark
 		 * If targets was added or removed, you must call 'refresh' method.
@@ -89,7 +89,7 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 		 * @ko target들이 변경했는지 확인한다.
 		 * @method eg.Visible#check
 		 * @param {Number} [delay=-1] Delay time in milliseconds <ko>호출 후, 일정 시간이 지난 후에 확인하고자 할때 사용한다.</ko>
-		 * @return {Instance}
+		 * @return {eg.Visible}
 		 */
 		check: function(delay) {
 			if (typeof delay === "undefined") {

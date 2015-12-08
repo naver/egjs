@@ -21,7 +21,7 @@ eg.module("component", [eg], function(ns) {
 		 * @method eg.Component#option
 		 * @param {String} key
 		 * @param {Object} value
-		 * @return {Instance|Object}
+		 * @return {eg.Component|Object}
 		 * @example
 			var Some = eg.Class.extend(eg.Component);
 			var some = new Some({
@@ -127,7 +127,7 @@ eg.module("component", [eg], function(ns) {
 		 * @method eg.Component#on
 		 * @param {eventName} eventName
 		 * @param {Function} handlerToAttach
-		 * @return {Instance}
+		 * @return {eg.Component}
 		 * @example
 			var Some = eg.Class.extend(eg.Component,{
 				"hi": function(){},
@@ -164,7 +164,7 @@ eg.module("component", [eg], function(ns) {
 		 * @method eg.Component#off
 		 * @param {eventName} eventName
 		 * @param {Function} handlerToDetach
-		 * @return {Instance}
+		 * @return {eg.Component}
 		 * @example
 			var Some = eg.Class.extend(eg.Component,{
 				"hi": function(){},
@@ -213,7 +213,7 @@ eg.module("component", [eg], function(ns) {
 		 * It method return self instance.
 		 * @ko 자신의 인스턴스를 반환한다.
 		 * @method eg.Component#instance
-		 * @return {Instance}
+		 * @return {eg.Component}
 		 */
 		instance: function() {
 			return this;
