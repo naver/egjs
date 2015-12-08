@@ -1,4 +1,4 @@
-## How to contribute to egjs
+# How to contribute to egjs
 egjs is opened to everyone and we're welcoming for any kind of contribution.
 We believe that our project can grow with your interests helping others' necessities.
 
@@ -33,7 +33,7 @@ Ref g-IssueNo
   - feat(feature) : when adds new feature
   - fix(bug fix) : for bug fix
   - docs(documentation) : anything documentation related 
-  - style(formatting, missing semi colons, ¡¦) : when change code style
+  - style(formatting, missing semi colons, etc.) : when change code style
   - refactor : refactoring
   - test(when adding missing tests) : anything test code related
   - chore(maintain) : task which are done regularly
@@ -71,7 +71,7 @@ Steps to submit your pull request:
 5. Run `grunt jshint` for linting. (update until without any error or warnings)
 6. Run `grunt jscs` to check code style. (update until without any error or warnings)
 7. Run test code by `grunt test OR grunt test:MODULE_NAME`.
-   Make sure tests are all passed at least in Chrome(desktop and latest) and grunt qunit module.
+   Make sure tests are all passed at least in Chrome(latest desktop version) and grunt qunit module.
 8. Write commit log following convention and push to your repository branch.
 9. Create a new PR from your branch to egjs.
 10. Wait for reviews.
