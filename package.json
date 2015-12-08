@@ -18,7 +18,7 @@
     "url": "https://github.com/egjs/egjs/issues"
   },
   "author": "NAVER corp",
-  "licenseUrl" : "https://egjs.github.io/license",
+  "licenseurl" : "https://egjs.github.io/license",
   "license": "MIT",
   "devDependencies": {
     "egjs-jsdoc-template": "git+http://oss.navercorp.com/egjs/egjs-jsdoc-template#master",

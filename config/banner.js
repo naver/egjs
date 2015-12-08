@@ -10,7 +10,7 @@ module.exports = {
 		"* <%= pkg.homepage %>",
 		"*",
 		"* Released under <%= pkg.license %> license",
-		"* <%= pkg.licenseUrl %>",
+		"* <%= pkg.licenseurl %>",
 		"*",
 		"* For custom build use egjs-cli",
 		"* <%= pkg.customdownload %>",
