@@ -15,10 +15,12 @@ module.exports = {
 		"* For custom build use egjs-cli",
 		"* <%= pkg.customdownload %>",
 		"*/\n"].join("\n"),
-	pkgd : [
-		"/**",
-		"* All-in-one packaged file for ease use of [ egjs | eg.flicking | eg.infiniteGrid ] with below dependencies.",
-		"* NOTE: This is not an official distribution file and is only for user convenience.",
-		"*",
-		"* "].join("\n")
+	pkgd : function(type) {
+		return [
+			"/**",
+			"* All-in-one packaged file for ease use of '" + type + "' with below dependencies.",
+			"* NOTE: This is not an official distribution file and is only for user convenience.",
+			"*",
+			"* "].join("\n");
+		}
 };

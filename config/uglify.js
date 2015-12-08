@@ -10,21 +10,21 @@ module.exports = {
 	},
 	pkgd_eg: {
 		options : {
-			banner : "<%=banner.common %><%=banner.pkgd %><%=uglify.pkgd_eg.src.join('\\n* ')%>\n*/\n"
+			banner : "<%=banner.common %><%=banner.pkgd('egjs') %><%=uglify.pkgd_eg.src.join('\\n* ')%>\n*/\n"
 		},
 		src : dependency.hammer.concat(dependency.outlayer, dependency.egCore, dependency.egExtend, ["src/visible.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js"]),
 		dest : "dist/pkgd/eg.pkgd.min.js"
 	},
 	pkgd_flicking: {
 		options : {
-			banner : "<%=banner.common %><%=banner.pkgd %><%=uglify.pkgd_flicking.src.join('\\n* ')%>\n*/\n"
+			banner : "<%=banner.common %><%=banner.pkgd('eg.flicking') %><%=uglify.pkgd_flicking.src.join('\\n* ')%>\n*/\n"
 		},
 		src : dependency.hammer.concat(dependency.egCore, ["src/hook/css.js", "src/movableCoord.js", "src/flicking.js"]),
 		dest : "dist/pkgd/flicking.pkgd.min.js"
 	},
 	pkgd_infiniteGrid: {
 		options : {
-			banner : "<%=banner.common %><%=banner.pkgd %><%=uglify.pkgd_infiniteGrid.src.join('\\n* ')%>\n*/\n"
+			banner : "<%=banner.common %><%=banner.pkgd('eg.infiniteGrid') %><%=uglify.pkgd_infiniteGrid.src.join('\\n* ')%>\n*/\n"
 		},
 		src : dependency.outlayer.concat(dependency.egCore, ["src/customEvent/scrollEnd.js", "src/plugin/persist.js", "src/infiniteGrid.js"]),
 		dest : "dist/pkgd/infiniteGrid.pkgd.min.js"
