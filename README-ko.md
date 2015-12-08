@@ -138,4 +138,4 @@ $ grunt test
 버그를 발견하게 되면, [issues page](https://oss.navercorp.com/egjs/egjs/issues) 페이지를 통해 등록할 수 있다.
 
 ## 라이센스
-egjs는 [LGPL v2](http://www.gnu.org/licenses/old-licenses/lgpl-2.0.html)로 배포된다.
+egjs는 [MIT](http://egjs.github.io/license)로 배포된다.

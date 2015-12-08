@@ -4,8 +4,8 @@
 
 > - **Demo**: http://codepen.io/egjs/
 > - **Online API Documentation**
-    - Latest : http://egjs.navercorp.com/
-    - For specific version : `http://egjs.navercorp.com/[VERSION]/doc`
+    - Latest : https://egjs.github.io/latest/doc
+    - For specific version : `https://egjs.github.io/[VERSION]/doc`
 
 - [한국어(Korean) readme](README-ko.md)
 
@@ -29,25 +29,25 @@
 * **scrollEnd** : Trigger event detecting end of scroll's position.
 
 ## Download
-For latest version, check out - http://egjs.navercorp.com/latest/dist/
+For latest version, check out - https://egjs.github.io/latest/dist/
 
 ### Uncompressed (for development)
-  - Latest : http://egjs.navercorp.com/latest/dist/eg.js  
-  - For specific version :  `http://egjs.navercorp.com/[VERSION]/dist/eg.js  `
+  - Latest : https://egjs.github.io/latest/dist/eg.js  
+  - For specific version :  `https://egjs.github.io/[VERSION]/dist/eg.js  `
 
 ### Compressed (for production)
-  - Latest : http://egjs.navercorp.com/latest/dist/eg.min.js
-  - For specific version : `http://egjs.navercorp.com/[VERSION]/dist/eg.min.js`
+  - Latest : https://egjs.github.io/latest/dist/eg.min.js
+  - For specific version : `https://egjs.github.io/[VERSION]/dist/eg.min.js`
 
 ### with Bower
 
 ```bash
-# Intall naver-bower (if not installed)
-# install naver-bower globally (admin account required)
-$ npm install naver-bower -g
+# Intall bower (if not installed)
+# install bower globally (admin account required)
+$ npm install bower -g
 
-# then intall egjs using naver-bower
-$ naver-bower install egjs
+# then intall egjs using bower
+$ bower install egjs
 ```
 
 ## Browser support
@@ -107,7 +107,7 @@ $ npm install bower -g  # bower
 $ mkdir egjs && cd egjs
 
 # get the clone from the repo
-$ git clone https://oss.navercorp.com/egjs/egjs.git
+$ git clone https://github.com/egjs/egjs.git
 
 # install npm & bower dependency modules
 $ npm install
@@ -133,7 +133,7 @@ $ grunt test
 - Coverage results can be shown immediately and also can be found at `./report/index.html`.
 
 ## Issues
-If you find a bug, please report us via [issues page](https://oss.navercorp.com/egjs/egjs/issues).
+If you find a bug, please report us via [issues page](https://github.com/egjs/egjs/issues).
 
 ## License
-egjs is released under the [LGPL v2](http://www.gnu.org/licenses/old-licenses/lgpl-2.0.html) license.
+egjs is released under the [MIT](http://egjs.github.io/license) license.
