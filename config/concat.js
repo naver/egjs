@@ -1,16 +1,19 @@
 var jsonfile = require('jsonfile')
+var dependency = require('./dependency')
+var version = jsonfile.readFileSync("package.json").version;
 
 module.exports = {
 	options: {
-		banner: "<%=banner%>\"use strict\";\n",
+		banner: "<%=banner.common %>\"use strict\";\n",
 		process: function(src) {
-			src = src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, "$1"); // remove "use strict";
-			src = src.replace(/#__VERSION__#/g, jsonfile.readFileSync("package.json").version); // change version;
+			// remove "use strict";
+			// change version;
+			src = src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, "$1").replace(/#__VERSION__#/g, version);
 			return src;
 		}
 	},
 	build: {
-		src: ["src/module.js", "src/eg.js", "src/customEvent/*.js", "src/hook/*.js", "src/plugin/*.js", "src/class.js", "src/component.js", "src/visible.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js"],
+		src: dependency.egCore.concat(dependency.egExtend, ["src/visible.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js"]),
 		dest: "dist/<%=pkg.outputname%>.js"
 	}
 };
