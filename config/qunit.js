@@ -11,7 +11,7 @@ module.exports = {
 			linesThresholdPct: 0
 		},
 		page: {
-			viewportSize: { width: 320, height: 667 }
+			viewportSize: { width: 360, height: 640 }
 		}
 	}
 };

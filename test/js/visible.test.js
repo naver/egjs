@@ -56,7 +56,7 @@ test("When a scroll position of the window was changed", function() {
 		invisible = e.invisible;
 	});
 	window.scrollTo(0,300);
-	this.inst.check();
+	this.inst.check(-1);
 
 	// Then
 	equal(visible.length, 6, "visible element length (6)");
@@ -87,7 +87,7 @@ test("When a scroll position of the expanded window was changed", function() {
 		visible = [];
 
 	// When
-	this.inst.check();
+	this.inst.check(-1);
 	this.inst.options.expandSize = boxheight * 2;
 	this.inst.on("change", function(e) {
 		// visible 22~29
@@ -162,25 +162,20 @@ module("Visible wrapper Test", {
 	}
 });
 
-
-test("When a iscroll position was changed", function() {
+asyncTest("When a iscroll position was changed", function() {
 	// Given
-	var visibleLength = 0,
-		invisibleLength = 0;
+	var self = this.inst;
 	// When
-	this.inst.check();
+	this.inst.check(-1);
 	this.inst.on("change", function(e) {
-
-		visibleLength = e.visible.length;
-		invisibleLength = e.invisible.length;
+		// Then
+		equal(e.visible.length, 5, "visible element length (5)");
+		equal(e.invisible.length, 7, "invisible element length (7)");
+		start();
 	});
-	this.scroll.scrollTo(0, -300,0);
-	this.inst.check();
-	// Then
-	equal(visibleLength, 5, "visible element length (5)");
-	equal(invisibleLength, 6, "invisible element length (6)");
+	this.scroll.scrollTo(0, -400,0);
+	self.check(200);
 });
-
 
 module("Visible Test when unsupported getElementsByClassName", {
 	setup : function() {
@@ -198,7 +193,7 @@ module("Visible Test when unsupported getElementsByClassName", {
 		// copy original method
 		this.originalReviseElements = eg.Visible.prototype._reviseElements;
 		this.originalRefresh = eg.Visible.prototype.refresh;
-		
+
 		this.inst = new eg.Visible( document, {
 			targetClass : "check_document_visible"
 		});
