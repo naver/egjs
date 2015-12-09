@@ -2,7 +2,7 @@ eg.module("animate", ["jQuery", window], function($, global) {
 	"use strict";
 
 	/**
-     * Extends jQuery animate in order to use 'transform' property.
+     * Extends jQuery animate in order to use 'transform' property
      * @ko jQuery animate 사용시 transform을 사용할 수 있도록 확장한 animate 메소드
      * @name jQuery#animate
      * @method
@@ -23,11 +23,10 @@ eg.module("animate", ["jQuery", window], function($, global) {
 	var CSSMatrix = global.WebKitCSSMatrix || global.MSCSSMatrix ||
 					global.OCSSMatrix || global.MozMatrix || global.CSSMatrix;
 
-	/*
+	/**
 	 * Utility functions : matrix and toRadian is copied from transform2d
+	 * turns a transform string into its "matrix(A, B, C, D, X, Y)" form (as an array, though)
 	 */
-
-	// turns a transform string into its "matrix(A, B, C, D, X, Y)" form (as an array, though)
 	function matrix(transform) {
 		transform = transform.split(")");
 		var trim = $.trim;

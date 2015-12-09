@@ -58,7 +58,7 @@ eg.module("component", [eg], function(ns) {
 			return this;
 		},
 		/**
-		 * The event fire with custom event.
+		 * Trigger custom event.
 		 * @ko 커스텀 이벤트를 실행합니다.
 		 * @method eg.Component#trigger
 		 * @param {String} eventName
@@ -106,7 +106,7 @@ eg.module("component", [eg], function(ns) {
 			return !isCanceled;
 		},
 		/**
-		 * Checks whether the event has been assigned to the Component.
+		 * Check whether the event has been registered in component.
 		 * @ko 컴포넌트에 등록된 이벤트를 확인합니다.
 		 * @method eg.Component#hasOn
 		 * @param {String} eventName
@@ -210,7 +210,7 @@ eg.module("component", [eg], function(ns) {
 			return this;
 		},
 		/**
-		 * It method return self instance.
+		 * Retrun instance itself.
 		 * @ko 자신의 인스턴스를 반환한다.
 		 * @method eg.Component#instance
 		 * @return {Instance}

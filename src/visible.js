@@ -2,7 +2,7 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 	"use strict";
 
 	/**
-	 * It check element is visible within the specific element or viewport, regardless of the scroll position
+	 * Check element's visible state within viewport, regardless scroll position
 	 * @ko scroll 위치와 상관없이 특정 엘리먼트나 viewport 안에 엘리먼트가 보이는지 확인한다.
 	 * @class
 	 * @name eg.Visible
@@ -64,7 +64,7 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 		 * @return {Instance}
 		 *
 		 * @remark
-		 * If targets was added or removed, you must call 'refresh' method.
+		 * If targets was added or removed, must be called to refresh
 		 * <ko> 확인 대상이 영역 안에 추가 된 경우, 또는 확인 대상이 영역 안에서 삭제 된 경우, 영역 내의 확인 대상을 이 메소드를 호출하여 갱신해야한다. <ko>
 		 */
 		refresh: function() {
@@ -168,7 +168,7 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 				}
 			}
 			/**
-			 * When target elements appear or disappear based on the base area.
+			 * Trigger when the target elements are visible or hidden based on the base area.
 			 * @ko 기준 영역을 기준으로 보이는 엘리먼트와 사라진 엘리먼트가 변경된 경우 발생하는 이벤트
 			 * @name eg.Visible#change
 			 * @event

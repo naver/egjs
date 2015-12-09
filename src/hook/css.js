@@ -39,8 +39,8 @@ eg.module("css", ["jQuery", document], function($, doc) {
 		}
 	})();
 
-	// ie7, 8 - transform and transition not support
-	// ie9 - transition not support
+	// ie7, 8 - transform and transition are not supported
+	// ie9 - transition not supported
 	if (!vendorPrefix) {
 		return;
 	}
