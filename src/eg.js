@@ -237,7 +237,7 @@ if(agent.os.name === "naver") {
 		},
 		getOSVersion: function(osName) {
 			var ua = this.ua;
-			var osRule = this.getOSRule(osName);
+			var osRule = this.getOSRule(osName) || {};
 			var defaultOSVersion = userAgentRules.defaultString.os.version;
 			var osVersion;
 			var osVersionToken;
