@@ -44,7 +44,7 @@ eg.module("class", [eg], function(ns) {
 	 * @method eg.Class.extend
 	 * @param {eg.Class} oSuperClass Super class. <ko>상속하려는 클래스</ko>
 	 * @param {Object} def Class definition of object literal type. <ko>리터럴 형태의 클래스 정의부</ko>
-	 * @return {eg.Class}
+	 * @return {eg.Class} instance of new eg.Class <ko>새로 생성된 eg.Class 인스턴스</ko>
 	 * @example
 	 	var Some = eg.Class.extend(eg.Component,{
 			"some" : function(){}
