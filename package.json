@@ -20,6 +20,16 @@
   "author": "NAVER corp",
   "licenseurl" : "https://egjs.github.io/license",
   "license": "MIT",
+  "keywords": [
+    "egjs",
+    "flicking",
+    "infiniteGrid",
+    "class",
+    "component",
+    "plugin",
+    "javascript",
+    "jQuery"
+  ],
   "devDependencies": {
     "egjs-jsdoc-template": "^0.0.2",
     "grunt": "^0.4.5",
