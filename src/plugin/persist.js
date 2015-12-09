@@ -76,7 +76,8 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 
 					// like '[ ... ]', '1', '1.234', '"123"' is also not valid
 					if (jQuery.type(state) !== "object" || state instanceof Array) {
-						throw new Error("window.history has no valid format data to be handled in persist.");
+						throw new Error("window.history has no valid format data " +
+							"to be handled in persist.");
 					}
 				} catch (e) {
 					/* jshint ignore:start */
