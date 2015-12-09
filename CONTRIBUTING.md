@@ -26,7 +26,7 @@ type(module name or boundary): short description as subject
 (new line)
 Long description
 (new line)
-Ref g-IssueNo
+Ref #IssueNo
 ```
 
 - **Types**:
@@ -58,7 +58,7 @@ Ref g-IssueNo
   It fixes bugs on IE xxx applying workaround
   preventing browser crash
   
-  Ref g-18
+  Ref #18
   ```
 
 ## How to submit Pull Requests
