@@ -80,4 +80,4 @@ Steps to submit your pull request:
 
 
 ## License
-By contributing to egjs, you're agreeing that your contributions will be licensed under its [LGPL v2](https://www.gnu.org/licenses/old-licenses/lgpl-2.0.html) license.
+By contributing to egjs, you're agreeing that your contributions will be licensed under its [MIT](https://opensource.org/licenses/MIT) license.
