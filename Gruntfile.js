@@ -51,6 +51,6 @@ module.exports = function(grunt) {
 	grunt.registerTask("build", ["concat", "uglify", "docBuild"]);
 	// grunt.registerTask("build", ["concat", "uglify", "copy:lib", "docBuild"]);
 	grunt.registerTask("default", ["jshint", "jscs", "build", "test"]);
-	grunt.registerTask("check", ["jscs"]);
+	grunt.registerTask("check", ["jshint", "jscs", "test"]);
 	grunt.registerTask("changelog", ["exec:changelog"]);
 };

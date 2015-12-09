@@ -7,7 +7,7 @@
   "homepage": "http://egjs.github.io",
   "customdownload" : "https://github.com/egjs/egjs-cli",
   "scripts": {
-    "test": "grunt",
+    "test": "grunt check",
     "fakeserver": "node test/fakeserver/app.js"
   },
   "repository": {
