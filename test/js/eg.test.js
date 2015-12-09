@@ -42,7 +42,7 @@ test("If 'isHWAccelerable' called then should be apply hook.", function() {
 	eg.hook.isHWAccelerable = function(defaultValue,agent) {
 		return !controllValue;
 	};
-	
+
 	// Then
 	notEqual(result, eg.isHWAccelerable(), "change default value");
 });
@@ -1028,6 +1028,21 @@ var ua = [
 		"browser" : {
 			"name" : "phantomjs",
 			"version" : "1.9.8"
+		},
+		"isHWAccelerable" : false,
+		"isTransitional" : false,
+		"_hasClickBug" : false
+	},
+	{
+		"device" : "Phantomjs (default value)",
+		"ua" : "Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/534.34 (KHTML, like Gecko) PhantomJS/1.9.8 Safari/534.34",
+		"browser" : {
+			"name" : "phantomjs",
+			"version" : "1.9.8"
+		},
+		"os" : {
+			"name" : "unknown",
+			"version" : "-1"
 		},
 		"isHWAccelerable" : false,
 		"isTransitional" : false,
