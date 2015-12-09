@@ -1,5 +1,5 @@
 ## egjs
-
+[![Build Status](https://travis-ci.org/egjs/egjs.svg?branch=master)](https://travis-ci.org/egjs/egjs)
 egjs는 jQuery기반의 UI 인터랙션, 이펙트, 유틸리티로 구성된 통합 라이브러리로써 다양한 환경을 지원하는 빠른 웹어플리케이션을 쉽게 개발할 수 있도록 도와줍니다. 
 
 > - **데모**: http://codepen.io/egjs/
@@ -20,7 +20,7 @@ egjs는 jQuery기반의 UI 인터랙션, 이펙트, 유틸리티로 구성된 �
  
 ### jQuery Extensions
 #### methods
-* **persit** : 데이터를 저장하고 persist이벤트에서 저장한 데이트를 사용할 수 있게 하는 메서드
+* **persist** : 데이터를 저장하고 persist이벤트에서 저장한 데이트를 사용할 수 있게 하는 메서드
 * **css** : jQuery버전에서 자동으로 vendor prefix을 지원하지 않는 경우 prefix없이 사용하게 하는 확장기능
 * **animate** : jQuery animate 확장해 transform 및 3d 가속 지원
 

@@ -1,4 +1,5 @@
 # egjs 
+[![Build Status](https://travis-ci.org/egjs/egjs.svg?branch=master)](https://travis-ci.org/egjs/egjs)
 
 'egjs' is a set of UI interactions, effects and utilities components library using jQuery, which brings easiest and fastest way to build web application in your way.
 
@@ -20,7 +21,7 @@
  
 ### jQuery Extensions
 #### Methods
-* **persit** : Provide cache interface to handle persisted data among history navigation.
+* **persist** : Provide cache interface to handle persisted data among history navigation.
 * **css** : Help to use css properties without browser's vendor prefix.
 * **animate** : Support transform and 3d acceleration extending jQuery's animate.
 
