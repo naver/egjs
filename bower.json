@@ -10,8 +10,12 @@
     "egjs",
     "flicking",
     "infiniteGrid",
+    "visible",
+    "scrollend",
+    "rotate",
     "class",
     "component",
+    "persist",
     "plugin",
     "javascript",
     "jQuery"
