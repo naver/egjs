@@ -281,7 +281,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		 * Get current status
 		 * @ko infiniteGrid의 현재상태를 반환한다.
 		 * @method eg.InfiniteGrid#getStatue
-		 * @return {Object} infiniteGrid status Object
+		 * @return {Object} infiniteGrid status Object<ko>infiniteGrid 상태 오브젝트</ko>
 		 */
 		getStatus: function() {
 			var data = [];
@@ -303,7 +303,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		 * @ko infiniteGrid의 현재상태를 설정한다.
 		 * @method eg.InfiniteGrid#setStatus
 		 * @param {Object} status Object
-		 * @return {Instance}
+		 * @return {eg.InfiniteGrid} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		setStatus: function(status) {
 			this.core.element.style.cssText = status.cssText;
@@ -352,7 +352,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		 * Rearrange layout
 		 * @ko 레이아웃을 재배치한다.
 		 * @method eg.InfiniteGrid#layout
-		 * @return {Instance}
+		 * @return {eg.InfiniteGrid} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		layout: function() {
 			this._isProcessing = true;
@@ -410,7 +410,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		 * Clear elements and data
 		 * @ko 엘리먼트와 데이터를 지운다.
 		 * @method eg.InfiniteGrid#clear
-		 * @return {Instance}
+		 * @return {eg.InfiniteGrid} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		clear: function() {
 			this.core.$element.empty();

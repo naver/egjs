@@ -452,7 +452,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @param {Array} coord
 		 * @param {Boolean} isDirVal
 		 * @param {Number} duration
-		 * @return {Object} MovableCoord instance
+		 * @return {eg.MovableCoord} MovableCoord instance
 		 */
 		_setMovableCoord: function (method, coord, isDirVal, duration) {
 			isDirVal && this._getDataByDirection(coord);
@@ -890,7 +890,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * Check and parse value to number
 		 * @param {Number|String} val
 		 * @param {Number} defVal
-		 * @returns {Number}
+		 * @return {Number}
 		 */
 		_getNumValue: function (val, defVal) {
 			return isNaN(val = parseInt(val, 10)) ? defVal : val;
@@ -1038,7 +1038,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @ko 다음 패널로 이동한다.
 		 * @method eg.Flicking#next
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
-		 * @return {Object} instance of itself
+		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		next: function (duration) {
 			return this._movePanel(true, duration);
@@ -1049,7 +1049,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @ko 이전 패널로 이동한다.
 		 * @method eg.Flicking#prev
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
-		 * @return {Object} instance of itself
+		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		prev: function (duration) {
 			return this._movePanel(false, duration);
@@ -1061,7 +1061,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @method eg.Flicking#moveTo
 		 * @param {Number} no logical panel index
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
-		 * @return {Object} instance of itself
+		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		moveTo: function (no, duration) {
 			var panel = this._conf.panel;
@@ -1121,7 +1121,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * Update panel size according current viewport
 		 * @ko 패널 사이즈 정보를 갱신한다.
 		 * @method eg.Flicking#resize
-		 * @return {Object} instance of itself
+		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		resize: function () {
 			var conf = this._conf;
@@ -1148,7 +1148,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		/**
 		 * Restore panel in its right position
 		 * @ko 패널의 위치가 올바로 위치하지 않게 되는 경우, 제대로 위치하도록 보정한다.
-		 * @return {Object} instance of itself
+		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		restore: function () {
 			var conf = this._conf;
