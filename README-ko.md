@@ -139,3 +139,5 @@ $ grunt test
 
 ## 라이센스
 egjs는 [MIT](http://egjs.github.io/license)로 배포된다.
+
+[![Analytics](https://ga-beacon.appspot.com/UA-70842526-5/egjs/readme)](https://github.com/egjs/egjs)
