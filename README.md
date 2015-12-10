@@ -138,3 +138,6 @@ If you find a bug, please report us via [issues page](https://github.com/egjs/eg
 
 ## License
 egjs is released under the [MIT](http://egjs.github.io/license) license.
+
+
+[![Analytics](https://ga-beacon.appspot.com/UA-70842526-5/egjs/readme)](https://github.com/egjs/egjs)
