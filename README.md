@@ -53,9 +53,9 @@ $ bower install egjs
 
 ## Browser support
 
-|Internet Explorer|Chrome|FireFox|Safari|iOS|Android|NAVER App iOS|NAVER App Android|
-|---|---|---|---|---|---|---|---|
-|7+|Latest|Latest|Latest|7+|2.3+ (except 3.x)|Latest|Latest|
+|Internet Explorer|Chrome|FireFox|Safari|iOS|Android|
+|---|---|---|---|---|---|
+|7+|Latest|Latest|Latest|7+|2.3+ (except 3.x)|
 - Coverage could be vary among components. For more details check out API documentation.
 
 ## Dependency library
