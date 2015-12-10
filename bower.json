@@ -1,10 +1,25 @@
 {
   "name": "egjs",
-  "version": "0.0.2",
+  "version": "0.0.3",
+  "description": "Set of UI interactions, effects and utilities components library.",
   "authors": [
     "NAVER corp"
   ],
-  "license": "LGPL v2",
+  "license": "MIT",
+  "keywords": [
+    "egjs",
+    "flicking",
+    "infiniteGrid",
+    "visible",
+    "scrollend",
+    "rotate",
+    "class",
+    "component",
+    "persist",
+    "plugin",
+    "javascript",
+    "jQuery"
+  ],
   "ignore": [
     "**/.*",
     "*.json",
@@ -24,8 +39,6 @@
     "outlayer": "~1.4.1"
   },
   "devDependencies": {
-    "iscroll": "~5.1.3",
-    "sinon": "~1.14.1"
-  },
-  "description": "Set of UI interactions, effects and utilities components library."
+    "iscroll": "~5.1.3"
+  }
 }
