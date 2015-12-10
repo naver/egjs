@@ -52,9 +52,9 @@ $ naver-bower install egjs
 ```
 
 ## Browser Support
-|Internet Explorer|Chrome|FireFox|Safari|iOS|Android|네이버앱 iOS|네이버앱 Android|
-|---|---|---|---|---|---|---|---|
-|7+|최신|최신|최신|7+|2.3+ (3.x는 제외)|최신|최신|
+|Internet Explorer|Chrome|FireFox|Safari|iOS|Android|
+|---|---|---|---|---|---|
+|7+|최신|최신|최신|7+|2.3+ (3.x는 제외)|
 - 컴포넌트별 지원범위가 다를수 있으며, 사용시 API 문서를 참조한다.
 
 ## 의존성
