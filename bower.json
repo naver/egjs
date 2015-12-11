@@ -22,15 +22,19 @@
   ],
   "ignore": [
     "**/.*",
-    "*.json",
+    ".*",
     "Gruntfile.js",
+    "*.json",
     "*.md",
+    "*.txt",
     "assets",
     "bower_components",
     "node_modules",
     "report",
     "src",
-    "test"
+    "test",
+    "tc",
+    "config"
   ],
   "dependencies": {
     "jquery": "~1.7.0",
