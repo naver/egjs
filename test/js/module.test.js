@@ -276,10 +276,17 @@ test("should be set special events",function( assert ){
     "num": 1,
     "bar" : "bar"
   });
+  var eventName;
+
   // When
   // Then
-  ok(!!$.event.special["sample:some"]);
-  ok(!!$.event.special["sample:thing"]);
+  ["add", "remove", "trigger"].forEach(function(v,i) {
+    eventName = "sample:some";
+    ok($.event.special[eventName].add, "jQuery.special['"+ eventName +"']."+ v +"() is defined?");
+
+    eventName = "sample:thing";
+    ok($.event.special[eventName].add, "jQuery.special['"+ eventName +"']."+ v +"() is defined?");
+  });
 });
 
 test("custom event trigger/on",function( assert ){
