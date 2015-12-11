@@ -190,6 +190,11 @@
 		for (var i in events) {
 			special = $.event.special[name + ":" + events[i]] = {};
 
+			// to not bind native event
+			special.setup = function() {
+				return true;
+			};
+
 			for (var j in componentMethodNames) {
 				// jscs:disable validateLineBreaks, maximumLineLength
 				/*jshint loopfunc: true */
