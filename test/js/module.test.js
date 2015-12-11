@@ -281,11 +281,10 @@ test("should be set special events",function( assert ){
   // When
   // Then
   ["add", "remove", "trigger"].forEach(function(v,i) {
-    eventName = "sample:some";
-    ok($.event.special[eventName][v] && $.event.special[eventName][v], "jQuery.special['"+ eventName +"']."+ v +"() is defined?");
-
-    eventName = "sample:thing";
-    ok($.event.special[eventName][v], "jQuery.special['"+ eventName +"']."+ v +"() is defined?");
+    eventName = "sample:";
+    ok(
+      $.event.special["sample:some"][v] && $.event.special["sample:thing"][v],
+      "Special ."+ v +"() hook is defined?");
   });
 });
 
