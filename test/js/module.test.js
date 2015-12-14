@@ -276,10 +276,14 @@ test("should be set special events",function( assert ){
     "num": 1,
     "bar" : "bar"
   });
+
   // When
   // Then
-  ok(!!$.event.special["sample:some"]);
-  ok(!!$.event.special["sample:thing"]);
+  ["add", "remove", "trigger"].forEach(function(v,i) {
+    ok(
+      $.event.special["sample:some"][v] && $.event.special["sample:thing"][v],
+      "Special ."+ v +"() hook is defined?");
+    });
 });
 
 test("custom event trigger/on",function( assert ){

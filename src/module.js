@@ -150,6 +150,7 @@
 	function plugin(name) {
 		var upperCamelCase = capitalizeFirstLetter(name);
 		var events;
+		var special;
 		var componentMethodNames;
 
 		if (!(eg[upperCamelCase] && eg[upperCamelCase].prototype._events)) {
@@ -187,12 +188,17 @@
 		events = eg[upperCamelCase].prototype._events();
 
 		for (var i in events) {
-			for (var j in componentMethodNames) {
-				$.event.special[name + ":" + events[i]] = {};
+			special = $.event.special[name + ":" + events[i]] = {};
 
+			// to not bind native event
+			special.setup = function() {
+				return true;
+			};
+
+			for (var j in componentMethodNames) {
 				// jscs:disable validateLineBreaks, maximumLineLength
 				/*jshint loopfunc: true */
-				$.event.special[name + ":" + events[i]][j] = (function(componentMethodName) {
+				special[j] = (function(componentMethodName) {
 					return function(event, param) {
 						$(this).data(ns + "-" + name)[componentMethodName](
 							event.type,
