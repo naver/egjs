@@ -200,10 +200,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 	 *
 	 * @param {HTMLElement|String|jQuery} element wrapper element <ko>기준 요소</ko>
 	 * @param {Object} [options]
-	 * @param {Number} [options.itemSelector] specifies which child elements will be used as item elements in the layout. <ko>레이아웃의 아이템으로 사용될 엘리먼트들의 셀렉터</ko>
-	 * @param {Boolean} [options.isEqualSize] determine if the size of all of items are same. <ko> 모든 아이템의 사이즈가 동일한지를 지정한다</ko>
-	 * @param {Boolean} [options.defaultGroupKey] when initialzed if you have items in markup, groupkey of them are 'defaultGroupkey' <ko>초기화할때 마크업에 아이템이 있다면, defalutGroupKey를 groupKey로 지정한다</ko>
-	 * @param {Boolean} [options.count=30] if count is more than zero, grid is recyclied. <ko>count값이 0보다 클 경우, 그리드는 일정한 dom 개수를 유지한다</ko>
+	 * @param {String} [options.itemSelector] specifies which child elements will be used as item elements in the layout. <ko>레이아웃의 아이템으로 사용될 엘리먼트들의 셀렉터</ko>
+	 * @param {Boolean} [options.isEqualSize=false] determine if the size of all of items are same. <ko> 모든 아이템의 사이즈가 동일한지를 지정한다</ko>
+	 * @param {String} [options.defaultGroupKey=null] when initialzed if you have items in markup, groupkey of them are 'defaultGroupkey' <ko>초기화할때 마크업에 아이템이 있다면, defalutGroupKey를 groupKey로 지정한다</ko>
+	 * @param {Number} [options.count=30] if count is more than zero, grid is recyclied. <ko>count값이 0보다 클 경우, 그리드는 일정한 dom 개수를 유지한다</ko>
 	 *
 	 * @codepen {"id":"zvrbap", "ko":"InfiniteGrid 데모", "en":"InfiniteGrid example", "collectionId":"DPYEww", "height": 403}
 	 *  @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
