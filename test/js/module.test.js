@@ -258,6 +258,20 @@ test("call instance method",function( assert ){
   equal($("#foo").sample("getNum"),1);
 });
 
+test("call instance test",function(){
+  // Given
+  var $inst = $("#foo").sample({
+    "num": 2
+  });
+  // When
+  var inst = $inst.sample("instance");
+  // Then
+  equal($inst instanceof $, true, "check type");
+  equal(inst instanceof eg.Sample, true, "check instance type");
+  equal(inst.getNum(), $("#foo").sample("getNum"), "check instance method");
+});
+
+
 test("If component returned instance that The plugin returned jQuery instance.",function( assert ){
   // Given
   $("#foo").sample({
