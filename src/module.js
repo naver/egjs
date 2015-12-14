@@ -170,8 +170,12 @@
 			var result;
 			if (typeof options === "string") {
 				ins = this.data(ns + "-" + name);
-				result = ins[options].apply(ins, Array.prototype.slice.call(arguments, 1));
-				return result === ins ? this : result;
+				if (options === "instance") {
+					return ins;
+				} else {
+					result = ins[options].apply(ins, Array.prototype.slice.call(arguments, 1));
+					return result === ins ? this : result;
+				}
 			}
 
 			if (options === undefined || $.isPlainObject(options)) {
