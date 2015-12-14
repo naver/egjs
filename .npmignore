@@ -1,0 +1,10 @@
+config
+assets
+*.json
+tc
+src
+test
+*.js
+*.txt
+*.md
+*.log
