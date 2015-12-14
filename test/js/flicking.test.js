@@ -1209,3 +1209,11 @@ test("Check panel move method, depending existence of css transform property", f
 	// Then
 	ok(inst2.$container[0].style.left.length > 0, "When doesn't support transform, should use left/top to move.");
 });
+
+test("When intent to initialize with non-existent element, should throw error.", function (assert) {
+	assert.throws(function() {
+		new eg.Flicking("#NO-ELEMENT");
+	}, function( err ) {
+		return true;
+	});
+});
