@@ -257,7 +257,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			opts.isInitLayout = false;	// isInitLayout is always 'false' in order to controll layout.
 			opts.isResizeBound = false;	// isResizeBound is always 'false' in order to controll layout.
 
-			// if el is jQuery instance, el sholud change to HTMLElement.
+			// if el is jQuery instance, el should change to HTMLElement.
 			if (el instanceof $) {
 				el = el.get(0);
 			}
