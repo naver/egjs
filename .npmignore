@@ -1,5 +1,8 @@
+bower_components
+node_modules
 config
 assets
+report
 *.json
 tc
 src
