@@ -421,3 +421,20 @@ test("Check public methods return", function () {
 	equal(this.inst.layout(), this.inst, "return instance");
 	equal(this.inst.clear(), this.inst, "return instance");
 });
+
+asyncTest("Check prefixEvent", function () {
+	// Given
+	var isTriggered = false;
+	// When
+	this.inst = new eg.InfiniteGrid("#grid", {}, "TEST:");
+	this.inst.on("TEST:layoutComplete", function() {
+		isTriggered = true;
+	});
+	this.inst.layout();
+
+	// Then
+	setTimeout(function() {
+		equal(isTriggered, true, "check if prefixEvent trigger");
+		start();
+	},200);
+});

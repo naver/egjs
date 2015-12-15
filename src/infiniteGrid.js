@@ -263,7 +263,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			}
 			this._prefix = _prefix || "";
 			this.core = new InfiniteGridCore(el, opts)
-				.on(this._prefix + EVENTS.layoutComplete, $.proxy(this._onlayoutComplete, this));
+				.on(EVENTS.layoutComplete, $.proxy(this._onlayoutComplete, this));
 			this.$global = $(global);
 			this._reset();
 			this.core.$element.children().length > 0 && this.layout();
@@ -499,6 +499,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			 * @param {Boolean} param.isAppend isAppend determine if append or prepend (value is true when call layout method)<ko>아이템이 append로 추가되었는지, prepend로 추가되었는지를 반한환다. (layout호출시에는 true)</ko>
 			 * @param {Number} param.distance distance<ko>layout 전의 최상단 엘리먼트의 거리</ko>
 			 */
+			console.log("trigger", this._prefix + EVENTS.layoutComplete);
 			this.trigger(this._prefix + EVENTS.layoutComplete, {
 				target: e.concat(),
 				isAppend: isAppend,

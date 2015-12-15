@@ -254,3 +254,33 @@ test("When a scroll position of the window was changed", function() {
 	equal(visible.length, 6, "visible element length (6)");
 	equal(invisible.length, 5, "invisible element length (5)");
 });
+
+module("Visible event Test", {
+	setup : function() {
+		$("#view").show();
+	},
+	teardown : function() {
+		$("#view").hide();
+		this.inst.destroy();
+		this.inst = null;
+	}
+});
+asyncTest("Check prefixEvent", function () {
+	// Given
+	var isTriggered = false;
+	// When
+	this.inst = new eg.Visible( "#view", {
+		targetClass : "check_visible"
+	}, "TEST:");
+	this.inst.on("TEST:change", function() {
+		isTriggered = true;
+	});
+	window.scrollTo(0,300);
+	this.inst.check();
+
+	// Then
+	setTimeout(function() {
+		equal(isTriggered, true, "check if prefixEvent trigger");
+		start();
+	},200);
+});
