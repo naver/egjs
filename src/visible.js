@@ -188,3 +188,39 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 		}
 	});
 });
+/**
+ * Visible in jQuery plugin
+ *
+ * @ko Visible in jQuery plugin
+ * @name jQuery#visible:change
+ * @event
+ * @example
+	// create
+	$("body").visible();
+
+ 	// event
+ 	$("body").on("visible:change",callback);
+ 	$("body").off("visible:change",callback);
+ 	$("body").trigger("visible:change",callback);
+ * @see eg.Visble
+ */
+/**
+ * visible:change jQuery event plugin
+ *
+ * @ko visible:change jQuery 이벤트 plugin
+ * @method jQuery.visible
+ * @example
+	// create
+	$("body").visible();
+
+ 	// event
+ 	$("body").on("visible:change",callback);
+ 	$("body").off("visible:change",callback);
+ 	$("body").trigger("visible:change",callback);
+
+ 	// method
+ 	$("body").visible("option","circular",true); //Set option
+ 	$("body").visible("instance"); // Return flicking instance
+ 	$("body").visible("check",10); // Check to change target elements.
+ * @see eg.Visble
+ */
