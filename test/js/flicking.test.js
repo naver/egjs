@@ -1209,3 +1209,32 @@ test("Check panel move method, depending existence of css transform property", f
 	// Then
 	ok(inst2.$container[0].style.left.length > 0, "When doesn't support transform, should use left/top to move.");
 });
+
+test("Custom event name with prefix: to handle jQuery plugin style", function () {
+	// When
+	var events = [
+			"flicking:beforeFlickStart",
+			"flicking:flick",
+			"flicking:flickEnd",
+			"flicking:beforeRestore",
+			"flicking:restore"
+		],
+		eventFired = [],
+		handler = function(e) {
+			eventFired.push(e.eventType);
+		};
+
+	this.inst = new eg.Flicking("#mflick1",{ circular: true }, "flicking:").on({
+		"flicking:beforeFlickStart": handler,
+		"flicking:flick": handler,
+		"flicking:flickEnd": handler,
+		"flicking:beforeRestore": handler,
+		"flicking:restore": handler
+	});
+
+	this.inst.next(0);
+	this.inst.trigger("flicking:beforeRestore");
+	this.inst.trigger("flicking:restore");
+
+	deepEqual(events, eventFired, "Events did fired correctly?");
+});
