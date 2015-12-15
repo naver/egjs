@@ -159,9 +159,10 @@ module("plugin", {
   setup : function(){
     eg.module("sample",[eg],function(ns) {
       ns.Sample = ns.Class.extend(ns.Component, {
-        "construct": function(ele,option){
+        "construct": function(ele,option,prefix){
           this.options = option;
           this.ele = ele;
+          this.prefix = prefix;
         },
         "setNum": function( num ){
           this.options.num = num;
@@ -221,7 +222,14 @@ test("Already registered name that should be throw Error.",function( assert ){
   )
 
 });
+test("check prefix.",function( assert ){
+  // Given
+  // When
+  $("#foo").sample();
+  // Then
+  equal($("#foo").sample("instance").prefix, "sample:");
 
+});
 
 test("none parameter.",function( assert ){
   // Given
