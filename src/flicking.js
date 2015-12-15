@@ -127,6 +127,13 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		construct: function (element, options, _prefix) {
 			this.$wrapper = $(element);
 
+			if (!this.$wrapper[0] || !this.$wrapper[0].hasChildNodes()) {
+				// jscs:disable validateLineBreaks, maximumLineLength
+				throw new Error("Given base element doesn't exist or it hasn't proper DOM structure to be initialized.");
+
+				// jscs:enable validateLineBreaks, maximumLineLength
+			}
+
 			$.extend(this.options = {
 				hwAccelerable: ns.isHWAccelerable(),  // check weather hw acceleration is available
 				prefix: "eg-flick",		// prefix value of class name

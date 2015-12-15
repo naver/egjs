@@ -919,7 +919,7 @@ var ua = [
 		},
 		"isHWAccelerable" : true,
 		"isTransitional" : true,
-		"_hasClickBug" : false
+		"_hasClickBug" : true
 	},
 	{
 		// Phantomjs (default value)
