@@ -1,54 +1,61 @@
 ## egjs
 [![Build Status](https://travis-ci.org/egjs/egjs.svg?branch=master)](https://travis-ci.org/egjs/egjs)
-egjs는 jQuery기반의 UI 인터랙션, 이펙트, 유틸리티로 구성된 통합 라이브러리로써 다양한 환경을 지원하는 빠른 웹어플리케이션을 쉽게 개발할 수 있도록 도와줍니다. 
+
+egjs는 jQuery기반의 UI 인터렉션, 이펙트, 유틸리티로 구성된 통합 라이브러리로 다양한 환경을 지원하는 빠른 웹 어플리케이션을 쉽게 개발할 수 있도록 도와준다. 
 
 > - **데모**: http://codepen.io/egjs/
 > - **API 문서**
-    - Latest : http://egjs.navercorp.com/
-    - For specific version : `http://egjs.navercorp.com/[VERSION]/doc`
+    - Latest : https://egjs.github.io/latest/doc
+    - For specific version : `https://egjs.github.io/[VERSION]/doc`
 
 - [English(영어) readme](README.md)
 
 ### Component
-* **eg** : eg에서 필요한 유틸리티
-* **eg.Class** : 객체 지향으로 개발하는데 도와주는 Class.
-* **eg.Component** : 컴포넌트를 개발하는데 공통적인 기능을 가진 Class
-* **eg.MovableCoord** : 사용자 행동에 따른 좌표를 계산하는 Component
-* **eg.Flicking** : 플리킹 인터랙션을 구현하는 Component
-* **eg.Visible** : 엘리먼트가 viewport상에 있는지 확인하는 Component
-* **eg.infiniteGrid** : 카드 격자형 컨텐츠를 무한 배치하는 Component
+* **eg** : eg에서 사용하는 base 유틸리티
+* **eg.Class** : 객체 지향 스타일의 Class를 개발할 수 있도록 한다.
+* **eg.Component** : 컴포넌트 개발에 필요한 공통적 기능을 가진 클래스
+* **eg.MovableCoord** : 사용자 행동에 따른 좌표를 계산하는 컴포넌트
+* **eg.Flicking** : 플리킹 인터랙션을 구현하는 컴포넌트
+* **eg.Visible** : 요소가 뷰포트상에 위치해 있는지 확인하는 컴포넌트
+* **eg.infiniteGrid** : 카드 격자형 컨텐츠를 무한 배치하는 컴포넌트
  
 ### jQuery Extensions
 #### methods
-* **persist** : 데이터를 저장하고 persist이벤트에서 저장한 데이트를 사용할 수 있게 하는 메서드
-* **css** : jQuery버전에서 자동으로 vendor prefix을 지원하지 않는 경우 prefix없이 사용하게 하는 확장기능
+* **persist** : 히스토리 네비게이션시 데이터를 저장/복원할 수 있는 캐시 인터페이스
+* **css** : jQuery버전에서 자동으로 vendor prefix를 지원하지 않는 경우 prefix없이 사용하게 하는 확장기능
 * **animate** : jQuery animate 확장해 transform 및 3d 가속 지원
 
 #### events
-* **rotate** : 회전을 알려주는 이벤트
+* **rotate** : 디바이스의 회전을 감지하는 이벤트
 * **scrollend** : 스크롤의 마지막 시점을 알려주는 이벤트
 
 
 ## Download
-최신버전은 http://egjs.navercorp.com/latest/dist/ 에서 다운로드 받으실 수 있다.
+최신버전은 http://egjs.github.io/latest/dist/ 에서 다운로드 받을 수 있다.
 
 ### Uncompressed (개발버전)
-  - 최신 : http://egjs.navercorp.com/latest/dist/eg.js
-  - 버전별 다운로드 :  `http://egjs.navercorp.com/[VERSION]/dist/eg.js`
+  - 최신 : http://egjs.github.io/latest/dist/eg.js
+  - 버전별 :  `http://egjs.github.io/[VERSION]/dist/eg.js`
 
 ### Compressed (제품버전)
-  - 최신 : http://egjs.navercorp.com/latest/dist/eg.min.js
-  - 버전별 : `http://egjs.navercorp.com/[VERSION]/dist/eg.min.js`
+  - 최신 : http://egjs.github.io/latest/dist/eg.min.js
+  - 버전별 : `http://egjs.github.io/[VERSION]/dist/eg.min.js`
 
 ### with Bower
 
 ```bash
-# naver-bower 설치 (설치되지 않은 경우)
-# naver-bower를 전역으로 설치 (관리자 계정 필요)
-$ npm install naver-bower -g
+# bower가 설치되지 않은경우 (관리자 계정 필요)
+$ npm install bower -g
 
-# naver-bower를 이용해 egjs 설치
-$ naver-bower install egjs
+# bower를 이용해 egjs 설치
+$ bower install egjs
+```
+
+### with npm
+
+```bash
+# npm을 이용해 egjs 설치
+$ npm install egjs
 ```
 
 ## Browser Support
@@ -89,7 +96,6 @@ var Komponent = eg.Class.extend(eg.Component,{
 });
 ```
 
-
 ## egjs 개발
 egjs를 개발하고자 하는 개발자는 아래 순서대로, 개발 환경을 구성한다.
 
@@ -107,7 +113,7 @@ $ npm install bower -g  # bower
 $ mkdir egjs && cd egjs
 
 # 저장소로부터 코드를 복제
-$ git clone https://oss.navercorp.com/egjs/egjs.git
+$ git clone https://github.com/egjs/egjs.git
 
 # npm과 bower 의존성 모듈 설치
 $ npm install
@@ -128,16 +134,16 @@ $ grunt build
 
 ### 테스트
 branch를 생성한 후, 개발이 완료되면 push 하기 전에 `꼭! 단위 테스트를 수행`한다.
-grunt test를 실행하면, jshint, qunit, istanbul coverage 측정이 실행된다.
+grunt test를 실행하면, jshint, qunit, istanbul 커버리지 측정이 실행된다.
 ```bash
 $ grunt test
 ```
 - coverage 결과는 grunt 실행시 확인할 수 있으며, `./report/index.html` 파일을 통해 확인 할 수도 있다.
 
 ## 이슈등록
-버그를 발견하게 되면, [issues page](https://oss.navercorp.com/egjs/egjs/issues) 페이지를 통해 등록할 수 있다.
+버그를 발견하게 되면, [issues page](https://github.com/egjs/egjs/issues) 페이지를 통해 등록할 수 있다.
 
 ## 라이센스
-egjs는 [MIT](http://egjs.github.io/license)로 배포된다.
+egjs는 [MIT](http://egjs.github.io/license.txt)로 배포된다.
 
 [![Analytics](https://ga-beacon.appspot.com/UA-70842526-5/egjs/readme)](https://github.com/egjs/egjs)
