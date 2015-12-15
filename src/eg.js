@@ -469,7 +469,7 @@ return defaultVal;
 	// 3. when user releases fingers on screen, 'click' event is fired at previous position.
 	ns._hasClickBug = function() {
 		var agent = this.agent();
-		var result = agent.os.name === "ios";
+		var result = agent.browser.name === "safari";
 
 		return resultCache(this, "_hasClickBug", [result, agent], result);
 	};
