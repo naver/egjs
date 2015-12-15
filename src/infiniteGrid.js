@@ -247,7 +247,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		_events: function() {
 			return EVENTS;
 		},
-		construct: function(el, options) {
+		construct: function(el, options, _prefix) {
 			var opts = $.extend({
 				"isEqualSize": false,
 				"defaultGroupKey": null,
@@ -261,6 +261,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			if (el instanceof $) {
 				el = el.get(0);
 			}
+			this._prefix = _prefix || "";
 			this.core = new InfiniteGridCore(el, opts)
 				.on(EVENTS.layoutComplete, $.proxy(this._onlayoutComplete, this));
 			this.$global = $(global);
@@ -498,7 +499,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			 * @param {Boolean} param.isAppend isAppend determine if append or prepend (value is true when call layout method)<ko>아이템이 append로 추가되었는지, prepend로 추가되었는지를 반한환다. (layout호출시에는 true)</ko>
 			 * @param {Number} param.distance distance<ko>layout 전의 최상단 엘리먼트의 거리</ko>
 			 */
-			this.trigger(EVENTS.layoutComplete, {
+			this.trigger(this._prefix + EVENTS.layoutComplete, {
 				target: e.concat(),
 				isAppend: isAppend,
 				distance: distance
@@ -689,3 +690,59 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		}
 	});
 });
+/**
+ * InfiniteGrid in jQuery plugin
+ * @ko InfiniteGrid in jQuery plugin
+ * @method jQuery.infiniteGrid
+ * @example
+     <ul id="grid">
+        <li class="item">
+          <div>test1</div>
+        </li>
+        <li class="item">
+          <div>test3</div>
+        </li>
+      </ul>
+    <script>
+	// create
+	$("#content").infiniteGrid({
+        itemSelector : ".item"
+    });
+ 	// method
+ 	$("#content").infiniteGrid("option","itemSelector",".selected"); //Set option
+ 	$("#content").infiniteGrid("instance"); // Return infiniteGrid instance
+ 	$("#content").infiniteGrid("getBottomElement"); // Get bottom element
+ 	</script>
+ * @see eg.InfiniteGrid
+ */
+ /**
+ * infiniteGrid:layoutComplete jQuery event plugin
+ *
+ * @ko infiniteGrid:layoutComplete jQuery event plugin
+ * @name jQuery#infiniteGrid:layoutComplete
+ * @event
+ * @param {Object} param
+ * @param {Array} param.target target rearranged elements<ko>재배치된 엘리먼트들</ko>
+ * @param {Boolean} param.isAppend isAppend determine if append or prepend (value is true when call layout method)<ko>아이템이 append로 추가되었는지, prepend로 추가되었는지를 반한환다. (layout호출시에는 true)</ko>
+ * @param {Number} param.distance distance<ko>layout 전의 최상단 엘리먼트의 거리</ko>
+ * @example
+     <ul id="grid">
+        <li class="item">
+          <div>test1</div>
+        </li>
+        <li class="item">
+          <div>test3</div>
+        </li>
+      </ul>
+    <script>
+	// create
+	$("#content").infiniteGrid({
+        itemSelector : ".item"
+    });
+ 	// event
+ 	$("#content").on("infiniteGrid:layoutComplete",callback);
+ 	$("#content").off("infiniteGrid:layoutComplete",callback);
+ 	$("#content").trigger("infiniteGrid:layoutComplete",callback);
+ 	</script>
+ * @see eg.InfiniteGrid
+ */

@@ -116,9 +116,15 @@ li.prepend {
     </li>
   </ul>
 <script>
-oinst = new eg.InfiniteGrid("#grid", {
-    itemSelector : ".item"
+// var oinst = new eg.InfiniteGrid("#grid", {
+//     itemSelector : ".item"
+// });
+//
+var $inst = $("#grid").infiniteGrid({
+  itemSelector : ".item"
 });
+var oinst = $inst.infiniteGrid("instance");
+
 var HTML = '<li class="item"><div>테스트1</div></li><li class="item"><div>테스트2</div></li><li class="item"><div>테스트3</div></li><li class="item"><div>테스트4</div></li><li class="item"><div>테스트5</div></li><li class="item"><div>테스트6</div></li><li class="item"><div>테스트7</div></li>';
 
 var tmpStatus = {};
