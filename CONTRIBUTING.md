@@ -15,19 +15,28 @@ All rules are described at [.jshintrc](.jshintrc) file.
 To maintain same code style across entire project, we adopted [JSCS](http://jscs.info/) as code style checker.
 All conventions are described at [.jscsrc](.jscsrc) file.
 
-### Commit Log Conventions
+### Commit Log Guidelines
 egjs use commit logs in many different purposes (like creating CHANGELOG, ease history searching, etc.).
-To not break, you'll be forced to follow our commit log convention.
-Before your commit/push, make sure following our commit log convention.
+To not break, you'll be forced to follow our commit log guidelines.
+Before your commit/push, make sure following our commit log guidelines.
 
 The outline is as below:
 ```
-type(module name or boundary): short description as subject
-(new line)
-Long description
-(new line)
-Ref #IssueNo
+<type>(<module>): <subject>
+<BLANK LINE>
+<body>
+<BLANK LINE>
+<footer>
 ```
+
+- **Types**
+  - **feat**: A new feature
+  - **fix**: A bug fix
+  - **docs**: Documentation only changes
+  - **style**: Changes that do not affect the meaning of the code. Such as white-space, formatting, missing semi-colons, etc... It also possible to change JSHint, JSCS rules of the code.
+  - **refactor**: A code change that neither fixes a bug nor adds a feature
+  - **test**: Adding missing tests. Changing tests.
+  - **chore**: Changes to the build process or tools and libraries such as documentation generation
 
 - **Types**:
   - feat(feature) : when adds new feature
@@ -38,28 +47,7 @@ Ref #IssueNo
   - test(when adding missing tests) : anything test code related
   - chore(maintain) : task which are done regularly
 
-- **Module Name or Boundary**:
-  - When the changes is applied for `flicking` only
-    - ex) ```fix(flicking): fixed some bug```
-  - When the changes are applied for `flicking and movableCoord`
-    - ex) ```feat(flicking,movablecoord): Added new feature xxx```
-  - When the changes are applied for all files
-    - ex) ```style(all): Removed unnecessary console.log```
-
-- **Referencing issue**:
-
-  Basically, all of your commits should reference an issue.
-  Put github issue number related with that commit.
-  
-  For example, when fixes an issue number 18:
-  ```
-  fix(flicking): Fix bug on IE xxx
-  
-  It fixes bugs on IE xxx applying workaround
-  preventing browser crash
-  
-  Ref #18
-  ```
+[See More Commit Log Guidelines](https://github.com/egjs/egjs/wiki/Commit-Log-Guidelines)
 
 ## How to submit Pull Requests
 Steps to submit your pull request:
