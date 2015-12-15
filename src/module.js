@@ -179,7 +179,9 @@
 			}
 
 			if (options === undefined || $.isPlainObject(options)) {
-				this.data(ns + "-" + name, new eg[upperCamelCase](this, options || {}));
+				this.data(ns + "-" + name, new eg[upperCamelCase](
+					this, options || {}, name + ":"
+				));
 			}
 			return this;
 		};
