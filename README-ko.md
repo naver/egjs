@@ -35,7 +35,7 @@ egjs는 jQuery기반의 UI 인터렉션, 이펙트, 유틸리티로 구성된 �
 
 ### Uncompressed (개발버전)
   - 최신 : http://egjs.github.io/latest/dist/eg.js
-  - 버전별 다운로드 :  `http://egjs.github.io/[VERSION]/dist/eg.js`
+  - 버전별 :  `http://egjs.github.io/[VERSION]/dist/eg.js`
 
 ### Compressed (제품버전)
   - 최신 : http://egjs.github.io/latest/dist/eg.min.js
