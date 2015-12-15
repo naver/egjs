@@ -1229,7 +1229,7 @@ test("When intent to initialize with non-existent element, should throw error.",
 		// Then
 		return true;
 	});
-});});
+});
 
 test("Custom event name with prefix: to handle jQuery plugin style", function () {
 	// When
