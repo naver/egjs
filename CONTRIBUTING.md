@@ -38,15 +38,6 @@ The outline is as below:
   - **test**: Adding missing tests. Changing tests.
   - **chore**: Changes to the build process or tools and libraries such as documentation generation
 
-- **Types**:
-  - feat(feature) : when adds new feature
-  - fix(bug fix) : for bug fix
-  - docs(documentation) : anything documentation related 
-  - style(formatting, missing semi colons, etc.) : when change code style
-  - refactor : refactoring
-  - test(when adding missing tests) : anything test code related
-  - chore(maintain) : task which are done regularly
-
 [See More Commit Log Guidelines](https://github.com/egjs/egjs/wiki/Commit-Log-Guidelines)
 
 ## How to submit Pull Requests
