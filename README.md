@@ -43,12 +43,18 @@ For latest version, check out - https://egjs.github.io/latest/dist/
 ### with Bower
 
 ```bash
-# Intall bower (if not installed)
-# install bower globally (admin account required)
+# Intall bower if not (admin account required)
 $ npm install bower -g
 
 # then intall egjs using bower
 $ bower install egjs
+```
+
+### with npm
+
+```bash
+# intall egjs using npm
+$ npm install egjs
 ```
 
 ## Browser support
@@ -89,7 +95,6 @@ var Komponent = eg.Class.extend(eg.Component,{
     "construct" : function(){}
 });
 ```
-
 
 ## How to start developing egjs?
 For anyone interested to develop egjs, follow below instructions.
@@ -137,7 +142,7 @@ $ grunt test
 If you find a bug, please report us via [issues page](https://github.com/egjs/egjs/issues).
 
 ## License
-egjs is released under the [MIT](http://egjs.github.io/license) license.
+egjs is released under the [MIT](http://egjs.github.io/license.txt) license.
 
 
 [![Analytics](https://ga-beacon.appspot.com/UA-70842526-5/egjs/readme)](https://github.com/egjs/egjs)
