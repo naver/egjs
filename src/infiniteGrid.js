@@ -485,13 +485,14 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 					0 : this.core.items[e.length].position.y;
 			}
 			var item;
-			var i=0;
-			while(item = e[i++]) {
+			var i = 0;
+			while (item = e[i++]) {
 				if (typeof item.oldVisibility !== "undefined") {
-					item.element.style.visibility = item.oldVisibility
+					item.element.style.visibility = item.oldVisibility;
 					delete item.oldVisibility;
 				}
 			}
+
 			// reset flags
 			this._reset(true);
 
