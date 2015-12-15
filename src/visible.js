@@ -26,7 +26,8 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 		_events: function() {
 			return EVENTS;
 		},
-		construct: function(element, options) {
+		construct: function(element, options, _prefix) {
+			this._prefix = _prefix || "";
 			this.options = {
 				targetClass: "check_visible",
 				expandSize: 0
@@ -175,7 +176,7 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 			 * @param {Array} visible The visible elements (the element type is `HTMLElement`) <ko>보여지게 된 엘리먼트들 </ko>
 			 * @param {Array} invisible The invisible elements (the element type is `HTMLElement`) <ko>안 보여지게 된 엘리먼트들 </ko>
 			 */
-			this.trigger(EVENTS.change, {
+			this.trigger(this._prefix + EVENTS.change, {
 				visible: visibles,
 				invisible: invisibles
 			});
@@ -186,8 +187,4 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 			this._wrapper = this._timer = null;
 		}
 	});
-
-	ns.Visible._events = function() {
-		return EVENTS;
-	};
 });
