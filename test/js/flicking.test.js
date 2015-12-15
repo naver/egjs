@@ -1230,3 +1230,32 @@ test("When intent to initialize with non-existent element, should throw error.",
 		return true;
 	});
 });
+
+test("Custom event name with prefix: to handle jQuery plugin style", function () {
+	// When
+	var events = [
+			"flicking:beforeFlickStart",
+			"flicking:flick",
+			"flicking:flickEnd",
+			"flicking:beforeRestore",
+			"flicking:restore"
+		],
+		eventFired = [],
+		handler = function(e) {
+			eventFired.push(e.eventType);
+		};
+
+	this.inst = new eg.Flicking("#mflick1",{ circular: true }, "flicking:").on({
+		"flicking:beforeFlickStart": handler,
+		"flicking:flick": handler,
+		"flicking:flickEnd": handler,
+		"flicking:beforeRestore": handler,
+		"flicking:restore": handler
+	});
+
+	this.inst.next(0);
+	this.inst.trigger("flicking:beforeRestore");
+	this.inst.trigger("flicking:restore");
+
+	deepEqual(events, eventFired, "Events did fired correctly?");
+});
