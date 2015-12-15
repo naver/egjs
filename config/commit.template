@@ -1,15 +1,15 @@
 ========== Commit Format ==========
 <type>(<module>): <subject>
 <BLINK LINE>
-<body>(option)
+<body>(optional)
 <BLINK LINE>
-<footer>
+<footer>(optional)
 ============= Sample ==============
 fix(movableCoord): update aborting animation logic
 
 Abort the animating post process when "tap" occurs or velocity is zero at inside border.
  
 ref #30
-============ More See =============
+============ See More =============
 https://github.com/egjs/egjs/wiki/Commit-Guidelines
 
