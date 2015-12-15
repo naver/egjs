@@ -27,7 +27,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 	 *
 	 * @codepen {"id":"rVOpPK", "ko":"플리킹 기본 예제", "en":"Flicking default example", "collectionId":"ArxyLK", "height" : 403}
 	 *
-	 * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
+	 * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
 	 *
 	 * @see Easing Functions Cheat Sheet {@link http://easings.net/}
 	 * @see If you want to use another easing function then should be import jQuery easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/}) or jQuery UI easing.({@link https://jqueryui.com/easing/})<ko>다른 easing 함수를 사용하고 싶다면, jQuery easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/})이나, jQuery UI easing({@link https://jqueryui.com/easing/}) 라이브러리를 삽입해야 한다.</ko>
@@ -53,6 +53,44 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 	 		flickStart : function(e) { ... }
 	 	);
 	 	</script>
+	 */
+	/**
+	 * Flicking plugin in jQuery
+	 *
+	 * @ko jQuery flicking plugin
+	 * @name jQuery#flicking
+	 * @event
+	 * @example
+	 <!-- HTML -->
+	 <div id="mflick">
+		 <div>
+			<p>Layer 0</p>
+		 </div>
+		 <div>
+		 	<p>Layer 1</p>
+		 </div>
+		 <div>
+		 	<p>Layer 2</p>
+		 </div>
+	 </div>
+	 <script>
+	 // create
+	 $("#mflick").flicking({
+		circular : true,
+		threshold : 50
+	});
+
+	 // event
+	 $("#mflick").on("flicking:beforeRestore",callback);
+	 $("#mflick").off("flicking:beforeRestore",callback);
+	 $("#mflick").trigger("flicking:beforeRestore",callback);
+
+	 // method
+	 $("#mflick").flicking("option","circular",true); //Set option
+	 $("#mflick").flicking("instance"); // Return flicking instance
+	 $("#mflick").flicking("getNextIndex",1); // Get next panel index
+	 </script>
+	 * @see eg.Flicking
 	 */
 
 	// define custom events name
@@ -86,7 +124,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @param {HTMLElement|String|jQuery} element - base element
 		 * @param {Object} options
 		 */
-		construct: function (element, options) {
+		construct: function (element, options, _prefix) {
 			this.$wrapper = $(element);
 
 			$.extend(this.options = {
@@ -135,6 +173,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				dirData: [],
 				indexToMove: 0,
 				triggerFlickEvent: true,
+				eventPrefix: _prefix || "",
 
 				// For buggy link highlighting on Android 2.x
 				$dummyAnchor: null
@@ -819,13 +858,14 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @return {Boolean}
 		 */
 		_triggerEvent: function (name, param) {
-			var panel = this._conf.panel;
+			var conf = this._conf;
+			var panel = conf.panel;
 
-			return this.trigger(name, param = $.extend({
+			return this.trigger(conf.eventPrefix + name, param = $.extend({
 				eventType: name,
 				index: panel.index,
 				no: panel.no,
-				direction: this._conf.touch.direction
+				direction: conf.touch.direction
 			}, param));
 		},
 
