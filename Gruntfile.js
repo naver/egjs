@@ -47,6 +47,18 @@ module.exports = function(grunt) {
 		}
 	});
 
+	grunt.registerTask("cleanPkgd", function() {
+		if (grunt.file.exists("dist/pkgd/eg.pkgd.js")) {
+			grunt.file["delete"]("dist/pkgd/eg.pkgd.js", { force: true });
+		}
+		if (grunt.file.exists("dist/pkgd/flicking.pkgd.js")) {
+			grunt.file["delete"]("dist/pkgd/flicking.pkgd.js", { force: true });
+		}
+		if (grunt.file.exists("dist/pkgd/infiniteGrid.pkgd.js")) {
+			grunt.file["delete"]("dist/pkgd/infiniteGrid.pkgd.js", { force: true });
+		}
+	});
+
 	grunt.registerTask("validate-commit", function() {
 		if (!grunt.file.exists(".git/hooks/commit-msg")) {
 			var fs = require("fs");
@@ -56,7 +68,7 @@ module.exports = function(grunt) {
 	});
 
 	grunt.registerTask("docBuild", ["copy:doc", "clean", "jsdoc"]);
-	grunt.registerTask("build", ["concat", "uglify", "docBuild"]);
+	grunt.registerTask("build", ["concat", "uglify", "cleanPkgd", "docBuild"]);
 	// grunt.registerTask("build", ["concat", "uglify", "copy:lib", "docBuild"]);
 	grunt.registerTask("default", ["validate-commit","jshint", "jscs", "build", "test"]);
 	grunt.registerTask("check", ["jshint", "jscs", "test"]);
