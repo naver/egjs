@@ -16,7 +16,7 @@ var util = require('util');
 
 var MAX_LENGTH = 100;
 var PATTERN = /^(?:fixup!\s*)?(\w*)(\(([\w\$\.\*/-]*)\))?\: (.*)$/;
-var IGNORED = /^WzIP\:/;
+var IGNORED = /^WIP\:/;
 var TYPES = {
   feat: true,
   fix: true,
