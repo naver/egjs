@@ -1,5 +1,5 @@
 module.exports = {
-	common : ["/**",
+	common: ["/**",
 		"* <%= pkg.name %>",
 		"* @version <%= pkg.version %>",
 		"* @SHA-1 <%= gitinfo.shortSHA %>" +
@@ -9,18 +9,18 @@ module.exports = {
 		"* <%= pkg.author %>; <%= pkg.name %> JavaScript library",
 		"* <%= pkg.homepage %>",
 		"*",
-		"* Released under <%= pkg.license %> license",
+		"* Released under the <%= pkg.license %> license",
 		"* <%= pkg.licenseurl %>",
 		"*",
 		"* For custom build use egjs-cli",
 		"* <%= pkg.customdownload %>",
-		"*/\n"].join("\n"),
-	pkgd : function(type) {
+		"*/\n"].join("\r\n"),
+	pkgd: function(type) {
 		return [
 			"/**",
 			"* All-in-one packaged file for ease use of '" + type + "' with below dependencies.",
 			"* NOTE: This is not an official distribution file and is only for user convenience.",
 			"*",
-			"* "].join("\n");
-		}
+			"* "].join("\r\n");
+	}
 };
