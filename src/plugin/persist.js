@@ -108,7 +108,13 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	 */
 	function setState(state) {
 		if (isSupportState) {
-			history.replaceState(JSON.stringify(state), doc.title, location.href);
+			try {
+				history.replaceState(JSON.stringify(state), doc.title, location.href);
+			} catch (e) {
+				/* jshint ignore:start */
+				console.warn(e.message);
+				/* jshint ignore:end */
+			}
 		} else {
 			if (state) {
 				storage.setItem(location.href + CONST_PERSIST, JSON.stringify(state));
