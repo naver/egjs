@@ -50,12 +50,6 @@ $ npm install bower -g
 $ bower install egjs
 ```
 
-### with npm
-
-```bash
-# intall egjs using npm
-$ npm install egjs
-```
 
 ## Browser support
 
