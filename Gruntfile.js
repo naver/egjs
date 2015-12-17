@@ -60,17 +60,17 @@ module.exports = function(grunt) {
 	});
 
 	grunt.registerTask("validate-commit", function() {
-		if (!grunt.file.exists(".git/hooks/commit-msg")) {
-			var fs = require("fs");
-			grunt.file.copy("config/validate-commit-msg.js", ".git/hooks/commit-msg", { force: true });
-			fs.chmodSync(".git/hooks/commit-msg", "755");
+		var fs = require("fs");
+		if (grunt.file.exists(".git/hooks/commit-msg")) {
+			grunt.file["delete"](".git/hooks/commit-msg", { force: true });
 		}
+		grunt.file.copy("config/validate-commit-msg.js", ".git/hooks/commit-msg", { force: true });
+		fs.chmodSync(".git/hooks/commit-msg", "755");
 	});
 
 	grunt.registerTask("docBuild", ["copy:doc", "clean", "jsdoc"]);
-	grunt.registerTask("build", ["concat", "uglify", "cleanPkgd", "docBuild"]);
-	// grunt.registerTask("build", ["concat", "uglify", "copy:lib", "docBuild"]);
-	grunt.registerTask("default", ["validate-commit","jshint", "jscs", "build", "test"]);
+	grunt.registerTask("build", ["validate-commit", "concat", "uglify", "cleanPkgd", "docBuild"]);
+	grunt.registerTask("default", ["jshint", "jscs", "build", "test"]);
 	grunt.registerTask("check", ["jshint", "jscs", "test"]);
 	grunt.registerTask("changelog", ["exec:changelog"]);
 };

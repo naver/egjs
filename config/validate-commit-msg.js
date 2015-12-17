@@ -36,7 +36,7 @@ var error = function() {
 };
 
 
-var validateMessage = function(message) {
+var validateMessage = function(message, fullMessage) {
   var isValid = true;
 
   if (IGNORED.test(message)) {
@@ -53,7 +53,7 @@ var validateMessage = function(message) {
 
   if (!match) {
     var data = fs.readFileSync(__dirname+'/../../config/commit.template', 'utf8');
-    error('\n\r======= Your commit message =======\n\r' + message+ '\n\r\n\r\n\r'+data);
+    error('\n\r======= Your commit message =======\n\r' + fullMessage + '\n\r' + data);
     return false;
   }
 
@@ -83,6 +83,10 @@ var firstLineFromBuffer = function(buffer) {
   return buffer.toString().split('\n').shift();
 };
 
+var removeInfo = function(buffer) {
+  return buffer.toString().replace(/\n(#\s(?:.*?)$)/gm,"");
+};
+
 
  
 // publish for testing
@@ -96,7 +100,7 @@ if (process.argv.join('').indexOf('jasmine-node') === -1) {
   fs.readFile(commitMsgFile, function(err, buffer) {
     var msg = firstLineFromBuffer(buffer);
 
-    if (!validateMessage(msg)) {
+    if (!validateMessage(msg, removeInfo(buffer))) {
       fs.appendFile(incorrectLogFile, msg + '\n', function() {
         process.exit(1);
       });
