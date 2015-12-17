@@ -51,12 +51,6 @@ $ npm install bower -g
 $ bower install egjs
 ```
 
-### with npm
-
-```bash
-# npm을 이용해 egjs 설치
-$ npm install egjs
-```
 
 ## Browser Support
 |Internet Explorer|Chrome|FireFox|Safari|iOS|Android|
