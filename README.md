@@ -115,8 +115,7 @@ $ mkdir egjs && cd egjs
 # get the clone from the repo
 $ git clone https://github.com/egjs/egjs.git
 
-# install npm & bower dependency modules
-$ npm install
+# install bower dependency modules
 $ bower install
 ```
 
