@@ -6,6 +6,4 @@ report
 temp
 *.log
 *.iml
-doc
 .idea/
-dist
