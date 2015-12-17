@@ -30,7 +30,7 @@
 * **scrollEnd** : Trigger event detecting end of scroll's position.
 
 ## Download
-For latest version, check out - https://egjs.github.io/latest/dist/
+For latest version, check out - https://github.com/egjs/egjs.github.io
 
 ### Uncompressed (for development)
   - Latest : https://egjs.github.io/latest/dist/eg.js  
