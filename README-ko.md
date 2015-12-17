@@ -115,8 +115,7 @@ $ mkdir egjs && cd egjs
 # 저장소로부터 코드를 복제
 $ git clone https://github.com/egjs/egjs.git
 
-# npm과 bower 의존성 모듈 설치
-$ npm install
+# bower 의존성 모듈 설치
 $ bower install
 ```
 
