@@ -150,6 +150,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		},
 		clone: function(target, source) {
 			clone(target, source, [
+				"_isLayoutInited",
 				"_equalItemSize",
 				"_appendCols",
 				"_prependCols",
