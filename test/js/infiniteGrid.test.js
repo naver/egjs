@@ -287,8 +287,9 @@ asyncTest("restore status", function() {
 			deepEqual(v.position, self.core.items[i].position, "check html and position information");
 			deepEqual(v.size, self.core.items[i].size,"check html and size information");
 		});
-		deepEqual(beforeStatus.core._appendCols, this.core._appendCols, "check appendCol info");
-		deepEqual(beforeStatus.core._prependCols, this.core._prependCols, "check appendCol info");
+		equal(beforeStatus.core._isLayoutInited, this.core._isLayoutInited, "check _isLayoutInited info");
+		deepEqual(beforeStatus.core._appendCols, this.core._appendCols, "check _appendCols info");
+		deepEqual(beforeStatus.core._prependCols, this.core._prependCols, "check _prependCols info");
 		deepEqual(beforeStatus.core.columnWidth, this.core.columnWidth, "check columnWidth info");
 		deepEqual(beforeStatus.core.size, this.core.size, "check size info");
 		deepEqual(beforeStatus.core.options, this.core.options, "check options info");
