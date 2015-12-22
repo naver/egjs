@@ -1051,7 +1051,7 @@ var ua = [
 ];
 
 // Json common data definitions
-ua = ua.map(function(v){
+ua = $.map( ua, function( v ) {
     if(!v.browser.webview) {
         v.browser.webview = false;
     }
@@ -1075,7 +1075,7 @@ module("extend Agent Test", {
 });
 
 
-ua.forEach(function(v,i) {
+$.each( ua, function( i, v ) {
 	test("agent Test : "+ v.device, function() {
 		// Given
 		// When
@@ -1090,7 +1090,7 @@ ua.forEach(function(v,i) {
 	});
 });
 
-ua.forEach(function(v,i) {
+$.each( ua, function( i, v ) {
 	test("isHWAccelerable Test : "+ v.device, function() {
 		// Given
 		// When
@@ -1100,7 +1100,7 @@ ua.forEach(function(v,i) {
 	});
 });
 
-ua.forEach(function(v,i) {
+$.each( ua, function( i, v ) {
 	test("isTransitional Test : "+ v.device, function() {
 		// Given
 		// When
@@ -1111,7 +1111,7 @@ ua.forEach(function(v,i) {
 });
 
 
-ua.forEach(function(v,i) {
+$.each( ua, function( i, v ) {
 	test("_hasClickBug Test : "+ v.device, function() {
 		// Given
 		// When
@@ -1254,7 +1254,7 @@ module("extend hook Test", {
 
 
 
-nativeVersionProfile.forEach(function(v,i) {
+$.each( nativeVersionProfile, function( i, v ) {	
 	test("agent hook nativeVersion Test"+i, function() {
 		// Given
 		eg.hook.agent = function(agent){
