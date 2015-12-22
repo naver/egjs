@@ -1,3 +1,5 @@
+QUnit.config.reorder = false;
+
 module("Absolute animate Test", {
 	beforeEach : function() {
 		this.egAnimate = eg.invoke("animate",[jQuery,window]);
@@ -109,6 +111,7 @@ if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
 						$.each(expected[1], function(i) {
 							expected[1][i] = parseFloat(expected[1][i]).toFixed(3);
 							result[1][i] = parseFloat(result[1][i]).toFixed(3);
+							result[1][i] = (result[1][2] === "-0.000")? "0.000": result[1][i];
 						});
 
 						equal(result[1].toString(), expected[1].toString());
