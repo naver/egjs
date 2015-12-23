@@ -11,6 +11,7 @@ module.exports = function(grunt) {
 
 	var config = {
 		"pkg": grunt.file.readJSON("package.json"),
+		"clean": getConfig("clean"),
 		"gitinfo": grunt.task.run("exec:gitinfo"),
 		"banner": getConfig("banner"),
 		"exec": getConfig("exec"),
@@ -41,24 +42,6 @@ module.exports = function(grunt) {
 		grunt.task.run("qunit:each");
 	});
 
-	grunt.registerTask("clean", function() {
-		if (grunt.file.exists("doc")) {
-			grunt.file["delete"]("doc", { force: true });
-		}
-	});
-
-	grunt.registerTask("cleanPkgd", function() {
-		if (grunt.file.exists("dist/pkgd/eg.pkgd.js")) {
-			grunt.file["delete"]("dist/pkgd/eg.pkgd.js", { force: true });
-		}
-		if (grunt.file.exists("dist/pkgd/flicking.pkgd.js")) {
-			grunt.file["delete"]("dist/pkgd/flicking.pkgd.js", { force: true });
-		}
-		if (grunt.file.exists("dist/pkgd/infiniteGrid.pkgd.js")) {
-			grunt.file["delete"]("dist/pkgd/infiniteGrid.pkgd.js", { force: true });
-		}
-	});
-
 	grunt.registerTask("validate-commit", function() {
 		var fs = require("fs");
 		if (grunt.file.exists(".git/hooks/commit-msg")) {
@@ -68,8 +51,8 @@ module.exports = function(grunt) {
 		fs.chmodSync(".git/hooks/commit-msg", "755");
 	});
 
-	grunt.registerTask("docBuild", ["copy:doc", "clean", "jsdoc"]);
-	grunt.registerTask("build", ["validate-commit", "concat", "uglify", "cleanPkgd", "docBuild"]);
+	grunt.registerTask("docBuild", ["copy:doc", "clean:doc", "jsdoc"]);
+	grunt.registerTask("build", ["validate-commit", "concat", "uglify", "clean:pkgd", "docBuild"]);
 	grunt.registerTask("default", ["jshint", "jscs", "build", "test"]);
 	grunt.registerTask("check", ["jshint", "jscs", "test"]);
 	grunt.registerTask("changelog", ["exec:changelog"]);
