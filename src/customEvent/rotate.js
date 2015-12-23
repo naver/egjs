@@ -15,7 +15,7 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 	 * @event
 	 * @param {Event} e event
 	 * @param {Boolean} e.isVertical vertical <ko>수직여부</ko>
-	 * @support { "ios" : "7+", "an" : "2.1+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
+	 * @support { "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 * @example
 	 * $(window).on("rotate",function(e){
 	 *      e.isVertical;
