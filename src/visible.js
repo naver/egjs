@@ -9,8 +9,8 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 	 * @extends eg.Component
 	 * @group egjs
 	 *
+	 * @param {HTMLElement|String|jQuery} [element=document] The parent element that to check targets (wrapper is only one.) <ko>확인할 영역의 상위 엘리먼트</ko>
 	 * @param {Object} options
-	 * @param {HTMLElement|String|jQuery} [options.wrapper=document] The parent element that to check targets (wrapper is only one.) <ko>확인할 영역의 상위 엘리먼트</ko>
 	 * @param {String} [options.targetClass="check_visible"] A class name of targets <ko>확인할 엘리먼트가 가진 클래스명</ko>
 	 * @param {Number} [options.expandSize=0] expand size of the wrapper.
 	 * e.g. If a wrapper size is 100 x 100 and 'expandSize' option is 20, visible range is 120 x 120
