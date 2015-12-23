@@ -54,44 +54,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 	 	);
 	 	</script>
 	 */
-	/**
-	 * Flicking plugin in jQuery
-	 *
-	 * @ko jQuery flicking plugin
-	 * @name jQuery#flicking
-	 * @event
-	 * @example
-	 <!-- HTML -->
-	 <div id="mflick">
-		 <div>
-			<p>Layer 0</p>
-		 </div>
-		 <div>
-		 	<p>Layer 1</p>
-		 </div>
-		 <div>
-		 	<p>Layer 2</p>
-		 </div>
-	 </div>
-	 <script>
-	 // create
-	 $("#mflick").flicking({
-		circular : true,
-		threshold : 50
-	});
 
-	 // event
-	 $("#mflick").on("flicking:beforeRestore",callback);
-	 $("#mflick").off("flicking:beforeRestore",callback);
-	 $("#mflick").trigger("flicking:beforeRestore",callback);
-
-	 // method
-	 $("#mflick").flicking("option","circular",true); //Set option
-	 $("#mflick").flicking("instance"); // Return flicking instance
-	 $("#mflick").flicking("getNextIndex",1); // Get next panel index
-	 </script>
-	 * @see eg.Flicking
-	 */
 
 	// define custom events name
 	var EVENTS = {
@@ -581,7 +544,6 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			 * @ko 패널이 이동될 때 발생하는 이벤트
 			 * @name eg.Flicking#flick
 			 * @event
-			 *
 			 * @param {Object} param
 			 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
 			 * @param {Number} param.index Current panel physical index <ko>현재 패널 물리적 인덱스</ko>
@@ -1213,3 +1175,93 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		}
 	});
 });
+/**
+ * Flicking in jQuery plugin
+ *
+ * @ko Flicking in jQuery plugin
+ * @method jQuery.flicking
+ * @example
+	<div id="content">
+	    <div>
+	        <p>Layer 0</p>
+	    </div>
+	    <div>
+	        <p>Layer 1</p>
+	    </div>
+	    <div>
+	        <p>Layer 2</p>
+	    </div>
+	</div>
+    <script>
+	// create
+	$("#content").flicking({
+        circular : true,
+     	threshold : 50
+    });
+ 	// method
+	$("#content").flicking("option","circular",true); //Set option
+	$("#content").flicking("instance"); // Return flicking instance
+	$("#content").flicking("getNextIndex",1); // Get next panel index
+ 	</script>
+ * @see eg.Flicking
+ */
+/**
+ * flicking:beforeRestore jQuery event plugin
+ *
+ * @ko flicking:beforeRestore jQuery event plugin
+ * @name jQuery#flicking:beforeRestore
+ * @event
+ * @example
+ $("#mflick").on("flicking:beforeRestore",callback);
+ $("#mflick").off("flicking:beforeRestore",callback);
+ $("#mflick").trigger("flicking:beforeRestore",callback);
+ * @see eg.Flicking#event:beforeRestore
+ */
+/**
+ * flicking:beforeFlickStart jQuery event plugin
+ *
+ * @ko flicking:beforeFlickStart jQuery event plugin
+ * @name jQuery#flicking:beforeFlickStart
+ * @event
+ * @example
+ $("#mflick").on("flicking:beforeFlickStart",callback);
+ $("#mflick").off("flicking:beforeFlickStart",callback);
+ $("#mflick").trigger("flicking:beforeFlickStart",callback);
+ * @see eg.Flicking#event:beforeFlickStart
+ */
+/**
+ * flicking:flick jQuery event plugin
+ *
+ * @ko flicking:flick jQuery event plugin
+ * @name jQuery#flicking:flick
+ * @event
+ * @example
+ $("#mflick").on("flicking:flick",callback);
+ $("#mflick").off("flicking:flick",callback);
+ $("#mflick").trigger("flicking:flick",callback);
+ * @see eg.Flicking#event:flick
+ */
+/**
+ * flicking:flickEnd jQuery event plugin
+ *
+ * @ko flicking:flickEnd jQuery event plugin
+ * @name jQuery#flicking:flickEnd
+ * @event
+ * @example
+ $("#mflick").on("flicking:flickEnd",callback);
+ $("#mflick").off("flicking:flickEnd",callback);
+ $("#mflick").trigger("flicking:flickEnd",callback);
+ * @see eg.Flicking#event:flickEnd
+ */
+/**
+ * flicking:restore jQuery event plugin
+ *
+ * @ko flicking:restore jQuery event plugin
+ * @name jQuery#flicking:restore
+ * @event
+ * @example
+ $("#mflick").on("flicking:restore",callback);
+ $("#mflick").off("flicking:restore",callback);
+ $("#mflick").trigger("flicking:restore",callback);
+ * @see eg.Flicking#event:restore
+ */
