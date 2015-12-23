@@ -55,7 +55,6 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 	 	</script>
 	 */
 
-
 	// define custom events name
 	var EVENTS = {
 		"beforeFlickStart": "beforeFlickStart",
