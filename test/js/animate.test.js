@@ -109,9 +109,8 @@ if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
 						// Ignore very tiny difference. 
 						// Because output matrixes can be different with input matrixes.) 
 						$.each(expected[1], function(i) {
-							expected[1][i] = parseFloat(expected[1][i]).toFixed(3);
-							result[1][i] = parseFloat(result[1][i]).toFixed(3);
-							result[1][i] = (result[1][2] === "-0.000")? "0.000": result[1][i];
+							expected[1][i] = parseFloat(parseFloat(expected[1][i]).toFixed(3));
+							result[1][i] = parseFloat(parseFloat(result[1][i]).toFixed(3));
 						});
 
 						equal(result[1].toString(), expected[1].toString());
