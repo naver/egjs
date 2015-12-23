@@ -207,7 +207,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 	 * @param {Number} [options.count=30] when count value is greater than 0, grid will maintain same DOM length recycling <ko>count값이 0보다 클 경우, 그리드는 일정한 dom 개수를 유지한다</ko>
 	 *
 	 * @codepen {"id":"zvrbap", "ko":"InfiniteGrid 데모", "en":"InfiniteGrid example", "collectionId":"DPYEww", "height": 403}
-	 *  @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
+	 *  @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 *
 	 *  @see Outlayer {@link https://github.com/metafizzy/outlayer}
 	 *
