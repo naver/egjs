@@ -222,5 +222,5 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
  	$("body").visible("option","circular",true); //Set option
  	$("body").visible("instance"); // Return flicking instance
  	$("body").visible("check",10); // Check to change target elements.
- * @see eg.Visble
+ * @see eg.Visble#event:change
  */
