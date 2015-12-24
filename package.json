@@ -5,7 +5,7 @@
   "outputname": "eg",
   "main": "dist/eg.js",
   "homepage": "http://egjs.github.io",
-  "customdownload" : "https://github.com/egjs/egjs-cli",
+  "customdownload": "https://github.com/egjs/egjs-cli",
   "scripts": {
     "test": "grunt check",
     "fakeserver": "node test/fakeserver/app.js"
@@ -18,7 +18,7 @@
     "url": "https://github.com/egjs/egjs/issues"
   },
   "author": "NAVER corp",
-  "licenseurl" : "https://egjs.github.io/license.txt",
+  "licenseurl": "https://egjs.github.io/license.txt",
   "license": "MIT",
   "keywords": [
     "egjs",
@@ -37,6 +37,7 @@
   "devDependencies": {
     "egjs-jsdoc-template": "*",
     "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.7.0",
     "grunt-contrib-concat": "^0.5.1",
     "grunt-contrib-copy": "^0.8.0",
     "grunt-contrib-jshint": "^0.11.0",
