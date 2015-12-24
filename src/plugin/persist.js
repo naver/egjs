@@ -135,7 +135,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	* Save current state
 	* @ko 인자로 넘긴 현재 상태정보를 저장한다.
 	* @method jQuery.persist
-	* @support {"ie": "9+", "ch" : "latest", "ff" : "1.5+",  "sf" : "latest", "ios" : "7+", "an" : "2.2+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
+	* @support {"ie": "9+", "ch" : "latest", "ff" : "1.5+",  "sf" : "latest", "ios" : "7+", "an" : "2.2+ (except 3.x)"}
 	* @param {Object} state State object to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체</ko>
 	* @example
 	$("a").on("click",function(e){

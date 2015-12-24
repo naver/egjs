@@ -207,7 +207,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 	 * @param {Number} [options.count=30] when count value is greater than 0, grid will maintain same DOM length recycling <ko>count값이 0보다 클 경우, 그리드는 일정한 dom 개수를 유지한다</ko>
 	 *
 	 * @codepen {"id":"zvrbap", "ko":"InfiniteGrid 데모", "en":"InfiniteGrid example", "collectionId":"DPYEww", "height": 403}
-	 *  @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)", "n-ios" : "latest", "n-an" : "latest" }
+	 *  @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 *
 	 *  @see Outlayer {@link https://github.com/metafizzy/outlayer}
 	 *
@@ -716,13 +716,13 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
       </ul>
     <script>
 	// create
-	$("#content").infiniteGrid({
+	$("#grid").infiniteGrid({
         itemSelector : ".item"
     });
  	// method
- 	$("#content").infiniteGrid("option","itemSelector",".selected"); //Set option
- 	$("#content").infiniteGrid("instance"); // Return infiniteGrid instance
- 	$("#content").infiniteGrid("getBottomElement"); // Get bottom element
+ 	$("#grid").infiniteGrid("option","itemSelector",".selected"); //Set option
+ 	$("#grid").infiniteGrid("instance"); // Return infiniteGrid instance
+ 	$("#grid").infiniteGrid("getBottomElement"); // Get bottom element
  	</script>
  * @see eg.InfiniteGrid
  */
@@ -732,10 +732,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
  * @ko infiniteGrid:layoutComplete jQuery event plugin
  * @name jQuery#infiniteGrid:layoutComplete
  * @event
- * @param {Object} param
- * @param {Array} param.target target rearranged elements<ko>재배치된 엘리먼트들</ko>
- * @param {Boolean} param.isAppend isAppend determine if append or prepend (value is true when call layout method)<ko>아이템이 append로 추가되었는지, prepend로 추가되었는지를 반한환다. (layout호출시에는 true)</ko>
- * @param {Number} param.distance distance<ko>layout 전의 최상단 엘리먼트의 거리</ko>
  * @example
      <ul id="grid">
         <li class="item">
@@ -747,13 +743,13 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
       </ul>
     <script>
 	// create
-	$("#content").infiniteGrid({
+	$("#grid").infiniteGrid({
         itemSelector : ".item"
     });
  	// event
- 	$("#content").on("infiniteGrid:layoutComplete",callback);
- 	$("#content").off("infiniteGrid:layoutComplete",callback);
- 	$("#content").trigger("infiniteGrid:layoutComplete",callback);
+ 	$("#grid").on("infiniteGrid:layoutComplete",callback);
+ 	$("#grid").off("infiniteGrid:layoutComplete",callback);
+ 	$("#grid").trigger("infiniteGrid:layoutComplete",callback);
  	</script>
- * @see eg.InfiniteGrid
+ * @see eg.InfiniteGrid#event:layoutComplete
  */
