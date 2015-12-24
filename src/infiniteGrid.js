@@ -482,7 +482,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			if (isAppend === false) {
 				this._isFitted = false;
 				this._fit(true);
-				distance = e.length > this.core.items.length ?
+				distance = e.length >= this.core.items.length ?
 					0 : this.core.items[e.length].position.y;
 			}
 			var item;

@@ -193,17 +193,14 @@ asyncTest("check a prepend module with groupkey", function() {
 		group = {};
 	// Given
 	this.inst = new eg.InfiniteGrid("#nochildren_grid", {
-		"count" : 40
+		"count" : 18
 	});
 
 	// When
 	this.inst.on("layoutComplete",function(e) {
-		if(addCount++ <10) {
+		if(addCount++ <5) {
 			group[groupkey] = e.target.length;
-			equal(this.core.$element.children().length, this.core.items.length, "a number of elements(DOM) -> " + this.core.items.length);
-			if(groupkey >2) {
-				equal(this._removedContent, 20 * (groupkey-2), "check removedContent");
-			}
+			equal(this.core.$element.children().length, this.core.items.length, "a number of elements(DOM) -> " + this.core.items.length + ", removeCount : " + this._removedContent);
 			equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
 			this.append(getContent("append",20),groupkey++);
 		} else {
