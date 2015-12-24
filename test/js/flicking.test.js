@@ -1115,15 +1115,19 @@ test("Custom events #8 - Check for direction during hold and unhold on flick eve
 
 	// Given
 	var el,
-		directionHold,
-		directionUnhold
+		directionHold = [],
+		directionUnhold = [],
 		handler = function(e) {
 			if(e.holding) {
-				directionHold = e.direction;
+				directionHold.push(e.direction);
 			} else {
-				directionUnhold = e.direction;
+				directionUnhold.push(e.direction);
 			}
 		};
+
+	var check = function(arr, val) {
+		return arr.join("").replace(new RegExp(val,"g"), "") === "";
+	};
 
 	// When
 	el = $("#mflick1")[0];
@@ -1144,8 +1148,8 @@ test("Custom events #8 - Check for direction during hold and unhold on flick eve
 		easing: "linear"
 	}, function() {
 		// Then
-		assert.ok(directionHold === eg.MovableCoord.DIRECTION_LEFT, "Is left during touch hold?");
-		assert.ok(directionUnhold === eg.MovableCoord.DIRECTION_LEFT, "Is left during touch unhold?");
+		assert.ok(check(directionHold, eg.MovableCoord.DIRECTION_LEFT), "Is left during touch hold?");
+		assert.ok(check(directionUnhold,eg.MovableCoord.DIRECTION_LEFT), "Is left during touch unhold?");
 		done1();
 	});
 
@@ -1153,6 +1157,8 @@ test("Custom events #8 - Check for direction during hold and unhold on flick eve
 	setTimeout(function() {
 		el = $("#mflick2")[0];
 		direction = null;
+		directionHold = [];
+		directionUnhold = [];
 
 		this.inst = new eg.Flicking(el, {
 			circular: true
@@ -1170,8 +1176,8 @@ test("Custom events #8 - Check for direction during hold and unhold on flick eve
 			easing: "linear"
 		}, function() {
 			// Then
-			assert.ok(directionHold === eg.MovableCoord.DIRECTION_RIGHT, "Is right during touch hold?");
-			assert.ok(directionUnhold === eg.MovableCoord.DIRECTION_RIGHT, "Is right during touch unhold?");
+			assert.ok(check(directionHold, eg.MovableCoord.DIRECTION_RIGHT), "Is right during touch hold?");
+			assert.ok(check(directionUnhold, eg.MovableCoord.DIRECTION_RIGHT), "Is right during touch unhold?");
 			done2();
 		});
 	}, 1500);
@@ -1180,6 +1186,8 @@ test("Custom events #8 - Check for direction during hold and unhold on flick eve
 	setTimeout(function() {
 		el = $("#mflick3")[0];
 		direction = null;
+		directionHold = [];
+		directionUnhold = [];
 
 		this.inst = new eg.Flicking(el, {
 			circular: true,
@@ -1198,8 +1206,8 @@ test("Custom events #8 - Check for direction during hold and unhold on flick eve
 			easing: "linear"
 		}, function() {
 			// Then
-			assert.ok(directionHold === eg.MovableCoord.DIRECTION_UP, "Is up during touch hold?");
-			assert.ok(directionUnhold === eg.MovableCoord.DIRECTION_UP, "Is up during touch unhold?");
+			assert.ok(check(directionHold, eg.MovableCoord.DIRECTION_UP), "Is up during touch hold?");
+			assert.ok(check(directionUnhold, eg.MovableCoord.DIRECTION_UP), "Is up during touch unhold?");
 			done3();
 		});
 	}, 3000);
@@ -1208,6 +1216,8 @@ test("Custom events #8 - Check for direction during hold and unhold on flick eve
 	setTimeout(function() {
 		el = $("#mflick3-1")[0];
 		direction = null;
+		directionHold = [];
+		directionUnhold = [];
 
 		this.inst = new eg.Flicking(el, {
 			circular: true,
@@ -1226,8 +1236,8 @@ test("Custom events #8 - Check for direction during hold and unhold on flick eve
 			easing: "linear"
 		}, function() {
 			// Then
-			assert.ok(directionHold === eg.MovableCoord.DIRECTION_DOWN, "Is down during touch hold?");
-			assert.ok(directionUnhold === eg.MovableCoord.DIRECTION_DOWN, "Is down during touch unhold?");
+			assert.ok(check(directionHold, eg.MovableCoord.DIRECTION_DOWN), "Is down during touch hold?");
+			assert.ok(check(directionUnhold, eg.MovableCoord.DIRECTION_DOWN), "Is down during touch unhold?");
 			done4();
 		});
 	}, 4500);

@@ -603,7 +603,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				movedPx = e.hammerEvent[ this.options.horizontal ? "deltaX" : "deltaY" ];
 
 				if (!~$.inArray(direction, conf.dirData)) {
-					direction = conf.dirData[ +(touch.lastPos < movedPx) ];
+					direction = conf.dirData[ +(Math.abs(touch.lastPos) <= movedPx) ];
 				}
 
 				touch.lastPos = movedPx;
