@@ -173,7 +173,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 					holdPos: [0, 0],	// hold x,y coordinate
 					destPos: [0, 0],	// destination x,y coordinate
 					distance: 0,		// touch distance pixel of start to end touch
-					direction: null	// touch direction
+					direction: null,	// touch direction
+					lastPos: 0			// to determine move on holding
 				},
 				customEvent: {},		// for custom event return value
 				useLayerHack: this.options.hwAccelerable && !SUPPORT_WILLCHANGE,
@@ -186,7 +187,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				$dummyAnchor: null
 			};
 
-			$([["LEFT", "RIGHT"], ["DOWN", "UP"]][+!this.options.horizontal]).each(
+			$([["LEFT", "RIGHT"], ["UP", "DOWN"]][+!this.options.horizontal]).each(
 				$.proxy(function (i, v) {
 					this._conf.dirData.push(MC["DIRECTION_" + v]);
 				}, this));
@@ -571,8 +572,12 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * 'change' event handler
 		 */
 		_changeHandler: function (e) {
+			var conf = this._conf;
+			var touch = conf.touch;
 			var pos = e.pos;
+			var direction;
 			var eventRes = null;
+			var movedPx;
 
 			this._setPointerEvents(e);  // for "click" bug
 
@@ -591,10 +596,25 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			 * @param {Number} param.pos.0 Departure x-coordinate <ko>x 좌표</ko>
 			 * @param {Boolean} param.holding Holding if an area is pressed, this value is 'true'. <ko>스크린을 사용자가 누르고 있을 경우 true </ko>
 			 */
-			this._conf.triggerFlickEvent &&
-			(eventRes = this._triggerEvent(EVENTS.flick, {
+			if (e.hammerEvent) {
+				direction = e.hammerEvent.direction;
+
+				// Adjust direction in case of diagonal touch move
+				movedPx = e.hammerEvent[ this.options.horizontal ? "deltaX" : "deltaY" ];
+
+				if (!~$.inArray(direction, conf.dirData)) {
+					direction = conf.dirData[ +(touch.lastPos < movedPx) ];
+				}
+
+				touch.lastPos = movedPx;
+			} else {
+				touch.lastPos = null;
+			}
+
+			conf.triggerFlickEvent && (eventRes = this._triggerEvent(EVENTS.flick, {
 				pos: e.pos,
-				holding: e.holding
+				holding: e.holding,
+				direction: direction || touch.direction
 			}));
 
 			(eventRes || eventRes === null) && this._setTranslate([
@@ -635,6 +655,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 */
 		_animationStartHandler: function (e) {
 			var conf = this._conf;
+			var touch = conf.touch;
 			var panel = conf.panel;
 			var pos = {
 				depaPos: e.depaPos,
@@ -656,6 +677,9 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			if (this._isMovable()) {
 				conf.customEvent.restore = false;
 			} else {
+				// reverse direction value when restore
+				touch.direction = ~~conf.dirData.join("").replace(touch.direction, "");
+
 				/**
 				 * Before panel restores it's last position
 				 * @ko 플리킹 임계치에 도달하지 못하고 사용자의 액션이 끝났을 경우, 원래 패널로 복원되기 전에 발생하는 이벤트

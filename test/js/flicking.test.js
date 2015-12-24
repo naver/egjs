@@ -134,7 +134,7 @@ test("Option: threshold #1 - (horizontal) when moved more than threshold pixels"
 	}, function() {
 		// Then
 		setTimeout(function() {
-			deepEqual(panelNo + 1, changedPanelNo, "Moved to next panel?");
+			assert.deepEqual(panelNo + 1, changedPanelNo, "Moved to next panel?");
 			done();
 		},1000);
     });
@@ -169,7 +169,7 @@ test("Option: threshold #2 - (vertical) when moved more than threshold pixels", 
 	}, function() {
 		// Then
 		setTimeout(function() {
-			deepEqual(panelNo + 1, changedPanelNo, "Moved to next panel?");
+			assert.deepEqual(panelNo + 1, changedPanelNo, "Moved to next panel?");
 			done();
 		},1000);
     });
@@ -203,7 +203,7 @@ test("Option: threshold #3 - (horizontal) when moved less than threshold pixels"
 	}, function() {
 		// Then
 		setTimeout(function() {
-			deepEqual(panelNo, changedPanelNo, "Not moved to next panel?");
+			assert.deepEqual(panelNo, changedPanelNo, "Not moved to next panel?");
 			done();
 		},1000);
     });
@@ -238,7 +238,7 @@ test("Option: threshold #4 - (vertical) when moved less than threshold pixels", 
 	}, function() {
 		// Then
 		setTimeout(function() {
-			deepEqual(panelNo, changedPanelNo, "Not moved to next panel?");
+			assert.deepEqual(panelNo, changedPanelNo, "Not moved to next panel?");
 			done();
 		},1000);
     });
@@ -457,7 +457,7 @@ test("Method: isPlaying()", function(assert) {
 
 		// Then
 		setTimeout(function() {
-			ok(isPlaying, "During the animation must return 'true'");
+			assert.ok(isPlaying, "During the animation must return 'true'");
 			done();
 		},500);
     });
@@ -500,8 +500,8 @@ test("Method: next() - Animation #1", function (assert) {
 			value = (this.inst._getBasePositionIndex() * 100) + "%";
 
 		// Then
-		deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to next panel correctly?");
-		deepEqual(element[0], nextElement[0], "The next element is what expected?");
+		assert.deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to next panel correctly?");
+		assert.deepEqual(element[0], nextElement[0], "The next element is what expected?");
 
 		done();
 	}, this), 400);
@@ -526,8 +526,8 @@ test("Method: next() - Animation #2", function (assert) {
 
 		// When
 		// Then
-		deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to next panel correctly?");
-		deepEqual(element[0], nextElement[0], "The next element is what expected?");
+		assert.deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to next panel correctly?");
+		assert.deepEqual(element[0], nextElement[0], "The next element is what expected?");
 
 		done();
 	}, this), 400);
@@ -569,8 +569,8 @@ test("Method: prev() - Animation #1", function (assert) {
 			value = (this.inst._getBasePositionIndex() * 100) +"%";
 
 		// Then
-		deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to previous panel correctly?");
-		deepEqual(element.html(), prevElement.html(), "The previous element is what expected?");
+		assert.deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to previous panel correctly?");
+		assert.deepEqual(element.html(), prevElement.html(), "The previous element is what expected?");
 
 		done();
 	}, this), 400);
@@ -594,8 +594,8 @@ test("Method: prev() - Animation #2", function (assert) {
 			value = (this.inst._getBasePositionIndex() * 100) + "%";
 
 		// Then
-		deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to previous panel correctly?");
-		deepEqual(element.html(), prevElement.html(), "The previous element is what expected?");
+		assert.deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to previous panel correctly?");
+		assert.deepEqual(element.html(), prevElement.html(), "The previous element is what expected?");
 
 		done();
 	}, this), 400);
@@ -672,7 +672,7 @@ test("Method: moveTo() - Animation #1", function(assert) {
 
 	setTimeout($.proxy(function() {
 		// Then
-		equal($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Moved to last panel?");
+		assert.equal($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Moved to last panel?");
 		done();
 	}, this),500);
 });
@@ -692,7 +692,7 @@ test("Method: moveTo() - Animation #2", function(assert) {
 
 	setTimeout($.proxy(function () {
 		// Then
-		equal($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Moved to last panel?");
+		assert.equal($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Moved to last panel?");
 		done();
 	}, this), 500);
 });
@@ -716,9 +716,9 @@ test("Method: moveTo() - Animation #3", function (assert) {
 
 	setTimeout($.proxy(function() {
 		// Then
-		equal(count - 1, this.inst._conf.panel.no, "Panel number indicate last panel number?");
-		deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
-		ok(this.inst.getElement().html().indexOf("Layer "+ (count - 1)), "Moved correctly?");
+		assert.equal(count - 1, this.inst._conf.panel.no, "Panel number indicate last panel number?");
+		assert.deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
+		assert.ok(this.inst.getElement().html().indexOf("Layer "+ (count - 1)), "Moved correctly?");
 
 		done();
 	}, this),500);
@@ -738,9 +738,9 @@ test("Method: moveTo() - Animation #4", function (assert) {
 
 	setTimeout($.proxy(function() {
 		// Then
-		equal(this.inst._conf.panel.no, 2, "Panel number indicate second panel number?");
-		deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
-		ok(this.inst.getElement().html().indexOf("Layer 2"), "Moved correctly?");
+		assert.equal(this.inst._conf.panel.no, 2, "Panel number indicate second panel number?");
+		assert.deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
+		assert.ok(this.inst.getElement().html().indexOf("Layer 2"), "Moved correctly?");
 
 		done();
 	}, this),500);
@@ -811,7 +811,7 @@ test("Custom events #1 - When changes panel normally", function(assert) {
 	}, function() {
 		// Then
 		setTimeout(function() {
-			deepEqual(eventOrder, eventFired, "Custom events are fired in correct order");
+			assert.deepEqual(eventOrder, eventFired, "Custom events are fired in correct order");
 			done();
 		},1000);
     });
@@ -855,8 +855,7 @@ test("Custom events #2 - When stop event on beforeRestore", function(assert) {
 	}, function() {
 		// Then
 		setTimeout(function() {
-			ok(!called, "restore event should not be triggered");
-			//notEqual(currentTransform, $getTransformValue(inst.$container, true), "the panel should not be restored");
+			assert.ok(!called, "restore event should not be triggered");
 			done();
 		},1000);
     });
@@ -900,7 +899,7 @@ test("Custom events #3 - When stop on flick event", function (assert) {
 	}, function() {
 		// Then
 		setTimeout(function() {
-			notEqual(translate, $getTransformValue(inst.$container, true), "The panel should not be moved during change");
+			assert.notEqual(translate, $getTransformValue(inst.$container, true), "The panel should not be moved during change");
 			done();
 		},800);
     });
@@ -949,15 +948,15 @@ test("Custom events #4 - When stop on beforeFlickStart event", function (assert)
 		setTimeout(function () {
 			var currPos = inst._getDataByDirection(inst._mcInst.get())[0];
 
-			ok(currPos % inst._conf.panel.size, "The panel stopped to move and is not positioned well?");
+			assert.ok(currPos % inst._conf.panel.size, "The panel stopped to move and is not positioned well?");
 
 			// When
 			inst.restore();
 			currPos = inst._getDataByDirection(inst._mcInst.get())[0];
 
 			// Then
-			ok(currPos % inst._conf.panel.size === 0, "The panel restored in its original position?");
-			deepEqual(panelIndex, {
+			assert.ok(currPos % inst._conf.panel.size === 0, "The panel restored in its original position?");
+			assert.deepEqual(panelIndex, {
 				no: inst._conf.panel.no,
 				index: inst._conf.panel.index
 			}, "Restored panel index value?")
@@ -1049,7 +1048,7 @@ test("Custom events #6 - Events fired on move API call when duration is greater 
 
 	setTimeout(function() {
 		for(var x in eventFired) {
-			deepEqual(eventFired[x], eventOrder, "Events are fired in correct order, after calling "+ x +"()?");
+			assert.deepEqual(eventFired[x], eventOrder, "Events are fired in correct order, after calling "+ x +"()?");
 		}
 		done();
 	}, 1000);
@@ -1087,7 +1086,7 @@ test("Custom events #7 - Check for continuous action: 1)restore, 2)flick ", func
 	}, function() {
 		// Then
 		setTimeout(function() {
-			deepEqual(["beforeRestore", "flick", "restore"], eventFired, "Custom events for restoring are fired in correct order");
+			assert.deepEqual(["beforeRestore", "flick", "restore"], eventFired, "Custom events for restoring are fired in correct order");
 			eventFired = [];
 
 			// When
@@ -1100,12 +1099,138 @@ test("Custom events #7 - Check for continuous action: 1)restore, 2)flick ", func
 			}, function() {
 				// Then
 				setTimeout(function() {
-					deepEqual(["beforeFlickStart", "flick", "flickEnd"], eventFired, "Custom events for normal moves are fired in correct order");
+					assert.deepEqual(["beforeFlickStart", "flick", "flickEnd"], eventFired, "Custom events for normal moves are fired in correct order");
 					done();
 				},1000);
 			});
 		},1000);
 	});
+});
+
+test("Custom events #8 - Check for direction during hold and unhold on flick event", function(assert) {
+	var done1 = assert.async();
+	var done2 = assert.async();
+	var done3 = assert.async();
+	var done4 = assert.async();
+
+	// Given
+	var el,
+		directionHold,
+		directionUnhold
+		handler = function(e) {
+			if(e.holding) {
+				directionHold = e.direction;
+			} else {
+				directionUnhold = e.direction;
+			}
+		};
+
+	// When
+	el = $("#mflick1")[0];
+	direction = null;
+
+	this.inst = new eg.Flicking(el, {
+		circular: true
+	}).on({
+		flick: handler,
+		circular: true
+	});
+
+	Simulator.gestures.pan(el, {
+		pos: [50, 50],
+		deltaX: -100,
+		deltaY: 90,
+		duration: 1000,
+		easing: "linear"
+	}, function() {
+		// Then
+		assert.ok(directionHold === eg.MovableCoord.DIRECTION_LEFT, "Is left during touch hold?");
+		assert.ok(directionUnhold === eg.MovableCoord.DIRECTION_LEFT, "Is left during touch unhold?");
+		done1();
+	});
+
+	// Given
+	setTimeout(function() {
+		el = $("#mflick2")[0];
+		direction = null;
+
+		this.inst = new eg.Flicking(el, {
+			circular: true
+		}).on({
+			flick: handler,
+			circular: true
+		});
+
+		// When
+		Simulator.gestures.pan(el, {
+			pos: [50, 50],
+			deltaX: 100,
+			deltaY: 50,
+			duration: 1000,
+			easing: "linear"
+		}, function() {
+			// Then
+			assert.ok(directionHold === eg.MovableCoord.DIRECTION_RIGHT, "Is right during touch hold?");
+			assert.ok(directionUnhold === eg.MovableCoord.DIRECTION_RIGHT, "Is right during touch unhold?");
+			done2();
+		});
+	}, 1500);
+
+	// Given
+	setTimeout(function() {
+		el = $("#mflick3")[0];
+		direction = null;
+
+		this.inst = new eg.Flicking(el, {
+			circular: true,
+			horizontal: false
+		}).on({
+			flick: handler,
+			circular: true
+		});
+
+		// When
+		Simulator.gestures.pan(el, {
+			pos: [50, 50],
+			deltaX: 50,
+			deltaY: -100,
+			duration: 1000,
+			easing: "linear"
+		}, function() {
+			// Then
+			assert.ok(directionHold === eg.MovableCoord.DIRECTION_UP, "Is up during touch hold?");
+			assert.ok(directionUnhold === eg.MovableCoord.DIRECTION_UP, "Is up during touch unhold?");
+			done3();
+		});
+	}, 3000);
+
+	// Given
+	setTimeout(function() {
+		el = $("#mflick3-1")[0];
+		direction = null;
+
+		this.inst = new eg.Flicking(el, {
+			circular: true,
+			horizontal: false
+		}).on({
+			flick: handler,
+			circular: true
+		});
+
+		// When
+		Simulator.gestures.pan(el, {
+			pos: [50, 50],
+			deltaX: -50,
+			deltaY: 100,
+			duration: 1000,
+			easing: "linear"
+		}, function() {
+			// Then
+			assert.ok(directionHold === eg.MovableCoord.DIRECTION_DOWN, "Is down during touch hold?");
+			assert.ok(directionUnhold === eg.MovableCoord.DIRECTION_DOWN, "Is down during touch unhold?");
+			done4();
+		});
+	}, 4500);
 });
 
 test("Workaround for buggy link highlighting on android 2.x", function () {
@@ -1180,7 +1305,7 @@ test("Check public methods return", function (assert) {
 
 	setTimeout(function() {
 		instance.forEach(function(v,i) {
-			deepEqual(v.data, inst, v.method + " is returning instance it self?");
+			assert.deepEqual(v.data, inst, v.method + " is returning instance it self?");
 		});
 		done();
 	}, 1200);
