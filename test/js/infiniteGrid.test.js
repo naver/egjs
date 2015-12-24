@@ -16,7 +16,7 @@ var getContent = function(className, x) {
 	return $el;
 };
 
-module("infiniteGrid Test", {
+module("infiniteGrid initailization Test", {
 	setup : function() {
 		this.inst = null;
 	},
@@ -27,7 +27,6 @@ module("infiniteGrid Test", {
 		}
 	}
 });
-
 
 asyncTest("check a initialization (there are children)", function() {
 	// Given
@@ -64,13 +63,24 @@ asyncTest("check a append after a initialization (there aren't children)", funct
 	this.inst.append($el);
 });
 
+module("infiniteGrid append Test", {
+	setup : function() {
+		this.inst = new eg.InfiniteGrid("#nochildren_grid", {
+			"count" : 18
+		});
+	},
+	teardown : function() {
+		if(this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
+	}
+});
+
 asyncTest("check a append module", function() {
 	// Given
 	var addCount = 0,
 		beforeItemsCount = 0;
-	this.inst = new eg.InfiniteGrid("#nochildren_grid", {
-		"count" : 18
-	});
 
 	// When
 	this.inst.on("layoutComplete",function(e) {
@@ -102,9 +112,6 @@ asyncTest("check a append module with groupkey", function() {
 		groupkey = 0,
 		beforeItemsCount = 0,
 		group = {};
-	this.inst = new eg.InfiniteGrid("#nochildren_grid", {
-		"count" : 18
-	});
 
 	// When
 	this.inst.on("layoutComplete",function(e) {
@@ -134,14 +141,24 @@ asyncTest("check a append module with groupkey", function() {
 	this.inst.append(getContent("append"), groupkey);
 });
 
+module("infiniteGrid prepend Test", {
+	setup : function() {
+		this.inst = new eg.InfiniteGrid("#nochildren_grid", {
+			"count" : 18
+		});
+	},
+	teardown : function() {
+		if(this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
+	}
+});
+
 asyncTest("check a prepend module", function() {
 	var addCount = 0,
 		beforeItem = null;
 	// Given
-	this.inst = new eg.InfiniteGrid("#nochildren_grid", {
-		"count" : 18
-	});
-
 	// When
 	this.inst.prepend(getContent("prepend"));
 	// Then
@@ -179,6 +196,7 @@ asyncTest("check a prepend module", function() {
 
 
 asyncTest("check a prepend module with groupkey", function() {
+	// Given
 	function beforeGroupInfo(inst, group) {
 		var groupKey = inst.getGroupKeys()[0]-1;
 		return {
@@ -186,15 +204,10 @@ asyncTest("check a prepend module with groupkey", function() {
 			count : group[groupKey]
 		};
 	}
-
 	var addCount = 0,
 		groupkey = 0,
 		groupInfo = {},
 		group = {};
-	// Given
-	this.inst = new eg.InfiniteGrid("#nochildren_grid", {
-		"count" : 18
-	});
 
 	// When
 	this.inst.on("layoutComplete",function(e) {
@@ -209,7 +222,6 @@ asyncTest("check a prepend module with groupkey", function() {
 	});
 	// Then
 	this.inst.append(getContent("append",20),groupkey++);
-
 
 	function prependTest(inst) {
 		// Given
@@ -236,6 +248,53 @@ asyncTest("check a prepend module with groupkey", function() {
 		// When
 		groupInfo = beforeGroupInfo(inst, group);
 		inst.prepend(getContent("prepend", groupInfo.count), groupInfo.groupKey);
+	}
+});
+
+asyncTest("check a count of remove contents", function() {
+	// Given
+	// When
+	// Then
+	equal(this.inst._removedContent, 0, "content is 0 from markup");
+	equal(this.inst.isRecycling(), false, "elements are lacked");
+
+	//When
+	this.inst.on("layoutComplete",function(e) {
+		// Then
+		equal(this.isProcessing(), false, "idel in layoutComplete ");
+		equal(e.isAppend, true, "append type");
+		equal(this.isRecycling(), true, "recycle mode");
+		equal(this.core.items.length, 18, "a number of elements are always 18");
+		equal(this.core.$element.children().length, 18, "a number of DOM are always 18");
+		equal(this._removedContent, 1988, "a number of removed elements are 1988");
+
+		// When
+		this.off();
+		this.on("layoutComplete",function(e) {
+			// Then
+			equal(this.isProcessing(), false, "idel in layoutComplete " + e.target.length);
+			equal(e.target.length, 1988, "a number of prepend elements are 1988");
+			equal(e.isAppend, false, "prepend type");
+			equal(this.isRecycling(), true, "recycle mode");
+			equal(this.core.items.length, 18, "a number of elements are always 18");
+			equal(this.core.$element.children().length, 18, "a number of DOM are always 18");
+			equal(this._removedContent, 0, "a number of removed elements are 0");
+			start();
+		});
+		this.prepend(getContent("prepend", 2000));
+	});
+	this.inst.append(getContent("append",2006));
+});
+
+module("infiniteGrid unit method Test", {
+	setup : function() {
+		this.inst = null;
+	},
+	teardown : function() {
+		if(this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
 	}
 });
 
@@ -365,48 +424,6 @@ asyncTest("check a clear", function() {
 	// When
 	this.inst.layout();
 });
-
-
-asyncTest("check a count of remove contents", function() {
-	// Given
-	// When
-	this.inst = new eg.InfiniteGrid("#grid", {
-		"count" : 18
-	});
-
-	// Then
-	equal(this.inst._removedContent, 0, "content is 0 from markup");
-	equal(this.inst.isRecycling(), false, "elements are lacked");
-
-
-	//When
-	this.inst.on("layoutComplete",function(e) {
-		// Then
-		equal(this.isProcessing(), false, "idel in layoutComplete ");
-		equal(e.isAppend, true, "append type");
-		equal(this.isRecycling(), true, "recycle mode");
-		equal(this.core.items.length, 18, "a number of elements are always 18");
-		equal(this.core.$element.children().length, 18, "a number of DOM are always 18");
-		equal(this._removedContent, 1988, "a number of removed elements are 1988");
-
-		// When
-		this.off();
-		this.on("layoutComplete",function(e) {
-			// Then
-			equal(this.isProcessing(), false, "idel in layoutComplete " + e.target.length);
-			equal(e.target.length, 1988, "a number of prepend elements are 1988");
-			equal(e.isAppend, false, "prepend type");
-			equal(this.isRecycling(), true, "recycle mode");
-			equal(this.core.items.length, 18, "a number of elements are always 18");
-			equal(this.core.$element.children().length, 18, "a number of DOM are always 18");
-			equal(this._removedContent, 0, "a number of removed elements are 0");
-			start();
-		});
-		this.prepend(getContent("prepend", 2000));
-	});
-	this.inst.append(getContent("append",2000));
-});
-
 
 test("Check public methods return", function () {
 	// Given
