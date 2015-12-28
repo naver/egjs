@@ -16,7 +16,7 @@ var getContent = function(className, x) {
 	return $el;
 };
 
-module("infiniteGrid Test", {
+module("infiniteGrid initailization Test", {
 	setup : function() {
 		this.inst = null;
 	},
@@ -28,16 +28,16 @@ module("infiniteGrid Test", {
 	}
 });
 
-
-asyncTest("check a initialization (there are children)", function() {
+test("check a initialization (there are children)", function(assert) {
 	// Given
+	var done = assert.async();
 	this.inst = new eg.InfiniteGrid("#grid");
 	this.inst.on("layoutComplete",function(e) {
 		// Then
 		equal(e.target.length, 6, "a number of elements are 6");
 		equal(this.core.items.length, 6, "a number of elements are 6");
 		equal(this.isProcessing(), false, "idel in layoutComplete");
-		start();
+		done();
 	});
 	// When
 	// Then
@@ -47,8 +47,9 @@ asyncTest("check a initialization (there are children)", function() {
 	this.inst.layout();
 });
 
-asyncTest("check a append after a initialization (there aren't children)", function() {
+test("check a append after a initialization (there aren't children)", function(assert) {
 	// Given
+	var done = assert.async();
 	var $el = getContent("append");
 	this.inst = new eg.InfiniteGrid("#nochildren_grid");
 
@@ -59,18 +60,30 @@ asyncTest("check a append after a initialization (there aren't children)", funct
 		equal(e.target.length, $el.length, "a number of elements are " + $el.length);
 		equal(this.core._appendCols.length, 2, "is correct columnWidth");
 		equal(this.isProcessing(), false, "idel in layoutComplete");
-		start();
+		done();
 	});
 	this.inst.append($el);
 });
 
-asyncTest("check a append module", function() {
+module("infiniteGrid append Test", {
+	setup : function() {
+		this.inst = new eg.InfiniteGrid("#nochildren_grid", {
+			"count" : 18
+		});
+	},
+	teardown : function() {
+		if(this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
+	}
+});
+
+test("check a append module", function(assert) {
 	// Given
+	var done = assert.async();
 	var addCount = 0,
 		beforeItemsCount = 0;
-	this.inst = new eg.InfiniteGrid("#nochildren_grid", {
-		"count" : 18
-	});
 
 	// When
 	this.inst.on("layoutComplete",function(e) {
@@ -88,7 +101,7 @@ asyncTest("check a append module", function() {
 		if(addCount++ < 10) {
 			this.append(getContent("append",5));
 		} else {
-			start();
+			done();
 		}
 	});
 	beforeItemsCount = this.inst.core.items.length;
@@ -96,15 +109,13 @@ asyncTest("check a append module", function() {
 });
 
 
-asyncTest("check a append module with groupkey", function() {
+test("check a append module with groupkey", function(assert) {
 	// Given
+	var done = assert.async();
 	var addCount = 0,
 		groupkey = 0,
 		beforeItemsCount = 0,
 		group = {};
-	this.inst = new eg.InfiniteGrid("#nochildren_grid", {
-		"count" : 18
-	});
 
 	// When
 	this.inst.on("layoutComplete",function(e) {
@@ -127,21 +138,32 @@ asyncTest("check a append module with groupkey", function() {
 		if(addCount++ < 10) {
 			this.append(getContent("append"), ++groupkey);
 		} else {
-			start();
+			done();
 		}
 	});
 	beforeItemsCount = this.inst.core.items.length;
 	this.inst.append(getContent("append"), groupkey);
 });
 
-asyncTest("check a prepend module", function() {
+module("infiniteGrid prepend Test", {
+	setup : function() {
+		this.inst = new eg.InfiniteGrid("#nochildren_grid", {
+			"count" : 18
+		});
+	},
+	teardown : function() {
+		if(this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
+	}
+});
+
+test("check a prepend module", function(assert) {
+	var done = assert.async();
 	var addCount = 0,
 		beforeItem = null;
 	// Given
-	this.inst = new eg.InfiniteGrid("#nochildren_grid", {
-		"count" : 18
-	});
-
 	// When
 	this.inst.prepend(getContent("prepend"));
 	// Then
@@ -163,10 +185,10 @@ asyncTest("check a prepend module", function() {
 
 			if(addCount++ < 10) {
 				if(this.prepend(getContent("prepend")) == 0) {
-					start();
+					done();
 				}
 			} else {
-				start();
+				done();
 			}
 		});
 		// Then
@@ -178,7 +200,9 @@ asyncTest("check a prepend module", function() {
 });
 
 
-asyncTest("check a prepend module with groupkey", function() {
+test("check a prepend module with groupkey", function(assert) {
+	var done = assert.async();
+	// Given
 	function beforeGroupInfo(inst, group) {
 		var groupKey = inst.getGroupKeys()[0]-1;
 		return {
@@ -186,24 +210,16 @@ asyncTest("check a prepend module with groupkey", function() {
 			count : group[groupKey]
 		};
 	}
-
 	var addCount = 0,
 		groupkey = 0,
 		groupInfo = {},
 		group = {};
-	// Given
-	this.inst = new eg.InfiniteGrid("#nochildren_grid", {
-		"count" : 40
-	});
 
 	// When
 	this.inst.on("layoutComplete",function(e) {
-		if(addCount++ <10) {
+		if(addCount++ <5) {
 			group[groupkey] = e.target.length;
-			equal(this.core.$element.children().length, this.core.items.length, "a number of elements(DOM) -> " + this.core.items.length);
-			if(groupkey >2) {
-				equal(this._removedContent, 20 * (groupkey-2), "check removedContent");
-			}
+			equal(this.core.$element.children().length, this.core.items.length, "a number of elements(DOM) -> " + this.core.items.length + ", removeCount : " + this._removedContent);
 			equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
 			this.append(getContent("append",20),groupkey++);
 		} else {
@@ -212,7 +228,6 @@ asyncTest("check a prepend module with groupkey", function() {
 	});
 	// Then
 	this.inst.append(getContent("append",20),groupkey++);
-
 
 	function prependTest(inst) {
 		// Given
@@ -233,7 +248,7 @@ asyncTest("check a prepend module with groupkey", function() {
 				groupInfo = beforeGroupInfo(inst, group);
 				inst.prepend(getContent("prepend", groupInfo.count), groupInfo.groupKey);
 			} else {
-				start();
+				done();
 			}
 		});
 		// When
@@ -242,7 +257,56 @@ asyncTest("check a prepend module with groupkey", function() {
 	}
 });
 
-asyncTest("restore status", function() {
+test("check a count of remove contents", function(assert) {
+	var done = assert.async();
+	// Given
+	// When
+	// Then
+	equal(this.inst._removedContent, 0, "content is 0 from markup");
+	equal(this.inst.isRecycling(), false, "elements are lacked");
+
+	//When
+	this.inst.on("layoutComplete",function(e) {
+		// Then
+		equal(this.isProcessing(), false, "idel in layoutComplete ");
+		equal(e.isAppend, true, "append type");
+		equal(this.isRecycling(), true, "recycle mode");
+		equal(this.core.items.length, 18, "a number of elements are always 18");
+		equal(this.core.$element.children().length, 18, "a number of DOM are always 18");
+		equal(this._removedContent, 1988, "a number of removed elements are 1988");
+
+		// When
+		this.off();
+		this.on("layoutComplete",function(e) {
+			// Then
+			equal(this.isProcessing(), false, "idel in layoutComplete " + e.target.length);
+			equal(e.target.length, 1988, "a number of prepend elements are 1988");
+			equal(e.isAppend, false, "prepend type");
+			equal(this.isRecycling(), true, "recycle mode");
+			equal(this.core.items.length, 18, "a number of elements are always 18");
+			equal(this.core.$element.children().length, 18, "a number of DOM are always 18");
+			equal(this._removedContent, 0, "a number of removed elements are 0");
+			done();
+		});
+		this.prepend(getContent("prepend", 2000));
+	});
+	this.inst.append(getContent("append",2006));
+});
+
+module("infiniteGrid unit method Test", {
+	setup : function() {
+		this.inst = null;
+	},
+	teardown : function() {
+		if(this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
+	}
+});
+
+test("restore status", function(assert) {
+	var done = assert.async();
 	var $el,
 		getProperties = function(target) {
 			var data=[];
@@ -326,14 +390,15 @@ asyncTest("restore status", function() {
 		$.each(properties, function(i, v) {
 			equal(infinite[v], beforeStatus.data[v], "check infiniteGrid properties " + v);
 		});
-		start();
+		done();
 	});
 
 	// Then
 	this.inst.append(getContent("append",50));
 });
 
-asyncTest("check a clear", function() {
+test("check a clear", function(assert) {
+	var done = assert.async();
 	// Given
 	var beforeClear = true;
 	this.inst = new eg.InfiniteGrid("#grid", {
@@ -358,7 +423,7 @@ asyncTest("check a clear", function() {
 			equal(this._isAppendType, null, "_isAppendType is null");
 			equal(this._isProcessing, false, "_isProcessing is false");
 			equal(this._removedContent, 0, "a number of removedContent are 0");
-			start();
+			done();
 		}
 	});
 	// When
@@ -368,48 +433,6 @@ asyncTest("check a clear", function() {
 	// When
 	this.inst.layout();
 });
-
-
-asyncTest("check a count of remove contents", function() {
-	// Given
-	// When
-	this.inst = new eg.InfiniteGrid("#grid", {
-		"count" : 18
-	});
-
-	// Then
-	equal(this.inst._removedContent, 0, "content is 0 from markup");
-	equal(this.inst.isRecycling(), false, "elements are lacked");
-
-
-	//When
-	this.inst.on("layoutComplete",function(e) {
-		// Then
-		equal(this.isProcessing(), false, "idel in layoutComplete ");
-		equal(e.isAppend, true, "append type");
-		equal(this.isRecycling(), true, "recycle mode");
-		equal(this.core.items.length, 18, "a number of elements are always 18");
-		equal(this.core.$element.children().length, 18, "a number of DOM are always 18");
-		equal(this._removedContent, 1988, "a number of removed elements are 1988");
-
-		// When
-		this.off();
-		this.on("layoutComplete",function(e) {
-			// Then
-			equal(this.isProcessing(), false, "idel in layoutComplete " + e.target.length);
-			equal(e.target.length, 1988, "a number of prepend elements are 1988");
-			equal(e.isAppend, false, "prepend type");
-			equal(this.isRecycling(), true, "recycle mode");
-			equal(this.core.items.length, 18, "a number of elements are always 18");
-			equal(this.core.$element.children().length, 18, "a number of DOM are always 18");
-			equal(this._removedContent, 0, "a number of removed elements are 0");
-			start();
-		});
-		this.prepend(getContent("prepend", 2000));
-	});
-	this.inst.append(getContent("append",2000));
-});
-
 
 test("Check public methods return", function () {
 	// Given
@@ -423,7 +446,8 @@ test("Check public methods return", function () {
 	equal(this.inst.clear(), this.inst, "return instance");
 });
 
-asyncTest("Check prefixEvent", function () {
+test("Check prefixEvent", function (assert) {
+	var done = assert.async();
 	// Given
 	var isTriggered = false;
 	// When
@@ -436,6 +460,6 @@ asyncTest("Check prefixEvent", function () {
 	// Then
 	setTimeout(function() {
 		equal(isTriggered, true, "check if prefixEvent trigger");
-		start();
+		done();
 	},200);
 });
