@@ -111,6 +111,9 @@ $ git clone https://github.com/egjs/egjs.git
 
 # install bower dependency modules
 $ bower install
+
+# install node dependency modules
+$ npm install
 ```
 
 #### 3. Build
