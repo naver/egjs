@@ -111,6 +111,9 @@ $ git clone https://github.com/egjs/egjs.git
 
 # bower 의존성 모듈 설치
 $ bower install
+
+# node 의존성 모듈 설치
+$ npm install
 ```
 
 #### 3. Build
