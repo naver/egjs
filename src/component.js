@@ -14,6 +14,7 @@ eg.module("component", [eg], function(ns) {
 			// The reference count does not support yet.
 			// this.constructor.$count = (this.constructor.$count || 0) + 1;
 			this.eventHandler = {};
+			this.options = {};
 		},
 		/**
 		 * Get or set option.
