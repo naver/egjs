@@ -353,6 +353,26 @@ test("Option method should be support 4 features.",function(){
 	});
 });
 
+test("The error should not occur without initialization of options property in SubClass construct of Component.",function(){
+	//Given
+	var result = true;
+	var MyClass = eg.Class.extend(eg.Component,{
+		"construct" : function(option){
+			this.option(option);
+		}
+	});
+	//When
+	try{
+		var oMC = new MyClass({
+			"foo" : 1
+		});
+	}catch(e){
+		result = false;
+	}
+	//Then
+	ok(result);
+});
+
 module("instance method", {
 	setup : function(){
 		this.oClass = new TestClass();
