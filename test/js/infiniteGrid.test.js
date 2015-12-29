@@ -463,3 +463,113 @@ test("Check prefixEvent", function (assert) {
 		done();
 	},200);
 });
+
+
+
+var complicatedHTML = "<div class='item'><div class='thumbnail'><img class='img-rounded' src='#' /><div class='caption'><p><a href='http://www.naver.com'></a></p></div></div></div>";
+
+module("infiniteGrid data type Test", {
+	setup : function() {
+		this.inst = new eg.InfiniteGrid("#nochildren_grid", {
+			"count" : 20
+		});
+	},
+	teardown : function() {
+		if(this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
+	}
+});
+
+test("Check type #1 - concated String type", function(assert) {
+	// Given
+	var done = assert.async();
+	var data = [];
+	for(var i=0; i<100; i++) {
+		data.push(complicatedHTML);
+	}
+	data = data.join("");
+
+	this.inst.on("layoutComplete",function(e) {
+		if(e.isAppend) {
+			// Then
+			equal(e.target.length, 100, "[append] a number of elements are 100");
+			equal(this.core.items.length, 20, "[append] a number of items are 20");
+			equal(this.core.$element.children().length, 20, "[append] a number of DOM are 20");
+
+			// When
+			this.prepend(data);
+		} else {
+			// Then
+			equal(e.target.length, 80, "[prepend] a number of elements are 80");
+			equal(this.core.items.length, 20, "[prepend] a number of items are 20");
+			equal(this.core.$element.children().length, 20, "[prepend] a number of DOM are 20");
+			done();
+		}
+	});
+
+	// When
+	this.inst.append(data);
+});
+
+test("Check type #2 - array has HTMLElement type", function(assert) {
+	// Given
+	var done = assert.async();
+	var data = [];
+	for(var i=0; i<100; i++) {
+		data.push($(complicatedHTML).get(0));
+	}
+
+	this.inst.on("layoutComplete",function(e) {
+		if(e.isAppend) {
+			// Then
+			equal(e.target.length, 100, "[append] a number of elements are 100");
+			equal(this.core.items.length, 20, "[append] a number of items are 20");
+			equal(this.core.$element.children().length, 20, "[append] a number of DOM are 20");
+
+			// When
+			this.prepend(data.concat());
+		} else {
+			// Then
+			equal(e.target.length, 80, "[prepend] a number of elements are 80");
+			equal(this.core.items.length, 20, "[prepend] a number of items are 20");
+			equal(this.core.$element.children().length, 20, "[prepend] a number of DOM are 20");
+			done();
+		}
+	});
+
+	// When
+	this.inst.append(data.concat());
+});
+
+test("Check type #3 - jQuery type", function(assert) {
+	// Given
+	var done = assert.async();
+	var data = [];
+	for(var i=0; i<100; i++) {
+		data.push(complicatedHTML);
+	}
+	data = data.join("");
+
+	this.inst.on("layoutComplete",function(e) {
+		if(e.isAppend) {
+			// Then
+			equal(e.target.length, 100, "[append] a number of elements are 100");
+			equal(this.core.items.length, 20, "[append] a number of items are 20");
+			equal(this.core.$element.children().length, 20, "[append] a number of DOM are 20");
+
+			// When
+			this.prepend($(data));
+		} else {
+			// Then
+			equal(e.target.length, 80, "[prepend] a number of elements are 80");
+			equal(this.core.items.length, 20, "[prepend] a number of items are 20");
+			equal(this.core.$element.children().length, 20, "[prepend] a number of DOM are 20");
+			done();
+		}
+	});
+
+	// When
+	this.inst.append($(data));
+});
