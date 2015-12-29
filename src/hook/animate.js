@@ -6,10 +6,10 @@ eg.module("animate", ["jQuery", window], function($, global) {
      * @ko jQuery animate 사용시 transform을 사용할 수 있도록 확장한 animate 메소드
      * @name jQuery#animate
      * @method
-     * @param {Object} properties An object of CSS properties and values that the animation will move toward.
-     * @param {Number|String} [duration=4000] A string or number determining how long the animation will run.
-     * @param {String} [easing="swing"] A string indicating which easing function to use for the transition.
-     * @param {Function} [complete] A function to call once the animation is complete.
+     * @param {Object} properties An object of CSS properties and values that the animation will move toward. <ko>애니메이션 할 CSS 속성과 값으로 구성된 오브젝트</ko>
+     * @param {Number|String} [duration=4000] A string or number determining how long the animation will run. <ko>애니메이션 진행 시간</ko>
+     * @param {String} [easing="swing"] A string indicating which easing function to use for the transition. <ko>transition에 사용할 easing 함수명</ko>
+     * @param {Function} [complete] A function to call once the animation is complete. <ko>애니메이션이 완료한 후 호출하는 함수</ko>
      *
      * @example
      * $("#box")
