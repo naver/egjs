@@ -386,9 +386,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			}
 
 			// convert jQuery instance
-			if (!($elements instanceof $)) {
-				$elements = $($elements);
-			}
+			$elements = $($elements);
+
 			this._isProcessing = true;
 			if (!this._isRecycling) {
 				this._isRecycling =
@@ -412,9 +411,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			}
 
 			// convert jQuery instance
-			if (!($elements instanceof $)) {
-				$elements = $($elements);
-			}
+			$elements = $($elements);
+
 			this._isProcessing = true;
 			this._fit();
 			if ($elements.length - this._removedContent  > 0) {
