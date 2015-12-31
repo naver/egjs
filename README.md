@@ -1,5 +1,5 @@
 # egjs 
-[![Build Status](https://travis-ci.org/egjs/egjs.svg?branch=master)](https://travis-ci.org/egjs/egjs)
+[![Build Status](https://travis-ci.org/egjs/egjs.svg?branch=master)](https://travis-ci.org/naver/egjs)
 
 'egjs' is a set of UI interactions, effects and utilities components library using jQuery, which brings easiest and fastest way to build web application in your way.
 
