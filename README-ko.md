@@ -31,7 +31,7 @@ egjs는 jQuery기반의 UI 인터렉션, 이펙트, 유틸리티로 구성된 �
 
 
 ## Download
-최신버전은 https://github.com/egjs/egjs.github.io 에서 다운로드 받을 수 있다.
+최신버전은 https://github.com/naver/egjs.github.io 에서 다운로드 받을 수 있다.
 
 ### Uncompressed (개발버전)
   - 최신 : http://egjs.github.io/latest/dist/eg.js
@@ -107,7 +107,7 @@ $ npm install bower -g  # bower
 $ mkdir egjs && cd egjs
 
 # 저장소로부터 코드를 복제
-$ git clone https://github.com/egjs/egjs.git
+$ git clone https://github.com/naver/egjs.git
 
 # bower 의존성 모듈 설치
 $ bower install
@@ -137,7 +137,7 @@ $ grunt test
 - coverage 결과는 grunt 실행시 확인할 수 있으며, `./report/index.html` 파일을 통해 확인 할 수도 있다.
 
 ## 이슈등록
-버그를 발견하게 되면, [issues page](https://github.com/egjs/egjs/issues) 페이지를 통해 등록할 수 있다.
+버그를 발견하게 되면, [issues page](https://github.com/naver/egjs/issues) 페이지를 통해 등록할 수 있다.
 
 ## 라이센스
 egjs는 [MIT](http://egjs.github.io/license.txt)로 배포된다.
@@ -164,4 +164,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
 
-[![Analytics](https://ga-beacon.appspot.com/UA-70842526-5/egjs/readme)](https://github.com/egjs/egjs)
+[![Analytics](https://ga-beacon.appspot.com/UA-70842526-5/egjs/readme)](https://github.com/naver/egjs)

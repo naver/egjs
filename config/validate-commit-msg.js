@@ -4,7 +4,7 @@
  * Original Code
  * https://raw.githubusercontent.com/angular/angular.js/master/validate-commit-msg.js
  * Git COMMIT-MSG hook for validating commit message
- * See https://github.com/egjs/egjs/wiki/Commit-Guidelines
+ * See https://github.com/naver/egjs/wiki/Commit-Guidelines
  * modified by egjs
  */
 
