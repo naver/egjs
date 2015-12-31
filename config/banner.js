@@ -1,16 +1,16 @@
 module.exports = {
 	common: ["/**",
-		"* <%= pkg.name %>",
+		"* Copyright (c) 2015 <%= pkg.author %>.",
+		"* <%= pkg.name %> projects are licensed under the <%= pkg.license %> license",
+		"* <%= pkg.licenseurl %>",
+		"*",
+		"* <%= pkg.name %> JavaScript library",
+		"* <%= pkg.homepage %>",
+		"*",
 		"* @version <%= pkg.version %>",
 		"* @SHA-1 <%= gitinfo.shortSHA %>" +
 		"<%= /(?!^master$)(^.*$)/.test(gitinfo.branchName) " +
 		"	&& ' ('+ RegExp.$1 +')' || '' %>",
-		"*",
-		"* <%= pkg.author %>; <%= pkg.name %> JavaScript library",
-		"* <%= pkg.homepage %>",
-		"*",
-		"* Released under the <%= pkg.license %> license",
-		"* <%= pkg.licenseurl %>",
 		"*",
 		"* For custom build use egjs-cli",
 		"* <%= pkg.customdownload %>",
