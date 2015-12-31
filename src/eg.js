@@ -1,6 +1,6 @@
 /**
 * Copyright (c) 2015 NAVER Corp.
-* egjs projecs are licensed under the MIT license
+* egjs projects are licensed under the MIT license
 */
 
 eg.module("eg", ["jQuery", eg, window], function($, ns, global) {
