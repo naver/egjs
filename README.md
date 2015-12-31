@@ -30,7 +30,7 @@
 * **scrollEnd** : Trigger event detecting end of scroll's position.
 
 ## Download
-For latest version, check out - https://github.com/naver/egjs.github.io
+For latest version, check out - https://github.com/egjs/egjs.github.io
 
 ### Uncompressed (for development)
   - Latest : https://egjs.github.io/latest/dist/eg.js  
