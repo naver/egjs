@@ -1,3 +1,8 @@
+/**
+* Copyright (c) 2015 NAVER Corp.
+* egjs projecs are licensed under the MIT license
+*/
+
 module("Visible document Test", {
 	setup : function() {
 		// make list

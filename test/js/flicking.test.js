@@ -1,3 +1,8 @@
+/**
+* Copyright (c) 2015 NAVER Corp.
+* egjs projecs are licensed under the MIT license
+*/
+
 // jscs:disable
 // to resolve transform style value
 function $getTransformValue(el, match) {

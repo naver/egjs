@@ -1,3 +1,7 @@
+/**
+* Copyright (c) 2015 NAVER Corp.
+* egjs projecs are licensed under the MIT license
+*/
 
 function noop(){};
 
@@ -34,7 +38,7 @@ test("orientationChange : android && 2.1 ", function() {
           }
     };
   }
-  
+
   var method = eg.invoke("rotate",[jQuery, null, this.fakeWindow, this.fakeDocument]);
 
   // When
@@ -116,15 +120,15 @@ test("isVertical : If event is resize then first time call.", function() {
 });
 
 test("isVertical : If event is resize then sencond times call. and rotate vertical.", function() {
-  // Given 
+  // Given
   eg.hook.agent = function(){
     return {
       "os" : {
         "name" : "android",
         "version" : "2.1"
-      }  
+      }
     };
-  };  
+  };
   var fakeWindow = {
     "resize" : "resize"
   };
@@ -221,7 +225,7 @@ test("isVertical : If event is orientationchange then vertical.", function() {
   var fakeWindow = {
     "onorientationchange" : "onorientationchange",
     "orientation" : 0
-  };  
+  };
   var method = eg.invoke("rotate",[jQuery, null, fakeWindow, this.fakeDocument]);
 
   // When
@@ -248,7 +252,7 @@ test("isVertical : If event is orientationchange then vertical.", function() {
   var fakeWindow = {
     "onorientationchange" : "onorientationchange",
     "orientation" : 90
-  };  
+  };
   var method = eg.invoke("rotate",[jQuery, null, fakeWindow, this.fakeDocument]);
 
   // When
@@ -316,7 +320,7 @@ test("If event is orientationchange then trigger and not android.", function() {
   this.clock.tick( 310 );
 
   // Then
-  ok(isCall);  
+  ok(isCall);
   ok(isVertical);
 
   // When
@@ -328,7 +332,7 @@ test("If event is orientationchange then trigger and not android.", function() {
   this.clock.tick( 310 );
 
   // Then
-  ok(isCall);  
+  ok(isCall);
   ok(!isVertical);
 });
 
@@ -357,10 +361,10 @@ test("If event is orientationchange then trigger and android.", function() {
   var checkFail = method.handler({
     type : "orientationchange"
   });
-  
+
   // Then
   deepEqual(checkFail, false);
-  equal(isCall,false);  
+  equal(isCall,false);
   equal(isVertical,false);
 
 
@@ -378,7 +382,7 @@ test("If event is orientationchange then trigger and android.", function() {
   this.clock.tick( 310 );
 
   // Then
-  ok(isCall);  
+  ok(isCall);
   equal(isVertical,false);
 
 });
@@ -418,7 +422,7 @@ test("If event is resize then trigger.", function() {
   this.clock.tick( 10 );
 
   // Then
-  ok(isCall);  
+  ok(isCall);
   ok(isVertical);
 
   // When
@@ -431,7 +435,7 @@ test("If event is resize then trigger.", function() {
   this.clock.tick( 10 );
 
   // Then
-  ok(isCall);  
+  ok(isCall);
   ok(!isVertical);
 });
 

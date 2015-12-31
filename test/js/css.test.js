@@ -1,3 +1,7 @@
+/**
+* Copyright (c) 2015 NAVER Corp.
+* egjs projecs are licensed under the MIT license
+*/
 
 var cssPrefixes = [ "Webkit", "Moz" , "O" , "ms" ];
 var jQueryVer = jQuery.fn.jquery;
@@ -149,8 +153,8 @@ test("Transform property set/get", function() {
 });
 
 test("transform property with bender prefix set/get", function() {
-    // Given 
-    var method = eg.invoke("css",[jQuery, document]);	
+    // Given
+    var method = eg.invoke("css",[jQuery, document]);
 	var cssPrefixes = [ "Webkit", "Moz", "O", "ms" ];
     var vendorPrefix = (function() {
 		var bodyStyle = (document.head || document.getElementsByTagName("head")[0]).style;

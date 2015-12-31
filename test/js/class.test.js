@@ -1,3 +1,8 @@
+/**
+* Copyright (c) 2015 NAVER Corp.
+* egjs projecs are licensed under the MIT license
+*/
+
 test( "Class instance create test", function(  ) {
   //Given
   var A = eg.Class({
@@ -62,7 +67,7 @@ test( "Class extend basic test", function(  ) {
   		return this.a * this.b * this.c;
   	}
   });
-  
+
   var a = new A();
   var b = new B();
 
@@ -77,7 +82,7 @@ test( "Class extend basic test", function(  ) {
   //Then
   strictEqual(nSumOfB, 15, "A Class constructor initialized values successfully");
   strictEqual(nSumOfA, 6, "B Class constructor initialized values successfully");
-  strictEqual(nMultiOfB, 120, "B Class has its own method.");  
+  strictEqual(nMultiOfB, 120, "B Class has its own method.");
   strictEqual(b.multi(), 6, "Changed properties of B instance successfully");
   throws(
   	function() {
@@ -126,7 +131,7 @@ test( " Multiple extend test ", function(  ) {
 
   var C = eg.Class.extend(B, {
   	construct : function() {
-  		
+
   	},
   	div : function() {
   		return this.c / this.b;
@@ -188,7 +193,7 @@ test( " Multiple extend test ", function(  ) {
 
 //   var C = eg.Class.extend(B, {
 //   	construct : function() {
-  		
+
 //   	},
 //   	sum : function() {
 //   		return C.$super.sum.call(this);
@@ -209,7 +214,7 @@ test( "Member variable define type change ", function(  ) {
   //Given
   var A = eg.Class({
   	a : 1,
-  	b : 2, 
+  	b : 2,
   	c : 3,
   	sum : function() {
   		return this.a + this.b + this.c;
@@ -260,7 +265,7 @@ test( "undefined constructor", function(  ) {
   //Given
   var A = eg.Class({
   	a : 1,
-  	b : 2, 
+  	b : 2,
   	c : 3,
   	sum : function() {
   		return this.a + this.b + this.c;

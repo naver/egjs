@@ -1,4 +1,9 @@
-// jscs:disable maximumLineLength
+/**
+* Copyright (c) 2015 NAVER Corp.
+* egjs projecs are licensed under the MIT license
+*/
+
+// jscs:disable validateLineBreaks, maximumLineLength
 eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, global, Outlayer) {
 	"use strict";
 
