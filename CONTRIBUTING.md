@@ -38,7 +38,7 @@ The outline is as below:
   - **test**: Adding missing tests. Changing tests.
   - **chore**: Changes to the build process or tools and libraries such as documentation generation
 
-[See More Commit Log Guidelines](https://github.com/egjs/egjs/wiki/Commit-Log-Guidelines)
+[See More Commit Log Guidelines](https://github.com/naver/egjs/wiki/Commit-Log-Guidelines)
 
 ## How to submit Pull Requests
 Steps to submit your pull request:

@@ -8,7 +8,7 @@
     - Latest : https://egjs.github.io/latest/doc
     - For specific version : `https://egjs.github.io/[VERSION]/doc`
 
-- [한국어(Korean) readme](https://github.com/egjs/egjs/blob/master/README-ko.md)
+- [한국어(Korean) readme](https://github.com/naver/egjs/blob/master/README-ko.md)
 
 ### Components
 * **eg** : Collection of base utilities, which are used in diverse egjs components.
@@ -30,7 +30,7 @@
 * **scrollEnd** : Trigger event detecting end of scroll's position.
 
 ## Download
-For latest version, check out - https://github.com/egjs/egjs.github.io
+For latest version, check out - https://github.com/naver/egjs.github.io
 
 ### Uncompressed (for development)
   - Latest : https://egjs.github.io/latest/dist/eg.js  
@@ -107,7 +107,7 @@ $ npm install bower -g  # bower
 $ mkdir egjs && cd egjs
 
 # get the clone from the repo
-$ git clone https://github.com/egjs/egjs.git
+$ git clone https://github.com/naver/egjs.git
 
 # install bower dependency modules
 $ bower install
@@ -135,7 +135,7 @@ $ grunt test
 - Coverage results can be shown immediately and also can be found at `./report/index.html`.
 
 ## Issues
-If you find a bug, please report us via [issues page](https://github.com/egjs/egjs/issues).
+If you find a bug, please report us via [issues page](https://github.com/naver/egjs/issues).
 
 ## License
 egjs is released under the [MIT](http://egjs.github.io/license.txt) license.
@@ -162,4 +162,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
 
-[![Analytics](https://ga-beacon.appspot.com/UA-70842526-5/egjs/readme)](https://github.com/egjs/egjs)
+[![Analytics](https://ga-beacon.appspot.com/UA-70842526-5/egjs/readme)](https://github.com/naver/egjs)

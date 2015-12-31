@@ -13,5 +13,5 @@ Abort the animating post process when "tap" occurs or velocity is zero at inside
 Ref #30
 
 ============ See More =============
-https://github.com/egjs/egjs/wiki/Commit-Guidelines
+https://github.com/naver/egjs/wiki/Commit-Guidelines
 
