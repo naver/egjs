@@ -1,7 +1,7 @@
 // jscs:disable validateLineBreaks, maximumLineLength
 /**
 * Copyright (c) 2015 NAVER Corp.
-* egjs projecs are licensed under the MIT license
+* egjs projects are licensed under the MIT license
 */
 eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], function ($, ns, global, doc, MC) {
 	"use strict";
