@@ -1,3 +1,8 @@
+/**
+* Copyright (c) 2015 NAVER Corp.
+* egjs projecs are licensed under the MIT license
+*/
+
 // jscs:disable maximumLineLength
 eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 	"use strict";

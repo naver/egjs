@@ -1,3 +1,8 @@
+/**
+* Copyright (c) 2015 NAVER Corp.
+* egjs projecs are licensed under the MIT license
+*/
+
 module("extend Test", {
 	setup : function() {
 		this.agent = eg.agent;
@@ -1254,7 +1259,7 @@ module("extend hook Test", {
 
 
 
-$.each( nativeVersionProfile, function( i, v ) {	
+$.each( nativeVersionProfile, function( i, v ) {
 	test("agent hook nativeVersion Test"+i, function() {
 		// Given
 		eg.hook.agent = function(agent){

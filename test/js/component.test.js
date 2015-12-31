@@ -1,3 +1,8 @@
+/**
+* Copyright (c) 2015 NAVER Corp.
+* egjs projecs are licensed under the MIT license
+*/
+
 module("Component Test");
 
 var TestClass = eg.Class.extend(eg.Component,{

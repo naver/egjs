@@ -1,3 +1,8 @@
+/**
+* Copyright (c) 2015 NAVER Corp.
+* egjs projecs are licensed under the MIT license
+*/
+
 QUnit.config.reorder = false;
 
 module("Absolute animate Test", {
@@ -42,8 +47,8 @@ $.each(ABSOLUTE_CASE, function(i, val) {
 				var expected = self.egAnimate.toMatrix(val.css),
 					actual = self.egAnimate.toMatrix(self.$el2.css("transform"));
 
-				// Ignore very tiny difference. 
-				// Because output matrixes can be different with input matrixes.) 
+				// Ignore very tiny difference.
+				// Because output matrixes can be different with input matrixes.)
 				$.each(expected[1], function(i) {
 					expected[1][i] = parseFloat(expected[1][i]).toFixed(3);
 					actual[1][i] = parseFloat(actual[1][i]).toFixed(3);
@@ -51,9 +56,9 @@ $.each(ABSOLUTE_CASE, function(i, val) {
 
 				equal(actual[1].toString(), expected[1].toString());
 				// setTimeout(function() {
-				done();	
+				done();
 				// }, 1000);
-				
+
 			});
 	});
 });
@@ -61,7 +66,7 @@ $.each(ABSOLUTE_CASE, function(i, val) {
 /**
  * On PhantomJS, 'Relative animate Test' case cannot be tested.
  * Because jQuery cannot get a start matrix which is latest position.
- * 
+ *
  */
 if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
 	module("Relative animate Test", {
@@ -78,7 +83,7 @@ if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
 		{title : "+=translate(100, 100)", css : "translate(200px, 200px)", transform: "+=translate(100, 100)"},
 		{title : "+=scale(2) translate(-100, -100)", css : "scale(2) translate(0px, 0px)", transform: "+=scale(2) translate(-100, -100)"},
 		{title : "+=scale(0.5) rotate(30deg)", css : "rotate(30deg)", transform: "+=scale(0.5) rotate(30deg)"},
-		{title : "+=rotate(-30deg) translate(10px, 50%)", css : "translate(10px, 60px)", transform: "+=rotate(-30deg) translate(10px, 50%)"}	
+		{title : "+=rotate(-30deg) translate(10px, 50%)", css : "translate(10px, 60px)", transform: "+=rotate(-30deg) translate(10px, 50%)"}
 	];
 
 	$.each( RELATIVE_CASE, function(i, val) {
@@ -106,8 +111,8 @@ if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
 						var expected = self.egAnimate.toMatrix(val.css),
 						 	result = self.egAnimate.toMatrix($el2.css("transform"));
 
-						// Ignore very tiny difference. 
-						// Because output matrixes can be different with input matrixes.) 
+						// Ignore very tiny difference.
+						// Because output matrixes can be different with input matrixes.)
 						$.each(expected[1], function(i) {
 							expected[1][i] = parseFloat(parseFloat(expected[1][i]).toFixed(3));
 							result[1][i] = parseFloat(parseFloat(result[1][i]).toFixed(3));
@@ -115,9 +120,9 @@ if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
 
 						equal(result[1].toString(), expected[1].toString());
 						//setTimeout(function() {
-							done();	
+							done();
 						//}, 500);
-					}	
+					}
 				);
 		});
 	});
@@ -139,7 +144,7 @@ if (navigator.userAgent.indexOf("WebKit") >= 0) {
 	/**
 	 * On PhantomJS, 'Relative animate Test' case cannot be tested.
 	 * Because jQuery cannot get a start matrix which is latest position.
-	 * 
+	 *
 	 */
 	if (navigator.userAgent.indexOf("PhantomJS") == -1) {
 		ANI_3D_CASE.push({title : "+=translate(0px, 100px)", css : "translate3d(100px, 200px, 100px)", transform: "+=translate(0px, 100px)"});
@@ -152,7 +157,7 @@ if (navigator.userAgent.indexOf("WebKit") >= 0) {
 		//Given
 		var $el1 = $("#box1"),
 			$el2 = $("#box2");
-		
+
 		$el1.css("transform", "none");
 		$el2.css("transform", "none");
 
@@ -178,16 +183,16 @@ if (navigator.userAgent.indexOf("WebKit") >= 0) {
 							t2 = self.egAnimate.toMatrix3d(t2);
 						}
 
-						// Ignore very tiny difference. 
-						// Because output matrixes can be different with input matrixes.) 
+						// Ignore very tiny difference.
+						// Because output matrixes can be different with input matrixes.)
 						$.each(t1[1], function(i) {
 							t1[1][i] = parseFloat(t1[1][i]).toFixed(3);
 							t2[1][i] = parseFloat(t2[1][i]).toFixed(3);
 						});
 
 						equal(t1[1].toString(), t2[1].toString());
-						done();	
-					}	
+						done();
+					}
 				);
 		});
 	});
