@@ -1,5 +1,5 @@
 ## egjs
-[![Build Status](https://travis-ci.org/egjs/egjs.svg?branch=master)](https://travis-ci.org/naver/egjs)
+[![Build Status](https://travis-ci.org/naver/egjs.svg?branch=master)](https://travis-ci.org/naver/egjs)
 
 egjs는 jQuery기반의 UI 인터렉션, 이펙트, 유틸리티로 구성된 통합 라이브러리로 다양한 환경을 지원하는 빠른 웹 어플리케이션을 쉽게 개발할 수 있도록 도와준다. 
 
