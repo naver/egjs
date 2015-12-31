@@ -376,42 +376,50 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		 * Append elements
 		 * @ko 엘리먼트를 append 한다.
 		 * @method eg.InfiniteGrid#append
-		 * @param {Array} elements to be appended elements <ko>append될 엘리먼트 배열</ko>
+		 * @param {Array|String|jQuery} elements to be appended elements <ko>append될 엘리먼트 배열</ko>
 		 * @param {Number|String} [groupKey] to be appended groupkey of elements<ko>append될 엘리먼트의 그룹키</ko>
 		 * @return {Number} length a number of elements
 		 */
-		append: function(elements, groupKey) {
-			if (this._isProcessing ||  elements.length === 0) {
+		append: function($elements, groupKey) {
+			if (this._isProcessing || $elements.length === 0) {
 				return;
 			}
+
+			// convert jQuery instance
+			$elements = $($elements);
+
 			this._isProcessing = true;
 			if (!this._isRecycling) {
 				this._isRecycling =
-				(this.core.items.length + elements.length) >= this.core.options.count;
+				(this.core.items.length + $elements.length) >= this.core.options.count;
 			}
-			this._insert(elements, groupKey, true);
-			return elements.length;
+			this._insert($elements, groupKey, true);
+			return $elements.length;
 		},
 		/**
 		 * Prepend elements
 		 * @ko 엘리먼트를 prepend 한다.
 		 * @method eg.InfiniteGrid#prepend
-		 * @param {Array} elements to be prepended elements <ko>prepend될 엘리먼트 배열</ko>
+		 * @param {Array|String|jQuery} elements to be prepended elements <ko>prepend될 엘리먼트 배열</ko>
 		 * @param {Number|String} [groupKey] to be prepended groupkey of elements<ko>prepend될 엘리먼트의 그룹키</ko>
 		 * @return {Number} length a number of elements
 		 */
-		prepend: function(elements, groupKey) {
+		prepend: function($elements, groupKey) {
 			if (!this.isRecycling() || this._removedContent === 0 ||
-				this._isProcessing || elements.length === 0) {
+				this._isProcessing || $elements.length === 0) {
 				return;
 			}
+
+			// convert jQuery instance
+			$elements = $($elements);
+
 			this._isProcessing = true;
 			this._fit();
-			if (elements.length - this._removedContent  > 0) {
-				elements = elements.slice(elements.length - this._removedContent);
+			if ($elements.length - this._removedContent  > 0) {
+				$elements = $elements.slice($elements.length - this._removedContent);
 			}
-			this._insert(elements, groupKey, false);
-			return elements.length;
+			this._insert($elements, groupKey, false);
+			return $elements.length;
 		},
 		/**
 		 * Clear elements and data
@@ -514,11 +522,14 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 				distance: distance
 			});
 		},
-		_insert: function(elements, groupKey, isAppend) {
-			if (elements.length === 0) {
+
+		// $elements => $([HTMLElement, HTMLElement, ...])
+		_insert: function($elements, groupKey, isAppend) {
+			if ($elements.length === 0) {
 				return;
 			}
 			this._isAppendType = isAppend;
+			var elements = $elements.toArray();
 			var i = 0;
 			var item;
 			var items = this.core.itemize(elements, groupKey);
@@ -534,18 +545,18 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 				items = items.reverse();
 			}
 			if (this.isRecycling()) {
-				this._adjustRange(isAppend, elements);
+				this._adjustRange(isAppend, $elements);
 			}
 			var noChild = this.core.$element.children().length === 0;
-			this.core.$element[isAppend ? "append" : "prepend"](elements);
+			this.core.$element[isAppend ? "append" : "prepend"]($elements);
 			noChild && this.core.resetLayout();		// for init-items
 
-			var needCheck = this._checkImageLoaded(elements);
+			var needCheck = this._checkImageLoaded($elements);
 			var checkCount = needCheck.length;
 			checkCount > 0 ? this._waitImageLoaded(items, needCheck) :
 					this.core.layoutItems(items, true);
 		},
-		_adjustRange: function (isTop, elements) {
+		_adjustRange: function (isTop, $elements) {
 			var diff = this.core.items.length - this.core.options.count;
 			var targets;
 			var idx;
@@ -565,12 +576,11 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			var i = 0;
 			var item;
 			var el;
-			var m = elements instanceof $ ? "index" : "indexOf";
 			while (item = targets[i++]) {
 				el = item.element;
-				idx = elements[m](el);
+				idx = $elements.index(el);
 				if (idx !== -1) {
-					elements.splice(idx, 1);
+					$elements.splice(idx, 1);
 				} else {
 					el.parentNode.removeChild(el);
 				}
@@ -660,9 +670,9 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			this._isAppendType = null;
 			this._isProcessing = false;
 		},
-		_checkImageLoaded: function(elements) {
+		_checkImageLoaded: function($elements) {
 			var needCheck = [];
-			$(elements).each(function(k, v) {
+			$elements.each(function(k, v) {
 				if (v.nodeName === "IMG") {
 					!v.complete && needCheck.push(v);
 				} else if (v.nodeType &&
