@@ -8,7 +8,7 @@
     - Latest : https://egjs.github.io/latest/doc
     - For specific version : `https://egjs.github.io/[VERSION]/doc`
 
-- [한국어(Korean) readme](README-ko.md)
+- [한국어(Korean) readme](https://github.com/egjs/egjs/blob/master/README-ko.md)
 
 ### Components
 * **eg** : Collection of base utilities, which are used in diverse egjs components.
