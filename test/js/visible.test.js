@@ -23,7 +23,8 @@ module("Visible document Test", {
 	}
 });
 
-asyncTest("check a visible/invisible status", function() {
+test("check a visible/invisible status", function(assert) {
+	var done = assert.async();
 	// Given
 	var length = Math.ceil(document.documentElement.clientHeight/boxheight);
 	if(document.documentElement.clientHeight%boxheight === 0) {
@@ -35,7 +36,7 @@ asyncTest("check a visible/invisible status", function() {
 		// Then
 		equal(e.invisible.length, 0 , "no invisible");
 		equal(e.visible.length, length , "check a count of the visible elements");
-		start();
+		done();
 	});
 	this.inst.check();
 });
@@ -63,7 +64,8 @@ test("When a scroll position of the window was changed", function() {
 	equal(invisible.length, 5, "invisible element length (5)");
 });
 
-asyncTest("check a visible/invisible status in the expanded window ", function() {
+test("check a visible/invisible status in the expanded window ", function(assert) {
+	var done = assert.async();
 	// Given
 	var length = Math.ceil( (document.documentElement.clientHeight+ (2*boxheight))/boxheight );
 	if(document.documentElement.clientHeight%boxheight === 0) {
@@ -75,7 +77,7 @@ asyncTest("check a visible/invisible status in the expanded window ", function()
 		// Then
 		equal(e.invisible.length, 0 , "no invisible");
 		equal(e.visible.length, length, "check a count of the visible elements");
-		start();
+		done();
 	});
 	this.inst.check();
 });
@@ -162,7 +164,8 @@ module("Visible wrapper Test", {
 	}
 });
 
-asyncTest("When a iscroll position was changed", function() {
+test("When a iscroll position was changed", function(assert) {
+	var done = assert.async();
 	// Given
 	var self = this.inst;
 	// When
@@ -171,7 +174,7 @@ asyncTest("When a iscroll position was changed", function() {
 		// Then
 		equal(e.visible.length, 5, "visible element length (5)");
 		equal(e.invisible.length, 7, "invisible element length (7)");
-		start();
+		done();
 	});
 	this.scroll.scrollTo(0, -400,0);
 	self.check(200);
@@ -214,7 +217,8 @@ module("Visible Test when unsupported getElementsByClassName", {
 
 
 
-asyncTest("check a visible/invisible status", function() {
+test("check a visible/invisible status", function(assert) {
+	var done = assert.async();
 	// Given
 	var boxheight = this.boxheight;
 	var length = Math.ceil(document.documentElement.clientHeight/boxheight);
@@ -227,7 +231,7 @@ asyncTest("check a visible/invisible status", function() {
 		// Then
 		equal(e.invisible.length, 0 , "no invisible");
 		equal(e.visible.length, length , "check a count of the visible elements");
-		start();
+		done();
 	});
 	this.inst.check();
 });
@@ -265,7 +269,8 @@ module("Visible event Test", {
 		this.inst = null;
 	}
 });
-asyncTest("Check prefixEvent", function () {
+test("Check prefixEvent", function (assert) {
+	var done = assert.async();
 	// Given
 	var isTriggered = false;
 	// When
@@ -281,6 +286,6 @@ asyncTest("Check prefixEvent", function () {
 	// Then
 	setTimeout(function() {
 		equal(isTriggered, true, "check if prefixEvent trigger");
-		start();
+		done();
 	},200);
 });

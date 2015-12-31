@@ -241,12 +241,13 @@ test("_convertInputType", function() {
 
 });
 
-asyncTest("setTo : check 'change' event", function() {
+test("setTo : check 'change' event", function(assert) {
+	var done = assert.async();
 	// Given
 	this.inst.on("change", function(e) {
 		// Then
 		deepEqual(e.pos, [0, 200], "set to position 0,200");
-		start();
+		done();
 	})
 	// When
 	this.inst.setTo(0, 200, 0);
@@ -277,13 +278,14 @@ test("setBy", function() {
 	deepEqual(this.inst.get(), [300, 400], "if position parameters was out of range, set to position min or max values.");
 });
 
-asyncTest("setBy : check a 'change' event", function() {
+test("setBy : check a 'change' event", function(assert) {
+	var done = assert.async();
 	// Given
 	this.inst.setBy(20, 20);
 	this.inst.on("change", function(e) {
 		// Then
 		deepEqual(e.pos, [10, 10], "set to position -10,-10 relatively");
-		start();
+		done();
 	})
 	// When
 	this.inst.setBy(-10, -10);
@@ -326,12 +328,13 @@ test("setTo when inputType is []", function() {
 	deepEqual(this.inst.get(), [300, 0], "if position parameters was out of range, set to position min or max values.");
 });
 
-asyncTest("setTo when inputType is [] : check 'change' event", function() {
+test("setTo when inputType is [] : check 'change' event", function(assert) {
+	var done = assert.async();
 	// Given
 	this.inst.on("change", function(e) {
 		// Then
 		deepEqual(e.pos, [0, 200], "set to position 0,200");
-		start();
+		done();
 	})
 	// When
 	this.inst.setTo(0, 200, 0);
@@ -390,7 +393,8 @@ module("movableCoord setTo duration Test", {
 		this.inst = null;
 	}
 });
-asyncTest("setTo : check event flow when maximumDuration(200ms) is bigger than a duration of setTo", function() {
+test("setTo : check event flow when maximumDuration(200ms) is bigger than a duration of setTo", function(assert) {
+	var done = assert.async();
 	// Given
 	var self = this;
 	// When
@@ -401,11 +405,12 @@ asyncTest("setTo : check event flow when maximumDuration(200ms) is bigger than a
 		ok(self.firedChangeEvent, "fired 'change' event");
 		equal(self.firedAnimationStartEvent, 1, "fired 'animationStart' event");
 		equal(self.firedAnimationEndEvent, 1, "fired 'animationEnd' event");
-		start();
+		done();
 	},150);
 });
 
-asyncTest("setTo : check event flow when a duration of setTo is bigger than maximumDuration(200ms)", function() {
+test("setTo : check event flow when a duration of setTo is bigger than maximumDuration(200ms)", function(assert) {
+	var done = assert.async();
 	// Given
 	var self = this;
 
@@ -417,11 +422,12 @@ asyncTest("setTo : check event flow when a duration of setTo is bigger than maxi
 		ok(self.firedChangeEvent, "fired 'change' event");
 		equal(self.firedAnimationStartEvent, 1, "fired 'animationStart' event");
 		equal(self.firedAnimationEndEvent, 1, "fired 'animationEnd' event");
-		start();
+		done();
 	},250);
 });
 
-asyncTest("setTo : check event flow when a duration of setTo is '0'", function() {
+test("setTo : check event flow when a duration of setTo is '0'", function(assert) {
+	var done = assert.async();
 	// Given
 	var self = this;
 
@@ -432,7 +438,7 @@ asyncTest("setTo : check event flow when a duration of setTo is '0'", function()
 	ok(self.firedChangeEvent, "fired 'change' event");
 	equal(self.firedAnimationStartEvent, 0, "not fired 'animationStart' event");
 	equal(self.firedAnimationEndEvent, 0, "not fired 'animationEnd' event");
-	start();
+	done();
 });
 
 module("movableCoord event Test", {
@@ -451,7 +457,8 @@ module("movableCoord event Test", {
 	}
 });
 
-asyncTest("slow movement test (no-velocity)", function() {
+test("slow movement test (no-velocity)", function(assert) {
+	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
 	var firedHold =0;
@@ -501,12 +508,13 @@ asyncTest("slow movement test (no-velocity)", function() {
 			equal(firedHold, 1, "fired 'hold' event");
 			equal(firedRelease, 1,"fired 'release' event");
 			equal(firedAnimationEnd, 1, "fired 'animationEnd' event");
-			start();
+			done();
 		},1000);
     	});
 });
 
-asyncTest("slow movement test (no-velocity), release outside", function() {
+test("slow movement test (no-velocity), release outside", function(assert) {
+	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
 	var firedHold =0;
@@ -562,12 +570,13 @@ asyncTest("slow movement test (no-velocity), release outside", function() {
 			equal(firedRelease, 1,"fired 'release' event");
 			equal(firedAnimationStart, 1, "fired 'animationStrt' event");
 			equal(firedAnimationEnd, 1, "fired 'animationEnd' event");
-			start();
+			done();
 		},1000);
     	});
 });
 
-asyncTest("fast movement test (velocity)", function() {
+test("fast movement test (velocity)", function(assert) {
+	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
 	var firedHold = 0;
@@ -625,12 +634,13 @@ asyncTest("fast movement test (velocity)", function() {
 			equal(firedRelease,1,"fired 'release' event");
 			equal(firedAnimationStart, 1,"fired 'animationStart' event");
 			equal(firedAnimationEnd, 1,"fired 'animationEnd' event");
-			start();
+			done();
 		},1000);
     	});
 });
 
-asyncTest("movement test when stop method was called in 'animationStart' event", function() {
+test("movement test when stop method was called in 'animationStart' event", function(assert) {
+	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
 	var timer = null;
@@ -684,7 +694,7 @@ asyncTest("movement test when stop method was called in 'animationStart' event",
 			equal(firedRelease,1,"fired 'release' event");
 			equal(firedAnimationStart, 1,"fired 'animationStart' event");
 			equal(firedAnimationEnd, 1,"fired 'animationEnd' event");
-			start();
+			done();
 		},1000);
     	});
 });
@@ -707,7 +717,8 @@ module("movableCoord interrupt Test", {
 });
 
 
-asyncTest("interrupt test when user's action is fast", function() {
+test("interrupt test when user's action is fast", function(assert) {
+	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
 	var firedHold = 0;
@@ -767,12 +778,13 @@ asyncTest("interrupt test when user's action is fast", function() {
 			equal(firedRelease,1,"fired 'release' event");
 			equal(firedAnimationStart, 1,"fired 'animationStart' event");
 			equal(firedAnimationEnd, 1,"fired 'animationEnd' event");
-			start();
+			done();
 		},1000);
     	});
 });
 
-asyncTest("interrupt test when stop method was called in 'animationStart' event", function() {
+test("interrupt test when stop method was called in 'animationStart' event", function(assert) {
+	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
 	var timer = null;
@@ -828,7 +840,7 @@ asyncTest("interrupt test when stop method was called in 'animationStart' event"
 			equal(firedRelease,1,"fired 'release' event");
 			equal(firedAnimationStart, 1,"fired 'animationStart' event");
 			equal(firedAnimationEnd, 1,"fired 'animationEnd' event");
-			start();
+			done();
 		},1000);
     	});
 });
@@ -860,7 +872,8 @@ test("interrupt test when 'setTo' method is called : duration = 0", function() {
 });
 
 
-asyncTest("interrupt test when 'setTo' method is called : duration = 100", function() {
+test("interrupt test when 'setTo' method is called : duration = 100", function(assert) {
+	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
 	equal(this.inst._status.prevented, false, "init value is 'false'");
@@ -889,12 +902,13 @@ asyncTest("interrupt test when 'setTo' method is called : duration = 100", funct
 		setTimeout(function() {
 			// Then
 			equal(self.inst._status.prevented, false, "prevented property is 'false'");
-			start();
+			done();
 		},150);
 	},150);
 });
 
-asyncTest("interrupt test after 'setTo' method is called : move to same position", function() {
+test("interrupt test after 'setTo' method is called : move to same position", function(assert) {
+	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
 	equal(this.inst._status.prevented, false, "init value is 'false'");
@@ -924,13 +938,14 @@ asyncTest("interrupt test after 'setTo' method is called : move to same position
 		setTimeout(function() {
 			// Then
 			equal(self.inst._status.prevented, false, "prevented property is 'false'");
-			start();
+			done();
 		},150);
 	},150);
 });
 
 
-asyncTest("interrupt test after tap gesture", function() {
+test("interrupt test after tap gesture", function(assert) {
+	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
 	var firedHold =0;
@@ -971,7 +986,7 @@ asyncTest("interrupt test after tap gesture", function() {
 		setTimeout(function() {
 			equal(firedHold,1,"fired 'hold' event");
 			equal(firedRelease,1,"fired 'release' event");
-			start();
+			done();
 		},1000);
     	});
 });
@@ -1022,7 +1037,8 @@ test("check user's direction", function() {
 });
 
 
-asyncTest("movement direction test (DIRECTION_ALL)", function() {
+test("movement direction test (DIRECTION_ALL)", function(assert) {
+	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
 
@@ -1046,12 +1062,13 @@ asyncTest("movement direction test (DIRECTION_ALL)", function() {
             duration: 2000,
             easing: "linear"
 	}, function() {
-		start();
+		done();
     	});
 });
 
 
-asyncTest("movement direction test (DIRECTION_HORIZONTAL)", function() {
+test("movement direction test (DIRECTION_HORIZONTAL)", function(assert) {
+	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
 
@@ -1075,12 +1092,13 @@ asyncTest("movement direction test (DIRECTION_HORIZONTAL)", function() {
             duration: 2000,
             easing: "linear"
 	}, function() {
-		start();
+		done();
     	});
 });
 
 
-asyncTest("movement direction test (DIRECTION_VERTICAL)", function() {
+test("movement direction test (DIRECTION_VERTICAL)", function(assert) {
+	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
 
@@ -1104,6 +1122,6 @@ asyncTest("movement direction test (DIRECTION_VERTICAL)", function() {
             duration: 2000,
             easing: "linear"
 	}, function() {
-		start();
+		done();
     	});
 });
