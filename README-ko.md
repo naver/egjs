@@ -31,7 +31,7 @@ egjs는 jQuery기반의 UI 인터렉션, 이펙트, 유틸리티로 구성된 �
 
 
 ## Download
-최신버전은 https://github.com/naver/egjs.github.io 에서 다운로드 받을 수 있다.
+최신버전은 https://github.com/egjs/egjs.github.io 에서 다운로드 받을 수 있다.
 
 ### Uncompressed (개발버전)
   - 최신 : http://egjs.github.io/latest/dist/eg.js
