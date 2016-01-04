@@ -223,22 +223,58 @@ test("_convertInputType", function() {
 	// When
 	var inputType = [ "touch", "mouse" ];
 	// Then
-	equal(this.inst._convertInputType(inputType), Hammer.TouchInput, "check TouchInput");
+	equal(this.inst._convertInputType(inputType, {
+		isSupportTouch: true
+	}), Hammer.TouchInput, "check TouchInput");
+
+	// When
+	var inputType = [ "touch", "mouse" ];
+	// Then
+	equal(this.inst._convertInputType(inputType, {
+		isSupportTouch: false
+	}), Hammer.MouseInput, "check TouchInput(not supporting touch)");
+	
 	// When
 	inputType = [ "touch" ];
 	// Then
-	equal(this.inst._convertInputType(inputType), Hammer.TouchInput, "check TouchInput");
+	equal(this.inst._convertInputType(inputType, {
+		isSupportTouch: true
+	}), Hammer.TouchInput, "check TouchInput");
+
+	// When
+	inputType = [ "touch" ];
+	// Then
+	equal(this.inst._convertInputType(inputType, {
+		isSupportTouch: false
+	}), null, "check TouchInput(not supporting touch)");
+	
+	// When
+	inputType = [ "mouse" ];
+	// Then
+	equal(this.inst._convertInputType(inputType, {
+		isSupportTouch: true
+	}), Hammer.MouseInput, "check MouseInput");
 
 	// When
 	inputType = [ "mouse" ];
 	// Then
-	equal(this.inst._convertInputType(inputType), Hammer.MouseInput, "check MouseInput");
+	equal(this.inst._convertInputType(inputType, {
+		isSupportTouch: false
+	}), Hammer.MouseInput, "check MouseInput(not supporting touch)");
+	
+	// When
+	inputType = [ ];
+	// Then
+	equal(this.inst._convertInputType(inputType, {
+		isSupportTouch: true
+	}), null, "type is null");
 
 	// When
 	inputType = [ ];
 	// Then
-	equal(this.inst._convertInputType(inputType), null, "type is null");
-
+	equal(this.inst._convertInputType(inputType, {
+		isSupportTouch: false
+	}), null, "type is null(not supporting touch)");
 });
 
 asyncTest("setTo : check 'change' event", function() {
