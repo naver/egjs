@@ -1,8 +1,8 @@
 // jscs:disable maximumLineLength
-eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
+eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, global, HM) {
 	"use strict";
 
-	var SUPPORT_TOUCH = "ontouchstart" in window;
+	var SUPPORT_TOUCH = "ontouchstart" in global;
 
 	// jscs:enable maximumLineLength
 	// It is scheduled to be removed in case of build process.
@@ -174,14 +174,14 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			} catch (e) {}
 		},
 
-		_convertInputType: function(inputType, isSupportTouch) {
+		_convertInputType: function(inputType) {
 			var hasTouch = false;
 			var hasMouse = false;
 			inputType = inputType || [];
 			$.each(inputType, function(i, v) {
 				switch (v) {
 					case "mouse" : hasMouse = true; break;
-					case "touch" : hasTouch = isSupportTouch;
+					case "touch" : hasTouch = SUPPORT_TOUCH;
 				}
 			});
 
@@ -865,4 +865,8 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 	 * @type {Number}
 	*/
 	MC.DIRECTION_ALL = MC.DIRECTION_HORIZONTAL | MC.DIRECTION_VERTICAL;
+
+	return {
+		"MovableCoord": ns.MovableCoord
+	};
 });
