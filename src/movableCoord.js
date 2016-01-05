@@ -113,9 +113,10 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 
 			$.extend(subOptions, options);
 
-			var inputClass = this._convertInputType(subOptions.inputType, {
-				isSupportTouch: SUPPORT_TOUCH
-			});
+			var inputClass = this._convertInputType(
+				subOptions.inputType, 
+				SUPPORT_TOUCH
+			);
 			if (!inputClass) {
 				return this;
 			}
@@ -173,14 +174,14 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			} catch (e) {}
 		},
 
-		_convertInputType: function(inputType, options) {
+		_convertInputType: function(inputType, isSupportTouch) {
 			var hasTouch = false;
 			var hasMouse = false;
 			inputType = inputType || [];
 			$.each(inputType, function(i, v) {
 				switch (v) {
 					case "mouse" : hasMouse = true; break;
-					case "touch" : hasTouch = options.isSupportTouch;
+					case "touch" : hasTouch = isSupportTouch;
 				}
 			});
 
