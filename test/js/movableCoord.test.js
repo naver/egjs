@@ -3,10 +3,6 @@
 * egjs projects are licensed under the MIT license
 */
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 92a2e45a8e9d041d210e59bb61579614666a3ba3
 module("movableCoord init Test", {
 	setup : function() {
 		this.inst = null;
@@ -225,34 +221,7 @@ test("setTo", function() {
 	// Then
 	deepEqual(this.inst.get(), [300, 0], "if position parameters was out of range, set to position min or max values.");
 });
-<<<<<<< HEAD
 
-
-test("_convertInputType", function() {
-	// Given
-	// When
-	var inputType = [ "touch", "mouse" ];
-	// Then
-	equal(this.inst._convertInputType(inputType), Hammer.TouchInput, "check TouchInput");
-	// When
-	inputType = [ "touch" ];
-	// Then
-	equal(this.inst._convertInputType(inputType), Hammer.TouchInput, "check TouchInput");
-
-	// When
-	inputType = [ "mouse" ];
-	// Then
-	equal(this.inst._convertInputType(inputType), Hammer.MouseInput, "check MouseInput");
-
-	// When
-	inputType = [ ];
-	// Then
-	equal(this.inst._convertInputType(inputType), null, "type is null");
-
-});
-
-=======
->>>>>>> 92a2e45a8e9d041d210e59bb61579614666a3ba3
 test("setTo : check 'change' event", function(assert) {
 	var done = assert.async();
 	// Given
@@ -405,10 +374,7 @@ module("movableCoord setTo duration Test", {
 		this.inst = null;
 	}
 });
-<<<<<<< HEAD
-=======
 
->>>>>>> 92a2e45a8e9d041d210e59bb61579614666a3ba3
 test("setTo : check event flow when maximumDuration(200ms) is bigger than a duration of setTo", function(assert) {
 	var done = assert.async();
 	// Given
