@@ -113,10 +113,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 
 			$.extend(subOptions, options);
 
-			var inputClass = this._convertInputType(
-				subOptions.inputType,
-				SUPPORT_TOUCH
-			);
+			var inputClass = this._convertInputType(subOptions.inputType);
 			if (!inputClass) {
 				return this;
 			}
