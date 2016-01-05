@@ -4,7 +4,7 @@
 */
 
 // jscs:disable validateLineBreaks, maximumLineLength
-eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, global, Outlayer) {
+eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function($, ns, global, doc, Outlayer) {
 	"use strict";
 
 	// jscs:enable validateLineBreaks, maximumLineLength
@@ -247,35 +247,80 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 		</script>
 	 */
 	var EVENTS = {
-		"layoutComplete": "layoutComplete"
+		"layoutComplete": "layoutComplete",
+		"append": "append",
+		"prepend": "prepend"
 	};
 	ns.InfiniteGrid = ns.Class.extend(ns.Component, {
 		_events: function() {
 			return EVENTS;
 		},
 		construct: function(el, options, _prefix) {
-			var opts = $.extend({
+			this.options = $.extend({
 				"isEqualSize": false,
 				"defaultGroupKey": null,
-				"count": 30
+				"count": 30,
+				"threshold": 300	// for appending or prependding
 			}, options);
-			opts.transitionDuration = 0;	// don't use this option.
-			opts.isInitLayout = false;	// isInitLayout is always 'false' in order to controll layout.
-			opts.isResizeBound = false;	// isResizeBound is always 'false' in order to controll layout.
+			this.options.transitionDuration = 0;	// don't use this option.
+			this.options.isInitLayout = false;	// isInitLayout is always 'false' in order to controll layout.
+			this.options.isResizeBound = false;	// isResizeBound is always 'false' in order to controll layout.
 
 			// if el is jQuery instance, el should change to HTMLElement.
 			if (el instanceof $) {
 				el = el.get(0);
 			}
 			this._prefix = _prefix || "";
-			this.core = new InfiniteGridCore(el, opts)
+			this.core = new InfiniteGridCore(el, this.options)
 				.on(EVENTS.layoutComplete, $.proxy(this._onlayoutComplete, this));
 			this.$global = $(global);
 			this._reset();
 			this.core.$element.children().length > 0 && this.layout();
 			this._onResize = $.proxy(this._onResize, this);
+			this._onScroll = $.proxy(this._onScroll, this);
+			this._isIos = ns.agent().os.name === "ios";
+			this._prevScrollTop = 0;
+			this._refreshViewport();
 			this.$global.on("resize", this._onResize);
+			this.$global.on("scroll", this._onScroll);
+		},
+		_getScrollTop: function() {
+			return doc.body.scrollTop || doc.documentElement.scrollTop;
+		},
+		_onScroll: function() {
+			if (this.isProcessing()) {
+				return;
+			}
 
+			var scrollTop = this._getScrollTop();
+			if (this._isIos && scrollTop === 0) {
+				return;
+			}
+			var ele;
+			var rect;
+			if (this._prevScrollTop < scrollTop) {
+				if (ele = this.getBottomElement()) {
+					rect = ele.getBoundingClientRect();
+					if (rect.top <= this._clientHeight + this.options.threshold) {
+						this.trigger(this._prefix + EVENTS.append, {
+							scrollTop: scrollTop
+						});
+					}
+				}
+			} else {
+				if (this.isRecycling() && this._removedContent > 0 &&
+					(ele = this.getTopElement())) {
+					rect = ele.getBoundingClientRect();
+					if (rect.bottom >= -this.options.threshold) {
+						var croppedHeight = this.fit();
+						this.trigger(this._prefix + EVENTS.prepend, {
+							scrollTop: scrollTop,
+							croppedDistance: croppedHeight
+						});
+					}
+				}
+			}
+			this._prevScrollTop = this._getScrollTop();
 		},
 		_onResize: function() {
 			if (this.resizeTimeout) {
@@ -283,11 +328,15 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			}
 			var self = this;
 			function delayed() {
+				self._refreshViewport();
 				self.core.element.style.width = null;
 				self.core.needsResizeLayout() && self.layout();
 				delete self.resizeTimeout;
 			}
 			this.resizeTimeout = setTimeout(delayed, 100);
+		},
+		_refreshViewport: function() {
+			this._clientHeight = this.$global.height();
 		},
 		/**
 		 * Get current status
@@ -524,7 +573,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			this.trigger(this._prefix + EVENTS.layoutComplete, {
 				target: e.concat(),
 				isAppend: isAppend,
-				distance: distance
+				distance: distance,
+				croppedCount: this._removedContent
 			});
 		},
 
@@ -711,7 +761,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 				this.core.destroy();
 				this.core = null;
 			}
-			this.$global.off("resize", this._onResize);
+			this.$global.off("scroll resize");
 			this.off();
 		}
 	});
