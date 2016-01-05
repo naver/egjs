@@ -3,6 +3,10 @@
 * egjs projects are licensed under the MIT license
 */
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 92a2e45a8e9d041d210e59bb61579614666a3ba3
 module("movableCoord init Test", {
 	setup : function() {
 		this.inst = null;
@@ -221,6 +225,7 @@ test("setTo", function() {
 	// Then
 	deepEqual(this.inst.get(), [300, 0], "if position parameters was out of range, set to position min or max values.");
 });
+<<<<<<< HEAD
 
 
 test("_convertInputType", function() {
@@ -246,6 +251,8 @@ test("_convertInputType", function() {
 
 });
 
+=======
+>>>>>>> 92a2e45a8e9d041d210e59bb61579614666a3ba3
 test("setTo : check 'change' event", function(assert) {
 	var done = assert.async();
 	// Given
@@ -398,6 +405,10 @@ module("movableCoord setTo duration Test", {
 		this.inst = null;
 	}
 });
+<<<<<<< HEAD
+=======
+
+>>>>>>> 92a2e45a8e9d041d210e59bb61579614666a3ba3
 test("setTo : check event flow when maximumDuration(200ms) is bigger than a duration of setTo", function(assert) {
 	var done = assert.async();
 	// Given
@@ -1129,4 +1140,76 @@ test("movement direction test (DIRECTION_VERTICAL)", function(assert) {
 	}, function() {
 		done();
     	});
+});
+
+test("_convertInputType (support touch)", function() {
+	// Given
+	var globalWithToucnSupport = {
+		"ontouchstart": {}
+	};
+	var method = eg.invoke("movableCoord", [jQuery, eg, globalWithToucnSupport, Hammer]);
+	var inst = new method.MovableCoord( {
+		min : [ 0, 0 ],
+		max : [ 300, 400 ],
+		bounce : 100,
+		margin : 0,
+		circular : false
+	});
+	var supportTouch = true;
+	var notSupportTouch = false;
+	
+	// When		
+	var inputType = [ "touch", "mouse" ];
+	// Then
+	equal(inst._convertInputType(inputType), Hammer.TouchInput, "check TouchInput");
+	
+	// When
+	inputType = [ "touch" ];
+	// Then
+	equal(inst._convertInputType(inputType), Hammer.TouchInput, "check TouchInput");
+	
+	// When
+	inputType = [ "mouse" ];
+	// Then
+	equal(inst._convertInputType(inputType), Hammer.MouseInput, "check MouseInput");
+	
+	// When
+	inputType = [ ];
+	// Then
+	equal(inst._convertInputType(inputType), null, "type is null");
+});
+
+test("_convertInputType (not support touch)", function() {
+	// Given
+	var globalWithoutToucnSupport = {};
+	var method = eg.invoke("movableCoord", [jQuery, eg, globalWithoutToucnSupport, Hammer]);
+	var inst = new method.MovableCoord( {
+		min : [ 0, 0 ],
+		max : [ 300, 400 ],
+		bounce : 100,
+		margin : 0,
+		circular : false
+	});
+	var supportTouch = true;
+	var notSupportTouch = false;
+	
+	// When
+	var inputType = [ "touch", "mouse" ];
+	// Then
+	equal(inst._convertInputType(inputType), Hammer.MouseInput, "check TouchInput(not supporting touch)");
+	
+	// When
+	inputType = [ "touch" ];
+	// Then
+	equal(inst._convertInputType(inputType), null, "check TouchInput(not supporting touch)");
+	
+	// When
+	inputType = [ "mouse" ];
+	// Then
+	equal(inst._convertInputType(inputType), Hammer.MouseInput, "check MouseInput(not supporting touch)");
+	
+	// When
+	inputType = [ ];
+	// Then
+	equal(inst._convertInputType(inputType), null, "type is null(not supporting touch)");
 });
