@@ -114,7 +114,7 @@ eg.module("movableCoord", ["jQuery", eg, "Hammer"], function($, ns, HM) {
 			$.extend(subOptions, options);
 
 			var inputClass = this._convertInputType(
-				subOptions.inputType, 
+				subOptions.inputType,
 				SUPPORT_TOUCH
 			);
 			if (!inputClass) {
