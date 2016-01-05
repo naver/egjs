@@ -210,6 +210,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 	 * @param {Boolean} [options.isEqualSize=false] determine if all item's size are same <ko> 모든 아이템의 사이즈가 동일한지를 지정한다</ko>
 	 * @param {String} [options.defaultGroupKey=null] when encounter item markup during the initialization, then set `defaultGroupKey` as groupKey <ko>초기화할때 마크업에 아이템이 있다면, defalutGroupKey를 groupKey로 지정한다</ko>
 	 * @param {Number} [options.count=30] when count value is greater than 0, grid will maintain same DOM length recycling <ko>count값이 0보다 클 경우, 그리드는 일정한 dom 개수를 유지한다</ko>
+	 * @param {Number} [options.threshold=30] Threshold pixels to determine if grid needs to append or prepend elements<ko>엘리먼트가 append 또는 prepend될지를 결정하는 임계치 픽셀</ko>
 	 *
 	 * @codepen {"id":"zvrbap", "ko":"InfiniteGrid 데모", "en":"InfiniteGrid example", "collectionId":"DPYEww", "height": 403}
 	 *  @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
@@ -260,7 +261,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 				"isEqualSize": false,
 				"defaultGroupKey": null,
 				"count": 30,
-				"threshold": 300	// for appending or prependding
+				"threshold": 300
 			}, options);
 			this.options.transitionDuration = 0;	// don't use this option.
 			this.options.isInitLayout = false;	// isInitLayout is always 'false' in order to controll layout.
@@ -302,6 +303,15 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 				if (ele = this.getBottomElement()) {
 					rect = ele.getBoundingClientRect();
 					if (rect.top <= this._clientHeight + this.options.threshold) {
+						/**
+						 * Occurs when grid needs to append elements
+						 * @ko 엘리먼트가 append 될 필요가 있을 때 발생하는 이벤트
+						 * @name eg.InfiniteGrid#append
+						 * @event
+						 *
+						 * @param {Object} param
+						 * @param {Number} param.scrollTop scrollTop scroll-y position of window<ko>윈도우 y 스크롤의 값</ko>
+						 */
 						this.trigger(this._prefix + EVENTS.append, {
 							scrollTop: scrollTop
 						});
@@ -313,6 +323,16 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 					rect = ele.getBoundingClientRect();
 					if (rect.bottom >= -this.options.threshold) {
 						var croppedHeight = this.fit();
+						/**
+						 * Occurs when grid needs to prepend elements
+						 * @ko 엘리먼트가 prepend 될 필요가 있을 때 발생하는 이벤트
+						 * @name eg.InfiniteGrid#prepend
+						 * @event
+						 *
+						 * @param {Object} param
+						 * @param {Number} param.scrollTop scrollTop scroll-y position of window<ko>윈도우 y 스크롤의 값</ko>
+						 * @param {Number} param.croppedDistance croppedDistance the distance of cropped view for relayout.<ko>재배치를 위해, 잘려진 뷰의 길이</ko>
+						 */
 						this.trigger(this._prefix + EVENTS.prepend, {
 							scrollTop: scrollTop,
 							croppedDistance: croppedHeight
@@ -561,14 +581,15 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 
 			/**
 			 * Occurs when layout is completed (after append / after prepend / after layout)
-			 * @ko 레이아웃이 완료 되었을 때 발생하는 이벤트 (append/prepand/layout 메소드 호출 후, 아이템의 배치가 완료되었을때 발생)
+			 * @ko 레이아웃이 완료 되었을 때 발생하는 이벤트 (append/prepend/layout 메소드 호출 후, 아이템의 배치가 완료되었을때 발생)
 			 * @name eg.InfiniteGrid#layoutComplete
 			 * @event
 			 *
 			 * @param {Object} param
 			 * @param {Array} param.target target rearranged elements<ko>재배치된 엘리먼트들</ko>
 			 * @param {Boolean} param.isAppend isAppend determine if append or prepend (value is true when call layout method)<ko>아이템이 append로 추가되었는지, prepend로 추가되었는지를 반한환다. (layout호출시에는 true)</ko>
-			 * @param {Number} param.distance distance<ko>layout 전의 최상단 엘리먼트의 거리</ko>
+			 * @param {Number} param.distance the distance of moved top-element after layoutComplete event is triggered. in order words, prepended distance or height <ko>최상단 엘리먼트가 layoutComplete 이벤트 발생 후,이동되어진 거리. 즉, prepend 되어 늘어난 거리(높이)</ko>
+			 * @param {Number} param.croppedCount the count of removed elements for recycle-dom. <ko>순환 구조에 의해, 삭제된 엘리먼트 개수</ko>
 			 */
 			this.trigger(this._prefix + EVENTS.layoutComplete, {
 				target: e.concat(),
@@ -817,4 +838,58 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
  	$("#grid").trigger("infiniteGrid:layoutComplete",callback);
  	</script>
  * @see eg.InfiniteGrid#event:layoutComplete
+ */
+/**
+ * infiniteGrid:append jQuery event plugin
+ *
+ * @ko infiniteGrid:append jQuery event plugin
+ * @name jQuery#infiniteGrid:append
+ * @event
+ * @example
+     <ul id="grid">
+        <li class="item">
+          <div>test1</div>
+        </li>
+        <li class="item">
+          <div>test3</div>
+        </li>
+      </ul>
+    <script>
+	// create
+	$("#grid").infiniteGrid({
+        itemSelector : ".item"
+    });
+ 	// event
+ 	$("#grid").on("infiniteGrid:append",callback);
+ 	$("#grid").off("infiniteGrid:append",callback);
+ 	$("#grid").trigger("infiniteGrid:append",callback);
+ 	</script>
+ * @see eg.InfiniteGrid#event:append
+ */
+/**
+ * infiniteGrid:prepend jQuery event plugin
+ *
+ * @ko infiniteGrid:prepend jQuery event plugin
+ * @name jQuery#infiniteGrid:prepend
+ * @event
+ * @example
+     <ul id="grid">
+        <li class="item">
+          <div>test1</div>
+        </li>
+        <li class="item">
+          <div>test3</div>
+        </li>
+      </ul>
+    <script>
+	// create
+	$("#grid").infiniteGrid({
+        itemSelector : ".item"
+    });
+ 	// event
+ 	$("#grid").on("infiniteGrid:prepend",callback);
+ 	$("#grid").off("infiniteGrid:prepend",callback);
+ 	$("#grid").trigger("infiniteGrid:prepend",callback);
+ 	</script>
+ * @see eg.InfiniteGrid#event:prepend
  */
