@@ -214,15 +214,6 @@ eg.module("component", [eg], function(ns) {
 			}
 
 			return this;
-		},
-		/**
-		 * Retrun instance itself.
-		 * @ko 자신의 인스턴스를 반환한다.
-		 * @method eg.Component#instance
-		 * @return {eg.Component} instance of itself<ko>자신의 인스턴스</ko>
-		 */
-		instance: function() {
-			return this;
 		}
 	});
 });
