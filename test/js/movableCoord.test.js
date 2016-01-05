@@ -3,6 +3,7 @@
 * egjs projects are licensed under the MIT license
 */
 
+
 module("movableCoord init Test", {
 	setup : function() {
 		this.inst = null;
