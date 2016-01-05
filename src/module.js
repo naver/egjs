@@ -6,7 +6,12 @@
 (function(jQueryName, ns, global) {
 	"use strict";
 
-	var eg = global[ns] = {};
+	var eg;
+	if (!global[ns]) {
+		global[ns] = {};
+	}
+	eg = global[ns];
+
 	var $ = global[jQueryName];
 
 	var dependency = {
@@ -242,14 +247,17 @@
 	 * Regist module.
 	 * @private
 	 */
-	eg.module = function(name, di, fp) {
-		var result = checkDependency(name, di);
+	if (!eg.module) {
+		eg.module = function(name, di, fp) {
+			var result = checkDependency(name, di);
 
-		if (result[1].length) {
-			warn(result[1].join("\r\n"));
-		} else {
-			fp.apply(global, result[0]);
-			plugin(name);
-		}
-	};
+			if (result[1].length) {
+				warn(result[1].join("\r\n"));
+			} else {
+				fp.apply(global, result[0]);
+				plugin(name);
+			}
+		};
+	}
+
 })("jQuery", "eg", window);
