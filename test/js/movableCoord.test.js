@@ -367,7 +367,9 @@ module("movableCoord setTo duration Test", {
 	}
 });
 
-asyncTest("setTo : check event flow when maximumDuration(200ms) is bigger than a duration of setTo", function() {
+test("setTo : check event flow when maximumDuration(200ms) is bigger than a duration of setTo", function(assert) {
+	var done = assert.async();
+
 	// Given
 	var self = this;
 	// When
@@ -378,11 +380,12 @@ asyncTest("setTo : check event flow when maximumDuration(200ms) is bigger than a
 		ok(self.firedChangeEvent, "fired 'change' event");
 		equal(self.firedAnimationStartEvent, 1, "fired 'animationStart' event");
 		equal(self.firedAnimationEndEvent, 1, "fired 'animationEnd' event");
-		start();
+		done();
 	},150);
 });
 
-asyncTest("setTo : check event flow when a duration of setTo is bigger than maximumDuration(200ms)", function() {
+test("setTo : check event flow when a duration of setTo is bigger than maximumDuration(200ms)", function(assert) {
+	var done = assert.async();
 	// Given
 	var self = this;
 
@@ -394,11 +397,12 @@ asyncTest("setTo : check event flow when a duration of setTo is bigger than maxi
 		ok(self.firedChangeEvent, "fired 'change' event");
 		equal(self.firedAnimationStartEvent, 1, "fired 'animationStart' event");
 		equal(self.firedAnimationEndEvent, 1, "fired 'animationEnd' event");
-		start();
+		done();
 	},250);
 });
 
-asyncTest("setTo : check event flow when a duration of setTo is '0'", function() {
+test("setTo : check event flow when a duration of setTo is '0'", function(assert) {
+	var done = assert.async();
 	// Given
 	var self = this;
 
@@ -409,7 +413,7 @@ asyncTest("setTo : check event flow when a duration of setTo is '0'", function()
 	ok(self.firedChangeEvent, "fired 'change' event");
 	equal(self.firedAnimationStartEvent, 0, "not fired 'animationStart' event");
 	equal(self.firedAnimationEndEvent, 0, "not fired 'animationEnd' event");
-	start();
+	done();
 });
 
 module("movableCoord event Test", {
