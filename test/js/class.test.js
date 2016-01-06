@@ -319,3 +319,22 @@ test( "Order of constructor call and derived method call", function(  ) {
   strictEqual(nSub1ConstructorSeq, 1, 'called Sub1 constructor first');
   strictEqual(nSub2ConstructorSeq, 2, 'called Sub2 constructor second');
 });
+
+module("instance method");
+
+test("should be return self instance.",function(){
+	//Given
+	var TestClass = eg.Class({
+		"construct" : function(option){
+			this.options = option;
+		}
+	});
+	var instance = null;
+	this.oClass = new TestClass();
+
+	//When
+	instance = this.oClass.instance();
+	
+	//Then
+	ok( instance, this.oClass);
+});
