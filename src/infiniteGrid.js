@@ -292,14 +292,15 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			if (this.isProcessing()) {
 				return;
 			}
-
 			var scrollTop = this._getScrollTop();
-			if (this._isIos && scrollTop === 0) {
+			var prevScrollTop = this._prevScrollTop;
+			this._prevScrollTop = scrollTop;
+			if (this._isIos && scrollTop === 0 || prevScrollTop === scrollTop) {
 				return;
 			}
 			var ele;
 			var rect;
-			if (this._prevScrollTop < scrollTop) {
+			if (prevScrollTop < scrollTop) {
 				if (ele = this.getBottomElement()) {
 					rect = ele.getBoundingClientRect();
 					if (rect.top <= this._clientHeight + this.options.threshold) {
@@ -322,7 +323,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 					(ele = this.getTopElement())) {
 					rect = ele.getBoundingClientRect();
 					if (rect.bottom >= -this.options.threshold) {
-						var croppedHeight = this.fit();
 						/**
 						 * Occurs when grid needs to prepend elements
 						 * @ko 엘리먼트가 prepend 될 필요가 있을 때 발생하는 이벤트
@@ -335,12 +335,11 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 						 */
 						this.trigger(this._prefix + EVENTS.prepend, {
 							scrollTop: scrollTop,
-							croppedDistance: croppedHeight
+							croppedDistance: this.fit()
 						});
 					}
 				}
 			}
-			this._prevScrollTop = this._getScrollTop();
 		},
 		_onResize: function() {
 			if (this.resizeTimeout) {
@@ -461,7 +460,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 
 			// convert jQuery instance
 			$elements = $($elements);
-
 			this._isProcessing = true;
 			if (!this._isRecycling) {
 				this._isRecycling =
