@@ -210,7 +210,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 	 * @param {Boolean} [options.isEqualSize=false] determine if all item's size are same <ko> 모든 아이템의 사이즈가 동일한지를 지정한다</ko>
 	 * @param {String} [options.defaultGroupKey=null] when encounter item markup during the initialization, then set `defaultGroupKey` as groupKey <ko>초기화할때 마크업에 아이템이 있다면, defalutGroupKey를 groupKey로 지정한다</ko>
 	 * @param {Number} [options.count=30] when count value is greater than 0, grid will maintain same DOM length recycling <ko>count값이 0보다 클 경우, 그리드는 일정한 dom 개수를 유지한다</ko>
-	 * @param {Number} [options.threshold=30] Threshold pixels to determine if grid needs to append or prepend elements<ko>엘리먼트가 append 또는 prepend될지를 결정하는 임계치 픽셀</ko>
+	 * @param {Number} [options.threshold=300] Threshold pixels to determine if grid needs to append or prepend elements<ko>엘리먼트가 append 또는 prepend될지를 결정하는 임계치 픽셀</ko>
 	 *
 	 * @codepen {"id":"zvrbap", "ko":"InfiniteGrid 데모", "en":"InfiniteGrid example", "collectionId":"DPYEww", "height": 403}
 	 *  @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
@@ -281,6 +281,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			this._onScroll = $.proxy(this._onScroll, this);
 			this._isIos = ns.agent().os.name === "ios";
 			this._prevScrollTop = 0;
+			this._topElement = null;
+			this._bottomElement = null;
 			this._refreshViewport();
 			this.$global.on("resize", this._onResize);
 			this.$global.on("scroll", this._onScroll);
@@ -292,40 +294,45 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			if (this.isProcessing()) {
 				return;
 			}
-
 			var scrollTop = this._getScrollTop();
-			if (this._isIos && scrollTop === 0) {
+			var prevScrollTop = this._prevScrollTop;
+			this._prevScrollTop = scrollTop;
+			if (this._isIos && scrollTop === 0 || prevScrollTop === scrollTop) {
 				return;
 			}
 			var ele;
 			var rect;
-			if (this._prevScrollTop < scrollTop) {
-				if (ele = this.getBottomElement()) {
-					rect = ele.getBoundingClientRect();
-					if (rect.top <= this._clientHeight + this.options.threshold) {
-						/**
-						 * Occurs when grid needs to append elements
-						 * @ko 엘리먼트가 append 될 필요가 있을 때 발생하는 이벤트
-						 * @name eg.InfiniteGrid#append
-						 * @event
-						 *
-						 * @param {Object} param
-						 * @param {Number} param.scrollTop scrollTop scroll-y position of window<ko>윈도우 y 스크롤의 값</ko>
-						 */
-						this.trigger(this._prefix + EVENTS.append, {
-							scrollTop: scrollTop
-						});
-					}
+			if (prevScrollTop < scrollTop) {
+				ele = this._bottomElement || this.getBottomElement();
+				rect = ele.getBoundingClientRect();
+				if (rect.top <= this._clientHeight + this.options.threshold) {
+					/**
+					 * Occurs when grid needs to append elements.
+					 * in order words, when scroll reaches end of page
+					 *
+					 * @ko 엘리먼트가 append 될 필요가 있을 때 발생하는 이벤트.
+					 * 즉, 스크롤이 페이지 하단에 도달했을 때 발생한다.
+					 * @name eg.InfiniteGrid#append
+					 * @event
+					 *
+					 * @param {Object} param
+					 * @param {Number} param.scrollTop scrollTop scroll-y position of window<ko>윈도우 y 스크롤의 값</ko>
+					 */
+					this.trigger(this._prefix + EVENTS.append, {
+						scrollTop: scrollTop
+					});
 				}
 			} else {
 				if (this.isRecycling() && this._removedContent > 0 &&
-					(ele = this.getTopElement())) {
+					(ele = this._topElement || this.getTopElement())) {
 					rect = ele.getBoundingClientRect();
 					if (rect.bottom >= -this.options.threshold) {
-						var croppedHeight = this.fit();
 						/**
 						 * Occurs when grid needs to prepend elements
-						 * @ko 엘리먼트가 prepend 될 필요가 있을 때 발생하는 이벤트
+						 * in order words, when scroll reaches top of page and a count of cropped element is more than zero.
+						 *
+						 * @ko 엘리먼트가 prepend 될 필요가 있을 때 발생하는 이벤트.
+						 * 즉, 스크롤이 페이지 상단에 도달하고, 순환에 의해 잘려진 엘리먼트가 존재할때 발생한다.
 						 * @name eg.InfiniteGrid#prepend
 						 * @event
 						 *
@@ -335,12 +342,11 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 						 */
 						this.trigger(this._prefix + EVENTS.prepend, {
 							scrollTop: scrollTop,
-							croppedDistance: croppedHeight
+							croppedDistance: this.fit()
 						});
 					}
 				}
 			}
-			this._prevScrollTop = this._getScrollTop();
 		},
 		_onResize: function() {
 			if (this.resizeTimeout) {
@@ -461,7 +467,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 
 			// convert jQuery instance
 			$elements = $($elements);
-
 			this._isProcessing = true;
 			if (!this._isRecycling) {
 				this._isRecycling =
@@ -578,6 +583,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 
 			// reset flags
 			this._reset(true);
+
+			// refresh element
+			this._topElement = this.getTopElement();
+			this._bottomElement = this.getBottomElement();
 
 			/**
 			 * Occurs when layout is completed (after append / after prepend / after layout)
@@ -782,7 +791,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 				this.core.destroy();
 				this.core = null;
 			}
-			this.$global.off("scroll resize");
+			this.$global.off("resize", this._onResize);
+			this.$global.off("scroll", this._onScroll);
 			this.off();
 		}
 	});

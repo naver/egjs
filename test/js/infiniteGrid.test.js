@@ -21,7 +21,7 @@ var getContent = function(className, x) {
 	return $el;
 };
 
-module("infiniteGrid initailization Test", {
+module("infiniteGrid initailization/destroy Test", {
 	setup : function() {
 		this.inst = null;
 	},
@@ -70,6 +70,34 @@ test("check a append after a initialization (there aren't children)", function(a
 	this.inst.append($el);
 });
 
+test("release event handler after destroy", function(assert) {
+	// Given
+	var done = assert.async();
+	var scrollCount = 0;
+	var resizeCount = 0;
+	var $global = $(window);
+
+	// When
+	$global.on("scroll resize", function(e) {
+		e.type === "scroll" ? scrollCount++ : resizeCount++;
+	});
+	this.inst = new eg.InfiniteGrid("#grid");
+	this.inst.destroy();
+	this.inst = null;
+
+	$global.trigger("scroll");
+	$global.trigger("resize");
+
+	// Then
+	setTimeout(function() {
+		equal(scrollCount, 1, "should exist scroll event");
+		equal(resizeCount, 1, "should exist resize event");
+		$global.off("scroll resize");
+		done();
+	},100);
+});
+
+
 module("infiniteGrid append Test", {
 	setup : function() {
 		this.inst = new eg.InfiniteGrid("#nochildren_grid", {
@@ -88,7 +116,7 @@ test("check a append module", function(assert) {
 	// Given
 	var done = assert.async();
 	var addCount = 0,
-		beforeItemsCount = 0;
+		itemsCount = 0;
 
 	// When
 	this.inst.on("layoutComplete",function(e) {
@@ -96,11 +124,12 @@ test("check a append module", function(assert) {
 		equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
 		equal(e.isAppend, true, "append type");
 		equal(e.distance, 0, "check distance");
+		itemsCount += e.target.length;
 		if(this.isRecycling()) {
-			equal(this.core.items.length, 18, "a number of elements are always 18");
+			equal(this.core.items.length, this.options.count, "a number of elements are always 18");
+			equal(e.croppedCount, itemsCount-this.options.count, "check croppedCount");
 		} else {
-			equal(beforeItemsCount + e.target.length, this.core.items.length, "item added " + e.target.length);
-			beforeItemsCount = this.core.items.length;
+			equal(itemsCount, this.core.items.length, "item added " + e.target.length);
 		}
 		equal(this.core.$element.children().length, this.core.items.length, "a number of elements(DOM) -> " + this.core.items.length);
 		if(addCount++ < 10) {
@@ -109,7 +138,7 @@ test("check a append module", function(assert) {
 			done();
 		}
 	});
-	beforeItemsCount = this.inst.core.items.length;
+	itemsCount = this.inst.core.items.length;
 	this.inst.append(getContent("append"));
 });
 
@@ -119,7 +148,7 @@ test("check a append module with groupkey", function(assert) {
 	var done = assert.async();
 	var addCount = 0,
 		groupkey = 0,
-		beforeItemsCount = 0,
+		itemsCount = 0,
 		group = {};
 
 	// When
@@ -128,6 +157,7 @@ test("check a append module with groupkey", function(assert) {
 		equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
 		equal(e.isAppend, true, "append type");
 		group[groupkey] = e.target.length;
+		itemsCount += e.target.length;
 		if(this.isRecycling()) {
 			var groupKeys = this.getGroupKeys();
 			var total = 0;
@@ -135,9 +165,9 @@ test("check a append module with groupkey", function(assert) {
 				total += group[i];
 			}
 			equal(this.core.items.length, total, "a number of elements are " + total);
+			equal(e.croppedCount, itemsCount-this.core.items.length, "check croppedCount");
 		} else {
-			equal(beforeItemsCount + e.target.length, this.core.items.length, "item added " + e.target.length);
-			beforeItemsCount = this.core.items.length;
+			equal(itemsCount, this.core.items.length, "** item added " + e.target.length);
 		}
 		equal(this.core.$element.children().length, this.core.items.length, "a number of elements(DOM) -> " + this.core.items.length);
 		if(addCount++ < 10) {
@@ -146,10 +176,12 @@ test("check a append module with groupkey", function(assert) {
 			done();
 		}
 	});
-	beforeItemsCount = this.inst.core.items.length;
+	itemsCount = this.inst.core.items.length;
 	this.inst.append(getContent("append"), groupkey);
 });
 
+// @todo check croppedCount
+// ref https://github.com/naver/egjs/issues/68
 module("infiniteGrid prepend Test", {
 	setup : function() {
 		this.inst = new eg.InfiniteGrid("#nochildren_grid", {
@@ -278,7 +310,7 @@ test("check a count of remove contents", function(assert) {
 		equal(this.isRecycling(), true, "recycle mode");
 		equal(this.core.items.length, 18, "a number of elements are always 18");
 		equal(this.core.$element.children().length, 18, "a number of DOM are always 18");
-		equal(this._removedContent, 1988, "a number of removed elements are 1988");
+		equal(e.croppedCount, 1988, "a number of removed elements are 1988");
 
 		// When
 		this.off();
@@ -290,7 +322,7 @@ test("check a count of remove contents", function(assert) {
 			equal(this.isRecycling(), true, "recycle mode");
 			equal(this.core.items.length, 18, "a number of elements are always 18");
 			equal(this.core.$element.children().length, 18, "a number of DOM are always 18");
-			equal(this._removedContent, 0, "a number of removed elements are 0");
+			equal(e.croppedCount, 0, "a number of removed elements are 0");
 			done();
 		});
 		this.prepend(getContent("prepend", 2000));
@@ -427,7 +459,7 @@ test("check a clear", function(assert) {
 			equal(this._isRecycling, false, "_isRecycling is false");
 			equal(this._isAppendType, null, "_isAppendType is null");
 			equal(this._isProcessing, false, "_isProcessing is false");
-			equal(this._removedContent, 0, "a number of removedContent are 0");
+			equal(e.croppedCount, 0, "a number of removedContent are 0");
 			done();
 		}
 	});
@@ -577,4 +609,115 @@ test("Check type #3 - jQuery type", function(assert) {
 
 	// When
 	this.inst.append($(data));
+});
+
+module("infiniteGrid event handler Test", {
+	setup : function() {
+		// viewportSize: { width: 360, height: 640 }
+		this.fakeDoc = {
+			body: {
+				scrollTop: 0,
+				clientHeight : 640,
+				clientWidth : 360
+			},
+			documentElement: {
+				scrollTop: 0
+			}
+		};
+		eg.invoke("infiniteGrid", [ null, null, null, this.fakeDoc, null]);
+		this.inst = new eg.InfiniteGrid("#nochildren_grid", {
+			"count" : 20,
+			"threshold": 100
+		});
+	},
+	teardown : function() {
+		if(this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
+	}
+});
+
+test("Test append event", function(assert) {
+	// Given
+	var done = assert.async();
+	var rect = {
+		top : 0
+	};
+	var self = this;
+	this.inst._clientHeight = 640;
+	this.inst.getBottomElement = function() {
+		return {
+			getBoundingClientRect : function() {
+				return rect;
+			}
+		}
+	};
+
+	this.inst.on({
+		"layoutComplete": function(e) {
+			// When
+			rect.top = self.inst._clientHeight + self.inst.options.threshold;
+			self.fakeDoc.body.scrollTop = 100;
+			$(window).trigger("scroll");
+		},
+		"append": function(e) {
+			// Then
+			equal(e.scrollTop, 100, "check scrollTop parameter");
+			rect.top += 1;
+			self.fakeDoc.body.scrollTop = 110;
+			$(window).trigger("scroll");
+			setTimeout(function() {
+				done();
+			},100);
+		}
+	});
+
+	// When
+	this.inst.append(getContent("append",200));
+});
+
+
+test("Test prepend event", function(assert) {
+	// Given
+	var done = assert.async();
+	var rect = {
+		bottom : 0
+	};
+	var self = this;
+	this.inst._clientHeight = 640;
+	this.inst.getTopElement = function() {
+		return {
+			getBoundingClientRect : function() {
+				return rect;
+			}
+		}
+	};
+
+	this.inst.on({
+		"layoutComplete": function(e) {
+			// Then
+			equal(self.inst.isRecycling(), true, "recycle mode");
+			equal(e.croppedCount, 200 - self.inst.options.count, "check croppedCount");
+
+			// When
+			rect.bottom -= self.inst.options.threshold;
+			self.fakeDoc.body.scrollTop = 100;
+			$(window).trigger("scroll");
+		},
+		"prepend": function(e) {
+			// Then
+			equal(e.scrollTop, 100, "check scrollTop parameter");
+			rect.bottom -= 1;
+			self.fakeDoc.body.scrollTop = 90;
+			$(window).trigger("scroll");
+			setTimeout(function() {
+				done();
+			},100);
+		}
+	});
+
+	// When
+	this.inst._prevScrollTop = this.fakeDoc.body.scrollTop = 300;
+	this.inst.append(getContent("append",200));
 });
