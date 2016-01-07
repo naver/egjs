@@ -21,7 +21,7 @@ var getContent = function(className, x) {
 	return $el;
 };
 
-module("infiniteGrid initailization Test", {
+module("infiniteGrid initailization/destroy Test", {
 	setup : function() {
 		this.inst = null;
 	},
@@ -69,6 +69,33 @@ test("check a append after a initialization (there aren't children)", function(a
 	});
 	this.inst.append($el);
 });
+
+test("release event handler after destroy", function(assert) {
+	// Given
+	var done = assert.async();
+	var scrollCount = 0;
+	var resizeCount = 0;
+	var $global = $(window);
+
+	// When
+	$global.on("scroll resize", function(e) {
+		e.type === "scroll" ? scrollCount++ : resizeCount++;
+	});
+	this.inst = new eg.InfiniteGrid("#grid");
+	this.inst.destroy();
+	this.inst = null;
+
+	$global.trigger("scroll");
+	$global.trigger("resize");
+
+	// Then
+	setTimeout(function() {
+		equal(scrollCount, 1, "should exist scroll event");
+		equal(resizeCount, 1, "should exist resize event");
+		done();
+	},100);
+});
+
 
 module("infiniteGrid append Test", {
 	setup : function() {
