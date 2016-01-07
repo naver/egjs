@@ -9,6 +9,7 @@ module.exports = function(grunt) {
 	require("load-grunt-tasks")(grunt);
 	grunt.loadNpmTasks("testee");
 
+	var isBrowserStack = process.env.BROWSER_STACK_USERNAME && process.env.BROWSER_STACK_ACCESS_KEY;
 	var config = {
 		"pkg": grunt.file.readJSON("package.json"),
 		"clean": getConfig("clean"),
@@ -23,7 +24,30 @@ module.exports = function(grunt) {
 		"qunit": getConfig("qunit"),
 		"testee": getConfig("testee"),
 		"uglify": getConfig("uglify"),
-		"watch": getConfig("watch")
+		"watch": getConfig("watch"),
+		
+		"karma": {
+			options: {
+				configFile: "test/karma/karma.conf.js",
+				singleRun: true
+			}		
+		},
+		"karma-phantomjs-launcher": {
+			options: {
+				configFile: "node_modules/karma-phantomjs-launcher/karma.conf.js"
+			}		
+		},
+		"browserstack": {
+			options: {
+				page: {
+					viewportSize: {
+						width: 360,
+						height: 640
+					}
+				}
+			}			
+		},
+		"dateString": new Date().toISOString().replace( /\..*Z/, "" )
 	};
 
 	grunt.initConfig(config);
@@ -42,6 +66,37 @@ module.exports = function(grunt) {
 		grunt.task.run("qunit:each");
 	});
 
+	grunt.registerTask( "browserstack", isBrowserStack ? function(){
+			var dep = require("./test/karma/dependency.js").dependency;				
+			var eachfile = Array.prototype.slice.apply(arguments);
+	
+			if(eachfile.length === 0) {
+				grunt.task.run(
+					dep.map(function(value){
+						return "browserstack:" + value.name;
+					})
+				);
+			} else {
+				var moduleName = eachfile[0];
+				var targetBrowser = eachfile[1];				
+				if(targetBrowser) {
+					grunt.config.set("karma.each", {
+						moduleName: moduleName,
+						targetBrowser: targetBrowser
+					});
+					grunt.task.run(["karma"]);							
+				} else {
+					grunt.config.set("karma.each", {
+						moduleName: moduleName
+					});
+					grunt.task.run(["karma"]);					
+				}				
+			}		
+		} : function(){
+			console.warn("There is no browserstack username and accesskey.");
+		}
+	);
+	
 	grunt.registerTask("validate-commit", function() {
 		var fs = require("fs");
 		if (grunt.file.exists(".git/hooks/commit-msg")) {
