@@ -92,6 +92,7 @@ test("release event handler after destroy", function(assert) {
 	setTimeout(function() {
 		equal(scrollCount, 1, "should exist scroll event");
 		equal(resizeCount, 1, "should exist resize event");
+		$global.off("scroll resize");
 		done();
 	},100);
 });
