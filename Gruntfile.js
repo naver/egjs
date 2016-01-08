@@ -1,4 +1,5 @@
 /*global module:false*/
+
 function getConfig(name){
 	return require("./config/"+name);
 }
@@ -7,9 +8,12 @@ module.exports = function(grunt) {
 	"use strict";
 	require("time-grunt")(grunt);
 	require("load-grunt-tasks")(grunt);
-	grunt.loadNpmTasks("testee");
-
-	var isBrowserStack = process.env.BROWSER_STACK_USERNAME && process.env.BROWSER_STACK_ACCESS_KEY;
+	
+	var isBrowserStack;
+	/* jshint ignore:start */
+	isBrowserStack = process.env.BROWSER_STACK_USERNAME && process.env.BROWSER_STACK_ACCESS_KEY;
+	/* jshint ignore:end */
+	
 	var config = {
 		"pkg": grunt.file.readJSON("package.json"),
 		"clean": getConfig("clean"),
@@ -22,7 +26,6 @@ module.exports = function(grunt) {
 		"jsdoc": getConfig("jsdoc"),
 		"jshint": getConfig("jshint"),
 		"qunit": getConfig("qunit"),
-		"testee": getConfig("testee"),
 		"uglify": getConfig("uglify"),
 		"watch": getConfig("watch"),
 		
@@ -90,10 +93,10 @@ module.exports = function(grunt) {
 						moduleName: moduleName
 					});
 					grunt.task.run(["karma"]);					
-				}				
-			}		
+				}
+			}	
 		} : function(){
-			console.warn("There is no browserstack username and accesskey.");
+
 		}
 	);
 	
