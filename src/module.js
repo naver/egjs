@@ -78,7 +78,8 @@
 			isUndefined = di[i] === undefined;
 			registedDependency = isString && (dependencyInfo = dependency[di[i]]);
 			isNotGlobal = isString && dependencyInfo && !global[di[i]];
-			specifiedAMD = isNotGlobal && require && require.specified(di[i]);
+			specifiedAMD = isNotGlobal &&
+				require && require.specified && require.specified(di[i]);
 
 			// Message decision flow
 			//             argument
