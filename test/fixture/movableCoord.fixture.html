@@ -1,0 +1,28 @@
+<style type="text/css">
+	#area {
+		position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;
+		box-sizing:content-box; z-index:9;
+	}
+	#dot {
+		position:absolute; background-color:#f00; width:9px; height:9px;
+		left:200px; top:200px; color:#000; margin:-4px; border-radius:100%;
+	}
+	#hmove {
+		position:relative; border:5px solid #888; background-color:yellowgreen;
+		width:300px; height:80px;
+	}
+	#vmove {
+		position:relative; border:5px solid #888; background-color:skyblue;
+		width:80px; height:400px; left:310px; top:-500px;
+	}
+</style>
+<div id="qunit-fixture">
+	<!-- UI content Start -->
+	<div id="area"><div id="dot"></div></div>
+	<div id="hmove"></div><div id="vmove"></div>
+	<!-- UI content End -->
+</div>
+<script>
+    Simulator.setType('touch');
+    Simulator.events.touch.fakeSupport();
+</script>

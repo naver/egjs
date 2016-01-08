@@ -53,6 +53,15 @@
     "load-grunt-tasks": "^3.1.0",
     "testee": "^0.2.0",
     "time-grunt": "^1.1.0",
-    "xml2js": "^0.4.15"
+    "xml2js": "^0.4.15",
+    
+    "grunt-karma": "0.11.2", 
+    "karma": "0.12.24",
+    "karma-qunit": "0.1.4",
+    "karma-phantomjs-launcher": "0.2.1",
+    "karma-browserstack-launcher": "0.1.4",
+    "karma-html2js-preprocessor": "0.1.0",
+    "qunitjs": "1.20.0",
+    "jsdoc-parse": "1.2.3"
   }
 }
