@@ -305,8 +305,11 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 					rect = ele.getBoundingClientRect();
 					if (rect.top <= this._clientHeight + this.options.threshold) {
 						/**
-						 * Occurs when grid needs to append elements
-						 * @ko 엘리먼트가 append 될 필요가 있을 때 발생하는 이벤트
+						 * Occurs when grid needs to append elements.
+						 * in order words, when scroll reaches end of page
+						 *
+						 * @ko 엘리먼트가 append 될 필요가 있을 때 발생하는 이벤트.
+						 * 즉, 스크롤이 페이지 하단에 도달했을 때 발생한다.
 						 * @name eg.InfiniteGrid#append
 						 * @event
 						 *
@@ -325,7 +328,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 					if (rect.bottom >= -this.options.threshold) {
 						/**
 						 * Occurs when grid needs to prepend elements
-						 * @ko 엘리먼트가 prepend 될 필요가 있을 때 발생하는 이벤트
+						 * in order words, when scroll reaches top of page and a count of cropped element is more than zero.
+						 *
+						 * @ko 엘리먼트가 prepend 될 필요가 있을 때 발생하는 이벤트.
+						 * 즉, 스크롤이 페이지 상단에 도달하고, 순환에 의해 잘려진 엘리먼트가 존재할때 발생한다.
 						 * @name eg.InfiniteGrid#prepend
 						 * @event
 						 *
