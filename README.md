@@ -6,6 +6,7 @@ egjs gh-pages requires [Jekyll](http://jekyllrb.com/)
 ```
 git clone -b gh-pages https://github.com/naver/egjs.git egjs-gh-pages
 cd egjs-gh-pages
+npm install
 grunt build
 ```
 
