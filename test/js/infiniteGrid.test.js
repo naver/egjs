@@ -470,6 +470,34 @@ test("Check prefixEvent", function (assert) {
 });
 
 
+test("Check append/prepend methods return", function (assert) {
+	var done = assert.async();
+	var appendCount = 0,
+		prependCount = 0,
+		self = this;
+	// Given
+	this.inst = new eg.InfiniteGrid("#nochildren_grid", {
+		"count" : 18
+	});
+	// When
+	this.inst.on("layoutComplete",function(e) {
+		// Given
+		this.off();
+		this.on("layoutComplete",function(e) {
+			// Then
+			equal(prependCount, 1982);
+			equal(e.target.length, 1982);
+			done();
+		});
+
+		// When
+		prependCount = self.inst.prepend(getContent("prepend",3000));
+	});
+
+	// Then
+	appendCount = this.inst.append(getContent("append",2000));
+	equal(appendCount, 2000);
+});
 
 var complicatedHTML = "<div class='item'><div class='thumbnail'><img class='img-rounded' src='#' /><div class='caption'><p><a href='http://www.naver.com'></a></p></div></div></div>";
 
