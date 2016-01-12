@@ -1,0 +1,14 @@
+# Site settings
+title: egjs
+latestVersion: 1.0.0
+
+# Build settings
+safe: true
+markdown: kramdown
+
+exclude:
+  - .gitignore
+  - .grunt
+  - Gruntfile.js
+  - node_modules/
+  - package.json

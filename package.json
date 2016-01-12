@@ -1,0 +1,19 @@
+{
+  "name": "naver.github.io-egjs",
+  "version": "1.0.0",
+  "description": "egjs github.io resources",
+  "repository": {
+    "type": "git",
+    "url": "https://oss.navercorp.com/egjs/naver.github.io-egjs"
+  },
+  "egjs": {
+    "latest": "1.0.0"
+  },
+  "author": "NAVER corp.",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-copy": "^0.8.2",
+    "grunt-jekyll": "^0.4.3"
+  }
+}
