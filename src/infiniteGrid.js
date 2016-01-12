@@ -615,6 +615,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			}
 			this._isAppendType = isAppend;
 			var elements = $elements.toArray();
+			var $cloneElements = $(elements);
 			var i = 0;
 			var item;
 			var items = this.core.itemize(elements, groupKey);
@@ -630,16 +631,22 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 				items = items.reverse();
 			}
 			if (this.isRecycling()) {
-				this._adjustRange(isAppend, $elements);
+				this._adjustRange(isAppend, $cloneElements);
 			}
 			var noChild = this.core.$element.children().length === 0;
-			this.core.$element[isAppend ? "append" : "prepend"]($elements);
+			this.core.$element[isAppend ? "append" : "prepend"]($cloneElements);
 			noChild && this.core.resetLayout();		// for init-items
 
-			var needCheck = this._checkImageLoaded($elements);
-			var checkCount = needCheck.length;
-			checkCount > 0 ? this._waitImageLoaded(items, needCheck) :
-					this.core.layoutItems(items, true);
+			var needCheck = this._checkImageLoaded($cloneElements);
+			if (needCheck.length > 0) {
+				this._waitImageLoaded(items, needCheck);
+			} else {
+				// convert to async
+				var self = this;
+				setTimeout(function() {
+					self.core.layoutItems(items, true);
+				}, 0);
+			}
 		},
 		_adjustRange: function (isTop, $elements) {
 			var diff = this.core.items.length - this.core.options.count;
