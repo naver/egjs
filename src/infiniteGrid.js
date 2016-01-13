@@ -281,6 +281,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			this._onScroll = $.proxy(this._onScroll, this);
 			this._isIos = ns.agent().os.name === "ios";
 			this._prevScrollTop = 0;
+			this._topElement = null;
+			this._bottomElement = null;
 			this._refreshViewport();
 			this.$global.on("resize", this._onResize);
 			this.$global.on("scroll", this._onScroll);
@@ -301,29 +303,28 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			var ele;
 			var rect;
 			if (prevScrollTop < scrollTop) {
-				if (ele = this.getBottomElement()) {
-					rect = ele.getBoundingClientRect();
-					if (rect.top <= this._clientHeight + this.options.threshold) {
-						/**
-						 * Occurs when grid needs to append elements.
-						 * in order words, when scroll reaches end of page
-						 *
-						 * @ko 엘리먼트가 append 될 필요가 있을 때 발생하는 이벤트.
-						 * 즉, 스크롤이 페이지 하단에 도달했을 때 발생한다.
-						 * @name eg.InfiniteGrid#append
-						 * @event
-						 *
-						 * @param {Object} param
-						 * @param {Number} param.scrollTop scrollTop scroll-y position of window<ko>윈도우 y 스크롤의 값</ko>
-						 */
-						this.trigger(this._prefix + EVENTS.append, {
-							scrollTop: scrollTop
-						});
-					}
+				ele = this._bottomElement || this.getBottomElement();
+				rect = ele.getBoundingClientRect();
+				if (rect.top <= this._clientHeight + this.options.threshold) {
+					/**
+					 * Occurs when grid needs to append elements.
+					 * in order words, when scroll reaches end of page
+					 *
+					 * @ko 엘리먼트가 append 될 필요가 있을 때 발생하는 이벤트.
+					 * 즉, 스크롤이 페이지 하단에 도달했을 때 발생한다.
+					 * @name eg.InfiniteGrid#append
+					 * @event
+					 *
+					 * @param {Object} param
+					 * @param {Number} param.scrollTop scrollTop scroll-y position of window<ko>윈도우 y 스크롤의 값</ko>
+					 */
+					this.trigger(this._prefix + EVENTS.append, {
+						scrollTop: scrollTop
+					});
 				}
 			} else {
 				if (this.isRecycling() && this._removedContent > 0 &&
-					(ele = this.getTopElement())) {
+					(ele = this._topElement || this.getTopElement())) {
 					rect = ele.getBoundingClientRect();
 					if (rect.bottom >= -this.options.threshold) {
 						/**
@@ -582,6 +583,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 
 			// reset flags
 			this._reset(true);
+
+			// refresh element
+			this._topElement = this.getTopElement();
+			this._bottomElement = this.getBottomElement();
 
 			/**
 			 * Occurs when layout is completed (after append / after prepend / after layout)
