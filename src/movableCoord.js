@@ -210,8 +210,11 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 
 		_grab: function() {
 			if (this._status.animationParam) {
-				this._pos = this._getCircularPos(this._pos);
-				this._triggerChange(this._pos, true);
+				var pos = this._getCircularPos(this._pos);
+				if (pos[0] !== this._pos[0] || pos[1] !== this._pos[1]) {
+					this._pos = pos;
+					this._triggerChange(this._pos, true);
+				}
 				this._status.animationParam = null;
 				this._raf && ns.cancelAnimationFrame(this._raf);
 				this._raf = null;

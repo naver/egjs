@@ -229,7 +229,7 @@ test("setTo : check 'change' event", function(assert) {
 		// Then
 		deepEqual(e.pos, [0, 200], "set to position 0,200");
 		done();
-	})
+	});
 	// When
 	this.inst.setTo(0, 200, 0);
 });
@@ -267,11 +267,29 @@ test("setBy : check a 'change' event", function(assert) {
 		// Then
 		deepEqual(e.pos, [10, 10], "set to position -10,-10 relatively");
 		done();
-	})
+	});
 	// When
 	this.inst.setBy(-10, -10);
 });
 
+test("_grap : when position was not changed", function(assert) {
+	// Given
+	var done = assert.async();
+	var firedChanged = false;
+	this.inst.on("change", function(e) {
+		firedChanged = true;
+	});
+
+	// When
+	this.inst._status.animationParam = {};
+
+	// Then
+	this.inst._grab();
+	setTimeout(function() {
+		equal(firedChanged, false, "must not fire 'change' event");
+		done();
+	},100);
+});
 
 module("movableCoord methods Test when inputType is []", {
 	setup : function() {
@@ -1123,22 +1141,22 @@ test("_convertInputType (support touch)", function() {
 	});
 	var supportTouch = true;
 	var notSupportTouch = false;
-	
-	// When		
+
+	// When
 	var inputType = [ "touch", "mouse" ];
 	// Then
 	equal(inst._convertInputType(inputType), Hammer.TouchInput, "check TouchInput");
-	
+
 	// When
 	inputType = [ "touch" ];
 	// Then
 	equal(inst._convertInputType(inputType), Hammer.TouchInput, "check TouchInput");
-	
+
 	// When
 	inputType = [ "mouse" ];
 	// Then
 	equal(inst._convertInputType(inputType), Hammer.MouseInput, "check MouseInput");
-	
+
 	// When
 	inputType = [ ];
 	// Then
@@ -1158,22 +1176,22 @@ test("_convertInputType (not support touch)", function() {
 	});
 	var supportTouch = true;
 	var notSupportTouch = false;
-	
+
 	// When
 	var inputType = [ "touch", "mouse" ];
 	// Then
 	equal(inst._convertInputType(inputType), Hammer.MouseInput, "check TouchInput(not supporting touch)");
-	
+
 	// When
 	inputType = [ "touch" ];
 	// Then
 	equal(inst._convertInputType(inputType), null, "check TouchInput(not supporting touch)");
-	
+
 	// When
 	inputType = [ "mouse" ];
 	// Then
 	equal(inst._convertInputType(inputType), Hammer.MouseInput, "check MouseInput(not supporting touch)");
-	
+
 	// When
 	inputType = [ ];
 	// Then
