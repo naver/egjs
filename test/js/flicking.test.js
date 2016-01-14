@@ -1224,9 +1224,6 @@ test("When intent to initialize with non-existent element, should throw error.",
 		return true;
 	});
 
-	// Given
-	$(document.body).append("<div id='no-child'></div>");
-
 	assert.throws(function() {
 		// When
 		new eg.Flicking("#no-child");
