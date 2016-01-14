@@ -93,7 +93,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		construct: function (element, options, _prefix) {
 			this.$wrapper = $(element);
 
-			if (!this.$wrapper[0] || !this.$wrapper[0].hasChildNodes()) {
+			if (!this.$wrapper[0] || !this.$wrapper.children().length) {
 				// jscs:disable validateLineBreaks, maximumLineLength
 				throw new Error("Given base element doesn't exist or it hasn't proper DOM structure to be initialized.");
 
