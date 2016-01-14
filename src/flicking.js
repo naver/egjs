@@ -93,7 +93,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		construct: function (element, options, _prefix) {
 			this.$wrapper = $(element);
 
-			if (!this.$wrapper[0] || !this.$wrapper.children().length) {
+			var children = this.$wrapper.children();
+			if (!children.length) {
 				// jscs:disable validateLineBreaks, maximumLineLength
 				throw new Error("Given base element doesn't exist or it hasn't proper DOM structure to be initialized.");
 
@@ -125,7 +126,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			// config value
 			this._conf = {
 				panel: {
-					$list: [],			// panel list
+					$list: children,	// panel list
 					index: 0,			// current physical dom index
 					no: 0,				// current logical panel index
 					size: 0,			// panel size
@@ -175,7 +176,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		_build: function () {
 			var panel = this._conf.panel;
 			var options = this.options;
-			var children = panel.$list = this.$wrapper.children();
+			var children = panel.$list;
 			var padding = options.previewPadding.concat();
 			var prefix = options.prefix;
 			var horizontal = options.horizontal;
