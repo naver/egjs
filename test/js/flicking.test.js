@@ -783,6 +783,160 @@ test("Method: resize()", function() {
 	notDeepEqual(oldCoordMax, this.inst._mcInst.options.max, "Should be updated MovableCoord's 'max' options value");
 });
 
+test("Method: restore() - #1", function (assert) {
+	var done = assert.async();
+
+	// Given
+	var el = $("#mflick1").get(0),
+		eventOrder = ["beforeRestore", "flick", "restore"],
+		eventFired = [],
+		handler = function(e) {
+			var type = e.eventType;
+
+			if(eventFired.indexOf(type) == -1) {
+				!e.holding && eventFired.push(type);
+			}
+		};
+
+	var inst = new eg.Flicking(el, {
+		duration : 200,
+		hwAccelerable : true,
+		threshold : 70,
+		circular: true
+	}).on({
+			beforeFlickStart: handler,
+			flick : handler,
+			flickEnd : handler,
+			beforeRestore : handler,
+			restore : handler
+		});
+
+	var panelIndex = {
+		no: inst._conf.panel.no,
+		index: inst._conf.panel.index
+	};
+
+	var setCondition = function() {
+		eventFired = [];
+		inst._mcInst._pos = [145,0];
+		inst._setTranslate([-145,0]);
+		inst._setPanelNo();
+	};
+
+	var runTest = function() {
+		assert.ok(inst._mcInst.get()[0] % inst._conf.panel.size === 0, "Restored in right position?");
+		assert.ok(panelIndex.no === inst.getIndex() && panelIndex.index === inst.getIndex(true), "Restored to previous panel number?");
+		assert.deepEqual(eventFired, eventOrder, "Custom events are fired correctly?");
+	};
+
+	// Given
+	setCondition();
+
+	// When
+	inst.restore(0);
+
+	// Then
+	runTest();
+
+	// Given
+	setCondition();
+
+	// When
+	inst.restore(100);
+	assert.ok(inst.isPlaying(), "Is animating?");
+
+	setTimeout(function() {
+		runTest();
+		done();
+	}, 200);
+});
+
+test("Method: restore() - #2", function () {
+	// Given
+	var el = $("#mflick1").get(0),
+		eventFired = [],
+		handler = function(e) {
+			var type = e.eventType;
+
+			if(eventFired.indexOf(type) == -1) {
+				!e.holding && eventFired.push(type);
+			}
+		};
+
+	var inst = new eg.Flicking(el, {
+		duration : 100,
+		hwAccelerable : true,
+		threshold : 70,
+		circular: true
+	}).on({
+			beforeFlickStart: function(e) {
+				if(e.no === 2) {
+					e.stop();
+					this.restore(0);
+				}
+			},
+			flick : handler,
+			flickEnd : handler,
+			beforeRestore : handler,
+			restore : handler
+		});
+
+	var panelIndex = {
+		no: inst._conf.panel.no,
+		index: inst._conf.panel.index
+	};
+
+	var runTest = function() {
+		ok(inst._mcInst.get()[0] % inst._conf.panel.size === 0, "Panel is in right position?");
+		ok(panelIndex.no === inst.getIndex() && panelIndex.index === inst.getIndex(true), "Restored to previous panel number?");
+		ok(!eventFired.length, "Events are not fired?");
+	};
+
+	// Given
+	inst.prev(0);
+
+	// Then
+	runTest();
+
+	// Given
+	inst.prev(100);
+
+	// Then
+	runTest();
+
+	// Given
+	inst.moveTo(2);
+
+	// Then
+	runTest();
+
+
+	// Given
+	inst.moveTo(2, 100);
+
+	// Then
+	runTest();
+
+	// Given
+	inst.next(0);
+	panelIndex = {
+		no: inst._conf.panel.no,
+		index: inst._conf.panel.index
+	};
+	eventFired = [];
+	inst.next(0);
+
+	// Then
+	runTest();
+
+	// Given
+	inst.next(100);
+
+	// Then
+	runTest();
+});
+
+
 test("Custom events #1 - When changes panel normally", function(assert) {
 	var done = assert.async();
 
@@ -916,11 +1070,13 @@ test("Custom events #4 - When stop on beforeFlickStart event", function (assert)
 	// Given
 	var el = $("#mflick1").get(0),
 		eventFired = [],
+		eventDirection = [],
 		handler = function (e) {
 			var type = e.eventType;
 
 			if (eventFired.indexOf(type) == -1) {
 				eventFired.push(type);
+				eventDirection.push(e.direction);
 			}
 		},
 		rx = /\(-?(\d+)/,
@@ -928,6 +1084,8 @@ test("Custom events #4 - When stop on beforeFlickStart event", function (assert)
 		inst = this.inst = new eg.Flicking(el).on({
 			beforeFlickStart: function (e) {
 				e.stop();
+				eventFired = [];
+				eventDirection = [];
 				translate = $getTransformValue(inst.$container, true);
 			},
 			flick: handler,
@@ -950,24 +1108,27 @@ test("Custom events #4 - When stop on beforeFlickStart event", function (assert)
 		touches: 1
 	}, function () {
 		// Then
-		setTimeout(function () {
-			var currPos = inst._getDataByDirection(inst._mcInst.get())[0];
+		var currPos = inst._getDataByDirection(inst._mcInst.get())[0];
 
-			assert.ok(currPos % inst._conf.panel.size, "The panel stopped to move and is not positioned well?");
+		assert.ok(currPos % inst._conf.panel.size, "The panel stopped to move and is not positioned well?");
 
-			// When
-			inst.restore();
-			currPos = inst._getDataByDirection(inst._mcInst.get())[0];
+		// When
+		inst.restore(0);
+		currPos = inst._getDataByDirection(inst._mcInst.get())[0];
 
-			// Then
-			assert.ok(currPos % inst._conf.panel.size === 0, "The panel restored in its original position?");
-			assert.deepEqual(panelIndex, {
-				no: inst._conf.panel.no,
-				index: inst._conf.panel.index
-			}, "Restored panel index value?")
+		// Then
+		assert.ok(currPos % inst._conf.panel.size === 0, "The panel restored in its original position?");
 
-			done();
-		}, 800);
+		assert.deepEqual(panelIndex, {
+			no: inst._conf.panel.no,
+			index: inst._conf.panel.index
+		}, "Restored panel index value?");
+
+		assert.deepEqual(["beforeRestore", "flick", "restore"], eventFired, "Restore events are fired correctly?");
+
+		var direction = $.unique(eventDirection);
+		assert.ok(direction.length === 1 && direction[0] === eg.MovableCoord.DIRECTION_RIGHT, "Direction value of restore event are right?");
+		done();
 	});
 });
 
