@@ -22,6 +22,14 @@ QUnit.module( "module", {
   }
 });
 
+QUnit.test( "Having eg object It have to override method.", function( assert ) {
+  //Given
+  //When
+  //Then
+  assert.equal( eg.foo,1 );
+});
+
+
 QUnit.test( "When a parameter is undefined.", function( assert ) {
   //Given
   var param = [window.something];
