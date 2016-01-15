@@ -142,11 +142,14 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 					direction: null,	// touch direction
 					lastPos: 0			// to determine move on holding
 				},
-				customEvent: {},		// for custom event return value
+				customEvent: {			// for custom events value
+					flick: true,
+					restore: false,
+					restoreCall: false
+				},
 				useLayerHack: this.options.hwAccelerable && !SUPPORT_WILLCHANGE,
-				dirData: [],
+				dirData: [],			// direction constant value according horizontal or vertical
 				indexToMove: 0,
-				triggerFlickEvent: true,
 				eventPrefix: _prefix || "",
 
 				// For buggy link highlighting on Android 2.x
@@ -158,7 +161,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 					this._conf.dirData.push(MC["DIRECTION_" + v]);
 				}, this));
 
-			!ns._hasClickBug() && (this._setPointerEvents = function () {});
+			!ns._hasClickBug() && (this._setPointerEvents = $.noop);
 
 			this._build();
 			this._bindEvents();
@@ -324,7 +327,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 
 			if (this.options.circular) {
 				// when arranging panels, set flag to not trigger flick custom event
-				conf.triggerFlickEvent = false;
+				conf.customEvent.flick = false;
 
 				// move elements according direction
 				if (sort) {
@@ -336,7 +339,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				panel.index = this._getBasePositionIndex();
 
 				// arrange MovableCoord's coord position
-				conf.triggerFlickEvent = !!this._setMovableCoord("setTo", [
+				conf.customEvent.flick = !!this._setMovableCoord("setTo", [
 					panel.size * panel.index, 0
 				], true, 0);
 			}
@@ -576,7 +579,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				touch.lastPos = null;
 			}
 
-			conf.triggerFlickEvent && (eventRes = this._triggerEvent(EVENTS.flick, {
+			conf.customEvent.flick && (eventRes = this._triggerEvent(EVENTS.flick, {
 				pos: e.pos,
 				holding: e.holding,
 				direction: direction || touch.direction
@@ -620,55 +623,29 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 */
 		_animationStartHandler: function (e) {
 			var conf = this._conf;
-			var touch = conf.touch;
 			var panel = conf.panel;
-			var pos = {
-				depaPos: e.depaPos,
-				destPos: e.destPos
-			};
+			var customEvent = conf.customEvent;
 
 			panel.animating = true;
 
-			if (this._setPhaseValue("start", pos) === false) {
-				e.stop();
+			if (!customEvent.restoreCall && e.hammerEvent &&
+				this._setPhaseValue("start", {
+					depaPos: e.depaPos,
+					destPos: e.destPos
+				}) === false) {
+				return !!e.stop();
 			}
 
 			e.hammerEvent && (e.duration = this.options.duration);
 			e.destPos[+!this.options.horizontal] =
 				panel.size * (
-					panel.index + this._conf.indexToMove
+					panel.index + conf.indexToMove
 				);
 
 			if (this._isMovable()) {
-				conf.customEvent.restore = false;
+				!customEvent.restoreCall && (customEvent.restore = false);
 			} else {
-				// reverse direction value when restore
-				touch.direction = ~~conf.dirData.join("").replace(touch.direction, "");
-
-				/**
-				 * Before panel restores it's last position
-				 * @ko 플리킹 임계치에 도달하지 못하고 사용자의 액션이 끝났을 경우, 원래 패널로 복원되기 전에 발생하는 이벤트
-				 * @name eg.Flicking#beforeRestore
-				 * @event
-				 *
-				 * @param {Object} param
-				 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
-				 * @param {Number} param.index Current panel physical index <ko>현재 패널 물리적 인덱스</ko>
-				 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
-			 	 * @param {Number} param.direction Direction of the panel move (see eg.MovableCoord.DIRECTION_* constant) <ko>플리킹 방향 (eg.MovableCoord.DIRECTION_* constant 확인)</ko>
-				 * @param {Array} param.depaPos Departure coordinate <ko>출발점 좌표</ko>
-				 * @param {Number} param.depaPos.0 Departure x-coordinate <ko>x 좌표</ko>
-				 * @param {Number} param.depaPos.1 Departure y-coordinate <ko>y 좌표</ko>
-				 * @param {Array} param.destPos Destination coordinate <ko>도착점 좌표</ko>
-				 * @param {Number} param.destPos.0 Destination x-coordinate <ko>x 좌표</ko>
-				 * @param {Number} param.destPos.1 Destination y-coordinate <ko>y 좌표</ko>
-				 */
-				conf.customEvent.restore = this._triggerEvent(EVENTS.beforeRestore, pos);
-
-				if (!conf.customEvent.restore) {
-					e.stop();
-					panel.animating = false;
-				}
+				this._triggerBeforeRestore(e);
 			}
 		},
 
@@ -676,10 +653,57 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * 'animationEnd' event handler
 		 */
 		_animationEndHandler: function () {
-			var panel = this._conf.panel;
-
 			this._setPhaseValue("end");
-			panel.animating = false;
+
+			this._conf.panel.animating = false;
+			this._triggerRestore();
+		},
+
+		/**
+		 * Trigger beforeRestore event
+		 * @param {Object} e event object
+		 */
+		_triggerBeforeRestore: function(e) {
+			var conf = this._conf;
+			var touch = conf.touch;
+
+			// reverse direction value when restore
+			touch.direction = ~~conf.dirData.join("").replace(touch.direction, "");
+
+			/**
+			 * Before panel restores it's last position
+			 * @ko 플리킹 임계치에 도달하지 못하고 사용자의 액션이 끝났을 경우, 원래 패널로 복원되기 전에 발생하는 이벤트
+			 * @name eg.Flicking#beforeRestore
+			 * @event
+			 *
+			 * @param {Object} param
+			 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
+			 * @param {Number} param.index Current panel physical index <ko>현재 패널 물리적 인덱스</ko>
+			 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
+			 * @param {Number} param.direction Direction of the panel move (see eg.MovableCoord.DIRECTION_* constant) <ko>플리킹 방향 (eg.MovableCoord.DIRECTION_* constant 확인)</ko>
+			 * @param {Array} param.depaPos Departure coordinate <ko>출발점 좌표</ko>
+			 * @param {Number} param.depaPos.0 Departure x-coordinate <ko>x 좌표</ko>
+			 * @param {Number} param.depaPos.1 Departure y-coordinate <ko>y 좌표</ko>
+			 * @param {Array} param.destPos Destination coordinate <ko>도착점 좌표</ko>
+			 * @param {Number} param.destPos.0 Destination x-coordinate <ko>x 좌표</ko>
+			 * @param {Number} param.destPos.1 Destination y-coordinate <ko>y 좌표</ko>
+			 */
+			conf.customEvent.restore = this._triggerEvent(EVENTS.beforeRestore, {
+				depaPos: e.depaPos,
+				destPos: e.destPos
+			});
+
+			if (!conf.customEvent.restore) {
+				"stop" in e && e.stop();
+				conf.panel.animating = false;
+			}
+		},
+
+		/**
+		 * Trigger restore event
+		 */
+		_triggerRestore: function() {
+			var customEvent = this._conf.customEvent;
 
 			/**
 			 * After panel restores it's last position
@@ -693,7 +717,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			 * @param {Number} param.no Current panel logical position <ko>현재 패널 논리적 인덱스</ko>
 			 * @param {Number} param.direction Direction of the panel move (see eg.MovableCoord.DIRECTION_* constant) <ko>플리킹 방향 (eg.MovableCoord.DIRECTION_* constant 확인)</ko>
 			 */
-			this._conf.customEvent.restore && this._triggerEvent(EVENTS.restore);
+			customEvent.restore && this._triggerEvent(EVENTS.restore);
+			customEvent.restoreCall = false;
 		},
 
 		/**
@@ -766,8 +791,12 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var num = this._conf.touch.direction === this._conf.dirData[0] ? 1 : -1;
 
 			if (recover) {
-				panel.index -= num;
-				panel.no -= num;
+				panel.index = panel.prevIndex >= 0 ?
+					panel.prevIndex : panel.index - num;
+
+				panel.no = panel.prevNo >= 0 ?
+					panel.prevNo : panel.no - num;
+
 			} else {
 				panel.index += num;
 				panel.no += num;
@@ -857,7 +886,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var conf = this._conf;
 			var panel = conf.panel;
 
-			return this.trigger(conf.eventPrefix + name, param = $.extend({
+			return this.trigger(conf.eventPrefix + name, $.extend({
 				eventType: name,
 				index: panel.index,
 				no: panel.no,
@@ -918,8 +947,10 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @param {Boolean} next
 		 */
 		_setValueToMove: function (next) {
-			this._conf.touch.distance = this.options.threshold + 1;
-			this._conf.touch.direction = this._conf.dirData[ +!next ];
+			var conf = this._conf;
+
+			conf.touch.distance = this.options.threshold + 1;
+			conf.touch.direction = conf.dirData[ +!next ];
 		},
 
 		/**
@@ -1040,8 +1071,6 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				return;
 			}
 
-			duration = this._getNumValue(duration, options.duration);
-
 			this._setValueToMove(next);
 
 			if (options.circular ||
@@ -1064,9 +1093,12 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @private
 		 */
 		_movePanelByPhase: function(method, coords, duration) {
-			!duration && this._setPhaseValue("start");
-			this._setMovableCoord(method, coords, true, duration);
-			!duration && this._setPhaseValue("end");
+			duration = this._getNumValue(duration, this.options.duration);
+
+			if (this._setPhaseValue("start") !== false) {
+				this._setMovableCoord(method, coords, true, duration);
+				!duration && this._setPhaseValue("end");
+			}
 		},
 
 		/**
@@ -1117,7 +1149,10 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				return this;
 			}
 
-			duration = this._getNumValue(duration, options.duration);
+			// remember current value in case of restoring
+			panel.prevIndex = panel.index;
+			panel.prevNo = panel.no;
+
 			movable = options.circular || no >= 0 && no < panel.origCount;
 
 			if (options.circular) {
@@ -1137,7 +1172,6 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 						indexToMove = movableCount[1] + 1 -
 							(Math.abs(indexToMove) - movableCount[0]);
 					}
-
 				}
 
 				panel.no = no;
@@ -1184,18 +1218,47 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		/**
 		 * Restore panel in its right position
 		 * @ko 패널의 위치가 올바로 위치하지 않게 되는 경우, 제대로 위치하도록 보정한다.
+		 * @method eg.Flicking#restore
+		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
 		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
+		 * @example
+		 var some = new eg.Flicking("#mflick").on({
+				beforeFlickStart : function(e) {
+					if(e.no === 2) {
+						e.stop();  // stop flicking
+						this.restore(100);  // restoring to previous position
+					}
+				}
+			);
 		 */
-		restore: function () {
+		restore: function (duration) {
 			var conf = this._conf;
 			var panel = conf.panel;
-			var currPos = this._getDataByDirection(this._mcInst.get())[0];
+			var currPos = this._getDataByDirection(this._mcInst.get());
+			var destPos;
 
 			// check if the panel isn't in right position
-			if (currPos % panel.size) {
+			if (currPos[0] % panel.size) {
+				conf.customEvent.restoreCall = true;
+				duration = this._getNumValue(duration, this.options.duration);
+
 				this._setPanelNo(true);
-				this._setMovableCoord("setTo", [panel.size * panel.index, 0], true, 0);
-				this._adjustContainerCss("end");
+				destPos = this._getDataByDirection([panel.size * panel.index, 0]);
+
+				this._triggerBeforeRestore({ depaPos: currPos, destPos: destPos });
+				this._setMovableCoord("setTo", destPos, true, duration);
+
+				if (!duration) {
+					this._adjustContainerCss("end");
+					this._triggerRestore();
+				}
+
+				// to handle on api call
+			} else if (panel.changed) {
+				this._setPanelNo(true);
+
+				conf.touch.distance = conf.indexToMove = 0;
+				panel.prevIndex = panel.prevNo = -1;
 			}
 
 			return this;
