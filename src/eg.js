@@ -35,7 +35,7 @@ eg.module("eg", ["jQuery", eg, window], function($, ns, global) {
 	}
 
 	function resultCache(scope, name, param, defaultValue) {
-		var method = scope.hook && scope.hook[name];
+		var method = scope.hook[name];
 		if (method) {
 			defaultValue = method.apply(scope, param);
 		}
