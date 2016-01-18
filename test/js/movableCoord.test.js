@@ -272,7 +272,7 @@ test("setBy : check a 'change' event", function(assert) {
 	this.inst.setBy(-10, -10);
 });
 
-test("_grap : when position which not changed", function(assert) {
+test("_grap : when position was not changed", function(assert) {
 	// Given
 	var done = assert.async();
 	var firedChanged = false;
