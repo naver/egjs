@@ -291,12 +291,11 @@ ua.forEach(function(v,i) {
 	test("$.persist.isNeeded : "+ v.device, function() {
 		// Given
 		this.fakeWindow.navigator.userAgent = v.ua;
-		var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
+		eg.invoke("eg",[null, null, this.fakeWindow]);
+		this.isNeeded = eg.invoke("persist").isNeeded;
 		var isNeeded;
-
 		// When
-		isNeeded = method.isNeeded();
-
+		isNeeded = this.isNeeded();
 		//Then
 		equal(isNeeded, v.isNeeded);
 	});

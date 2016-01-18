@@ -349,8 +349,8 @@ if(agent.os.name === "naver") {
 		return agent;
 	};
 
-	ns.agent = function(useragent) {
-		var info = UAParser.create(useragent || navigator.userAgent);
+	ns.agent = function() {
+		var info = UAParser.create(global.navigator.userAgent);
 		return resultCache(this, "agent", [info], info);
 	};
 
@@ -473,7 +473,7 @@ return defaultVal;
 	// 2. user moves to the other position on screen.
 	// 3. when user releases fingers on screen, 'click' event is fired at previous position.
 	ns._hasClickBug = function() {
-		var agent = this.agent();
+		var agent = ns.agent();
 		var result = agent.browser.name === "safari";
 
 		return resultCache(this, "_hasClickBug", [result, agent], result);
