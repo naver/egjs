@@ -377,16 +377,3 @@ test("The error should not occur without initialization of options property in S
 	//Then
 	ok(result);
 });
-
-module("instance method", {
-	setup : function(){
-		this.oClass = new TestClass();
-	}
-});
-
-test("should be return self instance.",function(){
-	//Given
-	//When
-	//Then
-	ok( this.oClass.instance(), this.oClass);
-});

@@ -4,7 +4,7 @@
   "description": "Set of UI interactions, effects and utilities components library.",
   "outputname": "eg",
   "main": "dist/eg.js",
-  "homepage": "http://egjs.github.io",
+  "homepage": "http://naver.github.io/egjs",
   "customdownload": "https://github.com/naver/egjs-cli",
   "scripts": {
     "test": "grunt check",
@@ -18,7 +18,7 @@
     "url": "https://github.com/naver/egjs/issues"
   },
   "author": "NAVER corp",
-  "licenseurl": "https://egjs.github.io/license.txt",
+  "licenseurl": "https://naver.github.io/egjs/license.txt",
   "license": "MIT",
   "keywords": [
     "egjs",

@@ -5,8 +5,8 @@
 
 > - **Demo**: http://codepen.io/egjs/
 > - **Online API Documentation**
-    - Latest : https://egjs.github.io/latest/doc
-    - For specific version : `https://egjs.github.io/[VERSION]/doc`
+    - Latest : https://naver.github.io/egjs/latest/doc
+    - For specific version : `https://naver.github.io/egjs/[VERSION]/doc`
 
 - [한국어(Korean) readme](https://github.com/naver/egjs/blob/master/README-ko.md)
 
@@ -30,15 +30,15 @@
 * **scrollEnd** : Trigger event detecting end of scroll's position.
 
 ## Download
-For latest version, check out - https://github.com/egjs/egjs.github.io
+For latest version, check out - https://github.com/naver/egjs/tree/gh-pages
 
 ### Uncompressed (for development)
-  - Latest : https://egjs.github.io/latest/dist/eg.js  
-  - For specific version :  `https://egjs.github.io/[VERSION]/dist/eg.js  `
+  - Latest : https://naver.github.io/egjs/latest/dist/eg.js  
+  - For specific version :  `https://naver.github.io/egjs/[VERSION]/dist/eg.js  `
 
 ### Compressed (for production)
-  - Latest : https://egjs.github.io/latest/dist/eg.min.js
-  - For specific version : `https://egjs.github.io/[VERSION]/dist/eg.min.js`
+  - Latest : https://naver.github.io/egjs/latest/dist/eg.min.js
+  - For specific version : `https://naver.github.io/egjs/[VERSION]/dist/eg.min.js`
 
 ### with Bower
 
@@ -138,7 +138,7 @@ $ grunt test
 If you find a bug, please report us via [issues page](https://github.com/naver/egjs/issues).
 
 ## License
-egjs is released under the [MIT](http://egjs.github.io/license.txt) license.
+egjs is released under the [MIT](http://naver.github.io/egjs/license.txt) license.
 
 ```
 Copyright (c) 2015 NAVER Corp.

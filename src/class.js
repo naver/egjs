@@ -38,6 +38,17 @@ eg.module("class", [eg], function(ns) {
 		};
 
 		typeClass.prototype = def;
+
+		/**
+		 * Retrun instance itself.
+		 * @ko 자신의 인스턴스를 반환한다.
+		 * @method eg.Class#instance
+		 * @return {eg.Class} instance of itself<ko>자신의 인스턴스</ko>
+		 */
+		typeClass.prototype.instance = function() {
+			return this;
+		};
+
 		typeClass.prototype.constructor = typeClass;
 		return typeClass;
 	};

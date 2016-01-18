@@ -5,8 +5,8 @@ egjs는 jQuery기반의 UI 인터렉션, 이펙트, 유틸리티로 구성된 �
 
 > - **데모**: http://codepen.io/egjs/
 > - **API 문서**
-    - Latest : https://egjs.github.io/latest/doc
-    - For specific version : `https://egjs.github.io/[VERSION]/doc`
+    - Latest : https://naver.github.io/egjs/latest/doc
+    - For specific version : `https://naver.github.io/egjs/[VERSION]/doc`
 
 - [English(영어) readme](README.md)
 
@@ -31,15 +31,15 @@ egjs는 jQuery기반의 UI 인터렉션, 이펙트, 유틸리티로 구성된 �
 
 
 ## Download
-최신버전은 https://github.com/egjs/egjs.github.io 에서 다운로드 받을 수 있다.
+최신버전은 https://github.com/naver/egjs/tree/gh-pages 에서 다운로드 받을 수 있다.
 
 ### Uncompressed (개발버전)
-  - 최신 : http://egjs.github.io/latest/dist/eg.js
-  - 버전별 :  `http://egjs.github.io/[VERSION]/dist/eg.js`
+  - 최신 : http://naver.github.io/egjs/latest/dist/eg.js
+  - 버전별 :  `http://naver.github.io/egjs/[VERSION]/dist/eg.js`
 
 ### Compressed (제품버전)
-  - 최신 : http://egjs.github.io/latest/dist/eg.min.js
-  - 버전별 : `http://egjs.github.io/[VERSION]/dist/eg.min.js`
+  - 최신 : http://naver.github.io/egjs/latest/dist/eg.min.js
+  - 버전별 : `http://naver.github.io/egjs/[VERSION]/dist/eg.min.js`
 
 ### with Bower
 
@@ -140,7 +140,7 @@ $ grunt test
 버그를 발견하게 되면, [issues page](https://github.com/naver/egjs/issues) 페이지를 통해 등록할 수 있다.
 
 ## 라이센스
-egjs는 [MIT](http://egjs.github.io/license.txt)로 배포된다.
+egjs는 [MIT](http://naver.github.io/egjs/license.txt)로 배포된다.
 
 ```
 Copyright (c) 2015 NAVER Corp.
