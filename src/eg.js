@@ -512,11 +512,4 @@ return defaultVal;
 			return 1 - Math.pow(1 - p, 3);
 		}
 	});
-
-	return {
-		"agent": ns.agent,
-		"isHWAccelerable": ns.isHWAccelerable,
-		"isTransitional": ns.isTransitional,
-		"_hasClickBug": ns._hasClickBug
-	};
 });

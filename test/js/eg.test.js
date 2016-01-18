@@ -1087,9 +1087,9 @@ $.each( ua, function( i, v ) {
 	test("agent Test : "+ v.device, function() {
 		// Given
 		this.fakeWindow.navigator.userAgent = v.ua;
-		this.agent = eg.invoke("eg",[null, null, this.fakeWindow]).agent;	
+		eg.invoke("eg",[null, null, this.fakeWindow]);	
 		// When
-		var agent = this.agent();
+		var agent = eg.agent();
 		//Then
 		equal(agent.os.name, v.os.name, "check os name : " + v.ua);
 		equal(agent.os.version, v.os.version, "check os Version");
@@ -1103,9 +1103,9 @@ $.each( ua, function( i, v ) {
 	test("isHWAccelerable Test : "+ v.device, function() {
 		// Given
 		this.fakeWindow.navigator.userAgent = v.ua;
-		this.isHWAccelerable = eg.invoke("eg",[null, null, this.fakeWindow]).isHWAccelerable;
+		eg.invoke("eg",[null, null, this.fakeWindow]);	
 		// When
-		var isHWAccelerable = this.isHWAccelerable();
+		var isHWAccelerable = eg.isHWAccelerable();
 		//Then
 		equal( isHWAccelerable, v.isHWAccelerable, "check return value : " + v.ua);
 	});
@@ -1115,9 +1115,9 @@ $.each( ua, function( i, v ) {
 	test("isTransitional Test : "+ v.device, function() {
 		// Given
 		this.fakeWindow.navigator.userAgent = v.ua;
-		this.isTransitional = eg.invoke("eg",[null, null, this.fakeWindow]).isTransitional;
+		eg.invoke("eg",[null, null, this.fakeWindow]);	
 		// When
-		var isTransitional = this.isTransitional();
+		var isTransitional = eg.isTransitional();
 		//Then
 		equal(isTransitional, v.isTransitional, "check return value : " + v.ua);
 	});
@@ -1127,9 +1127,9 @@ $.each( ua, function( i, v ) {
 	test("_hasClickBug Test : "+ v.device, function() {
 		// Given
 		this.fakeWindow.navigator.userAgent = v.ua;
-		this._hasClickBug = eg.invoke("eg",[null, null, this.fakeWindow])._hasClickBug;
+		eg.invoke("eg",[null, null, this.fakeWindow]);	
 		// When
-		var _hasClickBug = this._hasClickBug();
+		var _hasClickBug = eg._hasClickBug();
 		//Then
 		equal(_hasClickBug, v._hasClickBug, "check return value : " + v.ua);
 	});
@@ -1270,8 +1270,9 @@ $.each( nativeVersionProfile, function( i, v ) {
 	test("agent hook nativeVersion Test"+i, function() {
 		// Given
 		this.fakeWindow.navigator.userAgent = v.ua;
-		this.hook = {};
-		this.hook.agent = function(agent){
+		eg.invoke("eg",[null, null, this.fakeWindow]);
+		eg.hook = {};
+		eg.hook.agent = function(agent){
 			var dm = dm || v._documentMode || -1,
 				nativeVersion;
 			if(dm > 0) {
@@ -1289,9 +1290,8 @@ $.each( nativeVersionProfile, function( i, v ) {
 			agent.browser.nativeVersion = nativeVersion;
 			return agent;
 		};
-		this.agent = eg.invoke("eg",[null, null, this.fakeWindow]).agent;
 		// When
-		var agent = this.agent();
+		var agent = eg.agent();
 		//Then
 		equal(agent.browser.nativeVersion, v.browser.nativeVersion,
 			  "check browser native Version: " +
