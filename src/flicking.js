@@ -633,7 +633,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 					depaPos: e.depaPos,
 					destPos: e.destPos
 				}) === false) {
-				return !!e.stop();
+				e.stop();
 			}
 
 			e.hammerEvent && (e.duration = this.options.duration);
