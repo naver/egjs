@@ -35,7 +35,7 @@ eg.module("eg", ["jQuery", eg, window], function($, ns, global) {
 	}
 
 	function resultCache(scope, name, param, defaultValue) {
-		var method = scope.hook[name];
+		var method = scope.hook && scope.hook[name];
 		if (method) {
 			defaultValue = method.apply(scope, param);
 		}
@@ -349,8 +349,8 @@ if(agent.os.name === "naver") {
 		return agent;
 	};
 
-	ns.agent = function(useragent) {
-		var info = UAParser.create(useragent || navigator.userAgent);
+	ns.agent = function() {
+		var info = UAParser.create(global.navigator.userAgent);
 		return resultCache(this, "agent", [info], info);
 	};
 
@@ -473,7 +473,7 @@ return defaultVal;
 	// 2. user moves to the other position on screen.
 	// 3. when user releases fingers on screen, 'click' event is fired at previous position.
 	ns._hasClickBug = function() {
-		var agent = this.agent();
+		var agent = ns.agent();
 		var result = agent.browser.name === "safari";
 
 		return resultCache(this, "_hasClickBug", [result, agent], result);
@@ -512,4 +512,11 @@ return defaultVal;
 			return 1 - Math.pow(1 - p, 3);
 		}
 	});
+
+	return {
+		"agent": ns.agent,
+		"isHWAccelerable": ns.isHWAccelerable,
+		"isTransitional": ns.isTransitional,
+		"_hasClickBug": ns._hasClickBug
+	};
 });

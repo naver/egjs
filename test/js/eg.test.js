@@ -1070,7 +1070,10 @@ module("extend Agent Test", {
 		this.isHWAccelerable = eg.isHWAccelerable;
 		this.isTransitional = eg.isTransitional;
 		this._hasClickBug = eg._hasClickBug;
-	},
+		this.fakeWindow = {
+			navigator: {}
+		};	
+		},
 	teardown : function() {
 		eg.agent = this.agent;
 		eg.isHWAccelerable = this.isHWAccelerable;
@@ -1083,9 +1086,10 @@ module("extend Agent Test", {
 $.each( ua, function( i, v ) {
 	test("agent Test : "+ v.device, function() {
 		// Given
+		this.fakeWindow.navigator.userAgent = v.ua;
+		this.agent = eg.invoke("eg",[null, null, this.fakeWindow]).agent;	
 		// When
-
-		var agent = eg.agent(v.ua);
+		var agent = this.agent();
 		//Then
 		equal(agent.os.name, v.os.name, "check os name : " + v.ua);
 		equal(agent.os.version, v.os.version, "check os Version");
@@ -1098,31 +1102,36 @@ $.each( ua, function( i, v ) {
 $.each( ua, function( i, v ) {
 	test("isHWAccelerable Test : "+ v.device, function() {
 		// Given
+		this.fakeWindow.navigator.userAgent = v.ua;
+		this.isHWAccelerable = eg.invoke("eg",[null, null, this.fakeWindow]).isHWAccelerable;
 		// When
-		var agent = eg.agent(v.ua);
+		var isHWAccelerable = this.isHWAccelerable();
 		//Then
-		equal( eg.isHWAccelerable(), v.isHWAccelerable, "check return value : " + v.ua);
+		equal( isHWAccelerable, v.isHWAccelerable, "check return value : " + v.ua);
 	});
 });
 
 $.each( ua, function( i, v ) {
 	test("isTransitional Test : "+ v.device, function() {
 		// Given
+		this.fakeWindow.navigator.userAgent = v.ua;
+		this.isTransitional = eg.invoke("eg",[null, null, this.fakeWindow]).isTransitional;
 		// When
-		var agent = eg.agent(v.ua);
+		var isTransitional = this.isTransitional();
 		//Then
-		equal(eg.isTransitional(), v.isTransitional, "check return value : " + v.ua);
+		equal(isTransitional, v.isTransitional, "check return value : " + v.ua);
 	});
 });
-
 
 $.each( ua, function( i, v ) {
 	test("_hasClickBug Test : "+ v.device, function() {
 		// Given
+		this.fakeWindow.navigator.userAgent = v.ua;
+		this._hasClickBug = eg.invoke("eg",[null, null, this.fakeWindow])._hasClickBug;
 		// When
-		eg.agent(v.ua);
+		var _hasClickBug = this._hasClickBug();
 		//Then
-		equal(eg._hasClickBug(), v._hasClickBug, "check return value : " + v.ua);
+		equal(_hasClickBug, v._hasClickBug, "check return value : " + v.ua);
 	});
 });
 
@@ -1239,15 +1248,16 @@ var nativeVersionProfile = [{
 		"isHWAccelerable" : true,
 		"isTransitional" : true
 	}
-	];
-
-
+];
 
 module("extend hook Test", {
 	setup : function() {
 		this.agent = eg.agent;
 		this.isHWAccelerable = eg.isHWAccelerable;
 		this.isTransitional = eg.isTransitional;
+		this.fakeWindow = {
+			navigator: {}
+		};
 	},
 	teardown : function() {
 		eg.agent = this.agent;
@@ -1256,13 +1266,12 @@ module("extend hook Test", {
 	}
 });
 
-
-
-
 $.each( nativeVersionProfile, function( i, v ) {
 	test("agent hook nativeVersion Test"+i, function() {
 		// Given
-		eg.hook.agent = function(agent){
+		this.fakeWindow.navigator.userAgent = v.ua;
+		this.hook = {};
+		this.hook.agent = function(agent){
 			var dm = dm || v._documentMode || -1,
 				nativeVersion;
 			if(dm > 0) {
@@ -1279,9 +1288,10 @@ $.each( nativeVersionProfile, function( i, v ) {
 
 			agent.browser.nativeVersion = nativeVersion;
 			return agent;
-		}
+		};
+		this.agent = eg.invoke("eg",[null, null, this.fakeWindow]).agent;
 		// When
-		var agent = eg.agent(v.ua);
+		var agent = this.agent();
 		//Then
 		equal(agent.browser.nativeVersion, v.browser.nativeVersion,
 			  "check browser native Version: " +
