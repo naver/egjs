@@ -558,8 +558,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, "Outlayer"], function($, ns, gl
 			noChild && this.core.resetLayout();		// for init-items
 
 			var needCheck = this._checkImageLoaded($cloneElements);
-			var checkCount = needCheck.length;
-			if (checkCount > 0) {
+			if (needCheck.length > 0) {
 				this._waitImageLoaded(items, needCheck);
 			} else {
 				// convert to async
