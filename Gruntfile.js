@@ -8,10 +8,12 @@ module.exports = function(grunt) {
 	require("time-grunt")(grunt);
 	require("load-grunt-tasks")(grunt);
 
+	var env;
 	var isBrowserStack;
 	/* jshint ignore:start */
-	isBrowserStack = process.env.BROWSERSTACK_USERNAME && process.env.BROWSERSTACK_USERNAME;
+	env = process.env;
 	/* jshint ignore:end */
+	isBrowserStack = env.BROWSERSTACK_USERNAME && env.BROWSERSTACK_USERNAME;
 	
 	var config = {
 		"pkg": grunt.file.readJSON("package.json"),
@@ -30,7 +32,6 @@ module.exports = function(grunt) {
 		"browserstack": {
 			dir: "config/browserstack/"
 		}
-
 	};
 
 	grunt.initConfig(config);
@@ -50,7 +51,7 @@ module.exports = function(grunt) {
 	});
 
 	grunt.registerTask("browserstack", isBrowserStack ? function() {	
-		var fs = require('fs');
+		var fs = require("fs");
 		var eachfile = Array.prototype.slice.apply(arguments);
 		var taskList = [];
 		if(eachfile.length) {
@@ -69,25 +70,25 @@ module.exports = function(grunt) {
 		grunt.task.run(taskList);
 	} : function() {
 		grunt.log.oklns(
-			"no BROWSER_STACK_USERNAME, BROWSER_STACK_ACCESS_KEY environment variable"
+			"no BROWSER_STACK_USERNAME, BROWSER_STACK_ACCESS_KEY env"
 		);
 	});
 
 	grunt.registerTask("browserstack_runner", isBrowserStack ? function() {	
-		var exec = require('child_process').exec;
-		process.env["BROWSERSTACK_JSON"] 
-			= grunt.config.get("browserstack.dir") + arguments[0] + ".json";
-
+		var exec = require("child_process").exec;
+		env["BROWSERSTACK_JSON"] = grunt.config.get("browserstack.dir") +
+			arguments[0] + ".json";
 	    var done = this.async();
-	    var subProcess = exec('node_modules/.bin/browserstack-runner', function (err, stdout, stderr) {
+	    var subProcess = exec("node_modules/.bin/browserstack-runner", 
+	    function (err) {
 			done(err ? false : true);
 	    });
-	    subProcess.stdout.on('data', function (_data) {
+	    subProcess.stdout.on("data", function (_data) {
 		    grunt.log.writeln(_data.trim());
 	    });
 	} : function() {
 		grunt.log.oklns(
-			"no BROWSER_STACK_USERNAME, BROWSER_STACK_ACCESS_KEY environment variable"
+			"no BROWSER_STACK_USERNAME, BROWSER_STACK_ACCESS_KEY env"
 		);
 	});
 
