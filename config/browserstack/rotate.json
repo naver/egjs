@@ -1,0 +1,70 @@
+{
+	"test_framework": "qunit",
+	"test_path": [
+		"test/rotate.test.html"
+	],
+	"browsers": [
+		{
+			"os": "ios",
+			"os_version": "7.0",
+			"device": "iPhone 5S"
+		},{
+			"os": "ios",
+			"os_version": "8.3",
+			"device": "iPhone 6"
+		},{
+			"os": "ios",
+			"os_version": "9.1",
+			"device": "iPhone 6S"
+		}
+		,{
+			"os": "android",
+			"os_version": "2.3",
+			"device": "Samsung Galaxy S2"
+		},{
+			"os": "android",
+			"os_version": "4.0",
+			"device": "Google Nexus"
+		},{
+			"os": "android",
+			"os_version": "4.0",
+			"device": "Samsung Galaxy Note 10.1"
+		},{			
+			"os": "android",
+			"os_version": "4.1",
+			"device": "Samsung Galaxy S3"
+		},{
+			"os": "android",
+			"os_version": "4.1",
+			"device": "Samsung Galaxy Note 2"
+		},{
+			"os": "android",
+			"os_version": "4.1",
+			"device": "Motorola Razr Maxx HD"
+		},{
+			"os": "android",
+			"os_version": "4.2",
+			"device": "Google Nexus 4"
+		},{
+			"os": "android",
+			"os_version": "4.3",
+			"device": "Samsung Galaxy S4"
+		},{
+			"os": "android",
+			"os_version": "4.3",
+			"device": "Samsung Galaxy Note 3"
+		},{
+			"os": "android",
+			"os_version": "4.4",
+			"device": "Samsung Galaxy S5"
+		},{
+			"os": "android",
+			"os_version": "4.4",
+			"device": "Samsung Galaxy Tab 4 10.1"
+		},{
+			"os": "android",
+			"os_version": "4.4",
+			"device": "HTC One M8"
+		}
+	]
+}

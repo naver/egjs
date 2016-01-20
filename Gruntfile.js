@@ -7,8 +7,12 @@ module.exports = function(grunt) {
 	"use strict";
 	require("time-grunt")(grunt);
 	require("load-grunt-tasks")(grunt);
-	grunt.loadNpmTasks("testee");
 
+	var isBrowserStack;
+	/* jshint ignore:start */
+	isBrowserStack = process.env.BROWSERSTACK_USERNAME && process.env.BROWSERSTACK_USERNAME;
+	/* jshint ignore:end */
+	
 	var config = {
 		"pkg": grunt.file.readJSON("package.json"),
 		"clean": getConfig("clean"),
@@ -21,9 +25,12 @@ module.exports = function(grunt) {
 		"jsdoc": getConfig("jsdoc"),
 		"jshint": getConfig("jshint"),
 		"qunit": getConfig("qunit"),
-		"testee": getConfig("testee"),
 		"uglify": getConfig("uglify"),
-		"watch": getConfig("watch")
+		"watch": getConfig("watch"),
+		"browserstack": {
+			dir: "config/browserstack/"
+		}
+
 	};
 
 	grunt.initConfig(config);
@@ -40,6 +47,48 @@ module.exports = function(grunt) {
 		grunt.config.set("qunit.each", eachfile);
 		grunt.log.oklns(grunt.config.get("qunit.each"));
 		grunt.task.run("qunit:each");
+	});
+
+	grunt.registerTask("browserstack", isBrowserStack ? function() {	
+		var fs = require('fs');
+		var eachfile = Array.prototype.slice.apply(arguments);
+		var taskList = [];
+		if(eachfile.length) {
+			taskList = eachfile.map(function(v) {
+				return "browserstack_runner:" + v;
+			}, this);
+		} else {
+			taskList = fs.readdirSync(
+				grunt.config.get("browserstack.dir")
+			).map(function(val){
+				return val.split(".")[0];
+			}).map(function(val){
+				return "browserstack_runner:" + val;
+			});
+		}
+		grunt.task.run(taskList);
+	} : function() {
+		grunt.log.oklns(
+			"no BROWSER_STACK_USERNAME, BROWSER_STACK_ACCESS_KEY environment variable"
+		);
+	});
+
+	grunt.registerTask("browserstack_runner", isBrowserStack ? function() {	
+		var exec = require('child_process').exec;
+		process.env["BROWSERSTACK_JSON"] 
+			= grunt.config.get("browserstack.dir") + arguments[0] + ".json";
+
+	    var done = this.async();
+	    var subProcess = exec('node_modules/.bin/browserstack-runner', function (err, stdout, stderr) {
+			done(err ? false : true);
+	    });
+	    subProcess.stdout.on('data', function (_data) {
+		    grunt.log.writeln(_data.trim());
+	    });
+	} : function() {
+		grunt.log.oklns(
+			"no BROWSER_STACK_USERNAME, BROWSER_STACK_ACCESS_KEY environment variable"
+		);
 	});
 
 	grunt.registerTask("validate-commit", function() {
