@@ -31,7 +31,7 @@ egjs는 jQuery기반의 UI 인터렉션, 이펙트, 유틸리티로 구성된 �
 
 
 ## Download
-최신버전은 https://github.com/naver/egjs/tree/gh-pages 에서 다운로드 받을 수 있다.
+최신버전은 https://github.com/naver/egjs/tree/gh-pages/latest/dist 에서 다운로드 받을 수 있다.
 
 ### Uncompressed (개발버전)
   - 최신 : http://naver.github.io/egjs/latest/dist/eg.js
@@ -69,14 +69,17 @@ egjs는 다음의 라이브러리들에 대한 의존성을 가지고 있다.
 
 
 ## 사용방법
-의존성 라이브러리(jquery.js, hammer.js, outlayer.js) 들을 먼저 로딩 후, eg.js(또는 eg.min.js)를 로딩한다.
+jQuery를 먼저 로딩 후, egjs를 로딩한다.
 
 ```html
+<!-- jQuery 로딩 --> 
 <script src="bower_components/jquery/jquery.js"></script>
-<script src="bower_components/hammer.js/hammer.js"></script>
-<script src="bower_components/outlayer/outlayer.js"></script>
-<script src="dist/eg.js"></script>
+
+<!-- 모든 의존성(hammer.js와 outlayer) 파일들이 패키징된 egjs를 로딩 --> 
+<script src="bower_components/egjs/dist/pkgd/eg.pkgd.min.js"></script>
 ```
+
+> 참고: 개별적인 의존성 파일 로딩은 [Download and Using egjs](https://github.com/naver/egjs/wiki/Download-and-Using-egjs#how-to-use) 위키 페이지를 확인하라.
 
 egjs를 사용할 준비가 되었다.
 egjs는 `eg` 네임스페이스를 갖으며, 다음의 예제와 같이 사용한다.
