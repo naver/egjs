@@ -9,9 +9,11 @@ module.exports = function(grunt) {
 	require("load-grunt-tasks")(grunt);
 	
 	var env;
+	var JSON;
 	var isBrowserStack;
 	/* jshint ignore:start */
 	env = process.env;
+	JSON = JSON;
 	/* jshint ignore:end */
 	isBrowserStack = env.BROWSERSTACK_USERNAME && env.BROWSERSTACK_USERNAME;
 
@@ -49,7 +51,7 @@ module.exports = function(grunt) {
 
 	grunt.registerTask("browserstack", isBrowserStack ? function() {	
 		var eachfile = Array.prototype.slice.apply(arguments);
-		var taskList = [];
+		var taskList;
 		
 		if(eachfile.length) {
 			taskList = eachfile.map(function(v) {
@@ -59,12 +61,12 @@ module.exports = function(grunt) {
 			var fs = require("fs");
 			
 			// fetch module name list from html files in test directory 
-			var taskList = fs.readdirSync(
-				'test/'
+			taskList = fs.readdirSync(
+				"test/"
 			).filter(function(val){
-				return val.split('.').length === 3 && val.split('.')[0] !== "buildMerge";
+				return val.split(".").length === 3 && val.split(".")[0] !== "buildMerge";
 			}).map(function(val){
-				return "browserstack_runner:" + val.split('.')[0];
+				return "browserstack_runner:" + val.split(".")[0];
 			});
 		}
 		grunt.task.run(taskList);
@@ -81,7 +83,7 @@ module.exports = function(grunt) {
 		var browserstackConfig = require("./config/browserstack.js").getConfig(targetModuleName);
 		var tempBrowserstackConfig = "config/browertstack.config.json";		
 		
-		fs.writeFileSync(tempBrowserstackConfig, JSON.stringify(browserstackConfig), 'utf8');
+		fs.writeFileSync(tempBrowserstackConfig, JSON.stringify(browserstackConfig), "utf8");
 		env["BROWSERSTACK_JSON"] = tempBrowserstackConfig;
 	   
 	    var done = this.async();
