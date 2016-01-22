@@ -176,11 +176,11 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		_build: function () {
 			var panel = this._conf.panel;
 			var options = this.options;
-			var children = panel.$list;
+			var $children = panel.$list;
 			var padding = options.previewPadding.concat();
 			var prefix = options.prefix;
 			var horizontal = options.horizontal;
-			var panelCount = panel.count = panel.origCount = children.length;
+			var panelCount = panel.count = panel.origCount = $children.length;
 			var sizeValue = [
 				panel.size = this.$wrapper[
 						horizontal ? "width" : "height"
@@ -200,7 +200,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			this._getDataByDirection(sizeValue);
 
 			// panels' css values
-			children.addClass(prefix + "-panel").css({
+			$children.addClass(prefix + "-panel").css({
 				position: "absolute",
 				width: sizeValue[0],
 				height: sizeValue[1],
@@ -212,7 +212,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			cssValue = "position:relative;z-index:2000;width:100%;height:100%;" +
 				(!horizontal ? "top:" + padding[0] + "px;" : "");
 
-			this.$container = children.wrapAll(
+			this.$container = $children.wrapAll(
 				"<div class='" + prefix + "-container' style='" + cssValue + "' />"
 			).parent();
 
