@@ -8,14 +8,7 @@ module.exports = function(grunt) {
 	require("time-grunt")(grunt);
 	require("load-grunt-tasks")(grunt);
 	
-	var env;
-	var JSON;
-	var isBrowserStack;
-	/* jshint ignore:start */
-	env = process.env;
-	JSON = JSON;
-	/* jshint ignore:end */
-	isBrowserStack = env.BROWSERSTACK_USERNAME && env.BROWSERSTACK_USERNAME;
+	var isBrowserStack = process.env.BROWSERSTACK_USERNAME && process.env.BROWSERSTACK_USERNAME;
 
 	var config = {
 		"pkg": grunt.file.readJSON("package.json"),
@@ -84,11 +77,11 @@ module.exports = function(grunt) {
 		var tempBrowserstackConfig = "config/browertstack.config.json";		
 		
 		fs.writeFileSync(tempBrowserstackConfig, JSON.stringify(browserstackConfig), "utf8");
-		env["BROWSERSTACK_JSON"] = tempBrowserstackConfig;
+		process.env["BROWSERSTACK_JSON"] = tempBrowserstackConfig;
 	   
 	    var done = this.async();
 	    var subProcess = exec("node_modules/.bin/browserstack-runner", function (err) {
-			env["BROWSERSTACK_JSON"] = "";
+			process.env["BROWSERSTACK_JSON"] = "";
 			fs.unlinkSync(tempBrowserstackConfig);
 			done(err ? false : true);
 	    });

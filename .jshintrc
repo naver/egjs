@@ -16,7 +16,7 @@
     "trailing": true,
     "undef": true,
     "unused": true,
-    "node": false,
+    "node": true,
     "sub" : true,
     "browser": true,
     "jquery": true,
@@ -24,6 +24,6 @@
     "globals" : {
         "eg" : true,
         "Hammer" : true,
-        "require" : true
+	"JSON" : true
     }
 }
