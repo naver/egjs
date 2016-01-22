@@ -30,7 +30,7 @@
 * **scrollEnd** : Trigger event detecting end of scroll's position.
 
 ## Download
-For latest version, check out - https://github.com/naver/egjs/tree/gh-pages
+For latest version, check out - https://github.com/naver/egjs/tree/gh-pages/latest/dist
 
 ### Uncompressed (for development)
   - Latest : https://naver.github.io/egjs/latest/dist/eg.js  
@@ -69,14 +69,17 @@ egjs has following dependencies.
 
 
 ## How to use?
-Load dependency libraries(jquery.js, hammer.js, outlayer.js) first, then load eg.js(or eg.min.js).
+Load jQuery first, then load egjs.
 
 ```html
+<!-- load jQuery --> 
 <script src="bower_components/jquery/jquery.js"></script>
-<script src="bower_components/hammer.js/hammer.js"></script>
-<script src="bower_components/outlayer/outlayer.js"></script>
-<script src="dist/eg.js"></script>
+
+<!-- load egjs packaged with all dependencies (hammer.js and outlayer) --> 
+<script src="bower_components/egjs/dist/pkgd/eg.pkgd.min.js"></script>
 ```
+
+> NOTE: For more details on separate dependency file inclusion, check out [Download and Using egjs](https://github.com/naver/egjs/wiki/Download-and-Using-egjs#how-to-use) wiki page.
 
 All done, ready to start using egjs!
 egjs has `eg` namespace and can be used as below example.
