@@ -7,14 +7,14 @@ module.exports = function(grunt) {
 	"use strict";
 	require("time-grunt")(grunt);
 	require("load-grunt-tasks")(grunt);
-
+	
 	var env;
 	var isBrowserStack;
 	/* jshint ignore:start */
 	env = process.env;
 	/* jshint ignore:end */
 	isBrowserStack = env.BROWSERSTACK_USERNAME && env.BROWSERSTACK_USERNAME;
-	
+
 	var config = {
 		"pkg": grunt.file.readJSON("package.json"),
 		"clean": getConfig("clean"),
@@ -28,10 +28,7 @@ module.exports = function(grunt) {
 		"jshint": getConfig("jshint"),
 		"qunit": getConfig("qunit"),
 		"uglify": getConfig("uglify"),
-		"watch": getConfig("watch"),
-		"browserstack": {
-			dir: "config/browserstack/"
-		}
+		"watch": getConfig("watch")
 	};
 
 	grunt.initConfig(config);
@@ -51,20 +48,23 @@ module.exports = function(grunt) {
 	});
 
 	grunt.registerTask("browserstack", isBrowserStack ? function() {	
-		var fs = require("fs");
 		var eachfile = Array.prototype.slice.apply(arguments);
 		var taskList = [];
+		
 		if(eachfile.length) {
 			taskList = eachfile.map(function(v) {
 				return "browserstack_runner:" + v;
 			}, this);
 		} else {
-			taskList = fs.readdirSync(
-				grunt.config.get("browserstack.dir")
-			).map(function(val){
-				return val.split(".")[0];
+			var fs = require("fs");
+			
+			// fetch module name list from html files in test directory 
+			var taskList = fs.readdirSync(
+				'test/'
+			).filter(function(val){
+				return val.split('.').length === 3 && val.split('.')[0] !== "buildMerge";
 			}).map(function(val){
-				return "browserstack_runner:" + val;
+				return "browserstack_runner:" + val.split('.')[0];
 			});
 		}
 		grunt.task.run(taskList);
@@ -75,17 +75,25 @@ module.exports = function(grunt) {
 	});
 
 	grunt.registerTask("browserstack_runner", isBrowserStack ? function() {	
+		var fs = require("fs");
 		var exec = require("child_process").exec;
-		env["BROWSERSTACK_JSON"] = grunt.config.get("browserstack.dir") +
-			arguments[0] + ".json";
+		var targetModuleName = arguments[0];
+		var browserstackConfig = require("./config/browserstack.js").getConfig(targetModuleName);
+		var tempBrowserstackConfig = "config/browertstack.config.json";		
+		
+		fs.writeFileSync(tempBrowserstackConfig, JSON.stringify(browserstackConfig), 'utf8');
+		env["BROWSERSTACK_JSON"] = tempBrowserstackConfig;
+	   
 	    var done = this.async();
-	    var subProcess = exec("node_modules/.bin/browserstack-runner", 
-	    function (err) {
+	    var subProcess = exec("node_modules/.bin/browserstack-runner", function (err) {
+			env["BROWSERSTACK_JSON"] = "";
+			fs.unlinkSync(tempBrowserstackConfig);
 			done(err ? false : true);
 	    });
+
 	    subProcess.stdout.on("data", function (_data) {
 		    grunt.log.writeln(_data.trim());
-	    });
+	    });	    
 	} : function() {
 		grunt.log.oklns(
 			"no BROWSER_STACK_USERNAME, BROWSER_STACK_ACCESS_KEY env"
