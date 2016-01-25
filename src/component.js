@@ -73,7 +73,7 @@ eg.module("component", [eg], function(ns) {
 		 * @example
 			var Some = eg.Class.extend(eg.Component,{
 				"some": function(){
-					this.tigger("hi");// fire hi event.
+					this.trigger("hi");// fire hi event.
 				}
 			});
 		 */
