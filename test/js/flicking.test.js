@@ -14,7 +14,6 @@ function $getTransformValue(el, match) {
 	return match ? (elStyle.match(rx) ||[,])[1] : elStyle;
 }
 
-
 module("Flicking component test", {
 	setup : function() {
 		this.inst = null;
@@ -752,7 +751,7 @@ test("Method: moveTo() - Animation #4", function (assert) {
 });
 
 
-test("Method: resize()", function() {
+test("Method: resize() #1", function() {
 	// Given
 	var element = $("#mflick1"),
 		width = element.width(),
@@ -781,6 +780,86 @@ test("Method: resize()", function() {
 	deepEqual(panel.size, element.width(), "The panel width should be same as current wrapper element");
 	deepEqual(this.inst.$container.width(), panel.count * panel.size, "The panel container width should be same as current panels element total width");
 	notDeepEqual(oldCoordMax, this.inst._mcInst.options.max, "Should be updated MovableCoord's 'max' options value");
+});
+
+test("Method: resize() #2 - when change padding option", function() {
+	// Given
+	var inst = new eg.Flicking("#mflick1", {
+		circular: true,
+		previewPadding: [10,10]
+	}),	panel = inst._conf.panel, padding;
+
+	var	setCondition = function(val) {
+		inst.options.previewPadding = val;
+		inst.resize();
+
+		padding = $.map(inst.$wrapper[0].style.padding.split(" "), function(num) {
+			return parseInt(num, 10);
+		});
+
+		// get current padding value
+		if (inst.options.horizontal) {
+			padding = padding.length === 2 ?
+				[ padding[1], padding[1] ] : [ padding[3], padding[1] ];
+		} else {
+			padding = padding.length === 2 ?
+				[ padding[0], padding[0] ] : [ padding[0], padding[2] ];
+		}
+	};
+
+	var runTest = function(val, horizontal) {
+		deepEqual(padding, val, "Padding value changed?");
+
+		var max, panelSize, coord, top;
+
+		if (horizontal) {
+			max = inst._mcInst.options.max[0];
+			panelSize = panel.$list.width();
+			coord = inst._mcInst.get()[0];
+		} else {
+			max = inst._mcInst.options.max[1];
+			panelSize = panel.$list.height();
+			coord = inst._mcInst.get()[1];
+			top = parseInt(inst.$container.css("top"), 10);
+		}
+
+		equal(max, panel.size * (panel.count - 1), "Max coord value has been set correctly?");
+		equal(panelSize, panel.size, "The panel width should be same as current wrapper element");
+		equal(coord, panel.size * panel.index, "Current MovableCoord's value has been set correctly?");
+		top && equal(val[0], top, "Container's top value has been set correctly?");
+	};
+
+	// When
+	setCondition([20,20]);
+
+	// Then
+	runTest([20,20], true);
+
+	// When
+	setCondition([20,30]);
+
+	// Then
+	runTest([20,30], true);
+
+	// Given
+	inst = new eg.Flicking("#mflick2", {
+		circular: true,
+		previewPadding: [10,10],
+		horizontal: false
+	});
+	panel = inst._conf.panel;
+
+	// When
+	setCondition([20,20]);
+
+	// Then
+	runTest([20,20]);
+
+	// When
+	setCondition([10,20]);
+
+	// Then
+	runTest([10,20]);
 });
 
 test("Method: restore() - #1", function (assert) {
