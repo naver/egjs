@@ -59,7 +59,7 @@ module.exports = (function(){
 			})[0];
 		
 			for(var browser in componentSupport) {
-				if((browser === "ie" || browser === "ios" || browser === "an" || browser === "ch" || browser === "ff") && componentSupport[browser] !== "latest") {
+				if(/^(ie|ios|an|ch|ff)$/.test(browser) && componentSupport[browser] !== "latest") {
 					var lowestVersion = parseFloat(componentSupport[browser]);
 					var browsers = bsLaunchers[browser].filter(function(browserInfo){
 						return parseFloat(browserInfo[(browser === "ios" || browser === "an")? "os_version":"browser_version"]) >= lowestVersion;
