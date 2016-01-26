@@ -30,7 +30,7 @@
 * **scrollEnd** : Trigger event detecting end of scroll's position.
 
 ## Download
-For latest version, check out - https://github.com/naver/egjs/tree/gh-pages
+For latest version, check out - https://github.com/naver/egjs/tree/gh-pages/latest/dist
 
 ### Uncompressed (for development)
   - Latest : https://naver.github.io/egjs/latest/dist/eg.js  
