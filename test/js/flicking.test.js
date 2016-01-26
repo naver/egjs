@@ -791,7 +791,7 @@ test("Method: resize() #2 - when change padding option", function() {
 
 	var	setCondition = function(val) {
 		inst.options.previewPadding = val;
-		inst.resize(true);
+		inst.resize();
 
 		padding = $.map(inst.$wrapper[0].style.padding.split(" "), function(num) {
 			return parseInt(num, 10);

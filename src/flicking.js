@@ -1204,24 +1204,22 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		/**
 		 * Update panel's previewPadding size according options.previewPadding
 		 */
-		_checkPadding: function() {
+		_checkPadding: function () {
 			var options = this.options;
-			var previewPadding = options.previewPadding;
+			var previewPadding = options.previewPadding.concat();
 			var padding = this.$wrapper.css("padding").split(" ");
 
+			options.horizontal && padding.reverse();
+
 			// get current padding value
-			if (options.horizontal) {
-				padding = padding.length === 2 ?
-					[ padding[1], padding[1] ] : [ padding[3], padding[1] ];
-			} else {
-				padding = padding.length === 2 ?
-					[ padding[0], padding[0] ] : [ padding[0], padding[2] ];
-			}
+			padding = padding.length === 2 ?
+				[ padding[0], padding[0] ] : [ padding[0], padding[2] ];
 
 			padding = $.map(padding, function(num) {
 				return parseInt(num, 10);
 			});
 
+			// update padding when current and given are different
 			if (previewPadding.length === 2 &&
 				previewPadding[0] !== padding[0] || previewPadding[1] !== padding[1]) {
 
@@ -1233,7 +1231,6 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * Update panel size according current viewport
 		 * @ko 패널 사이즈 정보를 갱신한다.
 		 * @method eg.Flicking#resize
-		 * @param {Boolean} checkPadding to check padding value
 		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
 		 * @example
 			var some = new eg.Flicking("#mflick", {
@@ -1243,29 +1240,30 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			// when device orientaion changes
 			some.resize();
 
-			// when changes previewPadding option from its original value
+			// or when changes previewPadding option from its original value
 			some.options.previewPadding = [20, 30];
-			some.resize(true);
+			some.resize();
 		 */
-		resize: function (checkPadding) {
-			checkPadding && this._checkPadding();
-
+		resize: function () {
 			var conf = this._conf;
+			var options = this.options;
 			var panel = conf.panel;
-			var panelSize = panel.size;
+			var horizontal = options.horizontal;
+			var panelSize;
 			var maxCoords;
 
-			if (this.options.horizontal) {
+			if (~~options.previewPadding.join("")) {
+				this._checkPadding();
+				panelSize = panel.size;
+			} else if (horizontal) {
 				panelSize = panel.size = this.$wrapper.width();
-				maxCoords = [panelSize * (panel.count - 1), 0];
-
-				// resize panel and parent elements
-				this.$container.width(maxCoords[0] + panelSize);
-				panel.$list.css("width", panelSize);
-			} else {
-				maxCoords = [0, panelSize * (panel.count - 1)];
-				panel.$list.css("height", panelSize);
 			}
+
+			maxCoords = this._getDataByDirection([panelSize * (panel.count - 1), 0]);
+
+			// resize elements
+			horizontal && this.$container.width(maxCoords[0] + panelSize);
+			panel.$list.css(horizontal ? "width" : "height", panelSize);
 
 			this._mcInst.options.max = maxCoords;
 			this._setMovableCoord("setTo", [panelSize * panel.index, 0], true, 0);
