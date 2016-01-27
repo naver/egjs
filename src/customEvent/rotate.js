@@ -152,6 +152,7 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 
 	$.event.special.rotate = {
 		setup: function() {
+			beforeVertical = isVertical();
 			beforeScreenWidth = doc.documentElement.clientWidth;
 			$(global).on(orientationChange(), handler);
 		},

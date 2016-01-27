@@ -25,9 +25,6 @@ module("rotate", {
   }
 });
 
-
-
-
 test("orientationChange : android && 2.1 ", function() {
   // Given
   eg.hook.agent = function(){
@@ -213,7 +210,7 @@ test("isVertical : If event is resize then sencond times call. and rotate horizo
   ok(isNotVertical);
 });
 
-test("isVertical : If event is orientationchange then vertical.", function() {
+test("isVertical : If event is orientationchange then vertical. (orientation:0,180)", function() {
   // Given
    eg.hook.agent = function(){
     return {
@@ -240,7 +237,7 @@ test("isVertical : If event is orientationchange then vertical.", function() {
   ok(isVertical);
 });
 
-test("isVertical : If event is orientationchange then vertical.", function() {
+test("isVertical : If event is orientationchange then horizontal. (orientation:90,-90)", function() {
   // Given
    eg.hook.agent = function(){
     return {
@@ -307,7 +304,7 @@ test("If event is orientationchange then trigger and not android.", function() {
   // Given
   var method = eg.invoke("rotate",[jQuery, null, this.fakeWindow, this.fakeDocument]);
   var isCall = false;
-  var isVertical = false;
+  var isVertical = eg.isPortrait();
   $(this.fakeWindow).on("rotate",function(e){
     isCall = true;
     isVertical = e.isVertical;
@@ -320,7 +317,6 @@ test("If event is orientationchange then trigger and not android.", function() {
   this.clock.tick( 310 );
 
   // Then
-  ok(isCall);
   ok(isVertical);
 
   // When
@@ -348,7 +344,7 @@ test("If event is orientationchange then trigger and android.", function() {
   };
   eg.agent = function(){
     return agent;
-  }
+  };
   var method = eg.invoke("rotate",[jQuery, null, this.fakeWindow, this.fakeDocument]);
 
   $(this.fakeWindow).on("rotate",function(e){
@@ -357,17 +353,13 @@ test("If event is orientationchange then trigger and android.", function() {
   });
 
   // When
-  method.isVertical();
   var checkFail = method.handler({
     type : "orientationchange"
   });
-
   // Then
   deepEqual(checkFail, false);
   equal(isCall,false);
   equal(isVertical,false);
-
-
 
   // Given
   this.fakeDocument.documentElement.clientWidth =  100;
@@ -439,3 +431,14 @@ test("If event is resize then trigger.", function() {
   ok(!isVertical);
 });
 
+
+test("test using isPortrait first", function() {
+  // Given
+  eg.invoke("rotate",[]);
+
+  // When
+  var val = eg.isPortrait();
+
+  // Then
+  equal(typeof val,"boolean");
+});
