@@ -63,7 +63,17 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			var isAppend = item.isAppend;
 			var cols = isAppend ? this._appendCols : this._prependCols;
 			y = Math[isAppend ? "min" : "max"].apply(Math, cols);
-			shortColIndex = $.inArray(y, cols);
+			if (isAppend) {
+				shortColIndex = $.inArray(y, cols);
+			} else {
+				var i = cols.length;
+				while (i-- >= 0) {
+					if (cols[i] === y) {
+						shortColIndex = i;
+						break;
+					}
+				}
+			}
 			cols[shortColIndex] = y + (isAppend ?
 				item.size.outerHeight : -item.size.outerHeight);
 
