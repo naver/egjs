@@ -58,6 +58,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 				item.getSize();
 			}
 			(item.isAppend == null) && (item.isAppend = true);
+			var outerHeight = parseInt(item.size.outerHeight, 10);
 			var y;
 			var shortColIndex;
 			var isAppend = item.isAppend;
@@ -74,12 +75,11 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 					}
 				}
 			}
-			cols[shortColIndex] = y + (isAppend ?
-				item.size.outerHeight : -item.size.outerHeight);
+			cols[shortColIndex] = y + (isAppend ? outerHeight : -outerHeight);
 
 			return {
 				x: this.columnWidth * shortColIndex,
-				y: isAppend ? y : y - item.size.outerHeight
+				y: isAppend ? y : y - outerHeight
 			};
 		},
 		resetLayout: function() {
