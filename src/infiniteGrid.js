@@ -504,8 +504,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 
 			this._isProcessing = true;
 			this._fit();
-			if ($elements.length - this._removedContent  > 0) {
-				$elements = $elements.slice($elements.length - this._removedContent);
+			if ($elements.length > this._removedContent) {
+				$elements = $elements.slice(0, this._removedContent);
 			}
 			this._insert($elements, groupKey, false);
 			return $elements.length;
