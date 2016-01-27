@@ -330,12 +330,8 @@ test("check a count of remove contents", function(assert) {
 	this.inst.append(getContent("append",2006));
 });
 
-test("check item/element order", function(assert) {
+test("check item/element order and check removed parts", function(assert) {
 	var done = assert.async();
-	// Given
-	// When
-	// Then
-	equal(this.inst.isRecycling(), false, "elements are lacked");
 
 	//When
 	this.inst.on("layoutComplete",function(e) {
@@ -343,7 +339,8 @@ test("check item/element order", function(assert) {
 		this.on("layoutComplete",function(e) {
 			// Then
 			var self = this;
-			this.core.$element.children().slice(0,10).each(function(i,v) {
+			equal(e.target.length, 30-this.options.count , "check remove a count of items");
+			this.core.$element.children().slice(0,e.target.length).each(function(i,v) {
 				equal($(v).data("prepend-index"), i, "check element order" );
 				deepEqual(self.core.items[i].element,v, "check item order");
 			});
@@ -352,13 +349,13 @@ test("check item/element order", function(assert) {
 		});
 
 		// When
-		var $prependElement = getContent("prepend", 10);
+		var $prependElement = getContent("prepend", 20);
 		$prependElement.each(function(i,v) {
 			$(v).data("prepend-index", i);
 		});
 		this.prepend($prependElement);
 	});
-	this.inst.append(getContent("append",2006));
+	this.inst.append(getContent("append",30));
 });
 
 module("infiniteGrid unit method Test", {
