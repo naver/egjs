@@ -1,8 +1,11 @@
-module.exports = (function(){
+module.exports = function(grunt){
+	var exec = require('child_process').exec;
+	var fs = require("fs");
+	var bsLaunchers = require('./browserstack_launchers.js');
+	var isBrowserStack = process.env.BROWSER_STACK_USERNAME && process.env.BROWSER_STACK_ACCESS_KEY;
+
 	// if there is no @support tag in src, use defaultSupport (ex. eg.js)
 	var defaultSupport = {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"};
-	var bsLaunchers = require('./browserstack_launchers.js');
-	var fs = require("fs");
 
 	// fetch module name list from html files in test directory 
 	var moduleList = fs.readdirSync(
@@ -36,9 +39,11 @@ module.exports = (function(){
 		return val;
 	});
 
+	// fetch every file path under the direcrtory
 	function walk(dir) {
 	    var results = []
 	    var list = fs.readdirSync(dir);
+	    
 	    list.forEach(function(file) {
 	        file = dir + '/' + file
 	        var stat = fs.statSync(file)
@@ -49,37 +54,81 @@ module.exports = (function(){
 	}
 
 	// returns target browserstack launchers
-	return {
-		"getConfig": function(componentName){
-			var targetBrowsers = [];
-			var componentSupport = moduleList.filter(function(val){
-				return val.name === componentName;
-			}).map(function(val){
-				return val.support;
-			})[0];
-		
-			for(var browser in componentSupport) {
-				if(/^(ie|ios|an|ch|ff)$/.test(browser) && componentSupport[browser] !== "latest") {
-					var lowestVersion = parseFloat(componentSupport[browser]);
-					var browsers = bsLaunchers[browser].filter(function(browserInfo){
-						return parseFloat(browserInfo[(browser === "ios" || browser === "an")? "os_version":"browser_version"]) >= lowestVersion;
-					});
-					targetBrowsers = targetBrowsers.concat(browsers);
-				} else if(browser === "sf") { // safari : test every latest of each OSX
-					targetBrowsers = targetBrowsers.concat(bsLaunchers[browser]);
-				} else if(componentSupport[browser] === "latest") {
-					targetBrowsers = targetBrowsers.concat(
-						bsLaunchers[browser][bsLaunchers[browser].length - 1]
-					);
-				}
+	function getConfig(componentName){
+		var targetBrowsers = [];
+		var componentSupport = moduleList.filter(function(val){
+			return val.name === componentName;
+		}).map(function(val){
+			return val.support;
+		})[0];
+	
+		for(var browser in componentSupport) {
+			if(/^(ie|ios|an|ch|ff)$/.test(browser) && componentSupport[browser] !== "latest") {
+				var lowestVersion = parseFloat(componentSupport[browser]);
+				var browsers = bsLaunchers[browser].filter(function(browserInfo){
+					return parseFloat(browserInfo[(browser === "ios" || browser === "an")? "os_version":"browser_version"]) >= lowestVersion;
+				});
+				targetBrowsers = targetBrowsers.concat(browsers);
+			} else if(browser === "sf") { // safari : test every latest of each OSX
+				targetBrowsers = targetBrowsers.concat(bsLaunchers[browser]);
+			} else if(componentSupport[browser] === "latest") {
+				targetBrowsers = targetBrowsers.concat(
+					bsLaunchers[browser][bsLaunchers[browser].length - 1]
+				);
 			}
-			return {	
-				"test_framework": "qunit",
-				"test_path": [
-				"test/"+componentName+".test.html"
-				],
-				"browsers": targetBrowsers
-			};
 		}
-	};
-})();
+		return {	
+			"test_framework": "qunit",
+			"test_path": [
+			"test/"+componentName+".test.html"
+			],
+			"browsers": targetBrowsers
+		};
+	}	
+	
+	/*
+	**	grunt browserstack:muduleName
+	**	    run unit tests with browserstack for muduleName
+	**  grunt browserstack
+	**	    run unit tests with browserstack for every module
+	*/	 
+	grunt.registerTask('browserstack', isBrowserStack ? function() {
+		var eachfile = Array.prototype.slice.apply(arguments);
+		var taskList;
+		if (eachfile.length) {
+			taskList = eachfile.map(function(v) {
+				return v;
+			}, this);
+		} else {
+			// fetch module name list from html files in test directory
+			taskList = fs.readdirSync("test/").filter(function(val) {
+				return val.split(".").length === 3 && val.split(".")[0] !== "buildMerge";
+			}).map(function(val) {
+				return val.split(".")[0];
+			});
+		}
+
+		taskList.forEach(function(targetModuleName){
+			startSingleBrowserstackSession.call(this, targetModuleName);
+		}.bind(this));
+
+		function startSingleBrowserstackSession(targetModuleName) {
+			var browserstackConfig = getConfig(targetModuleName);
+			var tempBrowserstackConfig = "config/browertstack.config.json";
+			fs.writeFileSync(tempBrowserstackConfig, JSON.stringify(browserstackConfig), "utf8");
+			process.env["BROWSERSTACK_JSON"] = tempBrowserstackConfig;
+			var done = this.async();
+			var subProcess = exec("node_modules/.bin/browserstack-runner", function(err) {
+				var fs = require("fs");
+				process.env["BROWSERSTACK_JSON"] = "";
+				fs.unlinkSync(tempBrowserstackConfig);
+				done(err ? false : true);
+			});
+			subProcess.stdout.on("data", function(_data) {
+				grunt.log.writeln(_data.trim());
+			});		
+		}
+	} : function() {
+		grunt.log.oklns("no BROWSERSTACK_USERNAME, BROWSERSTACK_KEY env");
+	});
+};
