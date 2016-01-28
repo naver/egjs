@@ -3,7 +3,7 @@ module.exports = function(grunt){
 	var fs = require("fs");
 	var bsLaunchers = require('./browserstack_launchers.js');
 	var isBrowserStack = process.env.BROWSERSTACK_USERNAME && process.env.BROWSERSTACK_KEY;
-	
+
 	// if there is no @support tag in src, use defaultSupport (ex. eg.js)
 	var defaultSupport = {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"};
 
