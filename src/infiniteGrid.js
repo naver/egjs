@@ -284,7 +284,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			this._prefix = _prefix || "";
 			this.core = new InfiniteGridCore(el, this.options)
 				.on(EVENTS.layoutComplete, $.proxy(this._onlayoutComplete, this));
-			this.$global = $(global);
+			this.$view = $(global);
 			this._reset();
 			this.core.$element.children().length > 0 && this.layout();
 			this._onResize = $.proxy(this._onResize, this);
@@ -294,8 +294,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			this._topElement = null;
 			this._bottomElement = null;
 			this._refreshViewport();
-			this.$global.on("resize", this._onResize);
-			this.$global.on("scroll", this._onScroll);
+			this.$view.on("resize", this._onResize);
+			this.$view.on("scroll", this._onScroll);
 		},
 		_getScrollTop: function() {
 			return doc.body.scrollTop || doc.documentElement.scrollTop;
@@ -348,11 +348,14 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 						 *
 						 * @param {Object} param
 						 * @param {Number} param.scrollTop scrollTop scroll-y position of window<ko>윈도우 y 스크롤의 값</ko>
-						 * @param {Number} param.croppedDistance croppedDistance the distance of cropped view for relayout.<ko>재배치를 위해, 잘려진 뷰의 길이</ko>
 						 */
+						var croppedDistance = this.fit();
+						if (croppedDistance > 0) {
+							scrollTop -= croppedDistance;
+							this.$view.scrollTop(scrollTop);
+						}
 						this.trigger(this._prefix + EVENTS.prepend, {
-							scrollTop: scrollTop,
-							croppedDistance: this.fit()
+							scrollTop: scrollTop
 						});
 					}
 				}
@@ -372,7 +375,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			this.resizeTimeout = setTimeout(delayed, 100);
 		},
 		_refreshViewport: function() {
-			this._clientHeight = this.$global.height();
+			this._clientHeight = this.$view.height();
 		},
 		/**
 		 * Get current status
@@ -808,8 +811,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 				this.core.destroy();
 				this.core = null;
 			}
-			this.$global.off("resize", this._onResize);
-			this.$global.off("scroll", this._onScroll);
+			this.$view.off("resize", this._onResize);
+			this.$view.off("scroll", this._onScroll);
 			this.off();
 		}
 	});
