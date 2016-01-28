@@ -180,8 +180,6 @@ test("check a append module with groupkey", function(assert) {
 	this.inst.append(getContent("append"), groupkey);
 });
 
-// @todo check croppedCount
-// ref https://github.com/naver/egjs/issues/68
 module("infiniteGrid prepend Test", {
 	setup : function() {
 		this.inst = new eg.InfiniteGrid("#nochildren_grid", {
