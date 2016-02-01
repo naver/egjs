@@ -185,8 +185,10 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var prefix = options.prefix;
 			var horizontal = options.horizontal;
 			var panelCount = panel.count = panel.origCount = $children.length;
-			var sizeValue = this._getDataByDirection(this._setPadding(padding, true));
 			var cssValue;
+
+			this._setPadding(padding, true);
+			var sizeValue = this._getDataByDirection([ panel.size, "100%" ]);
 
 			// panels' css values
 			$children.addClass(prefix + "-panel").css({
@@ -234,16 +236,15 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * Set preview padding value
 		 * @param {Array} padding
 		 * @param {Boolean} build
-		 * @returns {Array} [ panel.size, "100%" ]
 		 */
 		_setPadding: function(padding, build) {
 			var horizontal = this.options.horizontal;
 			var panel = this._conf.panel;
-			var sizeValue = [
-				panel.size = this.$wrapper[
-					horizontal ? "outerWidth" : "height"
-				]() - (padding[0] + padding[1]), "100%"
-			];
+
+			panel.size = this.$wrapper[
+				horizontal ? "outerWidth" : "height"
+			]() - (padding[0] + padding[1]);
+
 			var cssValue = {
 				padding: (horizontal ?
 				"0 " + padding.reverse().join("px 0 ") :
@@ -257,7 +258,6 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			}
 
 			this.$wrapper.css(cssValue);
-			return sizeValue;
 		},
 
 		/**
