@@ -304,7 +304,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			} else {
 				// if defaultIndex option is given, then move to that index panel
 				if (index > 0 && index <= lastIndex) {
-					panel.index = index;
+					panel.no = panel.index = index;
 					coords = [ -(panel.size * index), 0];
 
 					this._setTranslate(coords);
