@@ -319,7 +319,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			} else {
 				// if defaultIndex option is given, then move to that index panel
 				if (index > 0 && index <= lastIndex) {
-					panel.index = index;
+					panel.no = panel.index = index;
 					coords = [ -(panel.size * index), 0];
 
 					this._setTranslate(coords);
@@ -1005,7 +1005,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * Get next panel element
 		 * @ko 다음 패널 요소의 레퍼런스를 반환한다.
 		 * @method eg.Flicking#getNextElement
-		 * @return {jQuery} jQuery Next element <ko>다음 패널 요소</ko>
+		 * @return {jQuery|null} Next element or null if no more element exist<ko>다음 패널 요소. 패널이 없는 경우에는 null</ko>
 		 */
 		getNextElement: function () {
 			return this._getElement(this._conf.dirData[0], true);
@@ -1016,7 +1016,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @ko 다음 패널의 인덱스 값을 반환한다.
 		 * @method eg.Flicking#getNextIndex
 		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical) <ko>물리적/논리적 값 인덱스 불리언(true: 물리적, false: 논리적)</ko>
-		 * @return {Number} Number Next element index value <ko>다음 패널 인덱스 번호</ko>
+		 * @return {Number|null} Next element index value or null if no more element exist<ko>다음 패널 인덱스 번호. 패널이 없는 경우에는 null</ko>
 		 */
 		getNextIndex: function (physical) {
 			return this._getElement(this._conf.dirData[0], false, physical);
@@ -1036,7 +1036,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * Get previous panel element
 		 * @ko 이전 패널 요소의 레퍼런스를 반환한다.
 		 * @method ns.Flicking#getPrevElement
-		 * @return {jQuery} jQuery Previous element <ko>이전 패널 요소</ko>
+		 * @return {jQuery|null} Previous element or null if no more element exist <ko>이전 패널 요소. 패널이 없는 경우에는 null</ko>
 		 */
 		getPrevElement: function () {
 			return this._getElement(this._conf.dirData[1], true);
@@ -1047,7 +1047,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @ko 이전 패널의 인덱스 값을 반환한다.
 		 * @method eg.Flicking#getPrevIndex
 		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical) <ko>물리적/논리적 값 인덱스 불리언(true: 물리적, false: 논리적)</ko>
-		 * @return {Number} number Previous element index value <ko>이전 패널 인덱스 번호</ko>
+		 * @return {Number|null} Previous element index value or null if no more element exist<ko>이전 패널 인덱스 번호. 패널이 없는 경우에는 null</ko>
 		 */
 		getPrevIndex: function (physical) {
 			return this._getElement(this._conf.dirData[1], false, physical);
