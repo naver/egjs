@@ -607,58 +607,126 @@ test("Method: prev() - Animation #2", function (assert) {
 
 test("Method: moveTo()", function() {
 	// Given
-	this.inst = new eg.Flicking($("#mflick1"));
+	var eventOrder = ["beforeFlickStart", "flick", "flickEnd"],
+		eventFired = [],
+		handler = function(e) {
+			var type = e.eventType;
 
-	var count = this.inst._conf.panel.count,
-		panelSize = this.inst._conf.panel.size,
-		value = (count - 1) * 100;
+			if(eventFired.indexOf(type) == -1) {
+				!e.holding && eventFired.push(type);
+			}
+		};
 
-	// When
-	this.inst.moveTo(count - 1,0);  // move to last
-
-   	// Then
-   	equal($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Moved to last panel?");
-
-	// When
-	this.inst.moveTo(0,0);  // move to first
-
-	// Then
-	ok($getTransformValue(this.inst.getElement()).match(/0%/), "Moved to first panel?");
-
-	this.inst._mcInst.destroy();
-
-	// Given
-	this.inst = new eg.Flicking($("#mflick3"), {
-		circular : true
+	var inst = new eg.Flicking("#mflick1").on({
+		beforeFlickStart: handler,
+		flick: handler,
+		flickEnd: handler
 	});
 
-	count = this.inst._conf.panel.count,
-	panelSize = this.inst._conf.panel.size;
+	var count = inst._conf.panel.count,
+		value = (count - 1) * 100;
+
+	var setCondition = function(no, duration) {
+		eventFired = [];
+		inst.moveTo(no, duration);
+	};
+
+	var runTest = function(no, value) {
+		equal(no, inst._conf.panel.no, "Panel number indicate correct panel number?");
+		equal($getTransformValue(inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
+		ok(inst.getElement().html().indexOf("Layer "+ no), "Moved correctly?");
+		deepEqual(eventOrder, eventFired, "Custom events are fired?");
+	};
+
+	// When
+	setCondition(count - 1,0);  // move to last
+
+   	// Then
+	runTest(count - 1, value);
+
+
+	// When
+	setCondition(0, 0);  // move to first
+
+	// Then
+	runTest(0, "0%");
+
+	inst = new eg.Flicking("#mflick2", {
+		defaultIndex: 1
+	}).on({
+		beforeFlickStart: handler,
+		flick: handler,
+		flickEnd: handler
+	});
+
+	// When
+	setCondition(2,0);
+
+	// Then
+	runTest(2, value);
+
+	// When
+	setCondition(0,0);
+
+	// Then
+	runTest(0,"0%");
+
+	inst._mcInst.destroy();
+
+	// Given
+	inst = new eg.Flicking("#mflick3", {
+		circular : true,
+		defaultIndex: 3
+	}).on({
+		beforeFlickStart: handler,
+		flick: handler,
+		flickEnd: handler
+	});
+
+	count = inst._conf.panel.count;
 
 	// When
 	var index = count - 1;
-	value = (this.inst._getBasePositionIndex() * 100) +"%";
+	value = (inst._getBasePositionIndex() * 100) +"%";
 
-	this.inst.moveTo(index,0);  // move to last
+	setCondition(index,0);  // move to last
 
 	// Then
-	equal(count - 1, this.inst._conf.panel.no, "Panel number indicate last panel number?");
-	deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
-	ok(this.inst.getElement().html().indexOf("Layer "+ (count - 1)), "Moved correctly?");
+	runTest(index,value);
 
 	// When
-	this.inst.moveTo(0,0);  // move to first
+	setCondition(0,0);  // move to first
 
-	equal(this.inst._conf.panel.no, 0, "Panel number indicate first panel number?");
-	deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
-	ok(this.inst.getElement().html().indexOf("Layer 0"), "Moved correctly?");
+	// Then
+	runTest(0,"0%");
 
 	// When
-	this.inst.moveTo("2", 0);  // move to third
+	setCondition("2",0);  // move to third
 
-	equal(this.inst._conf.panel.no, 2, "Panel number indicate correct panel number?");
-	deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
-	ok(this.inst.getElement().html().indexOf("Layer 2"), "Moved correctly?");
+	// Then
+	runTest("2",value);
+
+	// Given
+	inst = new eg.Flicking("#mflick3-1", {
+		circular : true
+	}).on({
+		beforeFlickStart: handler,
+		flick: handler,
+		flickEnd: handler
+	});
+	value = (inst._getBasePositionIndex() * 100) +"%";
+
+	// When
+	setCondition(2,0);
+
+	// Then
+	runTest(2, value);
+
+	// When
+	setCondition(1,0);
+
+	// Then
+	runTest(1,value);
 });
 
 test("Method: moveTo() - Animation #1", function(assert) {
@@ -668,7 +736,6 @@ test("Method: moveTo() - Animation #1", function(assert) {
 	this.inst = new eg.Flicking($("#mflick1"));
 
 	var count = this.inst._conf.panel.count,
-		panelSize = this.inst._conf.panel.size,
 		value = (count - 1) * 100;
 
 	// When
@@ -688,7 +755,6 @@ test("Method: moveTo() - Animation #2", function(assert) {
 	this.inst = new eg.Flicking($("#mflick1"));
 
 	var count = this.inst._conf.panel.count,
-		panelSize = this.inst._conf.panel.size,
 		value = (count - 1) * 100;
 
 	// When

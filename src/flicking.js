@@ -319,7 +319,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			} else {
 				// if defaultIndex option is given, then move to that index panel
 				if (index > 0 && index <= lastIndex) {
-					panel.index = index;
+					panel.no = panel.index = index;
 					coords = [ -(panel.size * index), 0];
 
 					this._setTranslate(coords);
@@ -652,11 +652,14 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				e.stop();
 			}
 
-			e.hammerEvent && (e.duration = this.options.duration);
-			e.destPos[+!this.options.horizontal] =
-				panel.size * (
-					panel.index + conf.indexToMove
-				);
+			if (e.hammerEvent) {
+				e.duration = this.options.duration;
+
+				e.destPos[+!this.options.horizontal] =
+					panel.size * (
+						panel.index + conf.indexToMove
+					);
+			}
 
 			if (this._isMovable()) {
 				!customEvent.restoreCall && (customEvent.restore = false);
@@ -1147,56 +1150,45 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 */
 		moveTo: function (no, duration) {
 			var panel = this._conf.panel;
-			var options = this.options;
+			var circular = this.options.circular;
 			var currentIndex = panel.index;
-			var indexToMove = 0;
+			var indexToMove;
 			var movableCount;
-			var movable;
 
-			no = this._getNumValue(no);
+			no = this._getNumValue(no, -1);
 
-			if (typeof no !== "number" ||
-				no >= panel.origCount ||
-				no === panel.no ||
-				panel.animating
-			) {
+			if (no < 0 || no >= panel.origCount || no === panel.no || panel.animating) {
 				return this;
 			}
 
 			// remember current value in case of restoring
-			panel.prevIndex = panel.index;
+			panel.prevIndex = currentIndex;
 			panel.prevNo = panel.no;
 
-			movable = options.circular || no >= 0 && no < panel.origCount;
-
-			if (options.circular) {
+			if (circular) {
 				// real panel count which can be moved on each(left(up)/right(down)) sides
 				movableCount = [ currentIndex, panel.count - (currentIndex + 1) ];
+				indexToMove = no - panel.no;
 
-				if (no > panel.no) {
-					indexToMove = no - panel.no;
-
-					if (indexToMove > movableCount[1]) {
-						indexToMove = -(movableCount[0] + 1 - (indexToMove - movableCount[1]));
-					}
-				} else {
-					indexToMove = -(panel.no - no);
-
-					if (Math.abs(indexToMove) > movableCount[0]) {
-						indexToMove = movableCount[1] + 1 -
-							(Math.abs(indexToMove) - movableCount[0]);
-					}
+				if (Math.abs(indexToMove) > movableCount[ indexToMove > 0 ? 1 : 0 ]) {
+					indexToMove = indexToMove < 0 ?
+						panel.count + indexToMove : -(panel.count - indexToMove);
 				}
 
 				panel.no = no;
-				this._conf.indexToMove = indexToMove;
-				this._setValueToMove(indexToMove > 0);
-				this._movePanelByPhase("setBy", [ panel.size * indexToMove, 0 ], duration);
-
-			} else if (movable) {
+			} else {
+				indexToMove = no - currentIndex;
 				panel.no = panel.index = no;
-				this._movePanelByPhase("setTo", [ panel.size * no, 0 ], duration);
 			}
+
+			this._conf.indexToMove = indexToMove;
+			this._setValueToMove(indexToMove > 0);
+
+			this._movePanelByPhase(
+				circular ? "setBy" : "setTo",
+				[ panel.size * (circular ? indexToMove : no), 0 ],
+				duration
+			);
 
 			return this;
 		},
