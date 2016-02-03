@@ -185,23 +185,10 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var prefix = options.prefix;
 			var horizontal = options.horizontal;
 			var panelCount = panel.count = panel.origCount = $children.length;
-			var sizeValue = [
-				panel.size = this.$wrapper[
-						horizontal ? "width" : "height"
-						]() - (padding[0] + padding[1]), "100%"
-			];
 			var cssValue;
 
-			this.$wrapper.css({
-				padding: (
-					horizontal ?
-					"0 " + padding.reverse().join("px 0 ") :
-						padding.join("px 0 ")
-				) + "px",
-				overflow: "hidden"
-			});
-
-			this._getDataByDirection(sizeValue);
+			this._setPadding(padding, true);
+			var sizeValue = this._getDataByDirection([ panel.size, "100%" ]);
 
 			// panels' css values
 			$children.addClass(prefix + "-panel").css({
@@ -243,6 +230,34 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			});
 
 			this._setDefaultPanel(options.defaultIndex);
+		},
+
+		/**
+		 * Set preview padding value
+		 * @param {Array} padding
+		 * @param {Boolean} build
+		 */
+		_setPadding: function(padding, build) {
+			var horizontal = this.options.horizontal;
+			var panel = this._conf.panel;
+
+			panel.size = this.$wrapper[
+				horizontal ? "outerWidth" : "height"
+			]() - (padding[0] + padding[1]);
+
+			var cssValue = {
+				padding: (horizontal ?
+				"0 " + padding.reverse().join("px 0 ") :
+				padding.join("px 0 ")) + "px"
+			};
+
+			if (build) {
+				cssValue.overflow = "hidden";
+			} else if (!horizontal) {
+				this.$container.css("top", padding[0]);
+			}
+
+			this.$wrapper.css(cssValue);
 		},
 
 		/**
@@ -499,7 +514,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 
 		/**
 		 * Move nodes
-		 * @param {Boolean} diretion
+		 * @param {Boolean} direction
 		 * @param {Number} indexToMove
 		 */
 		_arrangePanelPosition: function (direction, indexToMove) {
@@ -1087,11 +1102,9 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 
 		/**
 		 * Move panel applying start/end phase value
-		 *
 		 * @param {String} method movableCoord method name
 		 * @param {Object} coords coordinate array value
 		 * @param {Number} duration duration value
-		 * @private
 		 */
 		_movePanelByPhase: function(method, coords, duration) {
 			duration = this._getNumValue(duration, this.options.duration);
@@ -1189,24 +1202,71 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		},
 
 		/**
+		 * Update panel's previewPadding size according options.previewPadding
+		 */
+		_checkPadding: function () {
+			var options = this.options;
+			var previewPadding = options.previewPadding.concat();
+			var padding = this.$wrapper.css("padding").split(" ");
+
+			options.horizontal && padding.reverse();
+
+			// get current padding value
+			padding = padding.length === 2 ?
+				[ padding[0], padding[0] ] : [ padding[0], padding[2] ];
+
+			padding = $.map(padding, function(num) {
+				return parseInt(num, 10);
+			});
+
+			// update padding when current and given are different
+			if (previewPadding.length === 2 &&
+				previewPadding[0] !== padding[0] || previewPadding[1] !== padding[1]) {
+
+				this._setPadding(previewPadding);
+			}
+		},
+
+		/**
 		 * Update panel size according current viewport
 		 * @ko 패널 사이즈 정보를 갱신한다.
 		 * @method eg.Flicking#resize
 		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
+		 * @example
+			var some = new eg.Flicking("#mflick", {
+				previewPadding: [10,10]
+			});
+
+			// when device orientaion changes
+			some.resize();
+
+			// or when changes previewPadding option from its original value
+			some.options.previewPadding = [20, 30];
+			some.resize();
 		 */
 		resize: function () {
 			var conf = this._conf;
+			var options = this.options;
 			var panel = conf.panel;
-			var width = panel.size = this.$wrapper.width();
-			var maxCoords = [width * (panel.count - 1), 0];
+			var horizontal = options.horizontal;
+			var panelSize;
+			var maxCoords;
 
-			// resize panel and parent elements
-			this.$container.width(maxCoords[0] + width);
-			panel.$list.css("width", width);
+			if (~~options.previewPadding.join("")) {
+				this._checkPadding();
+				panelSize = panel.size;
+			} else if (horizontal) {
+				panelSize = panel.size = this.$wrapper.width();
+			}
 
-			// adjust the position of current panel
+			maxCoords = this._getDataByDirection([panelSize * (panel.count - 1), 0]);
+
+			// resize elements
+			horizontal && this.$container.width(maxCoords[0] + panelSize);
+			panel.$list.css(horizontal ? "width" : "height", panelSize);
+
 			this._mcInst.options.max = maxCoords;
-			this._setMovableCoord("setTo", [width * panel.index, 0], true, 0);
+			this._setMovableCoord("setTo", [panelSize * panel.index, 0], true, 0);
 
 			if (IS_ANDROID2) {
 				this._applyPanelsPos();
@@ -1223,7 +1283,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
 		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
 		 * @example
-		 var some = new eg.Flicking("#mflick").on({
+			var some = new eg.Flicking("#mflick").on({
 				beforeFlickStart : function(e) {
 					if(e.no === 2) {
 						e.stop();  // stop flicking
