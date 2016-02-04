@@ -810,8 +810,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 				this.core.destroy();
 				this.core = null;
 			}
-			this.$view.off("resize", this._onResize);
-			this.$view.off("scroll", this._onScroll);
+			this.$view.off("resize", this._onResize)
+				.off("scroll", this._onScroll);
 			this.off();
 		}
 	});
