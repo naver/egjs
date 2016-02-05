@@ -14,15 +14,16 @@ function $getTransformValue(el, match) {
 	return match ? (elStyle.match(rx) ||[,])[1] : elStyle;
 }
 
-module("Flicking component test", {
-	setup : function() {
+var hooks = {
+	beforeEach: function() {
 		this.inst = null;
 	},
-	teardown : function() {
+	afterEach: function() {
 		this.inst && this.inst._mcInst.destroy();
 	}
-});
+};
 
+module("Initialization", hooks);
 test("Check for the initialization", function() {
 	// Given
 	this.inst = new eg.Flicking($("#mflick1"));
@@ -32,7 +33,8 @@ test("Check for the initialization", function() {
 	deepEqual(this.inst.$container.width(), this.inst.$container.parent().width(), "Then panel container was added and the width is same as wrapper element.");
 });
 
-test("Option: circular", function() {
+module("Setting options", hooks);
+test("circular", function() {
 	// Given
 	this.inst = new eg.Flicking($("#mflick1"));
 
@@ -71,7 +73,7 @@ test("Option: circular", function() {
 
 });
 
-test("Option: preview - horizontal", function() {
+test("previewPadding - horizontal", function() {
 	// Given
 	this.inst = new eg.Flicking($("#mflick3"), {
 		circular : true,
@@ -90,7 +92,7 @@ test("Option: preview - horizontal", function() {
 	equal(wrapperWidth, panelWidth, "Each panel's width should be same as wrapper element's width");
 });
 
-test("Option: preview - vertical", function() {
+test("previewPadding - vertical", function() {
 	// Given
 	this.inst = new eg.Flicking($("#mflick3"), {
 		circular : true,
@@ -110,7 +112,7 @@ test("Option: preview - vertical", function() {
 	equal(wrapperHeight - (padding[0] + padding[1]), panelHeight, "Each panel's height should be same as wrapper element's height");
 });
 
-test("Option: threshold #1 - (horizontal) when moved more than threshold pixels", function(assert) {
+test("threshold #1 - (horizontal) when moved more than threshold pixels", function(assert) {
 	var done = assert.async();
 
 	// Given
@@ -144,7 +146,7 @@ test("Option: threshold #1 - (horizontal) when moved more than threshold pixels"
     });
 });
 
-test("Option: threshold #2 - (vertical) when moved more than threshold pixels", function(assert) {
+test("threshold #2 - (vertical) when moved more than threshold pixels", function(assert) {
 	var done = assert.async();
 
 	// Given
@@ -179,7 +181,7 @@ test("Option: threshold #2 - (vertical) when moved more than threshold pixels", 
     });
 });
 
-test("Option: threshold #3 - (horizontal) when moved less than threshold pixels", function(assert) {
+test("threshold #3 - (horizontal) when moved less than threshold pixels", function(assert) {
 	var done = assert.async();
 
 	// Given
@@ -213,7 +215,7 @@ test("Option: threshold #3 - (horizontal) when moved less than threshold pixels"
     });
 });
 
-test("Option: threshold #4 - (vertical) when moved less than threshold pixels", function(assert) {
+test("threshold #4 - (vertical) when moved less than threshold pixels", function(assert) {
 	var done = assert.async();
 
 	// Given
@@ -248,7 +250,7 @@ test("Option: threshold #4 - (vertical) when moved less than threshold pixels", 
     });
 });
 
-test("Option: defaultIndex", function () {
+test("defaultIndex", function () {
 	// Given
 	var defaultIndex = 3;
 
@@ -262,7 +264,7 @@ test("Option: defaultIndex", function () {
 	equal(this.inst._conf.panel.no, defaultIndex, "The initial panel number should be "+ defaultIndex);
 });
 
-test("Option: hwAccelerable", function () {
+test("hwAccelerable", function () {
 	// Given
 	this.inst = new eg.Flicking($("#mflick3"), {
 		hwAccelerable: true,
@@ -278,7 +280,9 @@ test("Option: hwAccelerable", function () {
 	ok($.css(panel, "willChange") === "transform" || $getTransformValue(panel).indexOf("3d") >= 0, "HW Acceleration css property is prensent in panel element?");
 });
 
-test("Method: getIndex()", function() {
+
+module("Methods call", hooks);
+test("getIndex()", function() {
 	// Given
 	// Given
 	var defaultIndex = 3;
@@ -295,7 +299,7 @@ test("Method: getIndex()", function() {
 	deepEqual(this.inst._conf.panel.$list[this.inst.getIndex(true)], this.inst.getElement()[0], "Get current panel using physical panel number");
 });
 
-test("Method: getElement()", function() {
+test("getElement()", function() {
 	// Given
 	this.inst = new eg.Flicking($("#mflick2"), {
 		circular : true
@@ -310,7 +314,7 @@ test("Method: getElement()", function() {
 	deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
 });
 
-test("Method: getNextElement()", function() {
+test("getNextElement()", function() {
 	// Given
 	this.inst = new eg.Flicking($("#mflick2"), {
 		circular : true
@@ -326,7 +330,7 @@ test("Method: getNextElement()", function() {
 	ok(currentTransform < nextTransform, "Invoked element is placed next to the current element?");
 });
 
-test("Method: getNextIndex()", function() {
+test("getNextIndex()", function() {
 	// Given
 	this.inst = new eg.Flicking($("#mflick3"), {
 		circular : true
@@ -353,7 +357,7 @@ test("Method: getNextIndex()", function() {
 	ok(index > 0, "Next physical index of last, should be great than 0");
 });
 
-test("Method: getPrevElement()", function() {
+test("getPrevElement()", function() {
 	// Given
 	this.inst = new eg.Flicking($("#mflick2"), {
 		circular : true
@@ -370,7 +374,7 @@ test("Method: getPrevElement()", function() {
 	ok(currentTransform > prevTransform, "Invoked element is placed previous to the current element?");
 });
 
-test("Method: getPrevIndex()", function() {
+test("getPrevIndex()", function() {
 	// Given
 	this.inst = new eg.Flicking($("#mflick3"), {
 		circular : true
@@ -398,7 +402,7 @@ test("Method: getPrevIndex()", function() {
 	ok(this.inst.getPrevIndex() > index, "Previous physical index, should be less than logical index");
 });
 
-test("Method: getAllElements()", function() {
+test("getAllElements()", function() {
 	// Given
 	this.inst = new eg.Flicking($("#mflick2"), {
 		circular : true
@@ -411,7 +415,7 @@ test("Method: getAllElements()", function() {
 	deepEqual(elements.length, this.inst.$container.children().length, "Returned all panel elements?");
 });
 
-test("Method: getTotalCount()", function() {
+test("getTotalCount()", function() {
 	// Given
 	this.inst = new eg.Flicking($("#mflick1"));
 
@@ -437,7 +441,7 @@ test("Method: getTotalCount()", function() {
 	deepEqual(counts, this.inst.$container.children().length, "Returned physical elements total count?");
 });
 
-test("Method: isPlaying()", function(assert) {
+test("isPlaying()", function(assert) {
 	var done = assert.async();
 
 	// Given
@@ -467,7 +471,7 @@ test("Method: isPlaying()", function(assert) {
     });
 });
 
-test("Method: next()", function() {
+test("next()", function() {
 	// Given
 	this.inst = new eg.Flicking($("#mflick2-1"), {
 		circular : true
@@ -486,7 +490,7 @@ test("Method: next()", function() {
 	deepEqual(element[0], nextElement[0], "The next element is what expected?");
 });
 
-test("Method: next() - Animation #1", function (assert) {
+test("next() - Animation #1", function (assert) {
 	var done = assert.async();
 
 	// Given
@@ -511,7 +515,7 @@ test("Method: next() - Animation #1", function (assert) {
 	}, this), 400);
 });
 
-test("Method: next() - Animation #2", function (assert) {
+test("next() - Animation #2", function (assert) {
 	var done = assert.async();
 
 	// Given
@@ -537,7 +541,7 @@ test("Method: next() - Animation #2", function (assert) {
 	}, this), 400);
 });
 
-test("Method: prev()", function() {
+test("prev()", function() {
 	// Given
 	this.inst = new eg.Flicking($("#mflick2-1"), {
 		circular : true
@@ -555,7 +559,7 @@ test("Method: prev()", function() {
 	deepEqual(element.html(), prevElement.html(), "The previous element is what expected?");
 });
 
-test("Method: prev() - Animation #1", function (assert) {
+test("prev() - Animation #1", function (assert) {
 	var done = assert.async();
 
 	// Given
@@ -580,7 +584,7 @@ test("Method: prev() - Animation #1", function (assert) {
 	}, this), 400);
 });
 
-test("Method: prev() - Animation #2", function (assert) {
+test("prev() - Animation #2", function (assert) {
 	var done = assert.async();
 
 	// Given
@@ -605,7 +609,9 @@ test("Method: prev() - Animation #2", function (assert) {
 	}, this), 400);
 });
 
-test("Method: moveTo()", function() {
+
+module("moveTo() method", hooks);
+test("Check for functionality", function() {
 	// Given
 	var eventOrder = ["beforeFlickStart", "flick", "flickEnd"],
 		eventFired = [],
@@ -729,7 +735,7 @@ test("Method: moveTo()", function() {
 	runTest(1,value);
 });
 
-test("Method: moveTo() - Animation #1", function(assert) {
+test("Animation #1", function(assert) {
 	var done = assert.async();
 
 	// Given
@@ -748,7 +754,7 @@ test("Method: moveTo() - Animation #1", function(assert) {
 	}, this),500);
 });
 
-test("Method: moveTo() - Animation #2", function(assert) {
+test("Animation #2", function(assert) {
 	var done = assert.async();
 
 	// Given
@@ -767,7 +773,7 @@ test("Method: moveTo() - Animation #2", function(assert) {
 	}, this), 500);
 });
 
-test("Method: moveTo() - Animation #3", function (assert) {
+test("Animation #3", function (assert) {
 	var done = assert.async();
 
 	// Given
@@ -794,7 +800,7 @@ test("Method: moveTo() - Animation #3", function (assert) {
 	}, this),500);
 });
 
-test("Method: moveTo() - Animation #4", function (assert) {
+test("Animation #4", function (assert) {
 	var done = assert.async();
 
 	// Given
@@ -817,7 +823,8 @@ test("Method: moveTo() - Animation #4", function (assert) {
 });
 
 
-test("Method: resize() #1", function() {
+module("resize() method", hooks);
+test("Check for panel resize", function() {
 	// Given
 	var element = $("#mflick1"),
 		width = element.width(),
@@ -848,7 +855,7 @@ test("Method: resize() #1", function() {
 	notDeepEqual(oldCoordMax, this.inst._mcInst.options.max, "Should be updated MovableCoord's 'max' options value");
 });
 
-test("Method: resize() #2 - when change padding option", function() {
+test("When change padding option", function() {
 	// Given
 	var inst = new eg.Flicking("#mflick1", {
 		circular: true,
@@ -928,7 +935,9 @@ test("Method: resize() #2 - when change padding option", function() {
 	runTest([10,20]);
 });
 
-test("Method: restore() - #1", function (assert) {
+
+module("restore() method", hooks);
+test("Check for basic functionlality", function (assert) {
 	var done = assert.async();
 
 	// Given
@@ -996,7 +1005,7 @@ test("Method: restore() - #1", function (assert) {
 	}, 200);
 });
 
-test("Method: restore() - #2", function () {
+test("When restoring after event stop", function () {
 	// Given
 	var el = $("#mflick1").get(0),
 		eventFired = [],
@@ -1014,17 +1023,17 @@ test("Method: restore() - #2", function () {
 		threshold : 70,
 		circular: true
 	}).on({
-			beforeFlickStart: function(e) {
-				if(e.no === 2) {
-					e.stop();
-					this.restore(0);
-				}
-			},
-			flick : handler,
-			flickEnd : handler,
-			beforeRestore : handler,
-			restore : handler
-		});
+		beforeFlickStart: function(e) {
+			if(e.no === 2) {
+				e.stop();
+				this.restore(0);
+			}
+		},
+		flick : handler,
+		flickEnd : handler,
+		beforeRestore : handler,
+		restore : handler
+	});
 
 	var panelIndex = {
 		no: inst._conf.panel.no,
@@ -1082,7 +1091,8 @@ test("Method: restore() - #2", function () {
 });
 
 
-test("Custom events #1 - When changes panel normally", function(assert) {
+module("Custom events", hooks);
+test("When changes panel normally", function(assert) {
 	var done = assert.async();
 
 	// Given
@@ -1121,7 +1131,7 @@ test("Custom events #1 - When changes panel normally", function(assert) {
     });
 });
 
-test("Custom events #2 - When stop event on beforeRestore", function(assert) {
+test("When stop event on beforeRestore", function(assert) {
 	var done = assert.async();
 
 	// Given
@@ -1166,7 +1176,7 @@ test("Custom events #2 - When stop event on beforeRestore", function(assert) {
 });
 
 
-test("Custom events #3 - When stop on flick event", function (assert) {
+test("When stop on flick event", function (assert) {
 	var done = assert.async();
 
 	// Given
@@ -1209,7 +1219,7 @@ test("Custom events #3 - When stop on flick event", function (assert) {
     });
 });
 
-test("Custom events #4 - When stop on beforeFlickStart event", function (assert) {
+test("When stop on beforeFlickStart event", function (assert) {
 	var done = assert.async();
 
 	// Given
@@ -1277,7 +1287,7 @@ test("Custom events #4 - When stop on beforeFlickStart event", function (assert)
 	});
 });
 
-test("Custom events #5 - Events fired on move API call when duration is 0", function () {
+test("Events fired on move API call when duration is 0", function () {
 	var el = $("#mflick1").get(0),
 		eventFired = [],
 		eventOrder = ["beforeFlickStart", "flick", "flickEnd"],
@@ -1315,7 +1325,7 @@ test("Custom events #5 - Events fired on move API call when duration is 0", func
 	deepEqual(eventFired, eventOrder, "Events are fired in correct order, after calling moveTo()?");
 });
 
-test("Custom events #6 - Events fired on move API call when duration is greater than 0", function (assert) {
+test("Events fired on move API call when duration is greater than 0", function (assert) {
 	var done = assert.async();
 	var el = $("#mflick1").get(0),
 		eventFired = {
@@ -1365,7 +1375,7 @@ test("Custom events #6 - Events fired on move API call when duration is greater 
 	}, 1000);
 });
 
-test("Custom events #7 - Check for continuous action: 1)restore, 2)flick ", function(assert) {
+test("Check for continuous action: 1)restore, 2)flick ", function(assert) {
 	var done = assert.async();
 
 	// Given
@@ -1418,7 +1428,7 @@ test("Custom events #7 - Check for continuous action: 1)restore, 2)flick ", func
 	});
 });
 
-test("Custom events #8 - Check for direction during hold and unhold on flick event", function(assert) {
+test("Check for direction during hold and unhold on flick event", function(assert) {
 	var done1 = assert.async();
 	var done2 = assert.async();
 	var done3 = assert.async();
@@ -1554,6 +1564,8 @@ test("Custom events #8 - Check for direction during hold and unhold on flick eve
 	}, 4500);
 });
 
+
+module("Miscellaneous", hooks);
 test("Workaround for buggy link highlighting on android 2.x", function () {
 	// Given
 	eg.hook.agent = function () {
