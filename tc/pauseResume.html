@@ -1,0 +1,310 @@
+<style>
+	.test {
+		width:100px;
+		height:100px;
+		background-color: red;
+		position: relative;
+	}
+
+	div.demo {
+	border: 1px solid #555;
+	margin: 1em auto;
+	width: 550px;
+}
+
+.testBackground {
+	position:relative;
+	left:0px;
+	top:0px;
+	width:300px;
+	height:300px;
+	background-color:yellow;
+}
+
+#box1 {
+	background: #0C0;
+}
+#box2 {
+	background: #090;
+}
+#box3 {
+	background: #060;
+}
+
+div.notice {
+	border:dotted 1px;
+	padding:10px;
+	background-color:green;
+	color:white;
+	margin: 5px;
+}
+
+#news_slide{
+	height:30px; 
+	overflow:hidden;
+	background-color: yellow;
+}
+.voxNews {
+	padding: 0px;
+	margin: 6px;
+}
+.voxNews li{
+	float:left; 
+	margin-left:5px;
+}
+.voxNews li a{
+	padding:2px 5px;
+	background-color:#F3F3F3;
+	color: #777;
+	text-shadow: 1px 1px 0 white;
+	position: relative;
+	border: 1px solid white;
+	text-decoration:none;
+	color:#2C79B3;
+}
+.voxNews li a:hover{
+	background-color:#FEFEFE;
+	color:#CE0872;
+}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script> -->
+<script src="../bower_components/jquery/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="../src/module.js"></script>
+<script src="../src/eg.js"></script>
+<script src="../src/hook/pauseResume.js"></script>
+
+<body>
+	<div class="notice">Common Notice: <br/>
+		1. When mouse pointer is over the box in the yellow area, this box will be paused. and when mouse pointer is leave the box, this box will be resumed.<br/>
+		2. Before pause/resume, observe the animation first. and check it acts identically after pause/resume 
+	</div>
+	<h1>Marquee</h1>
+	<div class="notice">Test marquee</div>
+	<pre>
+		<code class="js">
+function testMarquee() {
+  $voxNews
+    .animate({'margin-left' : '-' + marqueeWidth + 'px'}, marqueeWidth * 10, 'linear')
+    .animate({'margin-left' : 0}, marqueeWidth * 10, "linear", testMarquee);
+}
+testMarquee();
+		</code>
+	</pre>
+	<div id="news_slide">
+		<ul class="voxNews">
+			<li><a href="#">Penny lane</a></li>
+			<li><a href="#">The best holiday ever !</a></li>
+			<li><a href="#">Hello World</a></li>
+			<li><a href="#">Biography by Micheal Kaine</a></li>
+			<li><a href="#">La vie improbable de Jean Luc Perrat</a></li>
+			<li><a href="#">Goodbye</a></li>
+			<li><a href="#">Around the world in 80 days</a></li>
+		</ul>
+	</div>
+
+	<h1>Individual Element Test</h1>
+	<div class="notice">Test other element is not affected when an specific element is paused.</div>
+	<pre>
+		<code class="js">
+function startIndividualElementTest() {
+  function phase1() {
+    $(this)
+      .animate({"left":200}, 1000, phase2);
+  }
+  function phase2() {
+    $(this)
+      .animate({"left":0}, 1000, phase1);
+  }
+
+  $individualBox.animate({"left":200}, 1000, phase2);
+}
+		</code>
+	</pre>
+	<div class="testBackground">
+		<div id="box1" class="test individual"></div>
+		<div id="box2" class="test individual"></div>
+		<div id="box3" class="test individual"></div>
+	</div>
+	<h1>Chaining Test</h1>
+	<div class="notice">Test the red box is drawing a rectangle clockwise with maintaining the easing status after pause and resume.</div>
+	<pre>
+		<code class="js">
+function drawRectangle() {
+  $rectBox
+    .animate({"opacity": 0.5}, 1000)
+    .animate({"left":"+=200px"}, 1000, "easeOutElastic")//relative value
+    .animate({"top":"200px"}, 1000, "easeOutElastic")//absolute value
+    .animate({"left":"0px"}, 1000, "easeOutElastic")
+    .animate({"top":"-=200px"}, 1000, "easeOutElastic")
+    .animate({"opacity": "+=0.5"}, 1000, drawRectangle)
+}
+
+drawRectangle();
+		</code>
+	</pre>
+	<div class="testBackground">
+		<div id="rectBox" class="test"></div>
+	</div>
+
+	<h1>Easing Test</h1>
+	<div class="notice">Test the easing status is maintaining well after pause and resume.</div>
+	<pre>
+	<code class="js">
+function startEasingTest() {
+  $easingBox
+    .animate({"left": "+=200px"}, 3000, "easeInOutBounce")
+    .animate({"left": 0}, startEasingTest);
+}
+startEasingTest();
+	</code>
+	</pre>
+	<div class="testBackground">
+		<div id="easingBox" class="test"></div>
+	</div>
+
+	<h1>Relative Test</h1>
+	<div class="notice">Test the easing status is maintaining well after pause and resume.</div>
+	<pre>
+	<code class="js">
+function startRelativeTest() {
+  $relativeBox
+    .animate({"left": "+=50", "top": "+=50"})
+    .animate({"left": "+=50", "top": "+=50"})
+    .animate({"left": "+=50", "top": "+=50"})
+    .animate({"left": "-=150", "top": "0"}, startRelativeTest)
+}
+
+startRelativeTest();
+	</code>
+	</pre>
+	<div class="testBackground">
+		<div id="relativeBox" class="test" style="left:0px;top:0px"></div>
+	</div>
+
+	<h1>Non-CSS Property animation by step/complete callback</h1>
+	<div class="notice">Test pause/resume is running ok while counting from 1 to 10.</div>
+	<pre>
+	<code class="js">
+function counter(){
+  var myDiv = $('#counter');
+  myDiv.animate({Counter: 10}, {
+    duration: 2000,
+    easing: 'linear',
+    step: function () {
+      this.Counter && $(this).text(Math.ceil(this.Counter));
+    },
+    complete: function() {
+      this.Counter = 0;
+      $(this).text("0");
+      counter();
+    }
+  });
+};
+counter();
+	</code>
+	</pre>
+	<div id="counter" class="test" style="float:left;background:yellow;color:#000;font-size:32px;padding:30px;display:inline-block;width:40px;height:40px;text-align:center">
+	</div>
+	<script type="text/javascript">
+		hljs.initHighlightingOnLoad();
+
+		var $rectBox = $("#rectBox");
+		var $easingBox = $("#easingBox");
+		var $relativeBox = $("#relativeBox");
+		var $individualBox = $(".individual");
+		var $voxNews;
+
+		$(".test").hover(function() {
+			$(this).pause();
+		}, function() {
+			$(this).resume();
+		});
+
+		var vox_news = 0;
+		var marqueeWidth = 0;
+		$(".voxNews li").each(function(i, el) {
+			var w = $(el).outerWidth(true);
+			marqueeWidth += w;
+		});
+		
+		$voxNews = $(".voxNews");
+		$voxNews.width(marqueeWidth + 1);//+1 for difference in calculating floating point.
+		$voxNews.find("a").hover(function() {
+			$voxNews.pause();
+		}, function() {
+			$voxNews.resume();
+		});
+
+		function testMarquee() {
+			$voxNews
+				.animate({'margin-left' : '-' + marqueeWidth + 'px'}, marqueeWidth * 10, 'linear')
+				.animate({'margin-left' : 0}, marqueeWidth * 10, "linear", testMarquee);
+		}
+		testMarquee();
+
+		function drawRectangle() {
+			$rectBox
+				.animate({"opacity": 0.5}, 1000)
+				.animate({"left":"+=200px"}, 1000, "easeOutElastic")
+				.animate({"top":"200px"}, 1000, "easeOutElastic")
+				.animate({"left":"0px"}, 1000, "easeOutElastic")
+				.animate({"top":"-=200px"}, 1000, "easeOutElastic")
+				.animate({"opacity": "+=0.5"}, 1000, drawRectangle)
+		}
+
+		drawRectangle();
+
+		function startEasingTest() {
+			$easingBox
+				.animate({"left": "+=200px"}, 3000, "easeInOutBounce")
+				.animate({"left": 0}, startEasingTest);
+		}
+
+		startEasingTest();
+
+		function startRelativeTest() {
+			$relativeBox
+				.animate({"left": "+=50", "top": "+=50"})
+				.animate({"left": "+=50", "top": "+=50"})
+				.animate({"left": "+=50", "top": "+=50"})
+				.animate({"left": "-=150", "top": "0"}, startRelativeTest)
+		}
+
+		startRelativeTest();
+
+		function startIndividualElementTest() {
+			function phase1() {
+				$(this)
+					.animate({"left":200}, 1000, phase2);
+			}
+			function phase2() {
+				$(this)
+					.animate({"left":0}, 1000, phase1);
+			}
+
+			$individualBox.animate({"left":200}, 1000, phase2);
+		}
+		startIndividualElementTest();
+
+		function counter(){
+			var myDiv = $('#counter');
+			myDiv.animate({Counter: 10}, {
+				duration: 2000,
+				easing: 'linear',
+				step: function () {
+					this.Counter && $(this).text(Math.ceil(this.Counter));
+				},
+				complete: function() {
+					this.Counter = 0;
+					$(this).text("0");
+					counter();
+				}
+			});
+		};
+		
+		counter();
+	</script>
+</body>
