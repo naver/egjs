@@ -123,15 +123,15 @@ input {
   width : 50px;
 }
 </style>
-<script src="../bower_components/jquery/jquery.js"></script>
-<script src="../bower_components/iscroll/build/iscroll.js"></script>
-<script src="../src/module.js"></script>
-<script src="../src/eg.js"></script>
-<script src="../src/customEvent/scrollEnd.js"></script>
-<script src="../src/hook/css.js"></script>
-<script src="../src/class.js"></script>
-<script src="../src/component.js"></script>
-<script src="../src/visible.js"></script>
+<script src="../../bower_components/jquery/jquery.js"></script>
+<script src="../../bower_components/iscroll/build/iscroll.js"></script>
+<script src="../../src/module.js"></script>
+<script src="../../src/eg.js"></script>
+<script src="../../src/customEvent/scrollEnd.js"></script>
+<script src="../../src/hook/css.js"></script>
+<script src="../../src/class.js"></script>
+<script src="../../src/component.js"></script>
+<script src="../../src/visible.js"></script>
 </head>
 
 <body>
@@ -322,8 +322,8 @@ $(function() {
   $(window).scroll(function() {
     visibleView.check(200);
   });
-  
-  
+
+
   if(window.IScroll) {
 	  var visible = new eg.Visible("#view",{
 	      targetClass : "check_visible",
@@ -331,11 +331,11 @@ $(function() {
 	  }).on("change", function(e) {
 	      // process visible elements
 	      $(e.visible).addClass("visible");
-	
+
 	      // process invisible elements
 	      $(e.invisible).removeClass("visible");
 	  });
-	
+
 	try {
 	  // using iscroll
 	  new IScroll("#view").on("scrollEnd", function(e) {
@@ -344,7 +344,7 @@ $(function() {
 	} catch(e) {
 	  //console.log(e);
 	}
-	
+
 	  // init check
 	  visible.check();
 }
