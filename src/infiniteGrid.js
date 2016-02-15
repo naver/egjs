@@ -583,6 +583,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 				this._fit(true);
 				distance = e.length >= this.core.items.length ?
 					0 : this.core.items[e.length].position.y;
+				distance > 0 && this.$view.scrollTop(this._getScrollTop() + e.distance);
 			}
 			var item;
 			var i = 0;
