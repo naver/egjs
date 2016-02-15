@@ -251,15 +251,32 @@ test("Option: threshold #4 - (vertical) when moved less than threshold pixels", 
 test("Option: defaultIndex", function () {
 	// Given
 	var defaultIndex = 3;
+	var runTest = function() {
+		equal(inst.getIndex(), defaultIndex, "The initial panel number should be "+ defaultIndex);
+		ok(inst.getPrevIndex() === defaultIndex-1, "The previous index should be "+ (defaultIndex-1));
+		ok(inst.getNextIndex() === defaultIndex+1, "The next index should be "+ (defaultIndex+1));
+	};
 
-	this.inst = new eg.Flicking($("#mflick3"), {
-		circular : true,
-		defaultIndex : defaultIndex
+	// When is circular
+	var inst = new eg.Flicking($("#mflick3"), {
+		circular: true,
+		defaultIndex: defaultIndex
 	});
 
-	// When
 	// Then
-	equal(this.inst._conf.panel.no, defaultIndex, "The initial panel number should be "+ defaultIndex);
+	runTest();
+
+	// Given
+	defaultIndex = 1;
+
+	// When isn't circular
+	inst = new eg.Flicking($("#mflick1"), {
+		circular: false,
+		defaultIndex: defaultIndex
+	});
+
+	// Then
+	runTest();
 });
 
 test("Option: hwAccelerable", function () {
