@@ -63,17 +63,21 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 	 *		스크롤시 scroll 이벤트 매번 발생
 	 *		회전시 scroll 이벤트가 발생되어 이를 무시 처리해야 함
 	 */
-
 	function getDeviceType() {
 		var retValue = TIMERBASE;
 		var agent = ns.agent();
 		var osInfo = agent.os;
 		var osVersion = parseInt(osInfo.version, 10);
 		var browserInfo = agent.browser;
-
+		var result = false;
+		
 		// Browsers that trigger scroll event like scrollstop : SCROLLBASE
 		if (osInfo.name === "ios") {
 			if (browserInfo.webview === true || osVersion <= 7) {
+				retValue = SCROLLBASE;
+			}
+		} else if (osInfo.name === "android") {
+			if (browserInfo.name === "default" && osVersion <= 2.3) {
 				retValue = SCROLLBASE;
 			}
 		}
