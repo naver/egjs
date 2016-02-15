@@ -7,16 +7,16 @@ module.exports = function(grunt){
 	// if there is no @support tag in src, use defaultSupport (ex. eg.js)
 	var defaultSupport = {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"};
 
-	// fetch module name list from html files in test directory 
+	// fetch module name list from html files in test directory
 	var moduleList = fs.readdirSync(
-		'test/'
+		'test/unit/'
 	).filter(function(val){
 		return val.split('.').length === 3 && val.split('.')[0] !== "buildMerge";
 	}).map(function(val){
 		return val.split('.')[0];
 	});
 
-	// fetch module src path 	
+	// fetch module src path
 	var srcPathList = walk("src");
 	moduleList = moduleList.map(function(val){
 		for(var i in srcPathList) {
@@ -28,8 +28,8 @@ module.exports = function(grunt){
 			}
 		}
 	});
-	
-	// fetch module support info from jsdoc	
+
+	// fetch module support info from jsdoc
 	moduleList = moduleList.map(function(val){
 		var data = fs.readFileSync(val.path, 'utf8');
 		var supportLine = data.split('\n').filter(function(val){
@@ -43,7 +43,7 @@ module.exports = function(grunt){
 	function walk(dir) {
 	    var results = []
 	    var list = fs.readdirSync(dir);
-	    
+
 	    list.forEach(function(file) {
 	        file = dir + '/' + file
 	        var stat = fs.statSync(file)
@@ -61,7 +61,7 @@ module.exports = function(grunt){
 		}).map(function(val){
 			return val.support;
 		})[0];
-	
+
 		for(var browser in componentSupport) {
 			if(/^(ie|ios|an|ch|ff)$/.test(browser) && componentSupport[browser] !== "latest") {
 				var lowestVersion = parseFloat(componentSupport[browser]);
@@ -77,21 +77,21 @@ module.exports = function(grunt){
 				);
 			}
 		}
-		return {	
+		return {
 			"test_framework": "qunit",
 			"test_path": [
-			"test/"+componentName+".test.html"
+			"test/unit/"+componentName+".test.html"
 			],
 			"browsers": targetBrowsers
 		};
-	}	
-	
+	}
+
 	/*
 	**	grunt browserstack:muduleName
 	**	    run unit tests with browserstack for muduleName
 	**  grunt browserstack
 	**	    run unit tests with browserstack for every module
-	*/	 
+	*/
 	grunt.registerTask('browserstack', isBrowserStack ? function() {
 		var eachfile = Array.prototype.slice.apply(arguments);
 		var taskList;
@@ -101,7 +101,7 @@ module.exports = function(grunt){
 			}, this);
 		} else {
 			// fetch module name list from html files in test directory
-			taskList = fs.readdirSync("test/").filter(function(val) {
+			taskList = fs.readdirSync("test/unit/").filter(function(val) {
 				return val.split(".").length === 3 && val.split(".")[0] !== "buildMerge";
 			}).map(function(val) {
 				return val.split(".")[0];
@@ -126,7 +126,7 @@ module.exports = function(grunt){
 			});
 			subProcess.stdout.on("data", function(_data) {
 				grunt.log.writeln(_data.trim());
-			});		
+			});
 		}
 	} : function() {
 		grunt.log.oklns("no BROWSERSTACK_USERNAME, BROWSERSTACK_KEY env");

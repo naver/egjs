@@ -4,13 +4,19 @@
 <meta charset="utf-8">
 <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi"> -->
 
-<link rel="stylesheet" href="../bower_components/qunit/qunit/qunit.css">
+<link rel="stylesheet" href="../../bower_components/qunit/qunit/qunit.css">
 <!-- user css start -->
 <style>
+.box {
+	width:120px;
+	height:120px;
+	position:absolute;
+	border:solid;
+}
 </style>
 <!-- user css end -->
-<script src="../bower_components/qunit/qunit/qunit.js"></script>
-<script src="../bower_components/jquery/jquery.js"></script>
+<script src="../../bower_components/qunit/qunit/qunit.js"></script>
+<script src="../../bower_components/jquery/jquery.js"></script>
 </head>
 <body>
  <h1 id="qunit-header">Component Test</h1>
@@ -18,20 +24,22 @@
  <div id="qunit-testrunner-toolbar"></div>
  <h2 id="qunit-userAgent"></h2>
  <ol id="qunit-tests"></ol>
- <div id="qunit-fixture">
+ <div id="qunit-fixture1">
 <!-- UI content Start -->
- test markup, will be hidden
+ <div id="box1" class="box" style="color:blue">Dest</div>
+ <div id="box2" class="box" style="color:red"></div>
  <!-- UI content End -->
  </div>
 
 <!-- user script files start -->
 <script src="lib/module.js"></script>
-<script src="../src/eg.js"></script>
-<script src="../src/class.js"></script>
-<script src="../src/component.js"></script>
+<script src="../../src/eg.js"></script>
+<script src="../../src/class.js"></script>
+<script src="../../src/hook/css.js"></script>
+<script src="../../src/hook/animate.js"></script>
 <!-- user script files end -->
 <!-- test script files start -->
-<script src="js/component.test.js"></script>
+<script src="js/animate.test.js"></script>
 <!-- test script files end -->
 </body>
 </html>
