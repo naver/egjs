@@ -229,10 +229,8 @@ test("Already registered name that should be throw Error.",function( assert ){
         });
       });
     },
-    function( err ) {
-      // Then
-      return err.toString() === "Error: The name 'Sample' has already been used and registered as plugin. Try with different one.";
-      }
+    // Then
+    new Error("The name 'Sample' has already been used and registered as plugin. Try with different one.")
   )
 
 });
