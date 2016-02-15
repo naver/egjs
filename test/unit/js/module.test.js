@@ -150,8 +150,10 @@ QUnit.test( "When a parameter is string and not loaded as AMD.", function( asser
 QUnit.test( "Check parameters ordinal numbers.", function( assert ) {
   //Given
   var param = [ 1, 1, 1, 1, 1 ];
-  [ "1st", "2nd", "3rd", "4th", "5th" ].forEach(function(v,i) {
-
+  var counts = [ "1st", "2nd", "3rd", "4th", "5th" ];
+  var v;
+  for(var i in counts) {
+	  v = counts[i];
     //When
     var arr = param.concat();
     arr[i] = window.something;
@@ -164,7 +166,7 @@ QUnit.test( "Check parameters ordinal numbers.", function( assert ) {
       "Ordinal number for "+ i +" is "+ v +"?"
     );
 
-  });
+  }
 });
 
 module("plugin", {
@@ -313,11 +315,15 @@ test("should be set special events",function( assert ){
 
   // When
   // Then
-  ["add", "remove", "trigger"].forEach(function(v,i) {
+  var events = ["add", "remove", "trigger"];
+  var v;
+  for(var i in events) {
+	  v = events[i];
     ok(
       $.event.special["sample:some"][v] && $.event.special["sample:thing"][v],
-      "Special ."+ v +"() hook is defined?");
-    });
+      "Special ."+ v +"() hook is defined?"
+    );
+  }
 });
 
 test("custom event trigger/on",function( assert ){
