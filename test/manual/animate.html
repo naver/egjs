@@ -21,11 +21,11 @@ div.notice {
 
 
 </style>
-<script src="../bower_components/jquery/jquery.js"></script>
-<script src="../src/module.js"></script>
-<script src="../src/eg.js"></script>
-<script src="../src/hook/css.js"></script>
-<script src="../src/hook/animate.js"></script>
+<script src="../../bower_components/jquery/jquery.js"></script>
+<script src="../../src/module.js"></script>
+<script src="../../src/eg.js"></script>
+<script src="../../src/hook/css.js"></script>
+<script src="../../src/hook/animate.js"></script>
 </head>
 <body>
 
@@ -96,7 +96,7 @@ $(function(){
 	 * Absolute Test Case
 	 */
 	addTestCase("Absolute", "#absoluteTestButtons", absoluteTestCases);
-	
+
 	/**
 	 * Relative Test Case
 	 */
@@ -119,12 +119,12 @@ $(function(){
 
 function addTestCase(testName, buttonsAreaSelector, testCases, initPos) {
 	$btnArea = $(buttonsAreaSelector);
-	
+
 	//Create test buttons
 	$.each(testCases, function(key, obj) {
 		$btnArea.append($("<button class=" + testName + " id=" + key + ">" + obj.tc + "</div>"));
 	});
-	
+
 	$("button." + testName).click(function(e){
 		var id = this.id;
 		var $allButtons = $("button");
@@ -135,7 +135,7 @@ function addTestCase(testName, buttonsAreaSelector, testCases, initPos) {
 		// console.log("%o, %s", testCases, id);
 		// console.log(testCases[id].targetId + ": " + testCases[id].tc);
 		initPos && $targetEl.css("transform", "translate(0, 0)");
-		
+
 		$targetEl.animate({
 		    "transform": testCases[id].tc
 		}, function() {

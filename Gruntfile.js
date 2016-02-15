@@ -8,10 +8,10 @@ module.exports = function(grunt) {
 	"use strict";
 	require("time-grunt")(grunt);
 	require("load-grunt-tasks")(grunt);
-	
-	// register browserstack task 
+
+	// register browserstack task
 	require("./config/browserstack.js")(grunt);
-	
+
 	var config = {
 		"pkg": grunt.file.readJSON("package.json"),
 		"clean": getConfig("clean"),
@@ -28,21 +28,21 @@ module.exports = function(grunt) {
 		"watch": getConfig("watch")
 	};
 	grunt.initConfig(config);
-	
+
 	grunt.registerTask("test", function() {
 		var eachfile = Array.prototype.slice.apply(arguments);
 		if (eachfile.length) {
 			eachfile = eachfile.map(function(v) {
-				return "test/" + v + ".test.html";
+				return "test/unit/" + v + ".test.html";
 			}, this);
 		} else {
-			eachfile.push("test/*.test.html");
+			eachfile.push("test/unit/*.test.html");
 		}
 		grunt.config.set("qunit.each", eachfile);
 		grunt.log.oklns(grunt.config.get("qunit.each"));
 		grunt.task.run("qunit:each");
 	});
-	
+
 	grunt.registerTask("validate-commit", function() {
 		var fs = require("fs");
 		if (grunt.file.exists(".git/hooks/commit-msg")) {
@@ -51,7 +51,7 @@ module.exports = function(grunt) {
 		grunt.file.copy("config/validate-commit-msg.js", ".git/hooks/commit-msg", { force: true });
 		fs.chmodSync(".git/hooks/commit-msg", "755");
 	});
-	
+
 	grunt.registerTask("docBuild", ["copy:doc", "clean:doc", "jsdoc"]);
 	grunt.registerTask("build", ["validate-commit", "concat", "uglify", "clean:pkgd", "docBuild"]);
 	grunt.registerTask("default", ["jshint", "jscs", "build", "test"]);
