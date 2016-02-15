@@ -231,7 +231,7 @@ test("check a prepend module", function(assert) {
 	});
 
 	// Then
-	this.inst.append(getContent("append",2000));
+	this.inst.append(getContent("append",200));
 });
 
 
@@ -308,14 +308,14 @@ test("check a count of remove contents", function(assert) {
 		equal(this.isRecycling(), true, "recycle mode");
 		equal(this.core.items.length, 18, "a number of elements are always 18");
 		equal(this.core.$element.children().length, 18, "a number of DOM are always 18");
-		equal(e.croppedCount, 1988, "a number of removed elements are 1988");
+		equal(e.croppedCount, 188, "a number of removed elements are 188");
 
 		// When
 		this.off();
 		this.on("layoutComplete",function(e) {
 			// Then
 			equal(this.isProcessing(), false, "idel in layoutComplete " + e.target.length);
-			equal(e.target.length, 1988, "a number of prepend elements are 1988");
+			equal(e.target.length, 188, "a number of prepend elements are 188");
 			equal(e.isAppend, false, "prepend type");
 			equal(this.isRecycling(), true, "recycle mode");
 			equal(this.core.items.length, 18, "a number of elements are always 18");
@@ -323,9 +323,9 @@ test("check a count of remove contents", function(assert) {
 			equal(e.croppedCount, 0, "a number of removed elements are 0");
 			done();
 		});
-		this.prepend(getContent("prepend", 2000));
+		this.prepend(getContent("prepend", 200));
 	});
-	this.inst.append(getContent("append",2006));
+	this.inst.append(getContent("append",206));
 });
 
 test("check item/element order and check removed parts", function(assert) {
@@ -465,7 +465,7 @@ test("check a clear", function(assert) {
 	// Given
 	var beforeClear = true;
 	this.inst = new eg.InfiniteGrid("#grid", {
-		"isInitLayout" : false,
+		"isInitLayout" : false
 	});
 	this.inst.on("layoutComplete",function(e) {
 		// Then
@@ -543,18 +543,18 @@ test("Check append/prepend methods return", function (assert) {
 		this.off();
 		this.on("layoutComplete",function(e) {
 			// Then
-			equal(prependCount, 1982);
-			equal(e.target.length, 1982);
+			equal(prependCount, 182);
+			equal(e.target.length, 182);
 			done();
 		});
 
 		// When
-		prependCount = self.inst.prepend(getContent("prepend",3000));
+		prependCount = self.inst.prepend(getContent("prepend",300));
 	});
 
 	// Then
-	appendCount = this.inst.append(getContent("append",2000));
-	equal(appendCount, 2000);
+	appendCount = this.inst.append(getContent("append",200));
+	equal(appendCount, 200);
 });
 
 var complicatedHTML = "<div class='item'><div class='thumbnail'><img class='img-rounded' src='#' /><div class='caption'><p><a href='http://www.naver.com'></a></p></div></div></div>";
