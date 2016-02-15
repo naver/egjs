@@ -51,7 +51,7 @@ test("Add event handler by invalid type",function(){
 	function getPropertyCount(obj) {
 		var count = 0;
 		for(var prop in obj) {
-			if(this.hasOwnProperty(prop)) {
+			if(Object.prototype.hasOwnProperty.call(this, prop)) {
 				// remove constructor (es6) in case of phantomjs
 				if(prop !== "constructor") {
 					count = count + 1;
