@@ -63,7 +63,7 @@ var validateMessage = function(message, fullMessage) {
   var subject = match[4];
 
   if (subject.length > MAX_TITLE_LENGTH) {
-    error('PT Title is longer than %d characters !', MAX_TITLE_LENGTH);
+    error('PR Title is longer than %d characters !', MAX_TITLE_LENGTH);
     isValid = false;
   }
 
