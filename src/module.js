@@ -122,7 +122,8 @@
 				continue;
 			}
 
-			if (isNotGlobal && require && !require.specified(di[i])) {
+			if (isNotGlobal && require &&
+				require.specified && !require.specified(di[i])) {
 				messageInfo.url = dependencyInfo.url;
 				message.push(replaceStr(templateMessage[1], messageInfo));
 				continue;
