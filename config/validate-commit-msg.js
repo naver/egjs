@@ -14,7 +14,8 @@ var fs = require('fs');
 var util = require('util');
 
 
-var MAX_LENGTH = 50;
+var MAX_TITLE_LENGTH = 50;
+var MAX_LENGTH = 100;
 var PATTERN = /^(?:fixup!\s*)?(\w*)(\(([\w\$\,\.\*/-]*)\))?\: (.*)$/;
 var IGNORED = /^WIP\:/;
 var TYPES = {
@@ -60,6 +61,11 @@ var validateMessage = function(message, fullMessage) {
   var type = match[1];
   var module = match[3];
   var subject = match[4];
+
+  if (subject.length > MAX_TITLE_LENGTH) {
+    error('PT Title is longer than %d characters !', MAX_TITLE_LENGTH);
+    isValid = false;
+  }
 
   if (!TYPES.hasOwnProperty(type)) {
     error('"%s" is not allowed type !', type);
