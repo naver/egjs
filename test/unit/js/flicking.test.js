@@ -809,12 +809,17 @@ test("Animation #4", function (assert) {
 	});
 
 	var value = (this.inst._getBasePositionIndex() * 100) +"%";
+	var panelToMove = 1;  // index value to move from current
 
-	this.inst.moveTo(2,300);  // move to last
+	this.inst.moveTo(panelToMove,300);
+
+	var indexToMove = this.inst._conf.indexToMove;
 
 	setTimeout($.proxy(function() {
 		// Then
-		assert.equal(this.inst._conf.panel.no, 2, "Panel number indicate second panel number?");
+		assert.equal(panelToMove, indexToMove, "The index value to move From current panel is "+ indexToMove +"?");
+
+		assert.equal(this.inst._conf.panel.no, panelToMove, "Panel number indicate 'panel "+ indexToMove +"'?");
 		assert.deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
 		assert.ok(this.inst.getElement().html().indexOf("Layer 2"), "Moved correctly?");
 
