@@ -1170,8 +1170,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				isPositive = indexToMove > 0;
 
 				// check for real panel count which can be moved on each sides
-				if (Math.abs(indexToMove) > isPositive ?
-						panel.count - (currentIndex + 1) : currentIndex) {
+				if (Math.abs(indexToMove) > (isPositive ?
+						panel.count - (currentIndex + 1) : currentIndex)) {
 					indexToMove = indexToMove + (isPositive ? -1 : 1) * panel.count;
 				}
 
