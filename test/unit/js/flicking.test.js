@@ -735,50 +735,59 @@ test("Check for functionality", function() {
 	runTest(1,value);
 });
 
-test("Animation #1", function(assert) {
+test("Animation #1 - Default duration value", function(assert) {
 	var done = assert.async();
 
 	// Given
-	this.inst = new eg.Flicking($("#mflick1"));
+	this.inst = new eg.Flicking("#mflick1").on({
+		flickEnd: $.proxy(function() {
+			// Then
+			assert.equal($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Moved to last panel?");
+			done();
+		}, this)
+	});
 
 	var count = this.inst._conf.panel.count,
 		value = (count - 1) * 100;
 
 	// When
 	this.inst.moveTo(count - 1);  // move to last
-
-	setTimeout($.proxy(function() {
-		// Then
-		assert.equal($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Moved to last panel?");
-		done();
-	}, this),500);
 });
 
-test("Animation #2", function(assert) {
+test("Animation #2 - 500ms of duration", function(assert) {
 	var done = assert.async();
 
 	// Given
-	this.inst = new eg.Flicking($("#mflick1"));
+	this.inst = new eg.Flicking("#mflick1").on({
+		flickEnd: $.proxy(function () {
+			// Then
+			assert.equal($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Moved to last panel?");
+			done();
+		}, this)
+	});
 
 	var count = this.inst._conf.panel.count,
 		value = (count - 1) * 100;
 
 	// When
 	this.inst.moveTo(count - 1, 500);  // move to last
-
-	setTimeout($.proxy(function () {
-		// Then
-		assert.equal($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Moved to last panel?");
-		done();
-	}, this), 500);
 });
 
-test("Animation #3", function (assert) {
+test("Animation #3 - Moving to last panel", function (assert) {
 	var done = assert.async();
 
 	// Given
-	this.inst = new eg.Flicking($("#mflick3"), {
+	this.inst = new eg.Flicking("#mflick3", {
 		circular : true
+	}).on({
+		flickEnd: $.proxy(function() {
+			// Then
+			assert.equal(count - 1, this.inst._conf.panel.no, "Panel number indicate last panel number?");
+			assert.deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
+			assert.ok(this.inst.getElement().html().indexOf("Layer "+ (count - 1)), "Moved correctly?");
+
+			done();
+		}, this)
 	});
 
 	count = this.inst._conf.panel.count,
@@ -789,23 +798,25 @@ test("Animation #3", function (assert) {
 	value = (this.inst._getBasePositionIndex() * 100) +"%";
 
 	this.inst.moveTo(index,300);  // move to last
-
-	setTimeout($.proxy(function() {
-		// Then
-		assert.equal(count - 1, this.inst._conf.panel.no, "Panel number indicate last panel number?");
-		assert.deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
-		assert.ok(this.inst.getElement().html().indexOf("Layer "+ (count - 1)), "Moved correctly?");
-
-		done();
-	}, this),500);
 });
 
-test("Animation #4", function (assert) {
+test("Animation #4 - moving to next panel", function (assert) {
 	var done = assert.async();
 
 	// Given
-	this.inst = new eg.Flicking($("#mflick3"), {
+	this.inst = new eg.Flicking("#mflick3", {
 		circular : true
+	}).on({
+		flickEnd: $.proxy(function() {
+			// Then
+			assert.equal(panelToMove, indexToMove, "The index value to move From current panel is "+ indexToMove +"?");
+
+			assert.equal(this.inst._conf.panel.no, panelToMove, "Panel number indicate 'panel "+ indexToMove +"'?");
+			assert.deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
+			assert.ok(this.inst.getElement().html().indexOf("Layer 2"), "Moved correctly?");
+
+			done();
+		}, this)
 	});
 
 	var value = (this.inst._getBasePositionIndex() * 100) +"%";
@@ -814,17 +825,6 @@ test("Animation #4", function (assert) {
 	this.inst.moveTo(panelToMove,300);
 
 	var indexToMove = this.inst._conf.indexToMove;
-
-	setTimeout($.proxy(function() {
-		// Then
-		assert.equal(panelToMove, indexToMove, "The index value to move From current panel is "+ indexToMove +"?");
-
-		assert.equal(this.inst._conf.panel.no, panelToMove, "Panel number indicate 'panel "+ indexToMove +"'?");
-		assert.deepEqual($getTransformValue(this.inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
-		assert.ok(this.inst.getElement().html().indexOf("Layer 2"), "Moved correctly?");
-
-		done();
-	}, this),500);
 });
 
 
