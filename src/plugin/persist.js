@@ -78,14 +78,10 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 			stateStr = history.state;
 
 			// "null" is not a valid
-			if (typeof stateStr === "string" && stateStr !== "null") {
-				isValidStateStr = true;
-			}
+			isValidStateStr = typeof stateStr === "string" && stateStr !== "null";
 		} else {
 			stateStr = storage.getItem(location.href + CONST_PERSIST);
-			if (stateStr && stateStr.length > 0) {
-				isValidStateStr = true;
-			}
+			isValidStateStr = stateStr && stateStr.length > 0;
 		}
 
 		if (isValidStateStr) {
