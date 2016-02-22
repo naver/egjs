@@ -151,39 +151,42 @@ test("check added elements", function() {
 	}
 });
 
-
-module("Visible wrapper Test", {
-	setup : function() {
-		$("#view").show();
-		this.inst = new eg.Visible( "#view", {
-			targetClass : "check_visible"
-		});
-		this.scroll = new IScroll("#view");
-	},
-	teardown : function() {
-		$("#view").hide();
-		this.scroll.destroy();
-		this.scroll = null;
-		this.inst.destroy();
-		this.inst = null;
-	}
-});
-
-test("When a iscroll position was changed", function(assert) {
-	var done = assert.async();
-	// Given
-	var self = this.inst;
-	// When
-	this.inst.check(-1);
-	this.inst.on("change", function(e) {
-		// Then
-		equal(e.visible.length, 5, "visible element length (5)");
-		equal(e.invisible.length, 7, "invisible element length (7)");
-		done();
+// Run test only when IScroll works
+if(document.querySelector && window.addEventListener) {
+	module("Visible wrapper Test", {
+		setup : function() {
+			$("#view").show();
+			this.inst = new eg.Visible( "#view", {
+				targetClass : "check_visible"
+			});
+			this.scroll = new IScroll("#view");
+		},
+		teardown : function() {
+			$("#view").hide();
+			this.scroll.destroy();
+			this.scroll = null;
+			this.inst.destroy();
+			this.inst = null;
+		}
 	});
-	this.scroll.scrollTo(0, -400,0);
-	self.check(200);
-});
+	
+	test("When a iscroll position was changed", function(assert) {
+		var done = assert.async();
+		// Given
+		var self = this.inst;
+		// When
+		this.inst.check(-1);
+		this.inst.on("change", function(e) {
+			// Then
+			equal(e.visible.length, 5, "visible element length (5)");
+			equal(e.invisible.length, 7, "invisible element length (7)");
+			done();
+		});
+		this.scroll.scrollTo(0, -400,0);
+		self.check(200);
+	});	
+}
+
 
 module("Visible Test when unsupported getElementsByClassName", {
 	setup : function() {
