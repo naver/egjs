@@ -124,7 +124,7 @@ module.exports = function(grunt){
 
 			return prev.concat(browsers);
 		}, []);
-		
+
 		return {	
 			"test_framework": "qunit",
 			"test_path": [ "test/unit/"+componentName+".test.html" ],
