@@ -13,7 +13,4 @@ install:
   - bower install
 after_success:
   - npm install codeclimate-test-reporter
-  - codeclimate-test-reporter < report/lcov.info
-addons:
-    code_climate:
-        repo_token: cf535674171f2bece5fbdc51d09bafc4f5691ff34a2b03a5e9443e0d0b9477e4
+  - CODECLIMATE_REPO_TOKEN=cf535674171f2bece5fbdc51d09bafc4f5691ff34a2b03a5e9443e0d0b9477e4 codeclimate-test-reporter < report/lcov.info
