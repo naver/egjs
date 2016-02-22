@@ -27,34 +27,36 @@ module.exports = {
 		"os": "Windows",
 		"os_version": "10"
 	}],
-	"ch": [{
+	"ch": [/*
+{
 		"browser": "chrome",
 		"browser_version": "45.0",
 		"os": "OS X",
 		"os_version": "Yosemite"
-	},{
+	}
+,{
 		"browser": "chrome",
 		"browser_version": "46.0",
 		"os": "OS X",
 		"os_version": "Yosemite"
-	},{
+	},*/{
 		"browser": "chrome",
 		"browser_version": "47.0",
 		"os": "OS X",
 		"os_version": "Yosemite"
 	}],
-	"ff": [{
+	"ff": [/*{
 		"browser": "firefox",
 		"browser_version": "41.0",
 		"os": "OS X",
 		"os_version": "Yosemite"
-	},{
+	},*/{
 		"browser": "firefox",
 		"browser_version": "42.0",
 		"os": "OS X",
 		"os_version": "Yosemite"
 	}],
-	"sf": [{
+	"sf": [/*{
 		"browser": "safari",
 		"browser_version": "latest",
 		"os": "OS X",
@@ -77,6 +79,12 @@ module.exports = {
 		"browser_version": "latest",
 		"os": "OS X",
 		"os_version": "Mavericks"
+	},*/
+	{
+		"browser": "safari",
+		"browser_version": "latest",
+		"os": "OS X",
+		"os_version": "Yosemite"
 	}],
 	"ios": [{
 		"os": "ios",
@@ -91,11 +99,11 @@ module.exports = {
 		"os_version": "9.1",
 		"device": "iPhone 6S"
 	}],
-	"an": [{
+	"an": [/*{
 		"os": "android",
 		"os_version": "2.2",
 		"device": "Samsung Galaxy S"
-	},{
+	},*/{
 		"os": "android",
 		"os_version": "2.3",
 		"device": "Samsung Galaxy S2"
@@ -103,15 +111,15 @@ module.exports = {
 		"os": "android",
 		"os_version": "4.0",
 		"device": "Google Nexus"
-	},{
+	},/*{
 		"os": "android",
 		"os_version": "4.0",
 		"device": "Samsung Galaxy Note 10.1"
-	},{			
+	},*/{			
 		"os": "android",
 		"os_version": "4.1",
 		"device": "Samsung Galaxy S3"
-	},{
+	},/*{
 		"os": "android",
 		"os_version": "4.1",
 		"device": "Samsung Galaxy Note 2"
@@ -119,7 +127,7 @@ module.exports = {
 		"os": "android",
 		"os_version": "4.1",
 		"device": "Motorola Razr Maxx HD"
-	},{
+	},*/{
 		"os": "android",
 		"os_version": "4.2",
 		"device": "Google Nexus 4"
@@ -127,15 +135,15 @@ module.exports = {
 		"os": "android",
 		"os_version": "4.3",
 		"device": "Samsung Galaxy S4"
-	},{
+	},/*{
 		"os": "android",
 		"os_version": "4.3",
 		"device": "Samsung Galaxy Note 3"
-	},{
+	},*/{
 		"os": "android",
 		"os_version": "4.4",
 		"device": "Samsung Galaxy S5"
-	},{
+	}/*,{
 		"os": "android",
 		"os_version": "4.4",
 		"device": "Samsung Galaxy Tab 4 10.1"
@@ -143,5 +151,11 @@ module.exports = {
 		"os": "android",
 		"os_version": "4.4",
 		"device": "HTC One M8"
-	}]
+	}*/
+	,{
+		"os": "android",
+		"os_version": "5.0",
+		"device": "Google Nexus 6"
+	}
+]
 };
