@@ -7,6 +7,7 @@ module.exports = {
 			src: ["src/**/*.js"],
 			instrumentedFiles: "temp/",
 			htmlReport: "report",
+			lcovReport: "report",
 			coberturaReport: "report",
 			linesThresholdPct: 0
 		},
