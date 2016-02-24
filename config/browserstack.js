@@ -8,7 +8,6 @@ module.exports = function(grunt){
 	// if there is no @support tag in src, use defaultSupport (ex. eg.js)
 	var DEFAULT_SUPPORT = {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"};
 	var VM_COUNT = 2;
-	var VM_COUNT = 2;
 
 	var moduleList = fetchModuleList();
 	
