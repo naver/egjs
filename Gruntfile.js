@@ -52,7 +52,7 @@ module.exports = function(grunt) {
 		fs.chmodSync(".git/hooks/commit-msg", "755");
 	});
 
-	grunt.registerTask("docBuild", ["copy:doc", "clean:doc", "jsdoc"]);
+	grunt.registerTask("docBuild", ["copy:doc_npm1","copy:doc_npm3", "clean:doc", "jsdoc"]);
 	grunt.registerTask("build", ["validate-commit", "concat", "uglify", "clean:pkgd", "docBuild"]);
 	grunt.registerTask("default", ["jshint", "jscs", "build", "test"]);
 	grunt.registerTask("check", ["jshint", "jscs", "test"]);
