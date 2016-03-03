@@ -45,6 +45,7 @@
   "devDependencies": {
     "iscroll": "~5.1.3",
     "bootflat": "*",
-    "handlebars": "^4.0.5"
+    "handlebars": "^4.0.5",
+    "respond": "^1.4.2"
   }
 }
