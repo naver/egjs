@@ -305,7 +305,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			}
 			var scrollTop = this._getScrollTop();
 			var prevScrollTop = this._prevScrollTop;
-			this._prevScrollTop = scrollTop;
+
 			if (this._isIos && scrollTop === 0 || prevScrollTop === scrollTop) {
 				return;
 			}
@@ -359,6 +359,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 					}
 				}
 			}
+			this._prevScrollTop = scrollTop;
 		},
 		_onResize: function() {
 			if (this.resizeTimeout) {
@@ -578,13 +579,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		_onlayoutComplete: function(e) {
 			var distance = 0;
 			var isAppend = this._isAppendType;
-			if (isAppend === false) {
-				this._isFitted = false;
-				this._fit(true);
-				distance = e.length >= this.core.items.length ?
-					0 : this.core.items[e.length].position.y;
-				distance > 0 && this.$view.scrollTop(this._getScrollTop() + e.distance);
-			}
 			var item;
 			var i = 0;
 			while (item = e[i++]) {
@@ -594,12 +588,22 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 				}
 			}
 
-			// reset flags
-			this._reset(true);
-
 			// refresh element
 			this._topElement = this.getTopElement();
 			this._bottomElement = this.getBottomElement();
+
+			if (isAppend === false) {
+				this._isFitted = false;
+				this._fit(true);
+				distance = e.length >= this.core.items.length ?
+					0 : this.core.items[e.length].position.y;
+				if (distance > 0) {
+					this._prevScrollTop = this._getScrollTop() + distance;
+					this.$view.scrollTop(this._prevScrollTop);
+				}
+			}
+			// reset flags
+			this._reset(true);
 
 			/**
 			 * Occurs when layout is completed (after append / after prepend / after layout)
