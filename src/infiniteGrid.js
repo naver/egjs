@@ -113,7 +113,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			var excess = columnWidth - containerWidth % columnWidth;
 
 			// if overshoot is less than a pixel, round up, otherwise floor it
-			cols = Math.max(Math[ excess && excess < 1 ? "round" : "floor" ](cols), 1);
+			cols = Math.max(Math[ excess && excess <= 1 ? "round" : "floor" ](cols), 1);
 
 			// reset column Y
 			this._appendCols = [];
