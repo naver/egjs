@@ -125,7 +125,9 @@ test("getDeviceType : ios && version 8.x over ", function() {
            "version" : "8.0"
        },
        "browser" : {
-            "name" : ""
+            "name" : "safari",
+            "version" : "8.0",
+            "webview" : false
        }
      }
     };
