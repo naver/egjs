@@ -602,6 +602,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 					this.$view.scrollTop(this._prevScrollTop);
 				}
 			}
+
 			// reset flags
 			this._reset(true);
 
