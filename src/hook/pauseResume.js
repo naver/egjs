@@ -25,6 +25,7 @@ eg.module("pauseResume", ["jQuery"], function($) {
 		for (var propName in prop) {
 			var propValue = prop[propName];
 			var markIndex;
+			var sign;
 
 			//If it has a absoulte value.
 			if (typeof(propValue) !== "string" ||
@@ -33,7 +34,7 @@ eg.module("pauseResume", ["jQuery"], function($) {
 				continue;
 			}
 
-			var sign = propValue.charAt(markIndex) === "-" ? -1 : 1;
+			sign = propValue.charAt(markIndex) === "-" ? -1 : 1;
 
 			//If it has a relative value
 			this.prop[propName] = propValue
@@ -76,6 +77,7 @@ eg.module("pauseResume", ["jQuery"], function($) {
 		var prevProp;
 		var propCount = el.__aniProps ? el.__aniProps.length : 0;
 		var isFirst = false;
+		var newProp;
 
 		if (propCount === 0) {
 			prevProp = el.style;
@@ -84,7 +86,9 @@ eg.module("pauseResume", ["jQuery"], function($) {
 			prevProp = el.__aniProps[propCount - 1].prop;
 		}
 
-		var newProp = new AniProperty(prop, optall, prevProp, isFirst);
+		//prevProp is used for calculating absolute value by accumulating aniProps.
+		//So newProp has absolute value accumlated.
+		newProp = new AniProperty(prop, optall, prevProp, isFirst);
 		el.__aniProps = el.__aniProps || [];
 
 		//Animation is excuted immediately.
