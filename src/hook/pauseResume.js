@@ -140,6 +140,9 @@
 			addAniProperty.call(this, prop, optall);
 			animateFn.call($(this), prop, optall);
 		});
+
+		// TODO: Below code is more reasonable?
+		// return animateFn.call(this, prop, optall); // and declare optall at outside this.each loop.
 	};
 
 	$.fn.pause = function() {
