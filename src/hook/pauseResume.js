@@ -19,29 +19,27 @@
 		this.paused = false;
 		this.uuid = uuid++;
 		this.easingNames = [];
-		this.absoulteProp = isFirst ? {} : $.extend({}, prevProp);
+		this.prop = isFirst ? {} : $.extend({}, prevProp);
 
-		for (var property in prop) {
-			var propValue = prop[property];
+		for (var propName in prop) {
+			var propValue = prop[propName];
 			var markIndex;
 
 			//If it has a absoulte value.
 			if (typeof(propValue) !== "string" ||
 				(markIndex = propValue.search(/[+|-]=/)) < 0) {
-				this.absoulteProp[property] = propValue;
+				this.prop[propName] = propValue;
 				continue;
 			}
 
 			var sign = propValue.charAt(markIndex) === "-" ? -1 : 1;
 
 			//If it has a relative value
-			this.absoulteProp[property] = propValue
+			this.prop[propName] = propValue
 				.replace(/([-|+])*([\d|\.])+/g,
-					generateAbsoluteValMaker(prevProp, property, sign))
+					generateAbsoluteValMaker(prevProp, propName, sign))
 				.replace(/[-|+]+=/g, "");
 		}
-
-		this.prop = this.absoulteProp;
 	}
 
 	/**
