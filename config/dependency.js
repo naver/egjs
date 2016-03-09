@@ -10,6 +10,7 @@ module.exports = {
 		"src/customEvent/scrollEnd.js",
 		"src/hook/animate.js",
 		"src/hook/css.js",
+		"src/hook/pauseResume.js",
 		"src/plugin/apply.js",
 		"src/plugin/persist.js"
 	],
