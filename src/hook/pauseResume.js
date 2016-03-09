@@ -118,31 +118,32 @@
 	}
 
 	$.fn.animate = function(prop, speed, easing, callback) {
-		var optall = getOptAll(speed, easing, callback);
-		var orginalComplete = optall.complete;
+		return this.each(function() {
+			//optall should be made for each elements.
+			var optall = getOptAll(speed, easing, callback);
+			var orginalComplete = optall.complete;
 
-		//Override to check current animation is done.
-		optall.complete = function() {
-			//Dequeue animation property that was ended.
-			var removeProp = this.__aniProps.shift();
-			removeProp.clearEasingFn();
+			//Override to check current animation is done.
+			optall.complete = function() {
+				//Dequeue animation property that was ended.
+				var removeProp = this.__aniProps.shift();
+				removeProp.clearEasingFn();
 
-			// console.log("ani complete, shift prop:", removeProp);
-			this.__aniProps[0] && this.__aniProps[0].init();
-			if (orginalComplete && typeof(orginalComplete) === "function") {
-				orginalComplete.call(this);
-			}
-		};
+				// console.log("ani complete, shift prop:", removeProp);
+				this.__aniProps[0] && this.__aniProps[0].init();
+				if (orginalComplete && typeof(orginalComplete) === "function") {
+					orginalComplete.call(this);
+				}
+			};
 
-		this.each(function() {
 			//Queue animation property to recover the current animation.
 			addAniProperty.call(this, prop, optall);
+			animateFn.call($(this), prop, optall);
 		});
-
-		return animateFn.call(this, prop, optall);
 	};
 
 	$.fn.pause = function() {
+		// console.warn("===========PAUSE==============");
 		return this.each(function() {
 			var p;
 			var type = "fx";
