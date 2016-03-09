@@ -2,8 +2,9 @@
 * Copyright (c) 2015 NAVER Corp.
 * egjs projects are licensed under the MIT license
 */
-(function() {
-	var $ = jQuery;
+eg.module("pauseResume", ["jQuery"], function($) {
+	"use strict";
+
 	var animateFn = $.fn.animate;
 	var stopFn = $.fn.stop;
 	var uuid = 1;
@@ -71,26 +72,26 @@
 		this.easingNames = [];
 	};
 
-	function addAniProperty(prop, optall) {
+	function addAniProperty(el, prop, optall) {
 		var prevProp;
-		var propCount = this.__aniProps ? this.__aniProps.length : 0;
+		var propCount = el.__aniProps ? el.__aniProps.length : 0;
 		var isFirst = false;
 
 		if (propCount === 0) {
-			prevProp = this.style;
+			prevProp = el.style;
 			isFirst = true;
 		} else {
-			prevProp = this.__aniProps[propCount - 1].prop;
+			prevProp = el.__aniProps[propCount - 1].prop;
 		}
 
 		var newProp = new AniProperty(prop, optall, prevProp, isFirst);
-		this.__aniProps = this.__aniProps || [];
+		el.__aniProps = el.__aniProps || [];
 
 		//Animation is excuted immediately.
-		if (this.__aniProps.length === 0) {
+		if (el.__aniProps.length === 0) {
 			newProp.init();
 		}
-		this.__aniProps.push(newProp);
+		el.__aniProps.push(newProp);
 	}
 
 	function getOptAll(speed, easing, fn) {
@@ -135,7 +136,7 @@
 			};
 
 			//Queue animation property to recover the current animation.
-			addAniProperty.call(this, prop, optall);
+			addAniProperty(this, prop, optall);
 			animateFn.call($(this), prop, optall);
 		});
 
@@ -290,4 +291,4 @@
 			return (x - a) / b;
 		};
 	}
-})();
+});
