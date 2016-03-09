@@ -58,18 +58,27 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 				item.getSize();
 			}
 			(item.isAppend == null) && (item.isAppend = true);
-			var y;
+			var outerHeight = parseInt(item.size.outerHeight, 10);
 			var shortColIndex;
 			var isAppend = item.isAppend;
 			var cols = isAppend ? this._appendCols : this._prependCols;
-			y = Math[isAppend ? "min" : "max"].apply(Math, cols);
-			shortColIndex = $.inArray(y, cols);
-			cols[shortColIndex] = y + (isAppend ?
-				item.size.outerHeight : -item.size.outerHeight);
+			var y = Math[isAppend ? "min" : "max"].apply(Math, cols);
+			if (isAppend) {
+				shortColIndex = $.inArray(y, cols);
+			} else {
+				var i = cols.length;
+				while (i-- >= 0) {
+					if (cols[i] === y) {
+						shortColIndex = i;
+						break;
+					}
+				}
+			}
+			cols[shortColIndex] = y + (isAppend ? outerHeight : -outerHeight);
 
 			return {
 				x: this.columnWidth * shortColIndex,
-				y: isAppend ? y : y - item.size.outerHeight
+				y: isAppend ? y : y - outerHeight
 			};
 		},
 		resetLayout: function() {
@@ -274,7 +283,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			this._prefix = _prefix || "";
 			this.core = new InfiniteGridCore(el, this.options)
 				.on(EVENTS.layoutComplete, $.proxy(this._onlayoutComplete, this));
-			this.$global = $(global);
+			this.$view = $(global);
 			this._reset();
 			this.core.$element.children().length > 0 && this.layout();
 			this._onResize = $.proxy(this._onResize, this);
@@ -284,8 +293,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			this._topElement = null;
 			this._bottomElement = null;
 			this._refreshViewport();
-			this.$global.on("resize", this._onResize);
-			this.$global.on("scroll", this._onScroll);
+			this.$view.on("resize", this._onResize);
+			this.$view.on("scroll", this._onScroll);
 		},
 		_getScrollTop: function() {
 			return doc.body.scrollTop || doc.documentElement.scrollTop;
@@ -338,11 +347,14 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 						 *
 						 * @param {Object} param
 						 * @param {Number} param.scrollTop scrollTop scroll-y position of window<ko>윈도우 y 스크롤의 값</ko>
-						 * @param {Number} param.croppedDistance croppedDistance the distance of cropped view for relayout.<ko>재배치를 위해, 잘려진 뷰의 길이</ko>
 						 */
+						var croppedDistance = this.fit();
+						if (croppedDistance > 0) {
+							scrollTop -= croppedDistance;
+							this.$view.scrollTop(scrollTop);
+						}
 						this.trigger(this._prefix + EVENTS.prepend, {
-							scrollTop: scrollTop,
-							croppedDistance: this.fit()
+							scrollTop: scrollTop
 						});
 					}
 				}
@@ -362,7 +374,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			this.resizeTimeout = setTimeout(delayed, 100);
 		},
 		_refreshViewport: function() {
-			this._clientHeight = this.$global.height();
+			this._clientHeight = this.$view.height();
 		},
 		/**
 		 * Get current status
@@ -494,8 +506,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 
 			this._isProcessing = true;
 			this._fit();
-			if ($elements.length - this._removedContent  > 0) {
-				$elements = $elements.slice($elements.length - this._removedContent);
+			if ($elements.length > this._removedContent) {
+				$elements = $elements.slice(0, this._removedContent);
 			}
 			this._insert($elements, groupKey, false);
 			return $elements.length;
@@ -571,6 +583,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 				this._fit(true);
 				distance = e.length >= this.core.items.length ?
 					0 : this.core.items[e.length].position.y;
+				distance > 0 && this.$view.scrollTop(this._getScrollTop() + e.distance);
 			}
 			var item;
 			var i = 0;
@@ -798,8 +811,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 				this.core.destroy();
 				this.core = null;
 			}
-			this.$global.off("resize", this._onResize);
-			this.$global.off("scroll", this._onScroll);
+			this.$view.off("resize", this._onResize)
+				.off("scroll", this._onScroll);
 			this.off();
 		}
 	});

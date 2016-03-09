@@ -35,6 +35,7 @@
     "jQuery"
   ],
   "devDependencies": {
+	"browserstack-runner": "^0.4.1",
     "egjs-jsdoc-template": "*",
     "grunt": "^0.4.5",
     "grunt-contrib-clean": "^0.7.0",
@@ -51,7 +52,6 @@
     "jshint-stylish": "^1.0.1",
     "jsonfile": "^2.2.3",
     "load-grunt-tasks": "^3.1.0",
-    "testee": "^0.2.0",
     "time-grunt": "^1.1.0",
     "xml2js": "^0.4.15"
   }

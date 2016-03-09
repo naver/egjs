@@ -1,0 +1,209 @@
+<html lang="en">
+<head>
+<title>Persist - QA</title>
+<meta http-equiv="x-ua-compatible" content="ie=edge"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
+<style>
+body {
+		font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+html,
+body,
+ul {
+		margin: 0;
+		padding: 0;
+}
+
+li {
+		list-style: none;
+}
+
+a {
+		text-decoration: none;
+		color: inherit;
+}
+
+section {
+		margin: 15px 0;
+}
+
+.row {
+		-webkit-user-select: none;
+		background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAQAAADYv8WvAAAAEElEQVR4AWP4D4QMDGoMagAQkgJLtGgMhgAAAABJRU5ErkJggg==) repeat-x bottom;
+		background-size: 1px 1px;
+		font-size: 13px;
+		margin-top: -1px;
+		position: relative;
+}
+
+.row > h3 {
+		position: absolute;
+		top: 10px;
+		width: 100%;
+		text-align: left;
+		font-size: 13px;
+		padding-left: 23px;
+		box-sizing: border-box;
+		color: #777;
+}
+
+.row > p {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		margin-left: 23px;
+		min-height: 17px;
+		font-size: 13px;
+		color: #777;
+}
+
+button {
+		display: block;
+		width: 100%;
+		height: 40px;
+		margin: 0 auto;
+		background-color: rgba(232, 232, 232, 0.26);
+		border: 1px solid rgba(232, 232, 232, 0.76);
+		color: #777;
+		font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+		font-size: 17px;
+}
+
+button:focus {
+		outline: 0;
+}
+
+.r_more_load {
+		text-align: center;
+}
+/* 이 부분은 로그를 위한 영역입니다. */
+
+#debug {
+		height: 40px;
+		width: 100%;
+		background-color: rgba(255, 255, 255, .6);
+		text-align: center;
+}
+/* 하이라이트 방지를 위한 CSS */
+
+.NO_TAP_HIGHLIGHT {
+		-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.NO_TAP_HIGHLIGHT * {
+		-webkit-tap-highlight-color: rgba(0, 0, 0, .25);
+}
+</style>
+<script src="../../bower_components/jquery/jquery.js"></script>
+<script src="../../src/module.js"></script>
+<script src="../../src/eg.js"></script>
+<script src="../../src/plugin/persist.js"></script>
+<script src="../../src/customEvent/rotate.js"></script>
+<script src="../../src/hook/css.js"></script>
+</head>
+<body>
+		<section id="newsLoader1">
+				<ul id="newsLoader1_listContainer">
+						<li class="row">
+								<p><a href="http://me2.do/FF0C3V8H">'수요' 못 읽은 현대차… 판매량 줄며 매출·영업익 감소(종합)</a></p>
+								<p></p>
+						</li>
+						<li class="row">
+								<p><a href="http://me2.do/FF0C3V8H">中 최대전자상가 가보니 \"갤S6 없어 못판다\"</a></p>
+								<p></p>
+						</li>
+						<li class="row">
+								<p><a href="http://me2.do/FF0C3V8H">단말기 지원금 대신 요금할인 20%, 내일부터 적용</a></p>
+								<p></p>
+						</li>
+				</ul>
+				<button id="newsLoader1_more">더보기1</button>
+		</section>
+		<section id="newsLoader2">
+				<ul id="newsLoader2_listContainer">
+						<li class="row">
+								<p><a href="http://me2.do/FF0C3V8H">중국 車업계 자체 기술로 전기차 개발…'고급·저가'로 승부</a></p>
+								<p></p>
+						</li>
+						<li class="row">
+								<p><a href="http://me2.do/FF0C3V8H">글로벌 \'환율전쟁\' 희생양 된 현대차</a></p>
+								<p></p>
+						</li>
+						<li class="row">
+								<p><a href="http://me2.do/FF0C3V8H">아이폰7에 대하여 알아야 할 10가지</a></p>
+								<p></p>
+						</li>
+				</ul>
+				<button id="newsLoader2_more">더보기2</button>
+		</section>
+<script>
+var newsData = [
+	"김무성 \"文 특검 주장 환영…별도 특검법은 정치적 의도\"",
+	"현대차 1분기 영업이익 1조5천880억…4년여만에 최저치",
+	"軍 혹한기 훈련에 군의관 집단불참···기강 해이 논란",
+	"[뉴스줌인] 구글의 '프로젝트 파이', 왜 MVNO 진출일까?",
+	"중국 車업계 자체 기술로 전기차 개발…'고급·저가'로 승부",
+	"'수요' 못 읽은 현대차… 판매량 줄며 매출·영업익 감소(종합)",
+	"中 최대전자상가 가보니 \"갤S6 없어 못판다\"",
+	"단말기 지원금 대신 요금할인 20%, 내일부터 적용",
+	"글로벌 \'환율전쟁\' 희생양 된 현대차",
+	"아이폰7에 대하여 알아야 할 10가지",
+];
+
+var newsAddUnit = 5;
+
+function NewsLoader(baseElId) {
+	this.baseId = baseElId;
+	this.$baseEl = $("#" + this.baseId);
+	this.$ListContainer = $("#" + this.baseId + "_listContainer");
+	this.$LoadBtn = $("#" + this.baseId + "_more");
+	// 더보기 버튼을 눌러 더 많은 코멘트 보여주기
+	this.$LoadBtn.on("click", $.proxy(this._appendNews,this));
+
+	// delegate 사용시, delegate영역이 클릭시 하이라이트 되는 이슈 대응 코드
+	this.$ListContainer.addClass("NO_TAP_HIGHLIGHT");
+
+	// 페이지 이동이 되는 대상의 부모를 delegate으로 지정
+	this.$ListContainer.on("click", "a", $.proxy(function(e){
+	    /*
+	     * @todo 서비스 개발자 : persist메소드를 통해 화면 복원에 필요한 데이터를 저장한다.
+	     * 복원에 필요한 정보 scroll 위치, javascript 객체, HTML String 등을 저장한다.
+	     */
+	    	// 스크롤 포지션 저장 (글로벌 영역에)
+		$.persist({
+			"scrollPos" : document.body.scrollTop
+		});
+
+	},this));
+
+	var data = $.persist(this.baseId);
+	data && this.$ListContainer.html(data);
+}
+
+NewsLoader.prototype._appendNews = function() {
+	var newsHtml = "";
+	for(var i = 0 ; i < newsAddUnit ; i++){
+		var randomNews = newsData[Math.floor(Math.random()*10)];
+		newsHtml += "<li class='row'><p><a href='http://me2.do/FF0C3V8H'>"+randomNews+"</a><p></li>";
+	}
+	this.$ListContainer.append($(newsHtml));
+
+    /*
+     * @todo 서비스 개발자 : persist메소드를 통해 화면 복원에 필요한 데이터를 저장한다.
+     * 복원에 필요한 정보 scroll 위치, javascript 객체, HTML String 등을 저장한다.
+     */
+    	$.persist(this.baseId, this.$ListContainer.html());
+};
+
+new NewsLoader("newsLoader1");
+new NewsLoader("newsLoader2");
+// 스크롤 포지션 복원
+var data = $.persist();
+data && window.scrollTo(0, data.scrollPos);
+
+
+</script>
+</body>
+</html>

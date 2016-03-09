@@ -22,6 +22,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	var isBackForwardNavigated = (wp && wp.navigation &&
 									(wp.navigation.type === (wp.navigation.TYPE_BACK_FORWARD || 2)));
 	var isSupportState = "replaceState" in history && "state" in history;
+
 	var storage = (function() {
 		if (!isSupportState) {
 			if ("sessionStorage" in global) {
@@ -71,33 +72,38 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	function getState() {
 		var stateStr;
 		var state = {};
+		var isValidStateStr = false;
+
 		if (isSupportState) {
 			stateStr = history.state;
 
-			// "string", "null" is not a valid
-			if (typeof stateStr === "string" && stateStr !== "null") {
-				try {
-					state = JSON.parse(stateStr);
-
-					// like '[ ... ]', '1', '1.234', '"123"' is also not valid
-					if (jQuery.type(state) !== "object" || state instanceof Array) {
-						throw new Error("window.history has no valid format data " +
-							"to be handled in persist.");
-					}
-				} catch (e) {
-					/* jshint ignore:start */
-					console.warn(e.message);
-					/* jshint ignore:end */
-				}
-			}
-			return state;
+			// "null" is not a valid
+			isValidStateStr = typeof stateStr === "string" && stateStr !== "null";
 		} else {
 			stateStr = storage.getItem(location.href + CONST_PERSIST);
-
-			// Note2 (Android 4.3) return value is null
-			return (stateStr && stateStr.length > 0) ? JSON.parse(stateStr) : {};
+			isValidStateStr = stateStr && stateStr.length > 0;
 		}
+
+		if (isValidStateStr) {
+			try {
+				state = JSON.parse(stateStr);
+
+				// like '[ ... ]', '1', '1.234', '"123"' is also not valid
+				if (jQuery.type(state) !== "object" || state instanceof Array) {
+					throw new Error();
+				}
+			} catch (e) {
+				/* jshint ignore:start */
+				console.warn("window.history or session/localStorage has no valid " +
+						"format data to be handled in persist.");
+				/* jshint ignore:end */
+			}
+		}
+
+		// Note2 (Android 4.3) return value is null
+		return state;
 	}
+
 	function getStateByKey(key) {
 		var result = getState()[key];
 
@@ -114,7 +120,11 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	function setState(state) {
 		if (isSupportState) {
 			try {
-				history.replaceState(JSON.stringify(state), doc.title, location.href);
+				history.replaceState(
+					state === null ? null : JSON.stringify(state),
+					doc.title,
+					location.href
+				);
 			} catch (e) {
 				/* jshint ignore:start */
 				console.warn(e.message);

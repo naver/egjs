@@ -7,3 +7,6 @@ before_install:
 install:
   - npm install
   - bower install
+after_success:
+  - npm install codeclimate-test-reporter
+  - codeclimate-test-reporter < report/lcov.info
