@@ -259,16 +259,17 @@ eg.module("pauseResume", ["jQuery"], function($) {
 			var p;
 
 			if (!clearQ) {
-				return;
+				p = this.__aniProps.shift();
+				p && p.clearEasingFn();
+			} else {
+				//If clearQueue is requested,
+				//then all properties must be initialized
+				//for element not to be resumed.
+				while (p = this.__aniProps.shift()) {
+					p.clearEasingFn();
+				}
+				this.__aniProps = [];
 			}
-
-			//If clearQueue is requested,
-			//then all properties must be initialized
-			//for element not to be resumed.
-			while (p = this.__aniProps.shift()) {
-				p.clearEasingFn();
-			}
-			this.__aniProps = [];
 		});
 	};
 
