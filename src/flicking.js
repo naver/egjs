@@ -185,23 +185,10 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var prefix = options.prefix;
 			var horizontal = options.horizontal;
 			var panelCount = panel.count = panel.origCount = $children.length;
-			var sizeValue = [
-				panel.size = this.$wrapper[
-						horizontal ? "width" : "height"
-						]() - (padding[0] + padding[1]), "100%"
-			];
 			var cssValue;
 
-			this.$wrapper.css({
-				padding: (
-					horizontal ?
-					"0 " + padding.reverse().join("px 0 ") :
-						padding.join("px 0 ")
-				) + "px",
-				overflow: "hidden"
-			});
-
-			this._getDataByDirection(sizeValue);
+			this._setPadding(padding, true);
+			var sizeValue = this._getDataByDirection([ panel.size, "100%" ]);
 
 			// panels' css values
 			$children.addClass(prefix + "-panel").css({
@@ -243,6 +230,34 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			});
 
 			this._setDefaultPanel(options.defaultIndex);
+		},
+
+		/**
+		 * Set preview padding value
+		 * @param {Array} padding
+		 * @param {Boolean} build
+		 */
+		_setPadding: function(padding, build) {
+			var horizontal = this.options.horizontal;
+			var panel = this._conf.panel;
+
+			panel.size = this.$wrapper[
+				horizontal ? "outerWidth" : "height"
+			]() - (padding[0] + padding[1]);
+
+			var cssValue = {
+				padding: (horizontal ?
+				"0 " + padding.reverse().join("px 0 ") :
+				padding.join("px 0 ")) + "px"
+			};
+
+			if (build) {
+				cssValue.overflow = "hidden";
+			} else if (!horizontal) {
+				this.$container.css("top", padding[0]);
+			}
+
+			this.$wrapper.css(cssValue);
 		},
 
 		/**
@@ -304,7 +319,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			} else {
 				// if defaultIndex option is given, then move to that index panel
 				if (index > 0 && index <= lastIndex) {
-					panel.index = index;
+					panel.no = panel.index = index;
 					coords = [ -(panel.size * index), 0];
 
 					this._setTranslate(coords);
@@ -499,7 +514,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 
 		/**
 		 * Move nodes
-		 * @param {Boolean} diretion
+		 * @param {Boolean} direction
 		 * @param {Number} indexToMove
 		 */
 		_arrangePanelPosition: function (direction, indexToMove) {
@@ -637,11 +652,14 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				e.stop();
 			}
 
-			e.hammerEvent && (e.duration = this.options.duration);
-			e.destPos[+!this.options.horizontal] =
-				panel.size * (
-					panel.index + conf.indexToMove
-				);
+			if (e.hammerEvent) {
+				e.duration = this.options.duration;
+
+				e.destPos[+!this.options.horizontal] =
+					panel.size * (
+						panel.index + conf.indexToMove
+					);
+			}
 
 			if (this._isMovable()) {
 				!customEvent.restoreCall && (customEvent.restore = false);
@@ -990,7 +1008,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * Get next panel element
 		 * @ko 다음 패널 요소의 레퍼런스를 반환한다.
 		 * @method eg.Flicking#getNextElement
-		 * @return {jQuery} jQuery Next element <ko>다음 패널 요소</ko>
+		 * @return {jQuery|null} Next element or null if no more element exist<ko>다음 패널 요소. 패널이 없는 경우에는 null</ko>
 		 */
 		getNextElement: function () {
 			return this._getElement(this._conf.dirData[0], true);
@@ -1001,7 +1019,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @ko 다음 패널의 인덱스 값을 반환한다.
 		 * @method eg.Flicking#getNextIndex
 		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical) <ko>물리적/논리적 값 인덱스 불리언(true: 물리적, false: 논리적)</ko>
-		 * @return {Number} Number Next element index value <ko>다음 패널 인덱스 번호</ko>
+		 * @return {Number|null} Next element index value or null if no more element exist<ko>다음 패널 인덱스 번호. 패널이 없는 경우에는 null</ko>
 		 */
 		getNextIndex: function (physical) {
 			return this._getElement(this._conf.dirData[0], false, physical);
@@ -1021,7 +1039,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * Get previous panel element
 		 * @ko 이전 패널 요소의 레퍼런스를 반환한다.
 		 * @method ns.Flicking#getPrevElement
-		 * @return {jQuery} jQuery Previous element <ko>이전 패널 요소</ko>
+		 * @return {jQuery|null} Previous element or null if no more element exist <ko>이전 패널 요소. 패널이 없는 경우에는 null</ko>
 		 */
 		getPrevElement: function () {
 			return this._getElement(this._conf.dirData[1], true);
@@ -1032,7 +1050,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @ko 이전 패널의 인덱스 값을 반환한다.
 		 * @method eg.Flicking#getPrevIndex
 		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical) <ko>물리적/논리적 값 인덱스 불리언(true: 물리적, false: 논리적)</ko>
-		 * @return {Number} number Previous element index value <ko>이전 패널 인덱스 번호</ko>
+		 * @return {Number|null} Previous element index value or null if no more element exist<ko>이전 패널 인덱스 번호. 패널이 없는 경우에는 null</ko>
 		 */
 		getPrevIndex: function (physical) {
 			return this._getElement(this._conf.dirData[1], false, physical);
@@ -1087,11 +1105,9 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 
 		/**
 		 * Move panel applying start/end phase value
-		 *
 		 * @param {String} method movableCoord method name
 		 * @param {Object} coords coordinate array value
 		 * @param {Number} duration duration value
-		 * @private
 		 */
 		_movePanelByPhase: function(method, coords, duration) {
 			duration = this._getNumValue(duration, this.options.duration);
@@ -1134,58 +1150,73 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 */
 		moveTo: function (no, duration) {
 			var panel = this._conf.panel;
-			var options = this.options;
+			var circular = this.options.circular;
 			var currentIndex = panel.index;
-			var indexToMove = 0;
-			var movableCount;
-			var movable;
+			var indexToMove;
+			var isPositive;
 
-			no = this._getNumValue(no);
+			no = this._getNumValue(no, -1);
 
-			if (typeof no !== "number" ||
-				no >= panel.origCount ||
-				no === panel.no ||
-				panel.animating
-			) {
+			if (no < 0 || no >= panel.origCount || no === panel.no || panel.animating) {
 				return this;
 			}
 
 			// remember current value in case of restoring
-			panel.prevIndex = panel.index;
+			panel.prevIndex = currentIndex;
 			panel.prevNo = panel.no;
 
-			movable = options.circular || no >= 0 && no < panel.origCount;
+			if (circular) {
+				indexToMove = no - panel.no;
+				isPositive = indexToMove > 0;
 
-			if (options.circular) {
-				// real panel count which can be moved on each(left(up)/right(down)) sides
-				movableCount = [ currentIndex, panel.count - (currentIndex + 1) ];
-
-				if (no > panel.no) {
-					indexToMove = no - panel.no;
-
-					if (indexToMove > movableCount[1]) {
-						indexToMove = -(movableCount[0] + 1 - (indexToMove - movableCount[1]));
-					}
-				} else {
-					indexToMove = -(panel.no - no);
-
-					if (Math.abs(indexToMove) > movableCount[0]) {
-						indexToMove = movableCount[1] + 1 -
-							(Math.abs(indexToMove) - movableCount[0]);
-					}
+				// check for real panel count which can be moved on each sides
+				if (Math.abs(indexToMove) > (isPositive ?
+						panel.count - (currentIndex + 1) : currentIndex)) {
+					indexToMove = indexToMove + (isPositive ? -1 : 1) * panel.count;
 				}
 
 				panel.no = no;
-				this._conf.indexToMove = indexToMove;
-				this._setValueToMove(indexToMove > 0);
-				this._movePanelByPhase("setBy", [ panel.size * indexToMove, 0 ], duration);
-
-			} else if (movable) {
+			} else {
+				indexToMove = no - currentIndex;
 				panel.no = panel.index = no;
-				this._movePanelByPhase("setTo", [ panel.size * no, 0 ], duration);
 			}
 
+			this._conf.indexToMove = indexToMove;
+			this._setValueToMove(isPositive);
+
+			this._movePanelByPhase(
+				circular ? "setBy" : "setTo",
+				[ panel.size * (circular ? indexToMove : no), 0 ],
+				duration
+			);
+
 			return this;
+		},
+
+		/**
+		 * Update panel's previewPadding size according options.previewPadding
+		 */
+		_checkPadding: function () {
+			var options = this.options;
+			var previewPadding = options.previewPadding.concat();
+			var padding = this.$wrapper.css("padding").split(" ");
+
+			options.horizontal && padding.reverse();
+
+			// get current padding value
+			padding = padding.length === 2 ?
+				[ padding[0], padding[0] ] : [ padding[0], padding[2] ];
+
+			padding = $.map(padding, function(num) {
+				return parseInt(num, 10);
+			});
+
+			// update padding when current and given are different
+			if (previewPadding.length === 2 &&
+				previewPadding[0] !== padding[0] || previewPadding[1] !== padding[1]) {
+
+				this._setPadding(previewPadding);
+			}
 		},
 
 		/**
@@ -1193,20 +1224,41 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @ko 패널 사이즈 정보를 갱신한다.
 		 * @method eg.Flicking#resize
 		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
+		 * @example
+			var some = new eg.Flicking("#mflick", {
+				previewPadding: [10,10]
+			});
+
+			// when device orientaion changes
+			some.resize();
+
+			// or when changes previewPadding option from its original value
+			some.options.previewPadding = [20, 30];
+			some.resize();
 		 */
 		resize: function () {
 			var conf = this._conf;
+			var options = this.options;
 			var panel = conf.panel;
-			var width = panel.size = this.$wrapper.width();
-			var maxCoords = [width * (panel.count - 1), 0];
+			var horizontal = options.horizontal;
+			var panelSize;
+			var maxCoords;
 
-			// resize panel and parent elements
-			this.$container.width(maxCoords[0] + width);
-			panel.$list.css("width", width);
+			if (~~options.previewPadding.join("")) {
+				this._checkPadding();
+				panelSize = panel.size;
+			} else if (horizontal) {
+				panelSize = panel.size = this.$wrapper.width();
+			}
 
-			// adjust the position of current panel
+			maxCoords = this._getDataByDirection([panelSize * (panel.count - 1), 0]);
+
+			// resize elements
+			horizontal && this.$container.width(maxCoords[0] + panelSize);
+			panel.$list.css(horizontal ? "width" : "height", panelSize);
+
 			this._mcInst.options.max = maxCoords;
-			this._setMovableCoord("setTo", [width * panel.index, 0], true, 0);
+			this._setMovableCoord("setTo", [panelSize * panel.index, 0], true, 0);
 
 			if (IS_ANDROID2) {
 				this._applyPanelsPos();
@@ -1223,7 +1275,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
 		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
 		 * @example
-		 var some = new eg.Flicking("#mflick").on({
+			var some = new eg.Flicking("#mflick").on({
 				beforeFlickStart : function(e) {
 					if(e.no === 2) {
 						e.stop();  // stop flicking

@@ -78,7 +78,8 @@
 			isUndefined = di[i] === undefined;
 			registedDependency = isString && (dependencyInfo = dependency[di[i]]);
 			isNotGlobal = isString && dependencyInfo && !global[di[i]];
-			specifiedAMD = isNotGlobal && require && require.specified(di[i]);
+			specifiedAMD = isNotGlobal &&
+				require && require.specified && require.specified(di[i]);
 
 			// Message decision flow
 			//             argument
@@ -121,7 +122,8 @@
 				continue;
 			}
 
-			if (isNotGlobal && require && !require.specified(di[i])) {
+			if (isNotGlobal && require &&
+				require.specified && !require.specified(di[i])) {
 				messageInfo.url = dependencyInfo.url;
 				message.push(replaceStr(templateMessage[1], messageInfo));
 				continue;

@@ -40,9 +40,11 @@
     "jquery": "~1.7.0",
     "qunit": "~1.17.1",
     "hammer.js": "~2.0.4",
-    "outlayer": "~1.4.1"
+    "outlayer": "1.4.2"
   },
   "devDependencies": {
-    "iscroll": "~5.1.3"
+    "iscroll": "~5.1.3",
+    "bootflat": "*",
+    "handlebars": "^4.0.5"
   }
 }
