@@ -24,32 +24,47 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	var isSupportState = "replaceState" in history && "state" in history;
 
 	var storage = (function() {
-		if (!isSupportState) {
-			if ("sessionStorage" in global) {
-				var tmpKey = "__tmp__" + CONST_PERSIST;
-				sessionStorage.setItem(tmpKey, CONST_PERSIST);
-				return sessionStorage.getItem(tmpKey) === CONST_PERSIST ?
-						sessionStorage :
-						localStorage;
-			} else {
-				return global.localStorage;
-			}
+		if (isStorageAvailable(global.sessionStorage)) {
+			return global.sessionStorage;
+		} else if (isStorageAvailable(global.localStorage)) {
+			return global.localStorage;
 		}
 	})();
 
+	function isStorageAvailable(storage) {
+		if (!storage) {
+			return;
+		}
+		var TMP_KEY = "__tmp__" + CONST_PERSIST;
+
+		// In case of iOS safari private mode, calling setItem on storage throws error
+		try {
+			storage.setItem(TMP_KEY, CONST_PERSIST);
+		} catch (e) {
+			return false;
+		}
+
+		// In Chrome incognito mode, can not get saved value
+		return storage.getItem(TMP_KEY) === CONST_PERSIST ? true : false;
+	}
+
+	if (!isSupportState && !storage) {
+		return;
+	}
+
 	// jscs:disable maximumLineLength
 	/* jshint ignore:start */
-	if (!isSupportState && !storage ||
-		(!JSON && !console.warn(
-			"The JSON object is not supported in your browser.\r\n" +
-			"For work around use polyfill which can be found at:\r\n" +
-			"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON#Polyfill")
-		)) {
+	if (!JSON) {
+		console.warn(
+		"The JSON object is not supported in your browser.\r\n" +
+		"For work around use polyfill which can be found at:\r\n" +
+		"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON#Polyfill");
 		return;
 	}
 	/* jshint ignore:end */
 
 	// jscs:enable maximumLineLength
+
 	function onPageshow(e) {
 		isPersisted = isPersisted || (e.originalEvent && e.originalEvent.persisted);
 		if (!isPersisted && isBackForwardNavigated) {
@@ -70,38 +85,38 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	 * Get state value
 	 */
 	function getState() {
-		var stateStr;
-		var state = {};
-		var isValidStateStr = false;
+		var state;
+		var stateStr = storage ?
+			storage.getItem(location.href + CONST_PERSIST) : history.state;
 
-		if (isSupportState) {
-			stateStr = history.state;
+		// "null" is not a valid
+		var isValidStateStr = typeof stateStr === "string" &&
+									stateStr.length > 0 && stateStr !== "null";
+		var isValidType;
 
-			// "null" is not a valid
-			isValidStateStr = typeof stateStr === "string" && stateStr !== "null";
-		} else {
-			stateStr = storage.getItem(location.href + CONST_PERSIST);
-			isValidStateStr = stateStr && stateStr.length > 0;
-		}
+		try {
+			state = JSON.parse(stateStr);
 
-		if (isValidStateStr) {
-			try {
-				state = JSON.parse(stateStr);
+			// like '[ ... ]', '1', '1.234', '"123"' is also not valid
+			isValidType = !(jQuery.type(state) !== "object" || state instanceof Array);
 
-				// like '[ ... ]', '1', '1.234', '"123"' is also not valid
-				if (jQuery.type(state) !== "object" || state instanceof Array) {
-					throw new Error();
-				}
-			} catch (e) {
-				/* jshint ignore:start */
-				console.warn("window.history or session/localStorage has no valid " +
-						"format data to be handled in persist.");
-				/* jshint ignore:end */
+			if (!isValidStateStr || !isValidType) {
+				throw new Error();
 			}
+		} catch (e) {
+			warnInvalidStorageValue();
+			state = {};
 		}
 
 		// Note2 (Android 4.3) return value is null
 		return state;
+	}
+
+	function warnInvalidStorageValue() {
+		/* jshint ignore:start */
+		console.warn("window.history or session/localStorage has no valid " +
+				"format data to be handled in persist.");
+		/* jshint ignore:end */
 	}
 
 	function getStateByKey(key) {
@@ -118,7 +133,13 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	 * Set state value
 	 */
 	function setState(state) {
-		if (isSupportState) {
+		if (storage) {
+			if (state) {
+				storage.setItem(location.href + CONST_PERSIST, JSON.stringify(state));
+			} else {
+				storage.removeItem(location.href  + CONST_PERSIST);
+			}
+		} else {
 			try {
 				history.replaceState(
 					state === null ? null : JSON.stringify(state),
@@ -130,13 +151,8 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 				console.warn(e.message);
 				/* jshint ignore:end */
 			}
-		} else {
-			if (state) {
-				storage.setItem(location.href + CONST_PERSIST, JSON.stringify(state));
-			} else {
-				storage.removeItem(location.href  + CONST_PERSIST);
-			}
 		}
+
 		state ? $global.attr(CONST_PERSIST, true) : $global.attr(CONST_PERSIST, null);
 	}
 
