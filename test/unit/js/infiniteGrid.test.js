@@ -775,3 +775,6 @@ test("Test prepend event", function(assert) {
 	this.inst._prevScrollTop = this.fakeDoc.body.scrollTop = 300;
 	this.inst.append(getContent("append",200));
 });
+
+//@todo add column count test when outlayer.js dropped.
+//outlayer couldn't invoke window properties
