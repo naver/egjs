@@ -160,7 +160,12 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 
 						// css properties were removed due to usablility issue
 						// http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html
-						cssProps: {},
+						cssProps: {
+							userSelect: "none",
+							touchSelect: "none",
+							touchCallout: "none",
+							userDrag: "none"
+						},
 						inputClass: inputClass
 					});
 				return hammer.on("hammer.input", $.proxy(function(e) {
