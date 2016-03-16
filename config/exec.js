@@ -1,23 +1,24 @@
 module.exports = {
 	// create changelog
 	changelog: {
-		after: "2015-09-25",  // start date
-		before: "",  // end date ('today' when no value has given)
-		issueURL: {
-			enterprise: "https://oss.navercorp.com/egjs/egjs/issues",
-			github: "https://oss.navercorp.com/egjs/egjs/issues"  // http://github.com/naver/egjs/issues
-		},
-		cmd: function() {
-			var before = this.config("exec.changelog.before") || this.template.today("yyyy-mm-dd");
+		issueURL: "https://github.com/naver/egjs/issues",
+		cmd: function(after, before) {
+			var date = new Date();
+
+			after = after || this.template.date(date.setMonth(date.getMonth() - 1), 'yyyy-mm-dd');  // default: a month ago
+			before = before || this.template.today("yyyy-mm-dd");  // default: today
+
+			console.log("Creating CHANGELOG.md of period:", after, "~", before);
 
 			return [
                 "git log",
                 "--grep=feat",
                 "--grep=fix",
+				"--grep=test",
                 "-i",
-                "--after={" + this.config("exec.changelog.after") + "}",
+                "--after={" + after + "}",
                 "--before={" + before + "}",
-                "--pretty=\"<item><hash>%h</hash><subject>%s</subject><body><![CDATA[%b]]></body></item>\"",
+                "--pretty=\"<item><hash>%h</hash><subject><![CDATA[%s]]></subject><body><![CDATA[%b]]></body></item>\"",
                 "--no-merges"
 			].join(" ");
 		},
@@ -25,15 +26,20 @@ module.exports = {
 			var grunt = require("grunt");
 			var xml2js = require("xml2js");
 			var parser = new xml2js.Parser();
+
+			// define log data structure
 			var logdata = {
 					feat: {},
-					fix: {}
+					fix: {},
+					test: {}
 				};
 
 			// check for duplication
 			var isDuplicated = function(data, val) {
+				val = val.toLowerCase();
+
 				for (var i = 0, el; el = data[i]; i++) {
-					if (el.subject === val ) {
+					if (el.subject.toLowerCase() === val) {
 						return true;
 					}
 				}
@@ -59,20 +65,14 @@ module.exports = {
 				return val.sort().join(", ");
 			};
 
-			// get issue url according type
-			var getIssueURL = function(type) {
-				var issueURL = grunt.config("exec.changelog.issueURL");
-				return type === "e" || type !== "g" ? issueURL.enterprise : issueURL.github;
-			};
-
 			parser.parseString("<logs>" + stdout + "</logs>", function(err, result) {
 				if (!result || !result.logs) {
 					return;
 				}
 
 				var rxNewline = /\r?\n/g;
-				var rxBody = /ref\s([egy#])-?([0-9]+)$/i;
-				var rxSubject = /^(fix|feat)\s?\((\w+)\)\s*:\s*(.*)/i;
+				var rxBody = /(?:ref|fix)\s([egy#]|gh)-?([0-9]+)/i;
+				var rxSubject = /^(fix|feat|test)\s?\((\w+)\)\s*:\s*(.*)/i;
 				var issue, subject, category, module;
 
 				for (var i = 0, el; el = result.logs.item[i]; i++) {
@@ -121,7 +121,7 @@ module.exports = {
 
 			for (var x in logdata) {
 				markdown += grunt.template.process(template.category, { data: {
-					category: x === "feat" && "Features" || x === "fix" && "Bug Fixes" || ""
+					category: x === "feat" && "Features" || x === "fix" && "Bug Fixes" || x === "test" && "Test Codes" || ""
 				}});
 
 				for (var z in logdata[x]) {
@@ -133,7 +133,7 @@ module.exports = {
 						markdown += grunt.template.process(template.item, { data: {
 							subject: el.subject,
 							issueNo: el.issueNo,
-							url: getIssueURL(el.issueType),
+							url: grunt.config("exec.changelog.issueURL"),
 							hash: el.hash
 						}});
 					}
