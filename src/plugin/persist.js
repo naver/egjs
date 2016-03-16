@@ -22,18 +22,18 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	var isBackForwardNavigated = (wp && wp.navigation &&
 									(wp.navigation.type === (wp.navigation.TYPE_BACK_FORWARD || 2)));
 	var isSupportState = "replaceState" in history && "state" in history;
+	var isSupportSessionStorage = "sessionStorage" in global;
+	var isSupportLocalStorage = "localStorage" in global;
 
 	var storage = (function() {
-		if (!isSupportState) {
-			if ("sessionStorage" in global) {
-				var tmpKey = "__tmp__" + CONST_PERSIST;
-				sessionStorage.setItem(tmpKey, CONST_PERSIST);
-				return sessionStorage.getItem(tmpKey) === CONST_PERSIST ?
-						sessionStorage :
-						localStorage;
-			} else {
-				return global.localStorage;
-			}
+		if ("sessionStorage" in global) {
+			var tmpKey = "__tmp__" + CONST_PERSIST;
+			sessionStorage.setItem(tmpKey, CONST_PERSIST);
+			return sessionStorage.getItem(tmpKey) === CONST_PERSIST ?
+					sessionStorage :
+					localStorage;
+		} else if ("localStorage" in global){
+			return global.localStorage;
 		}
 	})();
 
@@ -74,15 +74,16 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 		var state = {};
 		var isValidStateStr = false;
 
-		if (isSupportState) {
+
+		if (storage) {
+			stateStr = storage.getItem(location.href + CONST_PERSIST);
+			isValidStateStr = stateStr && stateStr.length > 0;			
+		} else if (isSupportState) {
 			stateStr = history.state;
 
 			// "null" is not a valid
-			isValidStateStr = typeof stateStr === "string" && stateStr !== "null";
-		} else {
-			stateStr = storage.getItem(location.href + CONST_PERSIST);
-			isValidStateStr = stateStr && stateStr.length > 0;
-		}
+			isValidStateStr = typeof stateStr === "string" && stateStr !== "null";			
+		} 
 
 		if (isValidStateStr) {
 			try {
@@ -118,7 +119,13 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	 * Set state value
 	 */
 	function setState(state) {
-		if (isSupportState) {
+		if (storage) {
+			if (state) {
+				storage.setItem(location.href + CONST_PERSIST, JSON.stringify(state));
+			} else {
+				storage.removeItem(location.href  + CONST_PERSIST);
+			}
+		} else if (isSupportState) {
 			try {
 				history.replaceState(
 					state === null ? null : JSON.stringify(state),
@@ -130,13 +137,8 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 				console.warn(e.message);
 				/* jshint ignore:end */
 			}
-		} else {
-			if (state) {
-				storage.setItem(location.href + CONST_PERSIST, JSON.stringify(state));
-			} else {
-				storage.removeItem(location.href  + CONST_PERSIST);
-			}
 		}
+		
 		state ? $global.attr(CONST_PERSIST, true) : $global.attr(CONST_PERSIST, null);
 	}
 
