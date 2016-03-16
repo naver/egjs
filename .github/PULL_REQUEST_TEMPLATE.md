@@ -6,4 +6,4 @@
 
 ## Preferred reviewers
 <!-- Mention user/group to be reviewed by:
-      anyone from maintainers(@egjs-dev) or specific user (@USER1, @USER2) -->
+      anyone from maintainers(@naver/egjs-dev) or specific user (@USER1, @USER2) -->
