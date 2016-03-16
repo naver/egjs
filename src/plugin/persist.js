@@ -30,26 +30,27 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 			var tmpKey = "__tmp__" + CONST_PERSIST;
 			sessionStorage.setItem(tmpKey, CONST_PERSIST);
 			return sessionStorage.getItem(tmpKey) === CONST_PERSIST ?
-					sessionStorage :
-					localStorage;
-		} else if ("localStorage" in global){
+					sessionStorage : localStorage;
+		} else if ("localStorage" in global) {
 			return global.localStorage;
 		}
 	})();
 
-	// jscs:disable maximumLineLength
-	/* jshint ignore:start */
-	if (!isSupportState && !storage ||
-		(!JSON && !console.warn(
+	if (!isSupportState && !storage) {
+		// jscs:disable maximumLineLength
+		/* jshint ignore:start */
+		if (!JSON) {
+			console.warn(
 			"The JSON object is not supported in your browser.\r\n" +
 			"For work around use polyfill which can be found at:\r\n" +
-			"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON#Polyfill")
-		)) {
+			"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON#Polyfill");
+		}
+		/* jshint ignore:end */
+
+		// jscs:enable maximumLineLength
 		return;
 	}
-	/* jshint ignore:end */
 
-	// jscs:enable maximumLineLength
 	function onPageshow(e) {
 		isPersisted = isPersisted || (e.originalEvent && e.originalEvent.persisted);
 		if (!isPersisted && isBackForwardNavigated) {
@@ -70,39 +71,38 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	 * Get state value
 	 */
 	function getState() {
-		var stateStr;
-		var state = {};
-		var isValidStateStr = false;
+		var state;
+		var stateStr = storage ?
+			storage.getItem(location.href + CONST_PERSIST) : history.state;
 
+		// "null" is not a valid
+		var isValidStateStr = typeof stateStr === "string" &&
+									stateStr.length > 0 && stateStr !== "null";
+		var isValidType;
 
-		if (storage) {
-			stateStr = storage.getItem(location.href + CONST_PERSIST);
-			isValidStateStr = stateStr && stateStr.length > 0;			
-		} else if (isSupportState) {
-			stateStr = history.state;
+		try {
+			state = JSON.parse(stateStr);
 
-			// "null" is not a valid
-			isValidStateStr = typeof stateStr === "string" && stateStr !== "null";			
-		} 
+			// like '[ ... ]', '1', '1.234', '"123"' is also not valid
+			isValidType = !(jQuery.type(state) !== "object" || state instanceof Array);
 
-		if (isValidStateStr) {
-			try {
-				state = JSON.parse(stateStr);
-
-				// like '[ ... ]', '1', '1.234', '"123"' is also not valid
-				if (jQuery.type(state) !== "object" || state instanceof Array) {
-					throw new Error();
-				}
-			} catch (e) {
-				/* jshint ignore:start */
-				console.warn("window.history or session/localStorage has no valid " +
-						"format data to be handled in persist.");
-				/* jshint ignore:end */
+			if (!isValidStateStr || !isValidType) {
+				throw new Error();
 			}
+		} catch (e) {
+			warnInvalidStorageValue();
+			state = {};
 		}
 
 		// Note2 (Android 4.3) return value is null
 		return state;
+	}
+
+	function warnInvalidStorageValue() {
+		/* jshint ignore:start */
+		console.warn("window.history or session/localStorage has no valid " +
+				"format data to be handled in persist.");
+		/* jshint ignore:end */
 	}
 
 	function getStateByKey(key) {
@@ -125,7 +125,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 			} else {
 				storage.removeItem(location.href  + CONST_PERSIST);
 			}
-		} else if (isSupportState) {
+		} else {
 			try {
 				history.replaceState(
 					state === null ? null : JSON.stringify(state),
