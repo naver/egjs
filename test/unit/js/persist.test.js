@@ -292,13 +292,16 @@ $.each(['{', '[ 1,2,3 ]', '1', '1.234', '"123"'], function(i, v) {
 			callCount++;
 		};
 		var clonedState = this.method.persist(this.data);
+		
 		var isSupportState = "replaceState" in history && "state" in history;	
+		var isSupportStorage = "sessionStorage" in window || "localStorage" in window;	
+
 		var isNoExceptionThrown = true;
-		if(isSupportState) {
-			history.replaceState(v, document.title, location.href);
-		} else {
-			sessionStorage.setItem(location.href + "___persist___", v);
-			localStorage.setItem(location.href + "___persist___", v);		
+		if(isSupportStorage) {
+			sessionStorage.setItem("KEY___persist___", v);
+			localStorage.setItem("KEY___persist___", v);
+		} else if(isSupportState) {
+			history.replaceState(v, document.title, location.href);	
 		}
 	
 		// When	
@@ -309,7 +312,7 @@ $.each(['{', '[ 1,2,3 ]', '1', '1.234', '"123"'], function(i, v) {
 		}
 	
 		// Then	
-		equal(callCount, 1);
+		equal(callCount, (isSupportStorage || isSupportState) ? 1 : 0);
 		ok(isNoExceptionThrown)
 	
 		console.warn = console.oldWarn;
