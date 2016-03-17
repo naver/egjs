@@ -448,7 +448,7 @@ return defaultVal;
 		var agent = ns.agent();
 		var browser = agent.browser.name;
 
-		if (/chrome|firefox/.test(browser)) {
+		if (/chrome|firefox|sbrowser/.test(browser)) {
 			result = true;
 		} else {
 			switch (agent.os.name) {
@@ -462,7 +462,7 @@ return defaultVal;
 								parseInt(agent.browser.nativeVersion, 10) >= 10);
 					break;
 				default :
-					result = /chrome|firefox|safari/.test(browser);
+					result = /safari/.test(browser);
 					break;
 			}
 		}

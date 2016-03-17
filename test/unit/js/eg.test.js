@@ -485,7 +485,7 @@ var ua = [
 			"version" : "18.0.1025.308"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false,
+		"isTransitional" : true,
 		"_hasClickBug" : false
 	},
 	{
@@ -517,7 +517,7 @@ var ua = [
 			"version" : "28.0.1500.94"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false,
+		"isTransitional" : true,
 		"_hasClickBug" : false
 	},
 	{
@@ -600,7 +600,7 @@ var ua = [
 			"version" : "38.0.2125.102"
 		},
 		"isHWAccelerable" : true,
-		"isTransitional" : false,
+		"isTransitional" : true,
 		"_hasClickBug" : false
 	},
 	{
@@ -670,6 +670,55 @@ var ua = [
         "isTransitional" : true,
         "_hasClickBug" : false
     },
+	{
+		// GalaxyS7 Edge 6.0.1
+		"device" : "GalaxyS7Edge:6.0.1",
+		"ua" : "Mozilla/5.0 (Linux; Android 6.0.1; SAMSUNG SM-G935L Build/MMB29K) AppleWebkit/537.36 (KHTML, like Gecko) SamsungBrowser/4.0 Chrome/44.0.2403.133 Mobile Safari/537.36",
+		"os" : {
+			"name" : "android",
+			"version" : "6.0.1"
+		},
+		"browser" : {
+			"name" : "sbrowser",
+			"version" : "44.0.2403.133"
+		},
+		"isHWAccelerable" : true,
+		"isTransitional" : true,
+		"_hasClickBug" : false
+	},
+	{
+		// GalaxyS7 Edge 6.0.1:chrome
+		"device" : "GalaxyS7Edge:chrome",
+		"ua" : "Mozilla/5.0 (Linux; Android 6.0.1; SM-G935L Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.91 Mobile Safari/537.36",
+		"os" : {
+			"name" : "android",
+			"version" : "6.0.1"
+		},
+		"browser" : {
+			"name" : "chrome",
+			"version" : "49.0.2623.91"
+		},
+		"isHWAccelerable" : true,
+		"isTransitional" : true,
+		"_hasClickBug" : false
+	}, 
+	{
+		// GalaxyS7 Edge 6.0.1 - webview (Naver app)
+		"device" : "GalaxyS7Edge - webview (Naver app)",
+		"ua" : "Mozilla/5.0 (Linux; Android 6.0.1; SM-G935L Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/48.0.2564.10 Mobile Safari/537.36 NAVER(inapp; search; 430; 6.9.1)",
+		"os" : {
+			"name" : "android",
+			"version" : "6.0.1"
+		},
+		"browser" : {
+			"name" : "chrome",
+			"version" : "48.0.2564.10",
+            "webview" : true
+		},
+		"isHWAccelerable" : true,
+		"isTransitional" : true,
+		"_hasClickBug" : false
+	},
 	{
 		// GalaxyNexus:4.2.2
 		"device" : "GalaxyNexus:4.2.2",
