@@ -448,7 +448,7 @@ return defaultVal;
 		var agent = ns.agent();
 		var browser = agent.browser.name;
 
-		if (/chrome|firefox/.test(browser)) {
+		if (/chrome|firefox|sbrowser/.test(browser)) {
 			result = true;
 		} else {
 			switch (agent.os.name) {
@@ -457,12 +457,12 @@ return defaultVal;
 							parseInt(agent.os.version, 10) < 6;
 					break;
 				case "window" :
-					result = browser.indexOf("safari") !== -1 ||
-							(browser.indexOf("ie") !== -1 &&
+					result = /safari/.test(browser) ||
+							(/ie/.test(browser) &&
 								parseInt(agent.browser.nativeVersion, 10) >= 10);
 					break;
 				default :
-					result = /chrome|firefox|safari/.test(browser);
+					result = /safari/.test(browser);
 					break;
 			}
 		}
