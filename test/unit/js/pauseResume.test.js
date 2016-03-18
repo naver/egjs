@@ -103,7 +103,7 @@ test("relative values", function(assert) {
 	var done = assert.async();
 
 	// Given
-	var destLeft = ["+=200", "+=200", "+=200"];
+	var destLeft = ["+=100", "+=100", "+=100"];
 	var duration = 300;
 	var totalDuration = duration * 3;
 	var pauseAfter = 100;
@@ -117,16 +117,48 @@ test("relative values", function(assert) {
 	// When
 	setTimeout($.proxy(function() {
 		this.$el.pause();
+		setTimeout($.proxy(function() {
+			this.$el.resume();
+		}, this), pauseDuration);
 	}, this), pauseAfter);
-
-	setTimeout($.proxy(function() {
-		this.$el.resume();
-	}, this), pauseDuration);
 
 	//Then
 	setTimeout($.proxy(function() {
-		equal(parseFloat(this.$el.css("left")), 600, "The box is moved to destination after resumed.");
+		equal(parseFloat(this.$el.css("left")), 300, "The box is moved to destination after resumed.");
 		done();
-	}, this), totalDuration + pauseDuration);
+	}, this), totalDuration + pauseAfter + pauseDuration);
 });
 
+test("external css style and relative value test", function(assert) {
+	var done = assert.async();
+	var pauseAfter = 100;
+	var pauseDuration = 10;
+
+	// Given
+	// Check if 'before value' is obtained well when applied relative value.
+	this.$el
+		.removeAttr("style")
+		.removeClass("box")
+		.addClass("otherStyleBox")
+		.animate({"left": "+=100px"}) //'.otherStyleBox' style defines initial value of 'left' as 50px, so this animate must make 150px left.
+		.animate({"width": "+=100px", "height": "+=50px"}) // width and height is first 
+
+	// When
+	setTimeout($.proxy(function() {
+		this.$el.pause();
+
+		setTimeout($.proxy(function() {
+			this.$el.resume();
+		}, this), pauseDuration);
+	}, this), pauseAfter);
+
+	//Then
+	setTimeout($.proxy(function() {
+		equal(parseInt(this.$el.css("left")), 150, "Relative movements on CSS styled element is resumed correctly.");
+		equal(parseInt(this.$el.css("width")), 100, "Relative sizing width on CSS styled element is resumed correctly.");
+		equal(parseInt(this.$el.css("height")), 100, "Relative sizing height on CSS styled element is resumed correctly.")
+		
+		this.$el.removeClass("otherStyleBox").addClass("box");
+		done();
+	}, this), 1000);
+});
