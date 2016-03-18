@@ -8,19 +8,37 @@ eg.module("pauseResume", ["jQuery"], function($) {
 	var animateFn = $.fn.animate;
 	var stopFn = $.fn.stop;
 	var uuid = 1;
+	var getStyles;
+
+	if (window.getComputedStyle) {
+		getStyles = function(elem) {
+			var view = elem.ownerDocument.defaultView;
+
+			if (!view || !view.opener) {
+				view = window;
+			}
+
+			return view.getComputedStyle(elem);
+		};
+	} else if (document.documentElement.currentStyle) {
+		getStyles = function(elem) {
+			return elem.currentStyle;
+		};
+	}
 
 	function now() {
 		return new Date().getTime();
 	}
 
-	function AniProperty(prop, optall, prevProp, isFirst) {
+	function AniProperty(el, prop, optall, prevProp) {
 		this.opt = optall;
 		this.start = -1;
 		this.elapsed = 0;
 		this.paused = false;
 		this.uuid = uuid++;
 		this.easingNames = [];
-		this.prop = isFirst ? {} : $.extend({}, prevProp);
+		this.prop = $.extend({}, prevProp);
+		var computed;//It's only used when relative value is applied.
 
 		for (var propName in prop) {
 			var propValue = prop[propName];
@@ -28,15 +46,21 @@ eg.module("pauseResume", ["jQuery"], function($) {
 			var sign;
 
 			//If it has a absoulte value.
-			if (typeof(propValue) !== "string" ||
+			if (typeof propValue !== "string" ||
 				(markIndex = propValue.search(/[+|-]=/)) < 0) {
 				this.prop[propName] = propValue;
 				continue;
 			}
 
+			//If it has a relative value
 			sign = propValue.charAt(markIndex) === "-" ? -1 : 1;
 
-			//If it has a relative value
+			if (!prevProp[propName]) {
+				// If this makes performance issues, then change the way of calucating relative value.
+				computed = computed || getStyles(el);
+				prevProp[propName] = computed[propName];
+			}
+
 			this.prop[propName] = propValue
 				.replace(/([-|+])*([\d|\.])+/g,
 					generateAbsoluteValMaker(prevProp, propName, sign))
@@ -51,8 +75,18 @@ eg.module("pauseResume", ["jQuery"], function($) {
 	 */
 	function generateAbsoluteValMaker(prevProp, propName, sign) {
 		return function absoluteValMaker(match) {
-			var currValue = prevProp[propName] ? parseFloat(prevProp[propName]) : 0;
-			return currValue + Number(match) * sign;
+			var prevValue = prevProp[propName];
+
+			if (!prevValue || prevValue === "auto") {
+				// Empty strings, null, undefined and "auto" are converted to 0.
+				// This solution is somewhat extracted from jQuery Tween.propHooks._default.get
+				// TODO: Should we consider adopting a Tween.propHooks?
+				prevValue = 0;
+			} else {
+				prevValue = parseFloat(prevValue);
+			}
+
+			return prevValue + (match * sign);
 		};
 	}
 
@@ -76,19 +110,13 @@ eg.module("pauseResume", ["jQuery"], function($) {
 	function addAniProperty(el, prop, optall) {
 		var prevProp;
 		var propCount = el.__aniProps ? el.__aniProps.length : 0;
-		var isFirst = false;
 		var newProp;
 
-		if (propCount === 0) {
-			prevProp = el.style;
-			isFirst = true;
-		} else {
-			prevProp = el.__aniProps[propCount - 1].prop;
-		}
+		prevProp = propCount === 0 ? {} : el.__aniProps[propCount - 1].prop;
 
 		//prevProp is used for calculating absolute value by accumulating aniProps.
 		//So newProp has absolute value accumlated.
-		newProp = new AniProperty(prop, optall, prevProp, isFirst);
+		newProp = new AniProperty(el, prop, optall, prevProp);
 		el.__aniProps = el.__aniProps || [];
 
 		//Animation is excuted immediately.
@@ -132,9 +160,8 @@ eg.module("pauseResume", ["jQuery"], function($) {
 				var removeProp = this.__aniProps.shift();
 				removeProp.clearEasingFn();
 
-				// console.log("ani complete, shift prop:", removeProp);
 				this.__aniProps[0] && this.__aniProps[0].init();
-				if (orginalComplete && typeof(orginalComplete) === "function") {
+				if (orginalComplete && typeof orginalComplete === "function") {
 					orginalComplete.call(this);
 				}
 			};
@@ -148,18 +175,32 @@ eg.module("pauseResume", ["jQuery"], function($) {
 		// return animateFn.call(this, prop, optall); // and declare optall at outside this.each loop.
 	};
 
+	// Check if this element can be paused/resume.
+	function getStatus(el) {
+		if (!el.__aniProps || el.__aniProps.length === 0) {
+			// Current element doesn't have animation information.
+			// Check 'animate' is applied to this element.
+			return "empty";
+		}
+
+		return el.__aniProps[0].paused ? "paused" : "inprogress";
+	}
+
+	/**
+	 * Pause animation
+	 * @ko 에니메이션을 일시 정지한다
+	 *
+	 * @name jQuery#pause
+	 * @method
+	 * @example
+	 * $("#box").pause(); //paused the current animation
+	 */
 	$.fn.pause = function() {
-		// console.warn("===========PAUSE==============");
 		return this.each(function() {
 			var p;
 			var type = "fx";
 
-			if (!this.__aniProps) {
-				// console.warn("Current element doesn't have animation information. Check 'animate' is applied to this element.");
-				return;
-			}
-
-			if (this.__aniProps.length === 0 || this.__aniProps[0].paused) {
+			if (getStatus(this) !== "inprogress") {
 				return;
 			}
 
@@ -176,23 +217,33 @@ eg.module("pauseResume", ["jQuery"], function($) {
 		});
 	};
 
+	/**
+	 * Dummy function for preventing a queue from being empty.
+	 * because this does not dequeue next one.
+	 *
+	 * It makes promise object not to be expired.
+	 */
 	function dummy() {
-		//console.log("It is called immediately after pause() is called!");
+		//It is called immediately after pause() is called!
 	}
 
+	/**
+	 * Resume animation
+	 * @ko 애니메이션을 재개한다
+	 *
+	 * @name jQuery#resume
+	 * @method
+	 *
+	 * @example
+	 * $("#box").resume(); //resume the paused animation
+	 */
 	$.fn.resume = function() {
-		// console.warn("===========RESUME==============");
 		return this.each(function() {
 			var type = "fx";
 			var p;
 			var i;
 
-			if (!this.__aniProps) {
-				// console.warn("Current element doesn't have animation information. Check 'animate' is applied to this element.");
-				return;
-			}
-
-			if (this.__aniProps.length === 0 || !this.__aniProps[0].paused) {
+			if (getStatus(this) !== "paused") {
 				return;
 			}
 
