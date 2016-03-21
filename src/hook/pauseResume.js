@@ -122,33 +122,11 @@ eg.module("pauseResume", ["jQuery"], function($) {
 		el.__aniProps.push(newProp);
 	}
 
-	function getOptAll(speed, easing, fn) {
-		var opt = speed && typeof speed === "object" ?
-		jQuery.extend({}, speed) : {
-			complete: fn || !fn && easing ||
-				jQuery.isFunction(speed) && speed,
-			duration: speed,
-			easing: fn && easing ||
-					easing && !jQuery.isFunction(easing) && easing
-		};
-
-		opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ?
-			opt.duration : opt.duration in jQuery.fx.speeds ?
-				jQuery.fx.speeds[opt.duration] : jQuery.fx.speeds._default;
-
-		// normalize opt.queue - true/undefined/null -> "fx"
-		if (opt.queue == null || opt.queue === true) {
-			opt.queue = "fx";
-		}
-
-		return opt;
-	}
-
 	$.fn.animate = function(prop, speed, easing, callback) {
 		return this.each(function() {
 			//optall should be made for each elements.
-			var optall = getOptAll(speed, easing, callback);
-			var orginalComplete = optall.complete;
+			var optall = $.speed(speed, easing, callback);
+			var userCallback = optall.old;//hook a user callback.
 
 			//Override to check current animation is done.
 			optall.complete = function() {
@@ -157,8 +135,8 @@ eg.module("pauseResume", ["jQuery"], function($) {
 				removeProp.clearEasingFn();
 
 				this.__aniProps[0] && this.__aniProps[0].init();
-				if (orginalComplete && typeof orginalComplete === "function") {
-					orginalComplete.call(this);
+				if (userCallback && typeof userCallback === "function") {
+					userCallback.call(this);
 				}
 			};
 
