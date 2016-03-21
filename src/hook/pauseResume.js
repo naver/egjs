@@ -26,10 +26,6 @@ eg.module("pauseResume", ["jQuery"], function($) {
 		};
 	}
 
-	function now() {
-		return new Date().getTime();
-	}
-
 	function AniProperty(el, prop, optall, prevProp) {
 		this.opt = optall;
 		this.start = -1;
@@ -91,7 +87,7 @@ eg.module("pauseResume", ["jQuery"], function($) {
 	}
 
 	AniProperty.prototype.init = function() {
-		this.start = now();
+		this.start = $.now();
 		this.elapsed = 0;
 	};
 
@@ -206,26 +202,16 @@ eg.module("pauseResume", ["jQuery"], function($) {
 
 			//Clear fx-queue except 1 dummy function
 			//for promise not to be expired when calling stop()
-			$.queue(this, type || "fx", [dummy]);
+			$.queue(this, type || "fx", [$.noop]);
 			stopFn.call($(this));
 
 			//Remember current animation property
 			if (p = this.__aniProps[0]) {
-				p.elapsed += now() - p.start;
+				p.elapsed += $.now() - p.start;
 				p.paused = true;
 			}
 		});
 	};
-
-	/**
-	 * Dummy function for preventing a queue from being empty.
-	 * because this does not dequeue next one.
-	 *
-	 * It makes promise object not to be expired.
-	 */
-	function dummy() {
-		//It is called immediately after pause() is called!
-	}
 
 	/**
 	 * Resume animation
@@ -322,6 +308,10 @@ eg.module("pauseResume", ["jQuery"], function($) {
 				this.__aniProps = [];
 			}
 		});
+	};
+
+	jQuery.expr.filters.paused = function(elem) {
+		return getStatus(elem) === "paused" ? true : false;
 	};
 
 	//Adopt linear scale from d3
