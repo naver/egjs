@@ -243,7 +243,7 @@ counter();
 				.animate({'margin-left' : '-' + marqueeWidth + 'px'}, marqueeWidth * 10, 'linear')
 				.animate({'margin-left' : 0}, marqueeWidth * 10, "linear", testMarquee);
 		}
-		testMarquee();
+		// testMarquee();
 
 		function drawRectangle() {
 			$rectBox
@@ -255,7 +255,7 @@ counter();
 				.animate({"opacity": "+=0.5"}, 1000, drawRectangle)
 		}
 
-		drawRectangle();
+		// drawRectangle();
 
 		function startEasingTest() {
 			$easingBox
@@ -263,7 +263,7 @@ counter();
 				.animate({"left": 0}, startEasingTest);
 		}
 
-		startEasingTest();
+		// startEasingTest();
 
 		function startRelativeTest() {
 			$relativeBox
@@ -273,7 +273,7 @@ counter();
 				.animate({"left": "-=150", "top": "0"}, startRelativeTest)
 		}
 
-		startRelativeTest();
+		// startRelativeTest();
 
 		function startIndividualElementTest() {
 			function phase1() {
@@ -287,7 +287,7 @@ counter();
 
 			$individualBox.animate({"left":200}, 1000, phase2);
 		}
-		startIndividualElementTest();
+		// startIndividualElementTest();
 
 		function counter(){
 			var myDiv = $('#counter');
@@ -305,6 +305,14 @@ counter();
 			});
 		};
 		
-		counter();
+		// counter();
+		$.each([testMarquee,
+				drawRectangle,
+				startEasingTest,
+				startRelativeTest,
+				startIndividualElementTest,
+				counter], function(i, func) {
+			func();
+		});
 	</script>
 </body>

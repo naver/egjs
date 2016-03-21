@@ -162,3 +162,38 @@ test("external css style and relative value test", function(assert) {
 		done();
 	}, this), 1000);
 });
+
+test("paused filter test", function(assert) {
+	var done = assert.async();
+	var duration = 1000;
+	var pauseAfter = duration / 2;
+	var pauseDuration = 10;
+	var margin = 100;
+	var pauseCount1 = 0;
+	var pauseCount2 = 0;
+
+	// Given
+	this.$el
+		.animate({"left": "100px"}, duration)
+
+	// When
+	setTimeout($.proxy(function() {
+		this.$el.pause();
+
+		pauseCount1 = $("#box1:paused").length;
+
+		setTimeout($.proxy(function() {
+			this.$el.resume();
+
+			pauseCount2 = $("#box1:paused").length;
+		}, this), pauseDuration);
+	}, this), pauseAfter);
+
+	//Then
+	setTimeout($.proxy(function() {
+		equal(pauseCount1, 1, "Getting paused element by paused filter. Must be 1");
+		equal(pauseCount2, 0, "Getting resumed element by paused filter. Must be none");
+
+		done();
+	}, this), duration + pauseDuration + margin);
+});
