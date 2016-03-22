@@ -289,7 +289,7 @@ eg.module("pauseResume", ["jQuery"], function($) {
 	};
 
 	jQuery.expr.filters.paused = function(elem) {
-		return getStatus(elem) === "paused" ? true : false;
+		return getStatus(elem) === "paused";
 	};
 
 	//Adopt linear scale from d3
