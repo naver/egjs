@@ -34,19 +34,21 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	})();
 
 	if (!isSupportState && !storage) {
-		// jscs:disable maximumLineLength
-		/* jshint ignore:start */
-		if (!JSON) {
-			console.warn(
-			"The JSON object is not supported in your browser.\r\n" +
-			"For work around use polyfill which can be found at:\r\n" +
-			"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON#Polyfill");
-		}
-		/* jshint ignore:end */
-
-		// jscs:enable maximumLineLength
 		return;
 	}
+
+	// jscs:disable maximumLineLength
+	/* jshint ignore:start */
+	if (!JSON) {
+		console.warn(
+		"The JSON object is not supported in your browser.\r\n" +
+		"For work around use polyfill which can be found at:\r\n" +
+		"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON#Polyfill");
+		return;
+	}
+	/* jshint ignore:end */
+
+	// jscs:enable maximumLineLength
 
 	function onPageshow(e) {
 		isPersisted = isPersisted || (e.originalEvent && e.originalEvent.persisted);
@@ -135,7 +137,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 				/* jshint ignore:end */
 			}
 		}
-		
+
 		state ? $global.attr(CONST_PERSIST, true) : $global.attr(CONST_PERSIST, null);
 	}
 
