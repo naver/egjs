@@ -22,9 +22,6 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	var isBackForwardNavigated = (wp && wp.navigation &&
 									(wp.navigation.type === (wp.navigation.TYPE_BACK_FORWARD || 2)));
 	var isSupportState = "replaceState" in history && "state" in history;
-	var isSupportSessionStorage = "sessionStorage" in global;
-	var isSupportLocalStorage = "localStorage" in global;
-
 	var storage = (function() {
 		if ("sessionStorage" in global) {
 			var tmpKey = "__tmp__" + CONST_PERSIST;
