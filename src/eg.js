@@ -457,8 +457,8 @@ return defaultVal;
 							parseInt(agent.os.version, 10) < 6;
 					break;
 				case "window" :
-					result = browser.indexOf("safari") !== -1 ||
-							(browser.indexOf("ie") !== -1 &&
+					result = /safari/.test(browser) ||
+							(/ie/.test(browser) &&
 								parseInt(agent.browser.nativeVersion, 10) >= 10);
 					break;
 				default :
