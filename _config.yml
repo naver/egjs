@@ -1,9 +1,13 @@
 # Site settings
 title: egjs
 latestVersion: 1.1.0
+baseurl: "/"
+
 # Build settings
 safe: true
-markdown: kramdown
+markdown: redcarpet
+redcarpet:
+  extensions: ["tables", "autolink", "strikethrough", "space_after_headers", "with_toc_data", "fenced_code_blocks"]
 exclude:
   - .gitignore
   - .grunt

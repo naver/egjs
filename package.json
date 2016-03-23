@@ -6,14 +6,14 @@
     "type": "git",
     "url": "https://oss.navercorp.com/egjs/naver.github.io-egjs"
   },
-  "egjs": {
-    "latest": "1.0.0"
+  "scripts": {
+    "jekyll:serve": "jekyll serve"
   },
   "author": "NAVER corp.",
   "license": "MIT",
   "devDependencies": {
     "grunt": "^0.4.5",
-    "grunt-contrib-copy": "^0.8.2",
-    "grunt-jekyll": "^0.4.3"
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-copy": "^0.8.2"
   }
 }

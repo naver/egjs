@@ -1,29 +1,28 @@
 module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON("package.json"),
+		jekyll: grunt.file.readYAML("_config.yml"),
+		clean: {
+			latest: {
+				options: { force: true },
+				src: ["latest"]
+			}
+		},
 		copy: {
 			latest: {
 				files: [
 					{
 						expand: true,
-						cwd: "<%=pkg.egjs.latest%>/",
+						cwd: "<%=jekyll.latestVersion%>",
 						src: ["**"],
-						dest: "latest/"
+						dest: "latest"
 					}
 				]
-			}
-		},
-		jekyll: {
-			serve: {
-				options: {
-					serve: true
-				}
 			}
 		}
 	});
 
 	grunt.loadNpmTasks("grunt-contrib-copy");
-	grunt.loadNpmTasks("grunt-jekyll");
-
-	grunt.registerTask("build", ["copy:latest", "jekyll:serve"]);
+	grunt.loadNpmTasks("grunt-contrib-clean");
+	grunt.registerTask("build:latest", ["clean:latest", "copy:latest"]);
 };

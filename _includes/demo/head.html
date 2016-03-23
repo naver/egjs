@@ -1,0 +1,22 @@
+<head>
+    <title>
+    {% if page.title == "Home" %}
+      {{ site.title }} &middot; {{ site.tagline }}
+    {% else %}
+      {{ page.title }} &middot; {{ site.title }}
+    {% endif %}
+    </title>
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{{ site.baseurl }}assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ site.baseurl }}assets/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="{{ site.baseurl }}assets/css/prism.css">
+    <link id="theme-style" rel="stylesheet" href="{{ site.baseurl }}assets/css/demo.css">
+</head>
