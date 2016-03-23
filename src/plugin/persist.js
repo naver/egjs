@@ -22,16 +22,31 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	var isBackForwardNavigated = (wp && wp.navigation &&
 									(wp.navigation.type === (wp.navigation.TYPE_BACK_FORWARD || 2)));
 	var isSupportState = "replaceState" in history && "state" in history;
+
 	var storage = (function() {
-		if ("sessionStorage" in global) {
-			var tmpKey = "__tmp__" + CONST_PERSIST;
-			sessionStorage.setItem(tmpKey, CONST_PERSIST);
-			return sessionStorage.getItem(tmpKey) === CONST_PERSIST ?
-					sessionStorage : localStorage;
-		} else if ("localStorage" in global) {
+		if (isStorageAvailable(global.sessionStorage)) {
+			return global.sessionStorage;
+		} else if (isStorageAvailable(global.localStorage)) {
 			return global.localStorage;
 		}
 	})();
+
+	function isStorageAvailable(storage) {
+		if (!storage) {
+			return;
+		}
+		var TMP_KEY = "__tmp__" + CONST_PERSIST;
+
+		// In case of iOS safari private mode, calling setItem on storage throws error
+		try {
+			storage.setItem(TMP_KEY, CONST_PERSIST);
+		} catch (e) {
+			return false;
+		}
+
+		// In Chrome incognito mode, can not get saved value
+		return storage.getItem(TMP_KEY) === CONST_PERSIST ? true : false;
+	}
 
 	if (!isSupportState && !storage) {
 		return;
