@@ -8,60 +8,16 @@ eg.module("pauseResume", ["jQuery"], function($) {
 	var animateFn = $.fn.animate;
 	var stopFn = $.fn.stop;
 	var uuid = 1;
-	var getStyles;
 
-	if (window.getComputedStyle) {
-		getStyles = function(elem) {
-			var view = elem.ownerDocument.defaultView;
-
-			if (!view || !view.opener) {
-				view = window;
-			}
-
-			return view.getComputedStyle(elem);
-		};
-	} else if (document.documentElement.currentStyle) {
-		getStyles = function(elem) {
-			return elem.currentStyle;
-		};
-	}
-
-	function AniProperty(el, prop, optall, prevProp) {
+	function AniProperty(el, prop, optall) {
+		this.el = el;
 		this.opt = optall;
 		this.start = -1;
 		this.elapsed = 0;
 		this.paused = false;
 		this.uuid = uuid++;
 		this.easingNames = [];
-		this.prop = $.extend({}, prevProp);
-		var computed;//It's only used when relative value is applied.
-
-		for (var propName in prop) {
-			var propValue = prop[propName];
-			var markIndex;
-			var sign;
-
-			//If it has a absoulte value.
-			if (typeof propValue !== "string" ||
-				(markIndex = propValue.search(/[+|-]=/)) < 0) {
-				this.prop[propName] = propValue;
-				continue;
-			}
-
-			//If it has a relative value
-			sign = propValue.charAt(markIndex) === "-" ? -1 : 1;
-
-			if (!prevProp[propName]) {
-				// If this makes performance issues, then change the way of calucating relative value.
-				computed = computed || getStyles(el);
-				prevProp[propName] = computed[propName];
-			}
-
-			this.prop[propName] = propValue
-				.replace(/([-|+])*([\d|\.])+/g,
-					generateAbsoluteValMaker(prevProp, propName, sign))
-				.replace(/[-|+]+=/g, "");
-		}
+		this.prop = prop;
 	}
 
 	/**
@@ -69,10 +25,8 @@ eg.module("pauseResume", ["jQuery"], function($) {
 	 *
 	 * function to avoid JS Hint error "Don't make functions within a loop"
 	 */
-	function generateAbsoluteValMaker(prevProp, propName, sign) {
+	function generateAbsoluteValMaker(prevValue, propName, sign) {
 		return function absoluteValMaker(match) {
-			var prevValue = prevProp[propName];
-
 			if (!prevValue || prevValue === "auto") {
 				// Empty strings, null, undefined and "auto" are converted to 0.
 				// This solution is somewhat extracted from jQuery Tween.propHooks._default.get
@@ -81,14 +35,39 @@ eg.module("pauseResume", ["jQuery"], function($) {
 			} else {
 				prevValue = parseFloat(prevValue);
 			}
-
 			return prevValue + (match * sign);
 		};
 	}
 
 	AniProperty.prototype.init = function() {
+		var currValue;
 		this.start = $.now();
 		this.elapsed = 0;
+
+		for (var propName in this.prop) {
+			var propValue = this.prop[propName];
+			var markIndex;
+			var sign;
+
+			//If it has a absoulte value.
+			if (typeof propValue !== "string" ||
+				(markIndex = propValue.search(/[+|-]=/)) < 0) {
+				// this.prop[propName] = propValue;
+				continue;
+			}
+
+			//If it has a relative value
+			sign = propValue.charAt(markIndex) === "-" ? -1 : 1;
+
+			// Current value
+			currValue = $.css(this.el, propName);
+
+			// CurrValue + (relativeValue)
+			this.prop[propName] = propValue
+				.replace(/([-|+])*([\d|\.])+/g,
+					generateAbsoluteValMaker(currValue, propName, sign))
+				.replace(/[-|+]+=/g, "");
+		}
 	};
 
 	AniProperty.prototype.addEasingFn = function(easingName) {
@@ -104,15 +83,9 @@ eg.module("pauseResume", ["jQuery"], function($) {
 	};
 
 	function addAniProperty(el, prop, optall) {
-		var prevProp;
-		var propCount = el.__aniProps ? el.__aniProps.length : 0;
 		var newProp;
 
-		prevProp = propCount === 0 ? {} : el.__aniProps[propCount - 1].prop;
-
-		//prevProp is used for calculating absolute value by accumulating aniProps.
-		//So newProp has absolute value accumlated.
-		newProp = new AniProperty(el, prop, optall, prevProp);
+		newProp = new AniProperty(el, prop, optall);
 		el.__aniProps = el.__aniProps || [];
 
 		//Animation is excuted immediately.
@@ -134,10 +107,12 @@ eg.module("pauseResume", ["jQuery"], function($) {
 				var removeProp = this.__aniProps.shift();
 				removeProp.clearEasingFn();
 
-				this.__aniProps[0] && this.__aniProps[0].init();
 				if (userCallback && typeof userCallback === "function") {
 					userCallback.call(this);
 				}
+
+				// If next ani property exists
+				this.__aniProps[0] && this.__aniProps[0].init();
 			};
 
 			//Queue animation property to recover the current animation.

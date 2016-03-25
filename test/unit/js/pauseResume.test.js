@@ -141,7 +141,7 @@ test("external css style and relative value test", function(assert) {
 		.removeClass("box")
 		.addClass("otherStyleBox")
 		.animate({"left": "+=100px"}) //'.otherStyleBox' style defines initial value of 'left' as 50px, so this animate must make 150px left.
-		.animate({"width": "+=100px", "height": "+=50px"}) // width and height is first 
+		.animate({"width": "+=100px", "height": "+=50px"}) // width is undefined 
 
 	// When
 	setTimeout($.proxy(function() {
@@ -155,8 +155,8 @@ test("external css style and relative value test", function(assert) {
 	//Then
 	setTimeout($.proxy(function() {
 		equal(parseInt(this.$el.css("left")), 150, "Relative movements on CSS styled element is resumed correctly.");
-		equal(parseInt(this.$el.css("width")), 100, "Relative sizing width on CSS styled element is resumed correctly.");
-		equal(parseInt(this.$el.css("height")), 100, "Relative sizing height on CSS styled element is resumed correctly.")
+		equal(this.$el.width(), 100, "Relative sizing width on CSS styled element is resumed correctly.");
+		equal(this.$el.height(), 100, "Relative sizing height on CSS styled element is resumed correctly.")
 		
 		this.$el.removeClass("otherStyleBox").addClass("box");
 		done();
@@ -196,4 +196,36 @@ test("paused filter test", function(assert) {
 
 		done();
 	}, this), duration + pauseDuration + margin);
+});
+
+test("Test relative movent after a value changes on animate chaining", function(assert) {
+	var done = assert.async();
+	var duration = 1000;
+	var pauseAfter = duration / 2;
+	var pauseDuration = 10;
+
+	// Given
+	this.$el
+		.animate({"left": "100px"}, duration, function() {
+			/**
+			 * This makes an changes.
+			 */
+			$.style(this, "left", 0);
+		})
+		.animate({"left": "+=100px"});//MUST move left value based on 0.
+
+	// When
+	setTimeout($.proxy(function() {
+		this.$el.pause();
+
+		setTimeout($.proxy(function() {
+			this.$el.resume();
+		}, this), pauseDuration);
+	}, this), pauseAfter);
+
+	//Then
+	setTimeout($.proxy(function() {
+		equal(parseFloat(this.$el.css("left")), 100);
+		done();
+	}, this), 2000);
 });
