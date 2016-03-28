@@ -1,0 +1,244 @@
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<title>InfiniteGrid(Masonry)</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
+<link rel="stylesheet" href="../../bower_components/bootflat/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../../bower_components/bootflat/css/bootflat.css">
+<script src="../../bower_components/jquery/jquery.js"></script>
+<script src="../../bower_components/handlebars/handlebars.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.0.0/masonry.pkgd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.0/imagesloaded.pkgd.min.js"></script>
+
+
+<style>
+body {background-color: #f1f2f6;}
+.item,
+.grid-item, .grid-sizer {
+  width:50%;
+  min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+@media (min-width: 768px) {
+  .item,
+  .grid-item, .grid-sizer  {
+    width : 33.33333333%;
+  }
+}
+@media (min-width: 992px) {
+  .item ,
+  .grid-item, .grid-sizer {
+    width : 25%;
+  }
+}
+@media (min-width: 1200px) {
+  .item,
+  .grid-item, .grid-sizer  {
+    width : 16.66666667%;
+  }
+}
+
+#stats {
+    width: 80px;
+    opacity: 0.9;
+    cursor: pointer;
+    position: fixed;
+    left: 50%;
+    margin-left: -112px;
+    top: 0px;    z-index: 110;
+
+}
+#fpsText {
+	font-size: 11px !important;
+}
+.loadCnt,
+.timeStamp {
+	height: 24px;;
+	margin: 0 5px;
+}
+.benchContainer {
+	height: 99px;width: 230px;
+-webkit-transform:  translateX(-50%);
+
+    position: fixed;
+    top: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    font-size: 16px;
+    text-align: right;
+    background: rgba(255, 255, 255, 0.8);
+    background: rgb(0, 0, 34);
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    line-height: 24px;
+    font-size: 14px;
+    color: rgb(0, 255, 255);
+    padding: 6px;
+    text-align: right;
+}
+
+.benchContainer button {
+	background-color: rgba(255,255,255, .4);
+	border-radius: 5px;
+	border: none;
+	margin: 5px;
+	outline: none;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+	
+	<!-- navbar -->
+	<div class="row">
+		<div class="col-md-12">
+			<nav class="navbar navbar-inverse" role="navigation">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-3">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="#">egjs infiniteGrid</a>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</div>
+	<!-- jumbotron -->
+	<div class="row">
+		<div class="col-md-12">
+			<div class="jumbotron">
+				<div class="jumbotron-contents">
+					<h2>InfiniteGrid(Masonry) Demo</h2>
+					<p>This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- infinite grid -->
+	<div id="grid" class="row grid" style="visibility:hidden">
+    	<div class="grid-sizer"></div>
+	</div>
+</div>
+<script id="items-template" type="text/x-handlebars-template">
+	{{~#each items~}}
+	<div class="item grid-item">
+		<div class="thumbnail">
+			<img class="img-rounded" src="{{imgSrc}}" />
+			<div class="caption">
+				<p><a href="{{href}}">{{desc}}</a></p>
+			</div>
+		</div>
+	</div>
+	{{~/each~}}
+</script>
+<script>
+var template = Handlebars.compile($("#items-template").html());
+var data = {
+	getItems: function(groupNo) {
+		groupNo *= 30;
+		var items = [];
+		for(var i=0; i<30; i++) {
+			items.push(groupNo + i);
+		}
+		items = $.map(items, function(v) {
+			return {
+				offset: v,
+				imgSrc: "http://naver.github.io/egjs-experiment/infiniteGridService/demo/img/" + ( ( (v + 1) % 60) + 1 ) + ".jpg",
+				href: "http://naver.com/",
+				desc: "Cras justo odio..."
+			};
+		});
+		return {items: items};
+	}
+};	
+	
+var groupIdx = 0;
+function getItemElement() {
+	return $(template(data.getItems(groupIdx++)));
+};
+
+
+var msnry = new Masonry( '.grid', {
+	columnWidth: '.grid-sizer',
+	percentPosition: true,
+	transitionDuration: 0
+});
+
+function appendItem() {
+	var el = getItemElement();
+	$(msnry.element).append( el );
+	imagesLoaded(  document.querySelector('.grid'), function() {
+		msnry.appended( el );
+		$('.grid').css("visibility", "visible");
+	});	
+}
+
+var loadCnt = 0;
+window.addEventListener('scroll', function() {
+	if(window.scrollY + window.innerHeight >= parseInt(window.getComputedStyle(document.documentElement).height)) {
+		appendItem();
+
+		// bench 
+		$('.loadCnt').html(++loadCnt + "번 추가 로드");
+	}
+});
+appendItem();
+
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r14/Stats.min.js"></script>
+<script>
+var stats = new Stats();
+stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
+
+document.body.appendChild( stats.domElement );
+var update = function () {
+    stats.begin();
+    stats.end();
+    requestAnimationFrame( update );
+};
+requestAnimationFrame( update );
+</script>
+<script>
+// bench
+var domEl = $('<div class="benchContainer"><div class="loadCnt"></div><div class="timeStamp"></div><button class="startBtn">auto scroll start</button><button class="stopBtn">stop</button></div>')[0];
+
+document.body.appendChild( domEl );
+
+var SCROLL_MAX = 300;
+var SCROLL_INTERVAL = 100;
+
+var timer;
+var start;
+function loadMoreStart(){ 
+	var scrollLimit = SCROLL_MAX;
+	var scrollCnt = 0;
+	start = new Date();
+	
+	timer = setInterval(function() {
+		if(loadCnt < scrollLimit) {
+			window.scrollTo(0, parseInt(window.getComputedStyle(document.documentElement).height));	
+			$('.timeStamp').html(((new Date()) - start) + 'ms');
+		}
+	}, SCROLL_INTERVAL);	
+}
+
+$('.startBtn').on('click',function() {
+	loadMoreStart();
+});
+$('.stopBtn').on('click',function() {
+	clearInterval(timer);
+});
+</script>
+</body>
+</html>
