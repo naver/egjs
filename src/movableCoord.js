@@ -443,10 +443,10 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 					destPos: destPos,
 					hammerEvent: e || null
 				});
-				console.log(pos, destPos)
-				// if(pos[0] !== destPos[0] || pos[1] !== destPos[1] ) {
-					this._animateTo(destPos);
-				// }
+
+				if (pos[0] !== destPos[0] || pos[1] !== destPos[1]) {
+					this._animateTo(destPos, null, e || null);
+				}
 			}
 			this._status.moveDistance = null;
 		},
@@ -534,7 +534,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 					(circular[3] && destPos[0] < min[0]);
 		},
 
-		_prepareParam: function(absPos, duration) {
+		_prepareParam: function(absPos, duration, hammerEvent) {
 			var pos = this._pos;
 			var destPos = this._getPointOfIntersection(pos, absPos);
 			destPos = this._isOutToOut(pos, destPos) ? pos : destPos;
@@ -545,29 +545,26 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			duration = duration == null ? this._getDurationFromPos(distance) : duration;
 			duration = this.options.maximumDuration > duration ?
 						duration : this.options.maximumDuration;
-			duration = 5000;
-			// animationParam = {
-			// 	hammerEvent: param.hammerEvent
-			// };
 			return {
 				depaPos: pos.concat(),
 				destPos: destPos.concat(),
-				isBounce : this._isOutside(destPos, this.options.min, this.options.max),
+				isBounce: this._isOutside(destPos, this.options.min, this.options.max),
 				isCircular: this._isCircular(absPos),
 				duration: duration,
 				distance: distance,
+				hammerEvent: hammerEvent || null,
 				done: this._animationEnd
 			};
 		},
 
-		_restore: function(complete) {
+		_restore: function(complete, hammerEvent) {
 			var pos = this._pos;
 			var min = this.options.min;
 			var max = this.options.max;
 			this._animate(this._prepareParam([
 				Math.min(max[0], Math.max(min[0], pos[0])),
 				Math.min(max[1], Math.max(min[1], pos[1]))
-			]), complete);
+			], null, hammerEvent), complete);
 		},
 
 		_animationEnd: function() {
@@ -587,7 +584,6 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		},
 
 		_animate: function(param, complete) {
-			console.trace(param.destPos, param.duration);
 			param.startTime = new Date().getTime();
 			this._status.animationParam = param;
 			if (param.duration) {
@@ -608,9 +604,10 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			}
 		},
 
-		_animateTo: function(absPos, duration) {
-			var param = this._prepareParam(absPos, duration);
+		_animateTo: function(absPos, duration, hammerEvent) {
+			var param = this._prepareParam(absPos, duration, hammerEvent);
 			var retTrigger = this.trigger("animationStart", param);
+
 			// You can't stop the 'animationStart' event when 'circular' is true.
 			if (param.isCircular && !retTrigger) {
 				throw new Error(
@@ -625,14 +622,15 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 					var task = queue.shift();
 					task.call(this);
 				};
-				if(param.depaPos[0] !== param.destPos[0] || param.depaPos[1] !== param.destPos[1]) {
+				if (param.depaPos[0] !== param.destPos[0] ||
+					param.depaPos[1] !== param.destPos[1]) {
 					queue.push(function() {
 						self._animate(param, flushQueue);
 					});
 				}
-				if(this._isOutside(param.destPos, this.options.min, this.options.max)) {
+				if (this._isOutside(param.destPos, this.options.min, this.options.max)) {
 					queue.push(function() {
-						self._restore(flushQueue);
+						self._restore(flushQueue, hammerEvent);
 					});
 				}
 				queue.push(function() {

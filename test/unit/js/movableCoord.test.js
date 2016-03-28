@@ -485,11 +485,7 @@ test("slow movement test (no-velocity)", function(assert) {
 			ok(false, "must not fired 'animationStart' event");
 		},
 		"animationEnd" : function(e) {
-			//@todo we should fix it for flicking
-			//ok(false, "must not fired 'animationEnd' event");
-			firedAnimationEnd++;
-			ok(true, "fire 'animationEnd' event");
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			ok(false, "must not fired 'animationEnd' event");
 		}
 	});
 	this.inst.bind(el);
@@ -507,7 +503,7 @@ test("slow movement test (no-velocity)", function(assert) {
 		setTimeout(function() {
 			equal(firedHold, 1, "fired 'hold' event");
 			equal(firedRelease, 1,"fired 'release' event");
-			equal(firedAnimationEnd, 1, "fired 'animationEnd' event");
+			// equal(firedAnimationEnd, 1, "fired 'animationEnd' event");
 			done();
 		},1000);
     	});
