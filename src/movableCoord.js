@@ -86,6 +86,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			this._subOptions = {};
 			this._raf = null;
 			this._animationEnd = $.proxy(this._animationEnd, this);	// for caching
+			this._restore = $.proxy(this._restore, this);	// for caching
 			this._panmove = $.proxy(this._panmove, this);	// for caching
 			this._panend = $.proxy(this._panend, this);	// for caching
 		},
@@ -215,6 +216,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 
 		_grab: function() {
 			if (this._status.animationParam) {
+				this.trigger("animationEnd");
 				var pos = this._getCircularPos(this._pos);
 				if (pos[0] !== this._pos[0] || pos[1] !== this._pos[1]) {
 					this._pos = pos;
@@ -255,7 +257,9 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		},
 
 		// from outside to outside
-		_isOutToOut: function(pos, destPos, min, max) {
+		_isOutToOut: function(pos, destPos) {
+			var min = this.options.min;
+			var max = this.options.max;
 			return (pos[0] < min[0] || pos[0] > max[0] ||
 				pos[1] < min[1] || pos[1] > max[1]) &&
 				(destPos[0] < min[0] || destPos[0] > max[0] ||
@@ -409,16 +413,40 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 				var vX =  Math.abs(e.velocityX);
 				var vY = Math.abs(e.velocityY);
 
-				// console.log(e.velocityX, e.velocityY, e.deltaX, e.deltaY);
 				!(direction & MC.DIRECTION_HORIZONTAL) && (vX = 0);
 				!(direction & MC.DIRECTION_VERTICAL) && (vY = 0);
 
-				this._animateBy(
-					this._getNextOffsetPos([
-						vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
-						vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
-					]),
-				this._animationEnd, false, null, e);
+				var offset = this._getNextOffsetPos([
+					vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
+					vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
+				]);
+				var destPos = [ pos[0] + offset[0], pos[1] + offset[1] ];
+				destPos = this._getPointOfIntersection(pos, destPos);
+				/**
+				 * When an area was released
+				 * @ko 스크린에서 사용자가 손을 떼었을 때
+				 * @name eg.MovableCoord#release
+				 * @event
+				 *
+				 * @param {Object} param
+				 * @param {Array} param.depaPos departure coordinate <ko>현재 좌표</ko>
+				 * @param {Number} param.depaPos.0 departure x-coordinate <ko>현재 x 좌표</ko>
+				 * @param {Number} param.depaPos.1 departure y-coordinate <ko>현재 y 좌표</ko>
+				 * @param {Array} param.destPos destination coordinate <ko>애니메이션에 의해 이동할 좌표</ko>
+				 * @param {Number} param.destPos.0 destination x-coordinate <ko>x 좌표</ko>
+				 * @param {Number} param.destPos.1 destination y-coordinate <ko>y 좌표</ko>
+				 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자의 액션에 대한 hammerjs 이벤트 정보 (API에 의해 호출될 경우, null 을 반환)</ko>
+				 *
+				 */
+				this.trigger("release", {
+					depaPos: pos.concat(),
+					destPos: destPos,
+					hammerEvent: e || null
+				});
+				console.log(pos, destPos)
+				// if(pos[0] !== destPos[0] || pos[1] !== destPos[1] ) {
+					this._animateTo(destPos);
+				// }
 			}
 			this._status.moveDistance = null;
 		},
@@ -437,22 +465,6 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			angle = Math.abs(angle);
 			return angle > thresholdAngle && angle < 180 - thresholdAngle ?
 					MC.DIRECTION_VERTICAL : MC.DIRECTION_HORIZONTAL;
-		},
-
-		_animationEnd: function() {
-			/**
-			 * When animation was ended.
-			 * @ko 에니메이션이 끝났을 때 발생한다.
-			 * @name eg.MovableCoord#animationEnd
-			 * @event
-			 */
-			var pos = this._pos;
-			var min = this.options.min;
-			var max = this.options.max;
-			this._animateTo([
-				Math.min(max[0], Math.max(min[0], pos[0])),
-				Math.min(max[1], Math.max(min[1], pos[1]))
-			], $.proxy(this.trigger, this, "animationEnd"), true, null);
 		},
 
 		_getNextOffsetPos: function(speeds) {
@@ -474,14 +486,6 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 
 			// when duration is under 100, then value is zero
 			return duration < 100 ? 0 : duration;
-		},
-
-		_animateBy: function(offset, callback, isBounce, duration, e) {
-			var pos = this._pos;
-			return this._animateTo([
-				pos[0] + offset[0],
-				pos[1] + offset[1]
-			], callback, isBounce, duration, e);
 		},
 
 		_getPointOfIntersection: function(depaPos, destPos) {
@@ -514,142 +518,127 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			destPos[0] = yd ?
 							depaPos[0] + xd / yd * (destPos[1] - depaPos[1]) :
 							destPos[0];
-			return destPos;
-
+			return [
+				Math.min(max[0], Math.max(min[0], destPos[0])),
+				Math.min(max[1], Math.max(min[1], destPos[1]))
+			];
 		},
 
-		_isCircular: function(circular, destPos, min, max) {
+		_isCircular: function(destPos) {
+			var circular = this.options.circular;
+			var min = this.options.min;
+			var max = this.options.max;
 			return (circular[0] && destPos[1] < min[1]) ||
 					(circular[1] && destPos[0] > max[0]) ||
 					(circular[2] && destPos[1] > max[1]) ||
 					(circular[3] && destPos[0] < min[0]);
 		},
 
-		_animateTo: function(absPos, callback, isBounce, duration, e) {
+		_prepareParam: function(absPos, duration) {
 			var pos = this._pos;
 			var destPos = this._getPointOfIntersection(pos, absPos);
-			var param = {
-					depaPos: pos.concat(),
-					destPos: destPos,
-					hammerEvent: e || null
-				};
-			if (!isBounce && e) {	// check whether user's action
-				/**
-				 * When an area was released
-				 * @ko 스크린에서 사용자가 손을 떼었을 때
-				 * @name eg.MovableCoord#release
-				 * @event
-				 *
-				 * @param {Object} param
-				 * @param {Array} param.depaPos departure coordinate <ko>현재 좌표</ko>
-				 * @param {Number} param.depaPos.0 departure x-coordinate <ko>현재 x 좌표</ko>
-				 * @param {Number} param.depaPos.1 departure y-coordinate <ko>현재 y 좌표</ko>
-				 * @param {Array} param.destPos destination coordinate <ko>애니메이션에 의해 이동할 좌표</ko>
-				 * @param {Number} param.destPos.0 destination x-coordinate <ko>x 좌표</ko>
-				 * @param {Number} param.destPos.1 destination y-coordinate <ko>y 좌표</ko>
-				 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자의 액션에 대한 hammerjs 이벤트 정보 (API에 의해 호출될 경우, null 을 반환)</ko>
-				 *
-				 */
-				this.trigger("release", param);
-			}
-			this._afterReleaseProcess(param, callback, isBounce, duration);
-		},
-
-		// when user release a finger, pointer or mouse
-		_afterReleaseProcess: function(param, callback, isBounce, duration) {
-			// caution: update option values, due to value was changed by "release" event
-			var pos = this._pos;
-			var min = this.options.min;
-			var max = this.options.max;
-			var circular = this.options.circular;
-			var isCircular = this._isCircular(
-								circular,
-								param.destPos,
-								min,
-								max
-							);
-			var destPos = this._isOutToOut(pos, param.destPos, min, max) ?
-				pos : param.destPos;
+			destPos = this._isOutToOut(pos, destPos) ? pos : destPos;
 			var distance = [
 				Math.abs(destPos[0] - pos[0]),
 				Math.abs(destPos[1] - pos[1])
 			];
-			var animationParam;
-			duration = duration === null ?
-						this._getDurationFromPos(distance) : duration;
+			duration = duration == null ? this._getDurationFromPos(distance) : duration;
 			duration = this.options.maximumDuration > duration ?
 						duration : this.options.maximumDuration;
-
-			var done = $.proxy(function(isNext) {
-					this._status.animationParam = null;
-					pos[0] = Math.round(destPos[0]);
-					pos[1] = Math.round(destPos[1]);
-					pos = this._getCircularPos(pos, min, max, circular);
-					!isNext && this._setInterrupt(false);
-					callback();
-				}, this);
-
-			if (distance[0] === 0 && distance[1] === 0) {
-				return done(!isBounce);
-			}
-
-			// prepare animation parameters
-			animationParam = {
-				duration: duration,
+			duration = 5000;
+			// animationParam = {
+			// 	hammerEvent: param.hammerEvent
+			// };
+			return {
 				depaPos: pos.concat(),
-				destPos: destPos,
-				isBounce: isBounce,
-				isCircular: isCircular,
-				done: done,
-				hammerEvent: param.hammerEvent
+				destPos: destPos.concat(),
+				isBounce : this._isOutside(destPos, this.options.min, this.options.max),
+				isCircular: this._isCircular(absPos),
+				duration: duration,
+				distance: distance,
+				done: this._animationEnd
 			};
+		},
 
+		_restore: function(complete) {
+			var pos = this._pos;
+			var min = this.options.min;
+			var max = this.options.max;
+			this._animate(this._prepareParam([
+				Math.min(max[0], Math.max(min[0], pos[0])),
+				Math.min(max[1], Math.max(min[1], pos[1]))
+			]), complete);
+		},
+
+		_animationEnd: function() {
+			this._status.animationParam = null;
+			this._pos = this._getCircularPos([
+				Math.round(this._pos[0]),
+				Math.round(this._pos[1])
+			]);
+			this._setInterrupt(false);
 			/**
-			 * When animation was started.
-			 * @ko 에니메이션이 시작했을 때 발생한다.
-			 * @name eg.MovableCoord#animationStart
+			 * When animation was ended.
+			 * @ko 에니메이션이 끝났을 때 발생한다.
+			 * @name eg.MovableCoord#animationEnd
 			 * @event
-			 * @param {Object} param
-			 * @param {Number} param.duration
-			 * @param {Array} param.depaPos departure coordinate <ko>현재 좌표</ko>
-			 * @param {Number} param.depaPos.0 departure x-coordinate <ko>현재 x 좌표</ko>
-			 * @param {Number} param.depaPos.1 departure y-coordinate <ko>현재 y 좌표</ko>
-			 * @param {Array} param.destPos destination coordinate <ko>애니메이션에 의해 이동할 좌표</ko>
-			 * @param {Number} param.destPos.0 destination x-coordinate <ko>x 좌표</ko>
-			 * @param {Number} param.destPos.1 destination y-coordinate <ko>y 좌표</ko>
-			 * @param {Boolean} param.isBounce When an animation is bounced, a value is 'true'.  <ko>바운스 되는 애니메이션인 경우 true</ko>
-			 * @param {Boolean} param.isCircular When the area is circular type, a value is 'true'. <ko>순환하여 움직여야하는 애니메이션인경우 true</ko>
-			 * @param {Function} param.done If user control animation, user must call this function. <ko>애니메이션이 끝났다는 것을 알려주는 함수</ko>
-			 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자의 액션에 대한 hammerjs 이벤트 정보 (API에 의해 호출될 경우, null 을 반환)</ko>
-			 *
 			 */
-			var retTrigger = this.trigger("animationStart", animationParam);
+			this.trigger("animationEnd");
+		},
 
+		_animate: function(param, complete) {
+			console.trace(param.destPos, param.duration);
+			param.startTime = new Date().getTime();
+			this._status.animationParam = param;
+			if (param.duration) {
+				var info = this._status.animationParam;
+				var self = this;
+				(function loop() {
+					self._raf = null;
+					if (self._frame(info) >= 1) {
+						// deferred.resolve();
+						complete();
+						return;
+					} // animationEnd
+					self._raf = ns.requestAnimationFrame(loop);
+				})();
+			} else {
+				this._triggerChange(param.destPos, false);
+				complete();
+			}
+		},
+
+		_animateTo: function(absPos, duration) {
+			var param = this._prepareParam(absPos, duration);
+			var retTrigger = this.trigger("animationStart", param);
 			// You can't stop the 'animationStart' event when 'circular' is true.
-			if (isCircular && !retTrigger) {
+			if (param.isCircular && !retTrigger) {
 				throw new Error(
 					"You can't stop the 'animation' event when 'circular' is true."
 				);
 			}
-			animationParam.depaPos = pos;
-			animationParam.startTime = new Date().getTime();
-			this._status.animationParam = animationParam;
+
 			if (retTrigger) {
-				if (animationParam.duration) {
-					// console.error("depaPos", pos, "depaPos",destPos, "duration", duration, "ms");
-					var info = this._status.animationParam;
-					var self = this;
-					(function loop() {
-						self._raf = null;
-						if (self._frame(info) >= 1) {
-							return done(true);
-						} // animationEnd
-						self._raf = ns.requestAnimationFrame(loop);
-					})();
-				} else {
-					this._triggerChange(animationParam.destPos, false);
-					done(!isBounce);
+				var self = this;
+				var queue = [];
+				var flushQueue = function() {
+					var task = queue.shift();
+					task.call(this);
+				};
+				if(param.depaPos[0] !== param.destPos[0] || param.depaPos[1] !== param.destPos[1]) {
+					queue.push(function() {
+						self._animate(param, flushQueue);
+					});
 				}
+				if(this._isOutside(param.destPos, this.options.min, this.options.max)) {
+					queue.push(function() {
+						self._restore(flushQueue);
+					});
+				}
+				queue.push(function() {
+					self._animationEnd();
+				});
+				flushQueue();
 			}
 		},
 
@@ -761,7 +750,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 				}
 			}
 			if (duration) {
-				this._animateTo([ x, y ], this._animationEnd, false, duration);
+				this._animateTo([ x, y ], duration);
 			} else {
 				this._pos = this._getCircularPos([ x, y ]);
 				this._triggerChange(this._pos, false);
