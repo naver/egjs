@@ -43,17 +43,8 @@ module.exports = function(grunt) {
 		grunt.task.run("qunit:each");
 	});
 
-	grunt.registerTask("validate-commit", function() {
-		var fs = require("fs");
-		if (grunt.file.exists(".git/hooks/commit-msg")) {
-			grunt.file["delete"](".git/hooks/commit-msg", { force: true });
-		}
-		grunt.file.copy("config/validate-commit-msg.js", ".git/hooks/commit-msg", { force: true });
-		fs.chmodSync(".git/hooks/commit-msg", "755");
-	});
-
 	grunt.registerTask("docBuild", ["copy:doc_npm1","copy:doc_npm3", "clean:doc", "jsdoc"]);
-	grunt.registerTask("build", ["validate-commit", "concat", "uglify", "clean:pkgd", "docBuild"]);
+	grunt.registerTask("build", ["concat", "uglify", "clean:pkgd", "docBuild"]);
 	grunt.registerTask("default", ["jshint", "jscs", "build", "test"]);
 	grunt.registerTask("check", ["jshint", "jscs", "test"]);
 	grunt.registerTask("changelog", function(after, before) {
