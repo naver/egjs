@@ -48,7 +48,7 @@ module.exports = function(grunt) {
 		if (grunt.file.exists(".git/hooks/commit-msg")) {
 			grunt.file["delete"](".git/hooks/commit-msg", { force: true });
 		}
-		grunt.file.copy("config/validate-commit-msg.js", ".git/hooks/commit-msg", { force: true });
+		grunt.file.copy("config/githooks/validate-commit-msg.js", ".git/hooks/commit-msg", { force: true });
 		fs.chmodSync(".git/hooks/commit-msg", "755");
 	});
 

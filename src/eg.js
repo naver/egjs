@@ -3,7 +3,7 @@
 * egjs projects are licensed under the MIT license
 */
 
-eg.module("eg", ["jQuery", eg, window], function($, ns, global) {
+eg.module("eg", ["jQuery", eg, window], function($, ns, global ) {
 	"use strict";
 
 	var raf = global.requestAnimationFrame || global.webkitRequestAnimationFrame ||
