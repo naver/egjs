@@ -99,7 +99,7 @@ eg.module("pauseResume", ["jQuery"], function($) {
 
 	function removeAniProperty(el) {
 		var removeProp = el.__aniProps.shift();
-		removeProp.clearEasingFn();
+		removeProp && removeProp.clearEasingFn();
 
 		el.__aniProps[0] && el.__aniProps[0].init();
 	}
