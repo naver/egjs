@@ -10,7 +10,7 @@
     "test": "grunt check",
     "fakeserver": "node test/fakeserver/app.js",
     "prepush": "grunt check",
-    "commitmsg": "node config/githooks/validate-commit-msg.js"
+    "commitmsg": "node config/validate-commit-msg.js"
   },
   "repository": {
     "type": "git",
