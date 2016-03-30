@@ -229,3 +229,39 @@ test("Test relative movent after a value changes on animate chaining", function(
 		done();
 	}, this), 2000);
 });
+
+test("Delay pause/resume test", function(assert) {
+	var done = assert.async();
+	var duration = 400;
+	var delayDuration = 500;
+	var pauseAfter = duration + delayDuration / 2;
+	var pauseDuration = 1000;
+	var elapsedT1 = 0;
+	var prevTime = $.now();
+	var totalDuration = duration + delayDuration + pauseDuration + duration;
+
+	// Given
+	this.$el
+		.animate({"left": "100px"}, duration)
+		.delay(delayDuration)
+		.animate({"left": "150px"}, duration)
+		.promise().done(function() {
+			elapsedT1 = $.now() - prevTime;
+		});
+
+	// When
+	// Pause while delay is inprogress.
+	setTimeout($.proxy(function() {
+		this.$el.pause();
+
+		setTimeout($.proxy(function() {
+			this.$el.resume();
+		}, this), pauseDuration);
+	}, this), pauseAfter);
+
+	//Then
+	setTimeout($.proxy(function() {
+		ok(elapsedT1 > totalDuration, "delay was successfully paused and resumed.");
+		done();
+	}, this), totalDuration + totalDuration * 0.2);
+});

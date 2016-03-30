@@ -7,9 +7,10 @@ eg.module("pauseResume", ["jQuery"], function($) {
 
 	var animateFn = $.fn.animate;
 	var stopFn = $.fn.stop;
+	var delayFn = $.fn.delay;
 	var uuid = 1;
 
-	function AniProperty(el, prop, optall) {
+	function AniProperty(type, el, prop, optall) {
 		this.el = el;
 		this.opt = optall;
 		this.start = -1;
@@ -18,6 +19,7 @@ eg.module("pauseResume", ["jQuery"], function($) {
 		this.uuid = uuid++;
 		this.easingNames = [];
 		this.prop = prop;
+		this.type = type;
 	}
 
 	/**
@@ -82,10 +84,10 @@ eg.module("pauseResume", ["jQuery"], function($) {
 		this.easingNames = [];
 	};
 
-	function addAniProperty(el, prop, optall) {
+	function addAniProperty(type, el, prop, optall) {
 		var newProp;
 
-		newProp = new AniProperty(el, prop, optall);
+		newProp = new AniProperty(type, el, prop, optall);
 		el.__aniProps = el.__aniProps || [];
 
 		//Animation is excuted immediately.
@@ -93,6 +95,13 @@ eg.module("pauseResume", ["jQuery"], function($) {
 			newProp.init();
 		}
 		el.__aniProps.push(newProp);
+	}
+
+	function removeAniProperty(el) {
+		var removeProp = el.__aniProps.shift();
+		removeProp.clearEasingFn();
+
+		el.__aniProps[0] && el.__aniProps[0].init();
 	}
 
 	$.fn.animate = function(prop, speed, easing, callback) {
@@ -107,6 +116,7 @@ eg.module("pauseResume", ["jQuery"], function($) {
 				var removeProp = this.__aniProps.shift();
 				removeProp.clearEasingFn();
 
+				// Callback should be called before aniProps.init()
 				if (userCallback && typeof userCallback === "function") {
 					userCallback.call(this);
 				}
@@ -116,7 +126,7 @@ eg.module("pauseResume", ["jQuery"], function($) {
 			};
 
 			//Queue animation property to recover the current animation.
-			addAniProperty(this, prop, optall);
+			addAniProperty("animate", this, prop, optall);
 			animateFn.call($(this), prop, optall);
 		});
 
@@ -134,6 +144,41 @@ eg.module("pauseResume", ["jQuery"], function($) {
 
 		return el.__aniProps[0].paused ? "paused" : "inprogress";
 	}
+
+	/**
+	 * Set a timer to delay execution of subsequent items in the queue.
+	 * And it internally manages "fx"queue to support pause/resume if "fx" type.
+	 *
+	 * @param {Number} An integer indicating the number of milliseconds to delay execution of the next item in the queue.
+	 * @param {String} A string containing the name of the queue. Defaults to fx, the standard effects queue.
+	 */
+	$.fn.delay = function(time, type) {
+		var t;
+		var isCallByResume = arguments[2];//internal used value.
+
+		if (type && type !== "fx") {
+			return delayFn.call(this, time, type);
+		}
+
+		t = parseInt(time, 10);
+		t = isNaN(t) ? 0 : t;
+
+		return this.each(function() {
+			if (!isCallByResume) {
+				// Queue delay property to recover the current animation.
+				// Don't add property when delay is called by resume.
+				addAniProperty("delay", this, null, {duration: t});
+			}
+
+			var self = this;
+			delayFn.call($(this), time).queue(function(next) {
+				next();
+
+				// Remove delay property when delay has been expired.
+				removeAniProperty(self);
+			});
+		});
+	};
 
 	/**
 	 * Pause animation
@@ -217,7 +262,13 @@ eg.module("pauseResume", ["jQuery"], function($) {
 				// If duration remains, request 'animate' with storing aniProps
 				if (p.opt.duration > 0 || p.elapsed === 0) {
 					i === 0 && p.init();
-					animateFn.call($(this), p.prop, p.opt);
+
+					if (p.type === "delay") {
+						// pass last parameter 'true' not to add an aniProperty.
+						$(this).delay(p.opt.duration, "fx", true);
+					} else {
+						animateFn.call($(this), p.prop, p.opt);
+					}
 				}
 
 				i++;

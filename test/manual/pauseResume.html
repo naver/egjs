@@ -206,7 +206,26 @@ function counter(){
 counter();
 	</code>
 	</pre>
-	<div id="counter" class="test" style="float:left;background:yellow;color:#000;font-size:32px;padding:30px;display:inline-block;width:40px;height:40px;text-align:center">
+	<div id="counter" class="test" style="background:yellow;color:#000;font-size:32px;padding:30px;display:inline-block;width:40px;height:40px;text-align:center"></div>
+	<h1>Delay Test</h1>
+	<div class="notice">Test delay can be paused and resumed</div>
+	<pre>
+	<code class="js">
+$delayBox
+  .animate({"left":"100px"}, function() {
+    startDelayCounter(delayDuration);
+  })
+  .delay(delayDuration)
+  .animate({"left":"+=100px"}, function() {
+    $.style(this, "left", 0);
+  }
+	</code>
+	</pre>
+	<div class="testBackground">
+		<div id="delayBox" class="test" style="left:0px;top:0px">
+			<div id="delayBoxText"></div>
+			<div id="delayCounter" class="test"></div>
+		</div>
 	</div>
 	<script type="text/javascript">
 		hljs.initHighlightingOnLoad();
@@ -304,14 +323,54 @@ counter();
 				}
 			});
 		};
+
+		function delayTest() {
+			var firstTime = true;
+			var $delayBox = $("#delayBox");
+			var $delayBoxText = $("#delayBoxText");
+			var delayDuration = 3000;
+			var $delayCounter = $("#delayCounter");
+
+			$delayBox
+				.animate({"left":"100px"}, function() {
+					startDelayCounter(delayDuration);
+				})
+				.delay(delayDuration)
+				.animate({"left":"+=100px"}, function() {
+					$.style(this, "left", 0);
+					delayTest();
+				});
+
+			function startDelayCounter(duration) {
+				$delayCounter.animate({Counter: duration / 1000}, {
+					duration: duration,
+					easing: 'linear',
+					step: function () {
+						var txt;
+
+						if (!this.Counter) {
+							return;
+						}
+
+						txt = "Delay 3 sec\nElapsed:";
+						txt += this.Counter.toFixed(2) + "s";
+						$(this).text(txt);
+					},
+					complete: function() {
+						this.Counter = 0;
+						$(this).text("");
+					}
+				});
+			}
+		}
 		
-		// counter();
 		$.each([testMarquee,
 				drawRectangle,
 				startEasingTest,
 				startRelativeTest,
 				startIndividualElementTest,
-				counter], function(i, func) {
+				counter,
+				delayTest], function(i, func) {
 			func();
 		});
 	</script>
