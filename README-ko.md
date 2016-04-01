@@ -1,5 +1,5 @@
-## egjs
-[![Build Status](https://travis-ci.org/naver/egjs.svg?branch=master)](https://travis-ci.org/naver/egjs)
+# egjs
+[![Build Status](https://travis-ci.org/naver/egjs.svg?branch=master)](https://travis-ci.org/naver/egjs) [![Test coverage](https://codeclimate.com/github/naver/egjs/badges/coverage.svg)](https://codeclimate.com/github/naver/egjs/coverage)
 
 egjs는 jQuery기반의 UI 인터렉션, 이펙트, 유틸리티로 구성된 통합 라이브러리로 다양한 환경을 지원하는 빠른 웹 어플리케이션을 쉽게 개발할 수 있도록 도와준다. 
 
@@ -40,6 +40,9 @@ egjs는 jQuery기반의 UI 인터렉션, 이펙트, 유틸리티로 구성된 �
 ### Compressed (제품버전)
   - 최신 : http://naver.github.io/egjs/latest/dist/eg.min.js
   - 버전별 : `http://naver.github.io/egjs/[VERSION]/dist/eg.min.js`
+  
+### from CDN
+  - cdnjs : https://cdnjs.com/libraries/egjs
 
 ### with Bower
 
@@ -61,7 +64,7 @@ $ bower install egjs
 ## 의존성
 egjs는 다음의 라이브러리들에 대한 의존성을 가지고 있다. 
 
-|[jQuery](https://jquery.com/)|[hammer.js](http://hammerjs.github.io/)|[Outlayer](https://github.com/metafizzy/outlayer/)|
+|[jQuery](https://jquery.com/)|[Hammer.js](http://hammerjs.github.io/)|[Outlayer](https://github.com/metafizzy/outlayer/)|
 |---|---|---|---|
 |1.7.0+ |2.0.4+|1.4.2+|
 
@@ -69,14 +72,19 @@ egjs는 다음의 라이브러리들에 대한 의존성을 가지고 있다.
 
 
 ## 사용방법
-jQuery를 먼저 로딩 후, egjs를 로딩한다.
+jQuery를 먼저 로딩 후, egjs를 로딩한다. (CDN 서비스인 [cdnjs](https://cdnjs.com/libraries/egjs)에도 등록되어 있다.)
 
 ```html
 <!-- jQuery 로딩 --> 
 <script src="bower_components/jquery/jquery.js"></script>
 
-<!-- 모든 의존성(hammer.js와 outlayer) 파일들이 패키징된 egjs를 로딩 --> 
+<!-- 모든 의존성(Hammer.js와 Outlayer) 파일들이 패키징된 egjs를 로딩 --> 
+<!-- 로컬에 설치된 파일을 로딩 --> 
 <script src="bower_components/egjs/dist/pkgd/eg.pkgd.min.js"></script>
+
+<!-- 또는 CDN 에서 로딩 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/egjs/1.1.0/pkgd/eg.pkgd.min.js"></script>
+
 ```
 
 > 참고: 개별적인 의존성 파일 로딩은 [Download and Using egjs](https://github.com/naver/egjs/wiki/Download-and-Using-egjs#how-to-use) 위키 페이지를 확인하라.
