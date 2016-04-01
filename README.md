@@ -1,6 +1,6 @@
 # egjs 
-[![Build Status](https://travis-ci.org/naver/egjs.svg?branch=master)](https://travis-ci.org/naver/egjs)
-
+[![Build Status](https://travis-ci.org/naver/egjs.svg?branch=master)](https://travis-ci.org/naver/egjs) [![Test coverage](https://codeclimate.com/github/naver/egjs/badges/coverage.svg)](https://codeclimate.com/github/naver/egjs/coverage)
+ 
 'egjs' is a set of UI interactions, effects and utilities components library using jQuery, which brings easiest and fastest way to build web application in your way.
 
 > - **Demo**: http://codepen.io/egjs/
@@ -39,6 +39,9 @@ For latest version, check out - https://github.com/naver/egjs/tree/gh-pages/late
 ### Compressed (for production)
   - Latest : https://naver.github.io/egjs/latest/dist/eg.min.js
   - For specific version : `https://naver.github.io/egjs/[VERSION]/dist/eg.min.js`
+  
+### from CDN
+  - cdnjs : https://cdnjs.com/libraries/egjs
 
 ### with Bower
 
@@ -62,21 +65,25 @@ $ bower install egjs
 
 egjs has following dependencies.
 
-|[jQuery](https://jquery.com/)|[hammer.js](http://hammerjs.github.io/)|[Outlayer](https://github.com/metafizzy/outlayer/)|
+|[jQuery](https://jquery.com/)|[Hammer.js](http://hammerjs.github.io/)|[Outlayer](https://github.com/metafizzy/outlayer/)|
 |---|---|---|---|
 |1.7.0+ |2.0.4+|1.4.1+|
 - Except `jQuery`, others are not mandatory. Required dependencies may differ according components.
 
 
 ## How to use?
-Load jQuery first, then load egjs.
+Load jQuery first, then load egjs (also available on [cdnjs](https://cdnjs.com/libraries/egjs))
 
 ```html
 <!-- load jQuery --> 
 <script src="bower_components/jquery/jquery.js"></script>
 
-<!-- load egjs packaged with all dependencies (hammer.js and outlayer) --> 
+<!-- load egjs packaged with all dependencies (Hammer.js and Outlayer) -->
+<!-- load from your local installation --> 
 <script src="bower_components/egjs/dist/pkgd/eg.pkgd.min.js"></script>
+
+<!-- or load from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/egjs/1.1.0/pkgd/eg.pkgd.min.js"></script>
 ```
 
 > NOTE: For more details on separate dependency file inclusion, check out [Download and Using egjs](https://github.com/naver/egjs/wiki/Download-and-Using-egjs#how-to-use) wiki page.
