@@ -618,25 +618,25 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			if (retTrigger) {
 				var self = this;
 				var queue = [];
-				var flushQueue = function() {
+				var dequeue = function() {
 					var task = queue.shift();
-					task.call(this);
+					task && task.call(this);
 				};
 				if (param.depaPos[0] !== param.destPos[0] ||
 					param.depaPos[1] !== param.destPos[1]) {
 					queue.push(function() {
-						self._animate(param, flushQueue);
+						self._animate(param, dequeue);
 					});
 				}
 				if (this._isOutside(param.destPos, this.options.min, this.options.max)) {
 					queue.push(function() {
-						self._restore(flushQueue, hammerEvent);
+						self._restore(dequeue, hammerEvent);
 					});
 				}
 				queue.push(function() {
 					self._animationEnd();
 				});
-				flushQueue();
+				dequeue();
 			}
 		},
 
