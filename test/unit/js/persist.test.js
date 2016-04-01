@@ -7,6 +7,10 @@ function noop() {};
 
 module("persist: mock", {
 	setup: function() {
+		console.oldWarn = console.warn;
+		console.warn = function(msg){
+		};
+
 		this.data = {
 			"scrollTop": 100
 		};
@@ -286,7 +290,6 @@ test("persist : save state data by key, get state data by key", function() {
 $.each(['{', '[ 1,2,3 ]', '1', '1.234', '"123"'], function(i, v) {
 	test("show warning message for storage polloution with value that can be parsed: "+ v, function() {	
 		// Given		
-		console.oldWarn = console.warn;
 		var callCount = 0;
 		console.warn = function(msg){
 			callCount++;
