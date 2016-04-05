@@ -216,24 +216,25 @@ eg.module("animate", ["jQuery", window], function($, global) {
 		}
 	}
 
-	function getTransformGenerateFunction(element, transform) {
-		var isRelative = transform.indexOf("+=") >= 0;
+	function getTransformGenerateFunction(element, transform, pushTransform) {
+		// var isRelative = transform.indexOf("+=") >= 0;
 		var splitted = transform.split(")");
 		var list = [];
 
-		if (!element.__transformMap || !isRelative) {
-			element.__transformMap = [];
-		}
+		// if (!element.__transformMap || !isRelative) {
+		// 	element.__transformMap = [];
+		// }
 
 		for (var i = 0, len = splitted.length - 1; i < len; i++) {
 			var parsed = parseStyle(splitted[i]);
 
 			parsed[1] = $.map(parsed[1], toParsedFloat);
 			list.push(parsed);
-			element.__transformMap.push(parsed);
+
+			pushTransform && element.__transformMap.push(parsed);
 		}
 
-		console.log("transformMap:", element.__transformMap);
+		// console.log("transformMap:", element.__transformMap);
 
 		return function transformByPos(pos) {
 			var transform = "";
@@ -259,11 +260,27 @@ eg.module("animate", ["jQuery", window], function($, global) {
 		};
 	}
 
-	function convertParam(param) {
+	function convertParam(type, param) {
 		var str = "(";
+		var isScale = false;
+		var isSkew = false;
+		var reverted;
+		if (type.indexOf("scale") >= 0) {
+			isScale = true;
+		} else if (type.indexOf("skew") >= 0) {
+			isSkew = true;
+		}
+		
 		for (var i = 0, len = param.length; i < len; i++) {
 			i !== 0 && (str += ",");
-			str += (param[i].num * -1) + param[i].unit;
+
+			if (isScale) {
+				reverted = 1 / param[i].num;
+			} else {
+				reverted = param[i].num * -1;
+			}
+			
+			str += reverted + (param[i].unit || "");
 		};
 
 		return str + ")";//
@@ -273,27 +290,25 @@ eg.module("animate", ["jQuery", window], function($, global) {
 		var isRelative = endTf.indexOf("+=") >= 0;
 		var start;
 		var end;
+
+		var revertStr = "";
+		var revert;
 		var end2;
 
 		console.log("====START OF rateFn(", startTf, endTf, "====");
 		// initialize transform value
-		// if (isRelative) {
+		if (isRelative) {
 			
-		// } else {
-		// 	// $.each(trsfMap, function(i, trsf) {
-				
-		// 	// })
-		// 	// get accum transform styles
-		// 	var trsfInitialized = "";
-		// 	var trsfMap = element.__transformMap || [];
+		} else {
+			// get accum transform styles
+			var trsfMap = element.__transformMap || [];
 
-		// 	for (var i = trsfMap.length - 1; i >= 0; i--) {
-		// 		trsfInitialized += trsfMap[i][0] + convertParam(trsfMap[i][1]);
-		// 	}
+			for (var i = trsfMap.length - 1; i >= 0; i--) {
+				revertStr += trsfMap[i][0] + convertParam(trsfMap[i][0], trsfMap[i][1]);
+			}
 
-		// 	console.warn("revert:", trsfInitialized);
-		// 	revert = trsfInitialized;
-		// }
+			console.warn("revert:", revertStr);
+		}
 
 		// Convert translate unit to 'px'.
 		endTf = correctUnit(endTf,
@@ -303,20 +318,25 @@ eg.module("animate", ["jQuery", window], function($, global) {
 		if (isRelative) {
 			start = (!startTf || startTf === "none") ?
 						"matrix(1, 0, 0, 1, 0, 0)" : startTf;
-			end = getTransformGenerateFunction(element, endTf);
+
+			element.__transformMap = element.__transformMap || [];
+			end = getTransformGenerateFunction(element, endTf, true);
 		} else {
-			start = toMatrix(startTf);
-			end = toMatrix("matrix(1, 0, 0, 1, 0, 0)");
-			// end = toMatrix(endTf);
+			// start = toMatrix(startTf);
+			// end = toMatrix("matrix(1, 0, 0, 1, 0, 0)");
+			// // end = toMatrix(endTf);
 
-			//If the type of matrix is not equal, then match to matrix3d
-			if (start[1].length < end[1].length) {
-				start = toMatrix3d(start);
-			} else if (start[1].length > end[1].length) {
-				end = toMatrix3d(end);
-			}
-
-			end2 = getTransformGenerateFunction(element, endTf);
+			// //If the type of matrix is not equal, then match to matrix3d
+			// if (start[1].length < end[1].length) {
+			// 	start = toMatrix3d(start);
+			// } else if (start[1].length > end[1].length) {
+			// 	end = toMatrix3d(end);
+			// }
+			start = (!startTf || startTf === "none") ?
+						"matrix(1, 0, 0, 1, 0, 0)" : startTf;
+			revert = getTransformGenerateFunction(element, revertStr);
+			element.__transformMap = [];
+			end2 = getTransformGenerateFunction(element, endTf, true);
 		}
 
 		console.log("====END OF rateFn====");
@@ -329,21 +349,21 @@ eg.module("animate", ["jQuery", window], function($, global) {
 				return start + end(pos);
 			} 
 
-			if (pos === 1) {
-				ret = data2String(end);
-			} else {
-				// console.log("start, end", start[1], end[1]);
-				for (var i = 0, s, e, l = start[1].length; i < l; i++) {
-					s = parseFloat(start[1][i]);
-					e = parseFloat(end[1][i]);
+			// if (pos === 1) {
+			// 	ret = data2String(end);
+			// } else {
+			// 	// console.log("start, end", start[1], end[1]);
+			// 	for (var i = 0, s, e, l = start[1].length; i < l; i++) {
+			// 		s = parseFloat(start[1][i]);
+			// 		e = parseFloat(end[1][i]);
 
-					result.push(s + (e - s) * pos);
-				}
+			// 		result.push(s + (e - s) * pos);
+			// 	}
 
-				ret = data2String([start[0], result]);
-			}
-			// console.log("Abosolute: rateFn, pos", ret, pos);
-			return ret + end2(pos);
+			// 	ret = data2String([start[0], result]);
+			// }
+			// console.log("Abosolute: rateFn, pos", start, revert(pos), end2(pos));
+			return start + revert(pos) + end2(pos);
 		};
 	}
 
