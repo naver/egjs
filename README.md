@@ -173,3 +173,6 @@ THE SOFTWARE.
 ```
 
 [![Analytics](https://ga-beacon.appspot.com/UA-70842526-5/egjs/readme)](https://github.com/naver/egjs)
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/naver/egjs/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
