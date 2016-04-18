@@ -158,13 +158,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 
 	function setStateByKey(key, data) {
 		var beforeData = getState();
-
-		if (data === null || typeof data === "undefined" || data === "") {
-			delete beforeData[key];
-		} else {
-			beforeData[key] = data;
-		}
-
+		beforeData[key] = data;
 		setState(beforeData);
 	}
 
