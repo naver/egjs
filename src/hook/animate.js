@@ -105,7 +105,7 @@ eg.module("animate", ["jQuery", window], function($) {
 		}
 	}
 
-	function getTransformGenerateFunction(element, transform) {
+	function getTransformGenerateFunction(transform) {
 		var splitted = transform.split(")");
 		var list = [];
 
@@ -155,7 +155,7 @@ eg.module("animate", ["jQuery", window], function($) {
 		if (isRelative) {
 			start = (!startTf || startTf === "none") ?
 						"matrix(1, 0, 0, 1, 0, 0)" : startTf;
-			end = getTransformGenerateFunction(element, endTf);
+			end = getTransformGenerateFunction(endTf);
 		} else {
 			start = toMatrixArray(startTf);
 			basePos = toMatrixArray("none");//transform base-position
@@ -167,7 +167,7 @@ eg.module("animate", ["jQuery", window], function($) {
 				basePos = toMatrix3d(basePos);
 			}
 
-			end = getTransformGenerateFunction(element, endTf);
+			end = getTransformGenerateFunction(endTf);
 		}
 
 		return function(pos) {
