@@ -3,137 +3,26 @@
 * egjs projects are licensed under the MIT license
 */
 
-eg.module("animate", ["jQuery", window], function($, global) {
+/**
+ * Extends jQuery animate in order to use 'transform' property
+ * @ko jQuery animate 사용시 transform을 사용할 수 있도록 확장한 animate 메소드
+ * @name jQuery#animate
+ * @method
+ * @param {Object} properties An object of CSS properties and values that the animation will move toward. <ko>애니메이션 할 CSS 속성과 값으로 구성된 오브젝트</ko>
+ * @param {Number|String} [duration=4000] A string or number determining how long the animation will run. <ko>애니메이션 진행 시간</ko>
+ * @param {String} [easing="swing"] A string indicating which easing function to use for the transition. <ko>transition에 사용할 easing 함수명</ko>
+ * @param {Function} [complete] A function to call once the animation is complete. <ko>애니메이션이 완료한 후 호출하는 함수</ko>
+ *
+ * @example
+ * $("#box")
+ * 		.animate({"transform" : "translate3d(150px, 100px, 0px) rotate(20deg) scaleX(1)"} , 3000)
+ * 		.animate({"transform" : "+=translate3d(150px, 10%, -20px) rotate(20deg) scale3d(2, 4.2, 1)"} , 3000);
+ * @see {@link http://api.jquery.com/animate/}
+ *
+ * @support {"ie": "10+", "ch" : "latest", "sf" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
+ */
+eg.module("animate", ["jQuery", window], function($) {
 	"use strict";
-
-	/**
-     * Extends jQuery animate in order to use 'transform' property
-     * @ko jQuery animate 사용시 transform을 사용할 수 있도록 확장한 animate 메소드
-     * @name jQuery#animate
-     * @method
-     * @param {Object} properties An object of CSS properties and values that the animation will move toward. <ko>애니메이션 할 CSS 속성과 값으로 구성된 오브젝트</ko>
-     * @param {Number|String} [duration=4000] A string or number determining how long the animation will run. <ko>애니메이션 진행 시간</ko>
-     * @param {String} [easing="swing"] A string indicating which easing function to use for the transition. <ko>transition에 사용할 easing 함수명</ko>
-     * @param {Function} [complete] A function to call once the animation is complete. <ko>애니메이션이 완료한 후 호출하는 함수</ko>
-     *
-     * @example
-     * $("#box")
-     * 		.animate({"transform" : "translate3d(150px, 100px, 0px) rotate(20deg) scaleX(1)"} , 3000)
-     * 		.animate({"transform" : "+=translate3d(150px, 10%, -20px) rotate(20deg) scale3d(2, 4.2, 1)"} , 3000);
-     * @see {@link http://api.jquery.com/animate/}
-     *
-     * @support {"ie": "10+", "ch" : "latest", "sf" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
-     */
-	var supportFloat32Array = "Float32Array" in window;
-	var CSSMatrix = global.WebKitCSSMatrix || global.MSCSSMatrix ||
-					global.OCSSMatrix || global.MozMatrix || global.CSSMatrix;
-
-	/**
-	 * Utility functions : matrix and toRadian is copied from transform2d
-	 * turns a transform string into its "matrix(A, B, C, D, X, Y)" form (as an array, though)
-	 */
-	function matrix(transform) {
-		transform = transform.split(")");
-		var trim = $.trim;
-		var i = -1;
-
-		// last element of the array is an empty string, get rid of it
-		var l = transform.length - 1;
-		var split;
-		var prop;
-		var val;
-		var prev = supportFloat32Array ? new Float32Array(6) : [];
-		var curr = supportFloat32Array ? new Float32Array(6) : [];
-		var rslt = supportFloat32Array ? new Float32Array(6) : [1, 0, 0, 1, 0, 0];
-
-		prev[0] = prev[3] = rslt[0] = rslt[3] = 1;
-		prev[1] = prev[2] = prev[4] = prev[5] = 0;
-
-		// Loop through the transform properties, parse and multiply them
-		while (++i < l) {
-			split = transform[i].split("(");
-			prop = trim(split[0]);
-			val = split[1];
-			curr[0] = curr[3] = 1;
-			curr[1] = curr[2] = curr[4] = curr[5] = 0;
-
-			switch (prop) {
-				case "translateX":
-					curr[4] = parseInt(val, 10);
-					break;
-
-				case "translateY":
-					curr[5] = parseInt(val, 10);
-					break;
-
-				case "translate":
-					val = val.split(",");
-					curr[4] = parseInt(val[0], 10);
-					curr[5] = parseInt(val[1] || 0, 10);
-					break;
-
-				case "rotate":
-					val = toRadian(val);
-					curr[0] = Math.cos(val);
-					curr[1] = Math.sin(val);
-					curr[2] = -Math.sin(val);
-					curr[3] = Math.cos(val);
-					break;
-
-				case "scaleX":
-					curr[0] = +val;
-					break;
-
-				case "scaleY":
-					curr[3] = val;
-					break;
-
-				case "scale":
-					val = val.split(",");
-					curr[0] = val[0];
-					curr[3] = val.length > 1 ? val[1] : val[0];
-					break;
-
-				case "skewX":
-					curr[2] = Math.tan(toRadian(val));
-					break;
-
-				case "skewY":
-					curr[1] = Math.tan(toRadian(val));
-					break;
-
-				case "matrix":
-					val = val.split(",");
-					curr[0] = val[0];
-					curr[1] = val[1];
-					curr[2] = val[2];
-					curr[3] = val[3];
-					curr[4] = parseInt(val[4], 10);
-					curr[5] = parseInt(val[5], 10);
-					break;
-			}
-
-			// Matrix product (array in column-major order)
-			rslt[0] = prev[0] * curr[0] + prev[2] * curr[1];
-			rslt[1] = prev[1] * curr[0] + prev[3] * curr[1];
-			rslt[2] = prev[0] * curr[2] + prev[2] * curr[3];
-			rslt[3] = prev[1] * curr[2] + prev[3] * curr[3];
-			rslt[4] = prev[0] * curr[4] + prev[2] * curr[5] + prev[4];
-			rslt[5] = prev[1] * curr[4] + prev[3] * curr[5] + prev[5];
-
-			prev = [rslt[0],rslt[1],rslt[2],rslt[3],rslt[4],rslt[5]];
-		}
-		return rslt;
-	}
-
-	// converts an angle string in any unit to a radian Float
-	function toRadian(value) {
-		return ~value.indexOf("deg") ?
-			parseInt(value, 10) * (Math.PI * 2 / 360) :
-			~value.indexOf("grad") ?
-				parseInt(value, 10) * (Math.PI / 200) :
-				parseFloat(value);
-	}
 
 	/**
 	 * Get a 'px' converted value if it has a %.
@@ -141,7 +30,7 @@ eg.module("animate", ["jQuery", window], function($, global) {
 	 */
 	function getConverted(val, base) {
 		var ret = val;
-		var num = val.match(/([0-9]*)%/);
+		var num = val.match(/((-|\+)*[0-9]+)%/);
 
 		if (num && num.length >= 1) {
 			ret = base * (parseFloat(num[1]) / 100) + "px";
@@ -210,9 +99,9 @@ eg.module("animate", ["jQuery", window], function($, global) {
 	 * which is called very frequently.
 	 */
 	function toParsedFloat(val) {
-		var m = val.match(/(-*[\d|\.]+)(px|deg|rad)*/);
+		var m = val.match(/((-|\+)*[\d|\.]+)(px|deg|rad)*/);
 		if (m && m.length >= 1) {
-			return {"num": parseFloat(m[1]), "unit": m[2]};
+			return {"num": parseFloat(m[1]), "unit": m[3]};
 		}
 	}
 
@@ -220,6 +109,7 @@ eg.module("animate", ["jQuery", window], function($, global) {
 		var splitted = transform.split(")");
 		var list = [];
 
+		//Make parsed transform list.
 		for (var i = 0, len = splitted.length - 1; i < len; i++) {
 			var parsed = parseStyle(splitted[i]);
 
@@ -232,8 +122,10 @@ eg.module("animate", ["jQuery", window], function($, global) {
 			var defaultVal = 0;
 
 			$.each(list, function(i) {
-				if (list[i][0] === "scale") {
+				if (list[i][0].indexOf("scale") >= 0) {
 					defaultVal = 1;
+				} else {
+					defaultVal = 0;
 				}
 
 				var valStr = $.map(list[i][1], function(value) {
@@ -253,6 +145,7 @@ eg.module("animate", ["jQuery", window], function($, global) {
 		var isRelative = endTf.indexOf("+=") >= 0;
 		var start;
 		var end;
+		var basePos;
 
 		// Convert translate unit to 'px'.
 		endTf = correctUnit(endTf,
@@ -264,40 +157,42 @@ eg.module("animate", ["jQuery", window], function($, global) {
 						"matrix(1, 0, 0, 1, 0, 0)" : startTf;
 			end = getTransformGenerateFunction(endTf);
 		} else {
-			start = toMatrix(startTf);
-			end = toMatrix(endTf);
+			start = toMatrixArray(startTf);
+			basePos = toMatrixArray("none");//transform base-position
 
 			//If the type of matrix is not equal, then match to matrix3d
-			if (start[1].length < end[1].length) {
+			if (start[1].length < basePos[1].length) {
 				start = toMatrix3d(start);
-			} else if (start[1].length > end[1].length) {
-				end = toMatrix3d(end);
+			} else if (start[1].length > basePos[1].length) {
+				basePos = toMatrix3d(basePos);
 			}
+
+			end = getTransformGenerateFunction(endTf);
 		}
 
 		return function(pos) {
 			var result = [];
-			var ret = "";
+			var ret = "";//matrix for interpolated value from current to base(1, 0, 0, 1, 0, 0)
 
 			if (isRelative) {
 				// This means a muliply between a matrix and a transform.
-				ret = start + end(pos);
-				return ret;
+				return start + end(pos);
 			}
 
 			if (pos === 1) {
-				ret = data2String(end);
+				ret = data2String(basePos);
 			} else {
 				for (var i = 0, s, e, l = start[1].length; i < l; i++) {
 					s = parseFloat(start[1][i]);
-					e = parseFloat(end[1][i]);
+					e = parseFloat(basePos[1][i]);
+
 					result.push(s + (e - s) * pos);
 				}
 
 				ret = data2String([start[0], result]);
 			}
 
-			return ret;
+			return ret + end(pos);
 		};
 	}
 
@@ -347,27 +242,23 @@ eg.module("animate", ["jQuery", window], function($, global) {
 		return result;
 	}
 
-	function toMatrix(transform) {
-		var retMatrix = [];
+	/**
+	 * Convert matrix string to array type.
+	 *
+	 * eg. matrix(1, 0, 0, 1, 0, 0) ==>  ["matrix", [1, 0, 0, 1, 0, 0]]
+	 * matrix3d(1,0,0,0,0,1,-2.44929e-16,0,0,2.44929e-16,1,0,0,0,0,1)
+	 */
+	function toMatrixArray(matrixStr) {
+		var matched;
 
-		if (!transform || transform === "none") {
+		if (!matrixStr || matrixStr === "none") {
 			return ["matrix", [ "1", "0", "0", "1", "0", "0"] ];
 		}
 
-		retMatrix = CSSMatrix ? parseStyle(new CSSMatrix(transform).toString()) :
-								["matrix", matrix(transform)];
+		matrixStr = matrixStr.replace(/\s/g, "");
+		matched = matrixStr.match(/(matrix)(3d)*\((.*)\)/);
 
-		/**
-		 * Make an unintended 2d matrix to 3d matrix.
-		 *
-		 * WebkitCSSMatrix changes 'transform3d' style to '2d matix' if it is judged as needless.
-		 * But generally, Developers would intend 3d transform by force for a HW Accelation. eg. translate3d(a, b, 0)
-		 */
-		if (transform.indexOf("3d") >= 0 && retMatrix[0].indexOf("3d") < 0) {
-			retMatrix = toMatrix3d(retMatrix);
-		}
-
-		return retMatrix;
+		return [matched[1] + (matched[2] || ""), matched[3].split(",")];
 	}
 
 	function toMatrix3d(matrix) {
@@ -394,7 +285,7 @@ eg.module("animate", ["jQuery", window], function($, global) {
 
 	// All of this interfaces are functions for unit testing.
 	return {
-		toMatrix: toMatrix,
+		toMatrix: toMatrixArray,
 		toMatrix3d: toMatrix3d
 	};
 });
