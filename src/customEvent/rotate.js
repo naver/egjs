@@ -89,8 +89,6 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 					vertical = false;
 				}
 			}
-
-			beforeScreenWidth = screenWidth;
 		} else {
 			degree = global.orientation;
 			if (degree === 0 || degree === 180) {
@@ -110,6 +108,7 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 		if (isMobile) {
 			if (beforeVertical !== currentVertical) {
 				beforeVertical = currentVertical;
+				beforeScreenWidth = doc.documentElement.clientWidth;
 				$(global).trigger("rotate");
 			}
 		}
@@ -140,7 +139,6 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 					// When width value wasn't changed after firing orientationchange, then call handler again after 300ms.
 					return false;
 				}
-				beforeScreenWidth = screenWidth;
 			}
 
 			global.clearTimeout(rotateTimer);
