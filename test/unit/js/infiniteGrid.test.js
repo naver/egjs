@@ -368,6 +368,28 @@ module("infiniteGrid unit method Test", {
 	}
 });
 
+test("check object in restore method", function() {
+	// Given
+	this.inst = new eg.InfiniteGrid("#grid", {
+		"count" : 18
+	});
+
+	// When
+	var before = this.inst.getStatus();
+	this.inst.setStatus({});
+
+	// Then
+	equal(this.inst.core.element.style.cssText, before.cssText, "check cssText");
+	equal(this.inst.core.$element.html(), before.html, "check html");
+
+	// When
+	this.inst.setStatus();
+
+	// Then
+	equal(this.inst.core.element.style.cssText, before.cssText, "check cssText");
+	equal(this.inst.core.$element.html(), before.html, "check html");
+});
+
 test("restore status", function(assert) {
 	var done = assert.async();
 	var $el,

@@ -406,11 +406,14 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		 * @return {eg.InfiniteGrid} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		setStatus: function(status) {
-			this.core.element.style.cssText = status.cssText;
-			this.core.$element.html(status.html);
+			if (!status || $.isEmptyObject(status)) {
+				return this;
+			}
+			status.cssText && (this.core.element.style.cssText = status.cssText);
+			status.html && this.core.$element.html(status.html);
 			this.core.items = this.core.itemize(this.core.$element.children().toArray());
-			this.core.clone(this.core, status.core);
-			$.extend(this, status.data);
+			status.core && this.core.clone(this.core, status.core);
+			status.data && $.extend(this, status.data);
 			return this;
 		},
 		/**
