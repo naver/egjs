@@ -34,6 +34,14 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 	var agent = ns.agent();
 	var isMobile = /android|ios/.test(agent.os.name);
 
+	if (!isMobile) {
+		ns.isPortrait = function() {
+			return;
+		};
+
+		return;
+	}
+
 	/**
 	 * Return event name string for orientationChange according browser support
 	 */

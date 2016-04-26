@@ -511,3 +511,28 @@ test("If eg.isPortrait() affect the rotate event not to be fired.", function() {
   ok(!isVertical1, "Does isVertical return false?");
   ok(!isVertical2, "Does rotate event handler get horizontal?");
 });
+
+test("orientationChange : mac(PC) ", function() {
+  // Given
+  var agent = eg.agent();
+  agent.os = {
+    name: "mac",
+  };
+
+  var method = eg.invoke("rotate",[jQuery, null, this.fakeWindow, this.fakeDocument]);
+
+  // When
+  // Then
+  equal(method, null, "Invocation of rotate in mac Browser returns null");
+
+  //Given
+  agent.os = {
+    name: "windows",
+  };
+
+  method = eg.invoke("rotate",[jQuery, null, this.fakeWindow, this.fakeDocument]);
+
+  // When
+  // Then
+  equal(method, null, "Invocation of rotate in windows Browser returns null");
+});
