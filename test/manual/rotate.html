@@ -18,6 +18,12 @@
  <div id="layer"></div>
  <script>
 $(document).ready(function(){
+	$(window).on("resize", function() { 
+		if (eg.isPortrait()) { 
+			//do something...Test if call of isPortrait() makes side effects.
+		}
+	}); 
+
 	$(window).on("rotate",function(e){
 		$("#layer").text(e.isVertical?"vertical":"horizontal");
 	});
