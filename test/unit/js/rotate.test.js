@@ -176,7 +176,7 @@ test("isVertical : If event is resize then sencond times call. and stay.", funct
   var isVertical = method.isVertical();
 
   // Then
-  equal(isVertical,null);
+  equal(isVertical,true);
 });
 
 test("isVertical : If event is resize then sencond times call. and rotate horizontal.", function() {
@@ -441,4 +441,98 @@ test("test using isPortrait first", function() {
 
   // Then
   equal(typeof val,"boolean");
+});
+
+test("If eg.isPortrait() affect the rotate event not to be fired.", function() {
+  // Given
+  var isCall = false;
+  var isVertical1 = false;
+  var isVertical2 = false;
+  var agent = eg.agent();
+  agent.os = {
+    name: "android",
+    version: "2.1"
+  };
+
+  delete this.fakeWindow.onorientationchange;
+  this.fakeWindow.resize = "resize";
+
+  this.fakeDocument.documentElement.clientWidth =  200;
+  this.fakeDocument.documentElement.clientHeight =  100;
+
+  var method = eg.invoke("rotate",[jQuery, null, this.fakeWindow, this.fakeDocument]);
+  $(this.fakeWindow).on("rotate",function(e){
+    isCall = true;
+    isVertical2 = e.isVertical;
+  });
+
+  // When
+  this.fakeDocument.documentElement.clientWidth =  100;
+  this.fakeDocument.documentElement.clientHeight =  200;
+
+  // isVertical() should not affect isVertical2.
+  isVertical1 = method.isVertical();
+
+  method.handler({
+    type : "resize"
+  });
+  this.clock.tick( 10 );
+
+  // Then
+  ok(isCall, "rotate event is fired by resize");
+  ok(isVertical1, "Does isVertical return true?");
+  ok(isVertical2, "Does rotate event handler get vertical?");
+
+  // When
+  isCall = false;
+  agent.os = {
+    name: "android",
+    version: "4.3"
+  };
+  this.fakeWindow.onorientationchange = noop;
+  this.fakeWindow.orientation = 90;
+
+  method = eg.invoke("rotate",[jQuery, null, this.fakeWindow, this.fakeDocument]);
+  $(this.fakeWindow).on("rotate",function(e){
+    isCall = true;
+    isVertical2 = e.isVertical;
+  });
+
+  // isVertical() should not affect isVertical2.
+  isVertical1 = method.isVertical();
+  method.handler({
+    type : "orientationchange"
+  });
+
+  this.clock.tick( 500 );
+
+  // Then
+  ok(isCall, "rotate event is fired by onorientationchange");
+  ok(!isVertical1, "Does isVertical return false?");
+  ok(!isVertical2, "Does rotate event handler get horizontal?");
+});
+
+test("orientationChange : mac(PC) ", function() {
+  // Given
+  var agent = eg.agent();
+  agent.os = {
+    name: "mac",
+  };
+
+  var method = eg.invoke("rotate",[jQuery, null, this.fakeWindow, this.fakeDocument]);
+
+  // When
+  // Then
+  equal(method, null, "Invocation of rotate in mac Browser returns null");
+
+  //Given
+  agent.os = {
+    name: "windows",
+  };
+
+  method = eg.invoke("rotate",[jQuery, null, this.fakeWindow, this.fakeDocument]);
+
+  // When
+  // Then
+  equal(method, null, "Invocation of rotate in windows Browser returns null");
 });
