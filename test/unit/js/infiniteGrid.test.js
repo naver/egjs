@@ -90,6 +90,7 @@ test("release event handler after destroy", function(assert) {
 
 	// Then
 	setTimeout(function() {
+		// resize, scroll event is fired twice in IE8
 		ok(scrollCount > 0, "should exist scroll event");
 		ok(resizeCount > 0, "should exist resize event");
 		$global.off("scroll resize");
