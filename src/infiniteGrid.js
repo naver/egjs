@@ -368,8 +368,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			var self = this;
 			function delayed() {
 				self._refreshViewport();
-				self.core.element.style.width = null;
-				self.core.needsResizeLayout() && self.layout();
+				if (self.core) {
+					self.core.element.style.width = null;
+					self.core.needsResizeLayout() && self.layout();
+				}
 				delete self.resizeTimeout;
 			}
 			this.resizeTimeout = setTimeout(delayed, 100);
