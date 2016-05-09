@@ -408,6 +408,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		 * @return {eg.InfiniteGrid} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		setStatus: function(status) {
+			if (!status || !status.cssText || !status.html ||
+				!status.core || !status.data) {
+				return this;
+			}
 			this.core.element.style.cssText = status.cssText;
 			this.core.$element.html(status.html);
 			this.core.items = this.core.itemize(this.core.$element.children().toArray());
