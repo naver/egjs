@@ -8,8 +8,8 @@ module.exports = {
 	egExtend : [
 		"src/customEvent/rotate.js",
 		"src/customEvent/scrollEnd.js",
-		"src/hook/animate.js",
-		"src/hook/css.js",
+		"src/hook/transform.js",
+		"src/hook/cssPrefix.js",
 		"src/hook/pauseResume.js",
 		"src/plugin/apply.js",
 		"src/plugin/persist.js"
