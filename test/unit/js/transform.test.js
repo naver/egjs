@@ -7,7 +7,7 @@ QUnit.config.reorder = false;
 
 module("Absolute animate Test", {
 	beforeEach : function() {
-		this.egAnimate = eg.invoke("animate",[jQuery,window]);
+		this.egAnimate = eg.invoke("transform",[jQuery,window]);
 		this.$el1 = $("#box1");
 		this.$el2 = $("#box2");
 	},
@@ -71,7 +71,7 @@ $.each(ABSOLUTE_CASE, function(i, val) {
 if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
 	module("Relative animate Test", {
 		beforeEach : function() {
-			this.egAnimate = eg.invoke("animate",[jQuery,window]);
+			this.egAnimate = eg.invoke("transform",[jQuery,window]);
 		},
 		afterEach : function() {
 		}
@@ -131,7 +131,7 @@ if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
 if (navigator.userAgent.indexOf("WebKit") >= 0 || navigator.userAgent.indexOf("Firefox") >= 0) {
 	module("3d animate Test", {
 		beforeEach : function() {
-			this.egAnimate = eg.invoke("animate",[jQuery,window]);
+			this.egAnimate = eg.invoke("transform",[jQuery,window]);
 		},
 		afterEach : function() {
 		}
