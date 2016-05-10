@@ -446,6 +446,8 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 
 				if (pos[0] !== destPos[0] || pos[1] !== destPos[1]) {
 					this._animateTo(destPos, null, e || null);
+				} else {
+					this._setInterrupt(false);
 				}
 			}
 			this._status.moveDistance = null;
