@@ -6,7 +6,7 @@
 /**
  * Extends jQuery animate in order to use 'transform' property
  * @ko jQuery animate 사용시 transform을 사용할 수 있도록 확장한 animate 메소드
- * @name jQuery#animate
+ * @name jQuery#transform
  * @method
  * @param {Object} properties An object of CSS properties and values that the animation will move toward. <ko>애니메이션 할 CSS 속성과 값으로 구성된 오브젝트</ko>
  * @param {Number|String} [duration=4000] A string or number determining how long the animation will run. <ko>애니메이션 진행 시간</ko>
@@ -21,7 +21,7 @@
  *
  * @support {"ie": "10+", "ch" : "latest", "sf" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
  */
-eg.module("animate", ["jQuery", window], function($) {
+eg.module("transform", ["jQuery", window], function($) {
 	"use strict";
 
 	/**
