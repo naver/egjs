@@ -987,6 +987,47 @@ test("interrupt test after tap gesture", function(assert) {
     	});
 });
 
+test("interrupt test. Second 'MovableCoord move' can be available after 'no move' by first MovableCoord move", function(assert) {
+	var EXPECTED_RELEASE_COUNT = 2;
+	var releaseCount = 0;
+	var done = assert.async();
+	//Given
+	var el = $("#area").get(0);
+
+	this.inst.on( {
+		"release" : function(e) {
+			releaseCount++;
+		}
+	});
+
+	this.inst.bind(el, {
+		interruptable: false
+	});
+
+	this.inst.options.bounce = [0, 0, 0, 0];
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [100, 100],
+            deltaX: -10,
+            deltaY: 0,
+            duration: 1000,
+            easing: "linear"
+	}, function() {
+		Simulator.gestures.pan(el, {
+			pos: [100, 100],
+            deltaX: 0,
+            deltaY: -10,
+            duration: 1000,
+            easing: "linear"
+		}, function() {
+			equal(releaseCount, EXPECTED_RELEASE_COUNT, 
+				"Second 'MovableCoord move' can be available after 'No move' by first MovableCoord move")
+			done();
+		});
+    });
+});
+
 module("movableCoord event Test", {
 	setup : function() {
 		this.inst = new eg.MovableCoord( {
