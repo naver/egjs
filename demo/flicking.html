@@ -16,6 +16,12 @@
 
 		/* github button */
 		.gitbtn{width:50%;height:20px;float: left;}
+
+		.box {
+  			background-color: #f8eab0;
+  			border-left: 7px solid #f3db78;
+  			padding: 28px 28px 28px 21px; 
+  		}
 	</style>
 
 	<!-- jQuery -->
@@ -95,7 +101,7 @@ IE 10+ (possibly 9 also), latest of Chrome/FF/Safari, iOS 7+ and Android 2.3+ (e
 
 <h3>2) Set up your HTML</h3>
 <pre><code class="xml"> &lt;!-- wrapper ---->
- &lt;div id="wrapper">
+ &lt;div id="wrapper" class="flick">
 	&lt;!-- panels ---->
 	&lt;div>
 		&lt;p>panel 0&lt;/p>
@@ -107,6 +113,15 @@ IE 10+ (possibly 9 also), latest of Chrome/FF/Safari, iOS 7+ and Android 2.3+ (e
 		&lt;p>panel 2&lt;/p>
 	&lt;/div>
  &lt;/div></code></pre>
+
+<p class="box">
+	Flicking area MUST have <strong>height</strong> specified like below.<br/><br/>
+	<code>
+		.flick {
+			height: 50px;
+		}
+	</code>
+</p>
 
 <h3>3) Initialize it and all done!</h3>
 
