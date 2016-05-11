@@ -17,6 +17,48 @@ module("scrollEnd", {
   }
 });
 
+test("Check info object when scrollend event fire.", function() {
+
+   // Given
+  var checkInfo;
+  eg.agent = function(){
+    return {
+      "os" : {
+        "name" : "ios",
+        "version" : "8.0"
+      },
+      "browser" : {
+        "name" : ""
+      }
+    }
+  };
+
+  window.scrollTo(0, 1);
+  var method = eg.invoke("scrollEnd");
+  var self = this;
+
+  // When
+  $(window).on("scrollend", function(e,info){
+    checkInfo = info;
+  });
+
+  this.intervalNum = setInterval(function(){
+    self.topPos += 10;
+    window.scrollTo(0, self.topPos);
+    if(self.topPos > 20){
+      clearInterval(self.intervalNum);
+    }
+  }, 30);
+
+  // Then
+  stop();
+  setTimeout(function(){
+    ok(checkInfo != undefined);
+    ok(checkInfo.top != undefined);
+    ok(checkInfo.left != undefined);
+    start();
+  }, 500);
+});
 
 test("getDeviceType : android && 2.1 ", function() {
     // Given
