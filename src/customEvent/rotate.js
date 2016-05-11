@@ -17,13 +17,12 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 	 *
 	 * @ko jQuery custom rotate 이벤트 지원
 	 * @name jQuery#rotate
-	 * @event
-	 * @param {Event} e event
-	 * @param {Boolean} e.isVertical vertical <ko>수직여부</ko>
+	 * @info
+	 * @param {Boolean} info.isVertical vertical <ko>수직여부</ko>
 	 * @support { "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 * @example
-	 * $(window).on("rotate",function(e){
-	 *      e.isVertical;
+	 * $(window).on("rotate",function(e, info){
+	 *      info.isVertical;
 	 * });
 	 *
 	 */
@@ -112,12 +111,15 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 	* Trigger rotate event
 	*/
 	function triggerRotate() {
+
 		var currentVertical = isVertical();
 		if (isMobile) {
 			if (beforeVertical !== currentVertical) {
 				beforeVertical = currentVertical;
 				beforeScreenWidth = doc.documentElement.clientWidth;
-				$(global).trigger("rotate");
+				$(global).trigger("rotate", {
+					isVertical: beforeVertical
+				});
 			}
 		}
 	}
