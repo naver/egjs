@@ -46,13 +46,12 @@ test("check clone method", function() {
 		p5 : ["a",1,3]
 	};
 	var result = ig.clone({}, obj, [
-		"p1","p2","p3","p4", "p5"
+		"p1","p2","p3","p4", "p5", "p6"
 		]);
 
 	// Then
-	ok("p2" in obj, "check undefined type");
-	ok(!("p2" in result), "check undefined type");
-	notDeepEqual(obj, result, "check clone");
+	ok(typeof obj.p2 === "undefined", "check undefined type");
+	deepEqual(obj, result, "check clone");
 });
 
 module("infiniteGrid initailization/destroy Test", {

@@ -17,7 +17,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		var s;
 		$.each(what, function(i, v) {
 			s = source[v];
-			if (s !== undefined) {
+			if (v in source) {
 				if ($.isArray(s)) {
 					target[v] = $.merge([], s);
 				} else if ($.isPlainObject(s)) {
