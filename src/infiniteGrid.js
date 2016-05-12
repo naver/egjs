@@ -17,7 +17,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		var s;
 		$.each(what, function(i, v) {
 			s = source[v];
-			if (s != null) {
+			if (s !== undefined) {
 				if ($.isArray(s)) {
 					target[v] = $.merge([], s);
 				} else if ($.isPlainObject(s)) {
@@ -827,6 +827,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			this.off();
 		}
 	});
+
+	return {
+		"clone": clone
+	}
 });
 /**
  * InfiniteGrid in jQuery plugin

@@ -21,6 +21,40 @@ var getContent = function(className, x) {
 	return $el;
 };
 
+
+module("util Test", {
+	setup : function() {
+
+	},
+	teardown : function() {
+	}
+});
+
+test("check clone method", function() {
+	// Given
+	var ig = eg.invoke("infiniteGrid", [ null, null, null, null, null]);
+
+	// When
+	var obj = {
+		p1 : null,
+		p2 : undefined,
+		p3 : "string",
+		p4 : {
+			a:1,
+			b:"string"
+		},
+		p5 : ["a",1,3]
+	};
+	var result = ig.clone({}, obj, [
+		"p1","p2","p3","p4", "p5"
+		]);
+
+	// Then
+	ok("p2" in obj, "check undefined type");
+	ok(!("p2" in result), "check undefined type");
+	notDeepEqual(obj, result, "check clone");
+});
+
 module("infiniteGrid initailization/destroy Test", {
 	setup : function() {
 		this.inst = null;
