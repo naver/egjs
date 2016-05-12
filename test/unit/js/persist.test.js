@@ -301,8 +301,8 @@ $.each(['{', '[ 1,2,3 ]', '1', '1.234', '"123"'], function(i, v) {
 
 		var isNoExceptionThrown = true;
 		if(isSupportStorage) {
-			sessionStorage.setItem("KEY___persist___", v);
-			localStorage.setItem("KEY___persist___", v);
+			sessionStorage.setItem(location.href + "___persist___", v);
+			localStorage.setItem(location.href + "___persist___", v);
 		} else if(isSupportState) {
 			history.replaceState(v, document.title, location.href);	
 		}
