@@ -17,7 +17,7 @@ module("scrollEnd", {
   }
 });
 
-test("Check info object when scrollend event fire.", function() {
+test("It should fire scrollend event.", function() {
 
    // Given
   var checkInfo;
@@ -53,9 +53,8 @@ test("Check info object when scrollend event fire.", function() {
   // Then
   stop();
   setTimeout(function(){
-    ok(checkInfo != undefined);
-    ok(checkInfo.top != undefined);
-    ok(checkInfo.left != undefined);
+    equal(checkInfo.top, 30);
+    equal(checkInfo.left, 0);
     start();
   }, 500);
 });
