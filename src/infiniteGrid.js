@@ -830,7 +830,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 
 	return {
 		"clone": clone
-	}
+	};
 });
 /**
  * InfiniteGrid in jQuery plugin
