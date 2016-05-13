@@ -6,7 +6,7 @@
 /**
  * Extends jQuery animate in order to use 'transform' property
  * @ko jQuery animate 사용시 transform을 사용할 수 있도록 확장한 animate 메소드
- * @name jQuery#transform
+ * @name jQuery#animate
  * @method
  * @param {Object} properties An object of CSS properties and values that the animation will move toward. <ko>애니메이션 할 CSS 속성과 값으로 구성된 오브젝트</ko>
  * @param {Number|String} [duration=4000] A string or number determining how long the animation will run. <ko>애니메이션 진행 시간</ko>
@@ -19,7 +19,7 @@
  * 		.animate({"transform" : "+=translate3d(150px, 10%, -20px) rotate(20deg) scale3d(2, 4.2, 1)"} , 3000);
  * @see {@link http://api.jquery.com/animate/}
  *
- * @support {"ie": "10+", "ch" : "latest", "sf" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
+ * @support {"ie": "10+", "ch" : "latest", "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
  */
 eg.module("transform", ["jQuery", window], function($) {
 	"use strict";
