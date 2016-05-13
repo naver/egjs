@@ -13,7 +13,7 @@ eg.module("cssPrefix", ["jQuery", document], function($, doc) {
 	 * @name jQuery#cssPrefix
 	 * @method
 	 *
-	 * * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)", "edge" : "latest"}
+	 * * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 * @example
 	 * $("#ID").css("transform", "translate('10px', '10px');
 	 * $("#ID").css("Transform", "translate('10px', '10px');

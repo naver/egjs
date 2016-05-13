@@ -19,7 +19,7 @@
  * 		.animate({"transform" : "+=translate3d(150px, 10%, -20px) rotate(20deg) scale3d(2, 4.2, 1)"} , 3000);
  * @see {@link http://api.jquery.com/animate/}
  *
- * @support {"ie": "10+", "ch" : "latest", "sf" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)", "edge" : "latest"}
+ * @support {"ie": "10+", "ch" : "latest", "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
  */
 eg.module("transform", ["jQuery", window], function($) {
 	"use strict";

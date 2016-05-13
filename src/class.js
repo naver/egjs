@@ -14,7 +14,7 @@ eg.module("class", [eg], function(ns) {
 	 * @class
 	 * @name eg.Class
 	 *
-	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)", "edge" : "latest"}
+	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 * @param {Object} def Class definition of object literal type. <ko>리터럴 형태의 클래스 정의부</ko>
 	 * @example
 	 	var Some = eg.Class({
