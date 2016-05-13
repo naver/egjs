@@ -68,21 +68,18 @@ module("infiniteGrid initailization/destroy Test", {
 
 test("check a initialization (there are children)", function(assert) {
 	// Given
+	// When
 	var done = assert.async();
 	this.inst = new eg.InfiniteGrid("#grid");
-	this.inst.on("layoutComplete",function(e) {
+	this.inst.on("layoutComplete", function(e) {
 		// Then
 		equal(e.target.length, 6, "a number of elements are 6");
 		equal(this.core.items.length, 6, "a number of elements are 6");
 		equal(this.isProcessing(), false, "idel in layoutComplete");
 		done();
 	});
-	// When
 	// Then
-	equal(this.inst.isProcessing(), false, "idel");
-
-	// When
-	this.inst.layout();
+	equal(this.inst.isProcessing(), true, "ing...");
 });
 
 test("check a append after a initialization (there aren't children)", function(assert) {
@@ -519,10 +516,9 @@ test("restore status", function(assert) {
 test("check a clear", function(assert) {
 	var done = assert.async();
 	// Given
+	// When
 	var beforeClear = true;
-	this.inst = new eg.InfiniteGrid("#grid", {
-		"isInitLayout" : false
-	});
+	this.inst = new eg.InfiniteGrid("#grid");
 	this.inst.on("layoutComplete",function(e) {
 		// Then
 		if(beforeClear) {
@@ -545,12 +541,6 @@ test("check a clear", function(assert) {
 			done();
 		}
 	});
-	// When
-	// Then
-	equal(this.inst.isProcessing(), false, "idel");
-
-	// When
-	this.inst.layout();
 });
 
 test("Check public methods return", function () {
