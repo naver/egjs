@@ -101,8 +101,11 @@ var data = {
 };
 $(function() {
 	var $grid = $("#grid");
+	$grid.append(template(data.getItems(0)));
+
 	var ig = new eg.InfiniteGrid("#grid", {
-		count : 60
+		count : 60,
+		defaultGroupKey : 0
 	}).on({
 		"append" : function(e) {
 			var gk = this.getGroupKeys();
