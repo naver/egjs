@@ -112,6 +112,155 @@ test("previewPadding - vertical", function() {
 	equal(wrapperHeight - (padding[0] + padding[1]), panelHeight, "Each panel's height should be same as wrapper element's height");
 });
 
+test("bounce", function() {
+	var bounce = 50;
+
+	// Given
+	this.inst = new eg.Flicking($("#mflick3"), {
+		bounce : bounce
+	});
+
+	// Then
+	deepEqual(this.inst.options.bounce, [50, 50], "Bounce value set correctly?");
+
+	bounce = [ 15, 20 ];
+
+	// When
+	this.inst = new eg.Flicking($("#mflick3-1"), {
+		bounce : bounce
+	});
+
+	// Then
+	deepEqual(this.inst.options.bounce, bounce, "Bounce value set correctly?");
+});
+
+test("bounce - left/up", function(assert) {
+	var done = assert.async();
+	var done2 = assert.async();
+
+	var el = $("#mflick1")[0];
+	var bounce = [ 50, 70 ];
+	var depaPos, depaPos2;
+
+	// Given
+	new eg.Flicking(el, {
+		bounce : bounce
+	}).on({
+		beforeRestore: function(e) {
+			depaPos = e.depaPos[0];
+		}
+	});
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [0, 0],
+		deltaX: 250,
+		deltaY: 0,
+		duration: 500,
+		easing: "linear"
+	}, function() {
+		// Then
+		setTimeout(function () {
+			assert.ok(depaPos === -bounce[0], "Left bounce distance is correct?");
+			done();
+		}, 1000);
+	});
+
+	// Given
+	var el2 = $("#mflick2")[0];
+
+	new eg.Flicking(el2, {
+		bounce : bounce,
+		horizontal: false
+	}).on({
+		beforeRestore: function(e) {
+			depaPos2 = e.depaPos[1];
+		}
+	});
+
+	// When
+	Simulator.gestures.pan(el2, {
+		pos: [0, 0],
+		deltaX: 0,
+		deltaY: 250,
+		duration: 500,
+		easing: "linear"
+	}, function() {
+		// Then
+		setTimeout(function () {
+			assert.ok(depaPos2 === -bounce[0], "Left bounce distance is correct?");
+			done2();
+		}, 1000);
+	});
+});
+
+
+test("bounce - right/down", function(assert) {
+	var done = assert.async();
+	var done2 = assert.async();
+
+	var el = $("#mflick1")[0];
+	var bounce = [ 50, 70 ];
+	var depaPos, depaPos2;
+
+	// Given
+	var inst = new eg.Flicking(el, {
+		bounce : bounce,
+		defaultIndex: 2
+	}).on({
+		beforeRestore: function(e) {
+			depaPos = e.depaPos[0];
+		}
+	});
+
+	var max = inst._mcInst.options.max[0];
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [0, 0],
+		deltaX: -250,
+		deltaY: 0,
+		duration: 500,
+		easing: "linear"
+	}, function() {
+		// Then
+		setTimeout(function () {
+			assert.ok(depaPos === max + bounce[1], "Right bounce distance is correct?");
+			done();
+		}, 1000);
+	});
+
+	// Given
+	var el2 = $("#mflick2")[0];
+
+	var inst2 = new eg.Flicking(el2, {
+		bounce : bounce,
+		defaultIndex: 2,
+		horizontal: false
+	}).on({
+		beforeRestore: function(e) {
+			depaPos2 = e.depaPos[1];
+		}
+	});
+
+	var max2 = inst2._mcInst.options.max[1];
+
+	// When
+	Simulator.gestures.pan(el2, {
+		pos: [100, 50],
+		deltaX: 0,
+		deltaY: -250,
+		duration: 500,
+		easing: "linear"
+	}, function() {
+		// Then
+		setTimeout(function () {
+			assert.ok(depaPos2 === max2 + bounce[1], "Down bounce distance is correct?");
+			done2();
+		}, 1000);
+	});
+});
+
 test("threshold #1 - (horizontal) when moved more than threshold pixels", function(assert) {
 	var done = assert.async();
 
