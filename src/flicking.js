@@ -23,6 +23,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 	 * @param {Boolean} [options.horizontal=true] For move direction (when horizontal is false, then move direction is vertical) <ko>이동방향 설정 (horizontal == true 가로방향, horizontal == false 세로방향)</ko>
 	 * @param {Boolean} [options.circular=false] To make panels rotate infinitely  <ko>순환 여부</ko>
 	 * @param {Number|Array} [options.previewPadding=[0,0]] Padding value to display previous and next panels. If set array value the order is left(up) to right(down) <ko>이전과 다음 패널을 출력하는 프리뷰 형태에 사용되는 padding 값. 배열 형태로 지정시 좌측(상단), 우측(하단) 순서로 지정</ko>
+	 * @param {Number|Array} [options.bounce=[10,10]] Bounce value of start/end in non-circular mode. If set array value the order is left(up) to right(down) <ko>비순환일 때 시작/마지막 패널의 바운스 값. 배열 형태로 지정시 좌측(상단), 우측(하단) 순서로 지정</ko>
 	 * @param {Number} [options.threshold=40] Threshold pixels to move panels in prev/next direction <ko>다음 패널로 이동되기 위한 임계치 픽셀</ko>
 	 * @param {Number} [options.duration=100] Duration time of panel change animation in milliseconds <ko>패널 이동 애니메이션 진행시간(ms) 값</ko>
 	 * @param {Function} [options.panelEffect=easeOutCubic] easing function which is used on panel move animation<ko>패널 간의 이동 애니메이션에 사용되는 effect easing 함수</ko>
@@ -101,13 +102,53 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				// jscs:enable validateLineBreaks, maximumLineLength
 			}
 
+			this._setOptions(options);
+			this._setConfig($children, _prefix);
+
+			!ns._hasClickBug() && (this._setPointerEvents = $.noop);
+
+			this._build();
+			this._bindEvents();
+
+			this._applyPanelsCss();
+			this._arrangePanels();
+
+			this.options.hwAccelerable && SUPPORT_WILLCHANGE && this._setHint();
+			this._adjustContainerCss("end");
+		},
+
+		/**
+		 * Set options values
+		 * @param {Object} options
+		 */
+		_setOptions: function(options) {
+			var padding = [0, 0];
+			var bounce = [10, 10];
+			var self = this;
+
+			var setDefault = function (name, defVal) {
+				var options = self.options;
+				var val = options[ name ];
+
+				if (typeof val === "number") {
+					val = $.each(defVal, function(i) {
+						defVal[i] = val;
+					});
+				} else if (val.constructor !== Array) {
+					val = defVal;
+				}
+
+				options[ name ] = val;
+			};
+
 			$.extend(this.options = {
 				hwAccelerable: ns.isHWAccelerable(),  // check weather hw acceleration is available
-				prefix: "eg-flick",		// prefix value of class name
+				prefix: "eg-flick",			// prefix value of class name
 				deceleration: 0.0006,		// deceleration value
 				horizontal: true,			// move direction (true == horizontal, false == vertical)
 				circular: false,			// circular mode. In this mode at least 3 panels are required.
-				previewPadding: [0, 0],	// preview padding value in left(up) to right(down) order. In this mode at least 5 panels are required.
+				previewPadding: padding,	// preview padding value in left(up) to right(down) order. In this mode at least 5 panels are required.
+				bounce: bounce,				// bounce value in left(up) to right(down) order. Works only in non-circular mode.
 				threshold: 40,				// the distance pixel threshold value for change panel
 				duration: 100,				// duration ms for animation
 				panelEffect: $.easing.easeOutCubic,  // $.easing function for panel change animation
@@ -115,13 +156,18 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				inputType: ["touch", "mouse"]	// input type
 			}, options);
 
-			var padding = this.options.previewPadding;
+			setDefault("previewPadding", padding);
+			setDefault("bounce", bounce);
+		},
 
-			if (typeof padding === "number") {
-				padding = this.options.previewPadding = [ padding, padding ];
-			} else if (padding.constructor !== Array) {
-				padding = this.options.previewPadding = [ 0, 0 ];
-			}
+		/**
+		 * Set config values
+		 * @param {jQuery} $children wrappers' children elements
+		 * @param {String} _prefix event prefix
+		 */
+		_setConfig: function($children, _prefix) {
+			var options = this.options;
+			var padding = options.previewPadding;
 
 			// config value
 			this._conf = {
@@ -148,7 +194,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 					restore: false,
 					restoreCall: false
 				},
-				useLayerHack: this.options.hwAccelerable && !SUPPORT_WILLCHANGE,
+				useLayerHack: options.hwAccelerable && !SUPPORT_WILLCHANGE,
 				dirData: [],			// direction constant value according horizontal or vertical
 				indexToMove: 0,
 				eventPrefix: _prefix || "",
@@ -157,21 +203,10 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				$dummyAnchor: null
 			};
 
-			$([["LEFT", "RIGHT"], ["UP", "DOWN"]][+!this.options.horizontal]).each(
+			$([["LEFT", "RIGHT"], ["UP", "DOWN"]][+!options.horizontal]).each(
 				$.proxy(function (i, v) {
 					this._conf.dirData.push(MC["DIRECTION_" + v]);
 				}, this));
-
-			!ns._hasClickBug() && (this._setPointerEvents = $.noop);
-
-			this._build();
-			this._bindEvents();
-
-			this._applyPanelsCss();
-			this._arrangePanels();
-
-			this.options.hwAccelerable && SUPPORT_WILLCHANGE && this._setHint();
-			this._adjustContainerCss("end");
 		},
 
 		/**
@@ -186,6 +221,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var horizontal = options.horizontal;
 			var panelCount = panel.count = panel.origCount = $children.length;
 			var cssValue;
+			var bounce = options.bounce;
 
 			this._setPadding(padding, true);
 			var sizeValue = this._getDataByDirection([ panel.size, "100%" ]);
@@ -220,7 +256,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				margin: 0,
 				circular: false,
 				easing: options.panelEffect,
-				deceleration: options.deceleration
+				deceleration: options.deceleration,
+				bounce: this._getDataByDirection([ 0, bounce[1], 0, bounce[0] ])
 			}).bind(this.$wrapper, {
 				scale: this._getDataByDirection([-1, 0]),
 				direction: MC["DIRECTION_" +
@@ -487,7 +524,10 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @return {eg.MovableCoord} MovableCoord instance
 		 */
 		_setMovableCoord: function (method, coord, isDirVal, duration) {
-			isDirVal && this._getDataByDirection(coord);
+			if (isDirVal) {
+				coord = this._getDataByDirection(coord);
+			}
+
 			return this._mcInst[method](coord[0], coord[1], duration);
 		},
 
@@ -508,6 +548,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @return {Array}
 		 */
 		_getDataByDirection: function (value) {
+			value = value.concat();
 			!this.options.horizontal && value.reverse();
 			return value;
 		},
@@ -855,7 +896,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 */
 		_getCoordsValue: function (coords) {
 			// the param comes as [ val, 0 ], whatever the direction. So reorder the value depend the direction.
-			this._getDataByDirection(coords);
+			coords = this._getDataByDirection(coords);
 
 			return {
 				x: this._getUnitValue(coords[0]),
@@ -892,7 +933,23 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * Check if panel passed through threshold pixel
 		 */
 		_isMovable: function () {
-			return Math.abs(this._conf.touch.distance) >= this.options.threshold;
+			var options = this.options;
+			var mcInst = this._mcInst;
+			var isMovable = Math.abs(this._conf.touch.distance) >= options.threshold;
+			var max;
+			var currPos;
+
+			if (!options.circular && isMovable) {
+				max = this._getDataByDirection(mcInst.options.max)[0];
+				currPos = this._getDataByDirection(mcInst.get())[0];
+
+				// if current position out of range
+				if (currPos < 0 || currPos > max) {
+					return false;
+				}
+			}
+
+			return isMovable;
 		},
 
 		/**
