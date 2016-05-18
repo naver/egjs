@@ -485,11 +485,7 @@ test("slow movement test (no-velocity)", function(assert) {
 			ok(false, "must not fired 'animationStart' event");
 		},
 		"animationEnd" : function(e) {
-			//@todo we should fix it for flicking
-			//ok(false, "must not fired 'animationEnd' event");
-			firedAnimationEnd++;
-			ok(true, "fire 'animationEnd' event");
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			ok(false, "must not fired 'animationEnd' event");
 		}
 	});
 	this.inst.bind(el);
@@ -507,7 +503,7 @@ test("slow movement test (no-velocity)", function(assert) {
 		setTimeout(function() {
 			equal(firedHold, 1, "fired 'hold' event");
 			equal(firedRelease, 1,"fired 'release' event");
-			equal(firedAnimationEnd, 1, "fired 'animationEnd' event");
+			// equal(firedAnimationEnd, 1, "fired 'animationEnd' event");
 			done();
 		},1000);
     	});
@@ -989,6 +985,47 @@ test("interrupt test after tap gesture", function(assert) {
 			done();
 		},1000);
     	});
+});
+
+test("interrupt test. Second 'MovableCoord move' can be available after 'no move' by first MovableCoord move", function(assert) {
+	var EXPECTED_RELEASE_COUNT = 2;
+	var releaseCount = 0;
+	var done = assert.async();
+	//Given
+	var el = $("#area").get(0);
+
+	this.inst.on( {
+		"release" : function(e) {
+			releaseCount++;
+		}
+	});
+
+	this.inst.bind(el, {
+		interruptable: false
+	});
+
+	this.inst.options.bounce = [0, 0, 0, 0];
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [100, 100],
+            deltaX: -10,
+            deltaY: 0,
+            duration: 1000,
+            easing: "linear"
+	}, function() {
+		Simulator.gestures.pan(el, {
+			pos: [100, 100],
+            deltaX: 0,
+            deltaY: -10,
+            duration: 1000,
+            easing: "linear"
+		}, function() {
+			equal(releaseCount, EXPECTED_RELEASE_COUNT, 
+				"Second 'MovableCoord move' can be available after 'No move' by first MovableCoord move")
+			done();
+		});
+    });
 });
 
 module("movableCoord event Test", {

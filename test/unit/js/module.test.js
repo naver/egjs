@@ -128,6 +128,22 @@ QUnit.test( "When a parameter is string and not loaded as AMD.", function( asser
   });
 });
 
+QUnit.test( "When a parameter is string and has require but has not .specified", function( assert ) {
+  //Given
+  window.require = { baseUrl: '/js' };
+  //When
+  //Then
+  try{
+    eg.module("Only has require",["jQuery"],function($) {
+      assert.ok(true);
+    });  
+  }catch(e){
+    assert.ok(false);
+  }
+  
+});
+
+
 QUnit.test( "When a parameter is string and not loaded as AMD.", function( assert ) {
   //Given
   var Hammer = {};

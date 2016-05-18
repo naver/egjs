@@ -17,7 +17,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		var s;
 		$.each(what, function(i, v) {
 			s = source[v];
-			if (s != null) {
+			if (v in source) {
 				if ($.isArray(s)) {
 					target[v] = $.merge([], s);
 				} else if ($.isPlainObject(s)) {
@@ -113,7 +113,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			var excess = columnWidth - containerWidth % columnWidth;
 
 			// if overshoot is less than a pixel, round up, otherwise floor it
-			cols = Math.max(Math[ excess && excess < 1 ? "round" : "floor" ](cols), 1);
+			cols = Math.max(Math[ excess && excess <= 1 ? "round" : "floor" ](cols), 1);
 
 			// reset column Y
 			this._appendCols = [];
@@ -222,7 +222,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 	 * @param {Number} [options.threshold=300] Threshold pixels to determine if grid needs to append or prepend elements<ko>엘리먼트가 append 또는 prepend될지를 결정하는 임계치 픽셀</ko>
 	 *
 	 * @codepen {"id":"zvrbap", "ko":"InfiniteGrid 데모", "en":"InfiniteGrid example", "collectionId":"DPYEww", "height": 403}
-	 *  @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
+	 *  @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 *
 	 *  @see Outlayer {@link https://github.com/metafizzy/outlayer}
 	 *
@@ -300,12 +300,15 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			return doc.body.scrollTop || doc.documentElement.scrollTop;
 		},
 		_onScroll: function() {
+			if (this.core && !this.core._isLayoutInited) {
+				return;
+			}
 			if (this.isProcessing()) {
 				return;
 			}
 			var scrollTop = this._getScrollTop();
 			var prevScrollTop = this._prevScrollTop;
-			this._prevScrollTop = scrollTop;
+
 			if (this._isIos && scrollTop === 0 || prevScrollTop === scrollTop) {
 				return;
 			}
@@ -359,16 +362,22 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 					}
 				}
 			}
+			this._prevScrollTop = scrollTop;
 		},
 		_onResize: function() {
 			if (this.resizeTimeout) {
 				clearTimeout(this.resizeTimeout);
 			}
+			if (this.core && !this.core._isLayoutInited) {
+				return;
+			}
 			var self = this;
 			function delayed() {
 				self._refreshViewport();
-				self.core.element.style.width = null;
-				self.core.needsResizeLayout() && self.layout();
+				if (self.core) {
+					self.core.element.style.width = null;
+					self.core.needsResizeLayout() && self.layout();
+				}
 				delete self.resizeTimeout;
 			}
 			this.resizeTimeout = setTimeout(delayed, 100);
@@ -405,6 +414,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		 * @return {eg.InfiniteGrid} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		setStatus: function(status) {
+			if (!status || !status.cssText || !status.html ||
+				!status.core || !status.data) {
+				return this;
+			}
 			this.core.element.style.cssText = status.cssText;
 			this.core.$element.html(status.html);
 			this.core.items = this.core.itemize(this.core.$element.children().toArray());
@@ -461,7 +474,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			while (v = this.core.items[i++]) {
 				v.isAppend = true;
 			}
-			this.core.layout();
+			!this.core._isLayoutInited ?
+				this._waitResource(this.core.$element, function() {
+					this.core.layout();
+				}) : this.core.layout();
 			return this;
 		},
 		/**
@@ -524,7 +540,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			this._reset();
 			this.layout();
 			return this;
-
 		},
 
 		_getTopItem: function() {
@@ -578,13 +593,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		_onlayoutComplete: function(e) {
 			var distance = 0;
 			var isAppend = this._isAppendType;
-			if (isAppend === false) {
-				this._isFitted = false;
-				this._fit(true);
-				distance = e.length >= this.core.items.length ?
-					0 : this.core.items[e.length].position.y;
-				distance > 0 && this.$view.scrollTop(this._getScrollTop() + e.distance);
-			}
 			var item;
 			var i = 0;
 			while (item = e[i++]) {
@@ -594,12 +602,23 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 				}
 			}
 
-			// reset flags
-			this._reset(true);
-
 			// refresh element
 			this._topElement = this.getTopElement();
 			this._bottomElement = this.getBottomElement();
+
+			if (isAppend === false) {
+				this._isFitted = false;
+				this._fit(true);
+				distance = e.length >= this.core.items.length ?
+					0 : this.core.items[e.length].position.y;
+				if (distance > 0) {
+					this._prevScrollTop = this._getScrollTop() + distance;
+					this.$view.scrollTop(this._prevScrollTop);
+				}
+			}
+
+			// reset flags
+			this._reset(true);
 
 			/**
 			 * Occurs when layout is completed (after append / after prepend / after layout)
@@ -643,21 +662,26 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 				this.core.items = items.concat(this.core.items.slice(0));
 				items = items.reverse();
 			}
-			if (this.isRecycling()) {
-				this._adjustRange(isAppend, $cloneElements);
-			}
+			this.isRecycling() && this._adjustRange(isAppend, $cloneElements);
+
 			var noChild = this.core.$element.children().length === 0;
 			this.core.$element[isAppend ? "append" : "prepend"]($cloneElements);
 			noChild && this.core.resetLayout();		// for init-items
 
-			var needCheck = this._checkImageLoaded($cloneElements);
+			this._waitResource($cloneElements, function() {
+				this.core.layoutItems(items, true);
+			});
+		},
+		_waitResource: function($element, callback) {
+			var needCheck = this._checkImageLoaded($element);
 			if (needCheck.length > 0) {
-				this._waitImageLoaded(items, needCheck);
+				this._waitImageLoaded(needCheck, callback);
 			} else {
-				// convert to async
 				var self = this;
+
+				// convert to async
 				setTimeout(function() {
-					self.core.layoutItems(items, true);
+					callback && self.core && callback.apply(self);
 				}, 0);
 			}
 		},
@@ -743,9 +767,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			var y = this.core.updateCols();	// for prepend
 			while (item = this.core.items[i++]) {
 				item.position.y -= y;
-				applyDom && item.css({
-					"top": item.position.y + "px"
-				});
+				applyDom && $.style(item.element, "top", item.position.y + "px");
 			}
 			this.core.updateCols(true);	// for append
 			height = this.core._getContainerSize().height;
@@ -789,13 +811,13 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			});
 			return needCheck;
 		},
-		_waitImageLoaded: function(items, needCheck) {
-			var core = this.core;
+		_waitImageLoaded: function(needCheck, callback) {
+			var self = this;
 			var checkCount = needCheck.length;
 			var onCheck = function(e) {
 				checkCount--;
 				$(e.target).off("load error");
-				checkCount <= 0 && core.layoutItems(items, true);
+				checkCount <= 0 && callback && self.core && callback.apply(self);
 			};
 			$.each(needCheck, function(k, v) {
 				$(v).on("load error", onCheck);
@@ -816,6 +838,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			this.off();
 		}
 	});
+
+	return {
+		"clone": clone
+	};
 });
 /**
  * InfiniteGrid in jQuery plugin

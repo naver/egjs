@@ -38,7 +38,7 @@ button{
 <script src="../../src/eg.js"></script>
 <script src="../../src/customEvent/rotate.js"></script>
 <script src="../../src/customEvent/scrollEnd.js"></script>
-<script src="../../src/hook/css.js"></script>
+<script src="../../src/hook/cssPrefix.js"></script>
 <script src="../../src/class.js"></script>
 <script src="../../src/component.js"></script>
 <script src="../../src/movableCoord.js"></script>
@@ -324,10 +324,16 @@ function scroll(up) {
 }
 
 function log(e) {
-	var direction = getDirection(e.direction),
-		 msg = [ i++, e.eventType, direction, e.no ].join(" : ");
+	if(log.end || !log.count) {
+		elLog2.html("");
+		log.count = 1;
+	}
+
+	var direction = getDirection(e.direction);
+	var msg = [ log.count++, e.eventType, direction, e.no ].join(" : ");
 
 	elLog2.html( [ msg, elLog2.html(), ""].join("<br>") );
+	log.end = /^(flickEnd|restore)$/.test(e.eventType);
 }
 
 setTimeout(function() {
@@ -340,25 +346,25 @@ setTimeout(function() {
 		threshold : 70
 	});
 
-	f2 = new eg.Flicking($("#mflick2"), {
+	f2 = new eg.Flicking("#mflick2", {
 		duration : 300,
 		circular : true,
 		defaultIndex : 1
 	});
 
-	f2a = new eg.Flicking($("#mflick2-1"), {
+	f2a = new eg.Flicking("#mflick2-1", {
 		duration : 300,
 		circular : true
 	});
 
-	f3 = new eg.Flicking($("#mflick3"), {
+	f3 = new eg.Flicking("#mflick3", {
 		duration : 300,
 		circular : true,
 		previewPadding : [ 40, 70 ],
 		defaultIndex : 3
 	});
 
-	f3a = new eg.Flicking($("#mflick3-1"), {
+	f3a = new eg.Flicking("#mflick3-1", {
 		duration : 300,
 		circular : true,
 		previewPadding : 80
@@ -372,20 +378,20 @@ setTimeout(function() {
 		horizontal : false
 	});
 
-	vf2 = new eg.Flicking($("#vflick2"), {
+	vf2 = new eg.Flicking("#vflick2", {
 		duration : 300,
 		circular : true,
 		defaultIndex : 1,
 		horizontal : false
 	});
 
-	vf2a = new eg.Flicking($("#vflick2-1"), {
+	vf2a = new eg.Flicking("#vflick2-1", {
 		duration : 300,
 		circular : true,
 		horizontal : false
 	});
 
-	vf3 = new eg.Flicking($("#vflick3"), {
+	vf3 = new eg.Flicking("#vflick3", {
 		duration : 300,
 		circular : true,
 		previewPadding : [ 20, 10 ],
@@ -393,7 +399,7 @@ setTimeout(function() {
 		defaultIndex : 3
 	});
 
-	vf3a = new eg.Flicking($("#vflick3-1"), {
+	vf3a = new eg.Flicking("#vflick3-1", {
 		duration : 300,
 		//,defaultIndex : 2,
 		circular : true,
@@ -401,7 +407,7 @@ setTimeout(function() {
 		horizontal : false
 	});
 
-	f5 = new eg.Flicking($("#mflick5"), {
+	f5 = new eg.Flicking("#mflick5", {
 		duration : 500,
 		threshold : 50,
 		circular : true
@@ -413,7 +419,7 @@ setTimeout(function() {
 		restore : log
 	});
 
-	f6 = new eg.Flicking($("#mflick6"), {
+	f6 = new eg.Flicking("#mflick6", {
 		duration : 500,
 		threshold : 50,
 		circular : true
@@ -427,6 +433,5 @@ setTimeout(function() {
 	});
 }, 500);
 </script>
-<!--<script src="http://yobi.navercorp.com/Front-End/egjs-util/rawcode/master/src/loghelper.js?init"></script>-->
 </body>
 </html>

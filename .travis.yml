@@ -1,13 +1,12 @@
 language: node_js
 node_js:
   - "0.10.40"
-env:
-  global:
-     - BROWSERSTACK_USERNAME=heejaekim1
-     - BROWSERSTACK_KEY=qzhCCRaTygGqQwLNm6mu
 before_install:
   - npm install -g grunt-cli
   - npm install -g bower
 install:
   - npm install
   - bower install
+after_success:
+  - npm install codeclimate-test-reporter
+  - codeclimate-test-reporter < report/lcov.info

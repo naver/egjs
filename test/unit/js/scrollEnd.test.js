@@ -89,6 +89,33 @@ test("getDeviceType : android && version 3.x over ", function() {
 
 });
 
+test("getDeviceType : ios 7 && not webview ", function() {
+    // Given
+  eg.agent = function(){
+    return {
+       "os" : {
+           "name" : "ios",
+           "version" : "7.0"
+       	},
+        "browser" : {
+            "name" : "safari",
+            "version" : "7.0",
+            "webview" : false
+        }
+    };
+  };
+    var method = eg.invoke("scrollEnd");
+
+    // When
+    $(window).on("scrollend", function(){
+    });
+
+    // Then
+    equal(method.getDeviceType(), method.SCROLLBASE);
+
+});
+
+
 test("getDeviceType : ios && version 8.x over ", function() {
     // Given
   eg.agent = function(){
@@ -98,7 +125,9 @@ test("getDeviceType : ios && version 8.x over ", function() {
            "version" : "8.0"
        },
        "browser" : {
-            "name" : ""
+            "name" : "safari",
+            "version" : "8.0",
+            "webview" : false
        }
      }
     };
@@ -113,6 +142,57 @@ test("getDeviceType : ios && version 8.x over ", function() {
 
 });
 
+test("getDeviceType : ios 8 && webview ", function() {
+    // Given
+  eg.agent = function(){
+    return {
+       "os" : {
+           "name" : "ios",
+           "version" : "8.0"
+       	},
+        "browser" : {
+            "name" : "safari",
+            "version" : "-1",
+            "webview" : true
+        }
+    };
+    };
+    var method = eg.invoke("scrollEnd");
+
+    // When
+    $(window).on("scrollend", function(){
+    });
+
+    // Then
+    equal(method.getDeviceType(), method.TIMERBASE);
+
+});
+
+test("getDeviceType : ios 7 && webview ", function() {
+    // Given
+  eg.agent = function(){
+    return {
+       "os" : {
+           "name" : "ios",
+           "version" : "7.0"
+       	},
+        "browser" : {
+            "name" : "safari",
+            "version" : "-1",
+            "webview" : true
+        }
+    };
+    };
+    var method = eg.invoke("scrollEnd");
+
+    // When
+    $(window).on("scrollend", function(){
+    });
+
+    // Then
+    equal(method.getDeviceType(), method.TIMERBASE);
+
+});
 
 test("getDeviceType : window && version 8.x over ", function() {
     // Given

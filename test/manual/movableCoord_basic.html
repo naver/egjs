@@ -22,6 +22,8 @@
   position:relative; border:5px solid #888; background-color:skyblue;
   width:80px; height:400px; left:310px; top:-500px;
 }
+
+.log{border:solid 1px #000;overflow:scroll;-webkit-overflow-scrolling:touch; width:99%;height:300px}
 </style>
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-shim.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-sham.js"></script> -->
@@ -31,7 +33,7 @@
 <script src="../../src/eg.js"></script>
 <script src="../../src/customEvent/rotate.js"></script>
 <script src="../../src/customEvent/scrollEnd.js"></script>
-<script src="../../src/hook/css.js"></script>
+<script src="../../src/hook/cssPrefix.js"></script>
 <script src="../../src/class.js"></script>
 <script src="../../src/component.js"></script>
 <script src="../../src/movableCoord.js"></script>
@@ -42,8 +44,17 @@
   </div>
   <div id="hmove"></div>
   <div id="vmove"></div>
-
+  <button id="clear">LOG CLEAR</button>
+  <textarea id="log" class="log"></textarea>
 <script>
+var $log = $("#log");
+function addLog(msg) {
+  $log.html(msg + "\n" + $log.html());
+}
+$("#clear").click(function(e) {
+  $log.html("");
+});
+
 var supportTransform = (function() {
     var bodyStyle = (document.head || document.getElementsByTagName("head")[0]).style;
     return "transform" in bodyStyle || "webkitTransform" in bodyStyle || "msTransform" in bodyStyle || "mozTransform" in bodyStyle;
@@ -56,9 +67,21 @@ var $dot = $("#dot"),
     bounce : 100,
     deceleration : 0.0024
   }).on({
-
+    "hold" : function(evt) {
+      addLog("[Hold] " + evt.pos);
+    },
+    "release" : function(evt) {
+      addLog("[Release] " + evt.destPos);
+    },
+    "animationStart" : function(evt) {
+      addLog("[animationStart ==>]");
+    },
+    "animationEnd" : function(evt) {
+      addLog("[==> animationEnd]");
+    },
     "change" : function(evt) {
       var pos = evt.pos;
+      // addLog("[Change] " + pos);
       if(supportTransform) {
         $dot.css("transform", eg.translate(pos[0] + 'px',pos[1] + "px", useHW));
       } else {

@@ -4,8 +4,17 @@
 */
 
 function noop() {};
-module("persist", {
+
+module("persist: mock", {
 	setup: function() {
+		console.oldWarn = console.warn;
+		console.warn = function(msg){
+		};
+
+		this.data = {
+			"scrollTop": 100
+		};
+
 		this.fakeDocument = {
 			title: ""
 		};
@@ -38,13 +47,8 @@ module("persist", {
 			}
 		};
 		this.fakeEvent = {};
-		this.data = {
-			"scrollTop": 100
-		};
 		this.storage = {};
-
-		this.method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
-		this.GLOBALKEY = this.method.GLOBALKEY;
+		
 		/*
 		 *	 Mock History Object
 		*/
@@ -54,7 +58,10 @@ module("persist", {
 
 		History.prototype.replaceState = function(state) {
 			this.state = state;
-		};
+		};	
+		
+		this.method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
+		this.GLOBALKEY = this.method.GLOBALKEY;
 	},
 	teardown: function() {
 		"replaceState" in this.fakeWindow.history && this.fakeWindow.history.replaceState(null, "", "");
@@ -72,7 +79,7 @@ test("reset", function() {
 test("persist : save state data, get state data", function() {
 	// When
 	var state = this.method.persist();
-
+	
 	// Then
 	equal(state, null);
 
@@ -103,11 +110,10 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 	var ht = {};
 	ht[this.GLOBALKEY] = this.data;
 	this.fakeWindow.performance.navigation.type = 2;	// navigation
-	this.fakeWindow.history.state = JSON.stringify(ht);
-
 	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
+	method.persist(this.data)
 	deepEqual(method.persist(), this.data);
-
+	
 	// When
 	$(this.fakeWindow).trigger({
 		type: "pageshow",
@@ -118,7 +124,6 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 
 	// Then
 	deepEqual(method.persist(), this.data);
-
 
 	// When
 	this.fakeWindow.performance.navigation.type = 0;	// enter url...
@@ -139,7 +144,6 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 	// Then
 	equal(method.persist(), null);
 
-
 	// When
 	this.fakeWindow.performance.navigation.type = 1;
 	this.fakeWindow.history.state = JSON.stringify(ht);
@@ -158,6 +162,7 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 
 	// Then
 	equal(method.persist(), null);
+
 });
 
 test("getState, setState: getter, setter of state", function() {
@@ -198,8 +203,8 @@ test("onPageshow : when bfCache miss and BF navigated, persist event must be tri
 
 	// Then
 	deepEqual(restoredState, clonedData);
- });
-
+});
+ 
 test("Test not throwing error for legacy browsers", function() {
 	// Given
 	this.fakeWindow.history = {};
@@ -227,6 +232,133 @@ test("Test for browsers which don't have JSON object", function() {
 	// Then
 	ok(!method, "If browser don't have JSON object, persist shouldn't be defined.");
 	equal(callCount, 1);
+
+	console.warn = console.oldWarn;
+});
+
+module("persist: native", {
+	setup: function() {
+		this.data = {
+			"scrollTop": 100
+		};
+		this.method = eg.invoke("persist",[null, eg, window, document]);
+		this.GLOBALKEY = this.method.GLOBALKEY;
+	},
+	teardown: function() {
+		"replaceState" in window.history && window.history.replaceState(null, "", "");
+	}
+});
+
+test("reset", function() {
+	// When
+	this.method.reset();
+
+	// Then
+	equal($.persist(), null);
+});
+
+test("persist : save state data, get state data", function() {
+	// When
+	var state = this.method.persist();
+	
+	// Then
+	equal(state, null);
+
+	// When
+	var clonedState = this.method.persist(this.data);
+	
+	// Then
+	notEqual(clonedState, this.data);
+	deepEqual(clonedState, this.data);
+});
+
+test("persist : save state data by key, get state data by key", function() {
+	// When
+	var state = this.method.persist("TESTKEY");
+
+	// Then
+	equal(state, null);
+
+	// When
+	var clonedState = this.method.persist("TESTKEY", this.data);
+
+	// Then
+	notEqual(clonedState, this.data);
+	deepEqual(clonedState, this.data);
+});
+
+$.each(['{', '[ 1,2,3 ]', '1', '1.234', '"123"'], function(i, v) {
+	test("show warning message for storage polloution with value that can be parsed: "+ v, function() {	
+		// Given		
+		var callCount = 0;
+		console.warn = function(msg){
+			callCount++;
+		};
+		var clonedState = this.method.persist(this.data);
+		
+		var isSupportState = "replaceState" in history && "state" in history;	
+		var isSupportStorage = "sessionStorage" in window || "localStorage" in window;	
+
+		var isNoExceptionThrown = true;
+		if(isSupportStorage) {
+			sessionStorage.setItem(location.href + "___persist___", v);
+			localStorage.setItem(location.href + "___persist___", v);
+		} else if(isSupportState) {
+			history.replaceState(v, document.title, location.href);	
+		}
+	
+		// When	
+		try {
+			this.method.persist();
+		} catch (e) {
+			isNoExceptionThrown = false;
+		}
+	
+		// Then	
+		equal(callCount, (isSupportStorage || isSupportState) ? 1 : 0);
+		ok(isNoExceptionThrown)
+	
+		console.warn = console.oldWarn;
+	});
+});
+
+test("getState, setState: getter, setter of state", function() {
+	// When
+	this.method.setState(this.data);
+	var clonedData = this.method.getState();
+
+	// Then
+	deepEqual(clonedData, this.data);
+});
+
+test("Test not throwing error for legacy browsers", function() {
+	// Given
+	var isPersistAvailable = ("replaceState" in history && "state" in history) ||
+	"sessionStorage" in window || "localStorage" in window;	
+
+	// When
+	var persist = eg.invoke("persist",[null, eg, window, document]);
+	
+	// Then
+	ok(isPersistAvailable ? persist : !persist, 
+		"If browser don't have history.state neither web storage, persist shouldn't be defined.");
+});
+
+test("Test for browsers which don't have JSON object", function() {
+	// Given
+	var isSupportJSON = "JSON" in window;
+	console.oldWarn = console.warn;
+	var callCount=0;
+	console.warn = function(msg){
+		callCount++;
+	}
+
+	// When
+	var persist = eg.invoke("persist",[null, eg, window, document]);
+
+	// Then
+	ok(isSupportJSON ? persist : !persist, "If browser don't have JSON object, persist shouldn't be defined.");
+	equal(callCount, isSupportJSON ? 0 : 1);
 
 	console.warn = console.oldWarn;
 });
@@ -287,7 +419,7 @@ module("extend Agent Test", {
 	}
 });
 
-ua.forEach(function(v,i) {
+$.each(ua, function(i, v) {
 	test("$.persist.isNeeded : "+ v.device, function() {
 		// Given
 		this.fakeWindow.navigator.userAgent = v.ua;

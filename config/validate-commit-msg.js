@@ -14,9 +14,10 @@ var fs = require('fs');
 var util = require('util');
 
 
+var MAX_TITLE_LENGTH = 50;
 var MAX_LENGTH = 100;
 var PATTERN = /^(?:fixup!\s*)?(\w*)(\(([\w\$\,\.\*/-]*)\))?\: (.*)$/;
-var IGNORED = /^WIP\:/;
+var IGNORED = /^skip\:/;
 var TYPES = {
   feat: true,
   fix: true,
@@ -61,6 +62,12 @@ var validateMessage = function(message, fullMessage) {
   var module = match[3];
   var subject = match[4];
 
+  if (subject.length > MAX_TITLE_LENGTH) {
+
+    error('The maximum length for PR subject is %d characters !', MAX_TITLE_LENGTH);
+    isValid = false;
+  }
+
   if (!TYPES.hasOwnProperty(type)) {
     error('"%s" is not allowed type !', type);
     return false;
@@ -94,7 +101,7 @@ exports.validateMessage = validateMessage;
 
 // hacky start if not run by jasmine :-D
 if (process.argv.join('').indexOf('jasmine-node') === -1) {
-  var commitMsgFile = process.argv[2];
+  var commitMsgFile = '.git/COMMIT_EDITMSG';
   var incorrectLogFile = commitMsgFile.replace('COMMIT_EDITMSG', 'logs/incorrect-commit-msgs');
 
   fs.readFile(commitMsgFile, function(err, buffer) {

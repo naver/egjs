@@ -31,7 +31,7 @@ module.exports = {
 			banner : "<%=banner.common %><%=banner.pkgd('eg.flicking') %><%=concat.pkgd_flicking.src.join('\\n* ')%>\n*/\n",
 			process: changeSrc
 		},
-		src : dependency.hammer.concat(dependency.egCore, ["src/hook/css.js", "src/movableCoord.js", "src/flicking.js"]),
+		src : dependency.hammer.concat(dependency.egCore, ["src/hook/cssPrefix.js", "src/movableCoord.js", "src/flicking.js"]),
 		dest : "dist/pkgd/flicking.pkgd.js"
 	},
 	pkgd_infiniteGrid: {
