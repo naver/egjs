@@ -9,3 +9,5 @@ temp
 doc
 .idea/
 dist
+browserstack-run.pid
+config/browertstack.config.json

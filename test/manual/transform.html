@@ -24,8 +24,8 @@ div.notice {
 <script src="../../bower_components/jquery/jquery.js"></script>
 <script src="../../src/module.js"></script>
 <script src="../../src/eg.js"></script>
-<script src="../../src/hook/css.js"></script>
-<script src="../../src/hook/animate.js"></script>
+<script src="../../src/hook/cssPrefix.js"></script>
+<script src="../../src/hook/transform.js"></script>
 </head>
 <body>
 
@@ -49,7 +49,7 @@ div.notice {
 <h2>3d Test Case</h2>
 <div id="box4" style="background:#98bf21;height:100px;width:100px;margin:6px;">BOX</div>
 <div class="notice">Test if it animates by 3d transform.</div>
-<div style="border:dotted 1px;padding:10px;background-color:red;color:white">Wekbit browser is only possible. For example FireFox, IE is not available.</div>
+<div style="border:dotted 1px;padding:10px;background-color:red;color:white">Wekbit browser and Firefox is only possible. For example IE is not available.</div>
 <div id="3dTestButtons"></div>
 <script>
 
@@ -57,7 +57,7 @@ var absoluteTestCases = {
 	"tc1": {"targetId": "box", "tc": "translateX(50px)"},
 	"tc2": {"targetId": "box", "tc": "translate(100%, 100%)"},
 	"tc3": {"targetId": "box", "tc": "rotate(45deg)"},
-	"tc4": {"targetId": "box", "tc": "scale(0.5)"},
+	"tc4": {"targetId": "box", "tc": "scale(0.5, 1)"},
 	"tc5": {"targetId": "box", "tc": "skewX(30deg)"},
 	"tc6": {"targetId": "box", "tc": "skew(30deg, 30deg)"},
 	"tc7": {"targetId": "box", "tc": "matrix(.5, .433, -.5, 1.033, 50, -10)"},
@@ -73,7 +73,7 @@ var relativeTestCases = {
 	"relTc6": {"targetId": "box2", "tc": "+=translate(-50px, -50px)"},
 	"relTc7": {"targetId": "box2", "tc": "+=rotate(45deg)"},
 	"relTc8": {"targetId": "box2", "tc": "+=scale(0.5)"},
-	"relTc9": {"targetId": "box2", "tc": "+=scale(2)"},
+	"relTc9": {"targetId": "box2", "tc": "+=scale(2, 1)"},
 	"relTc10": {"targetId": "box2", "tc": "+=skewX(30deg)"},
 	"relTc11": {"targetId": "box2", "tc": "+=skew(30deg, 30deg)"}
 };
@@ -88,7 +88,18 @@ var compositionTestCases = {
 var _3dTestCases = {
 	"3dTc1": {"targetId": "box4", "tc": "translate3d(100%, 200px, 0)"},
 	"3dTc2": {"targetId": "box4", "tc": "translate3d(0, 0, 0)"},
-	"3dTc3": {"targetId": "box4", "tc": "scale(2) translate3d(-10px, -10px, 10px)"}
+	"3dTc3": {"targetId": "box4", "tc": "scale3d(2, 3, 1) translate3d(100px, -10px, 10px)"},
+	"3dTc4": {"targetId": "box4", "tc": "translateX(100px)"},
+	"3dTc5": {"targetId": "box4", "tc": "translateY(100%)"},
+	"3dTc6": {"targetId": "box4", "tc": "translateZ(10px)"},
+	"3dTc7": {"targetId": "box4", "tc": "rotateX(360deg)"},
+	"3dTc8": {"targetId": "box4", "tc": "rotateY(360deg)"},
+	"3dTc9": {"targetId": "box4", "tc": "rotateZ(360deg)"},
+	"3dTc10": {"targetId": "box4", "tc": "rotate3d(1, 1, 1, 360deg)"},
+	"3dTc11": {"targetId": "box4", "tc": "scaleX(2)"},
+	"3dTc12": {"targetId": "box4", "tc": "scaleY(2)"},
+	"3dTc13": {"targetId": "box4", "tc": "scaleZ(2)"},
+	"3dTc14": {"targetId": "box4", "tc": "scale3d(2, 2, 2)"}
 };
 
 $(function(){

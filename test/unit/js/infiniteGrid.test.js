@@ -21,6 +21,39 @@ var getContent = function(className, x) {
 	return $el;
 };
 
+
+module("util Test", {
+	setup : function() {
+
+	},
+	teardown : function() {
+	}
+});
+
+test("check clone method", function() {
+	// Given
+	var ig = eg.invoke("infiniteGrid", [ null, null, null, null, null]);
+
+	// When
+	var obj = {
+		p1 : null,
+		p2 : undefined,
+		p3 : "string",
+		p4 : {
+			a:1,
+			b:"string"
+		},
+		p5 : ["a",1,3]
+	};
+	var result = ig.clone({}, obj, [
+		"p1","p2","p3","p4", "p5", "p6"
+		]);
+
+	// Then
+	ok(typeof obj.p2 === "undefined", "check undefined type");
+	deepEqual(obj, result, "check clone");
+});
+
 module("infiniteGrid initailization/destroy Test", {
 	setup : function() {
 		this.inst = null;
@@ -35,21 +68,18 @@ module("infiniteGrid initailization/destroy Test", {
 
 test("check a initialization (there are children)", function(assert) {
 	// Given
+	// When
 	var done = assert.async();
 	this.inst = new eg.InfiniteGrid("#grid");
-	this.inst.on("layoutComplete",function(e) {
+	this.inst.on("layoutComplete", function(e) {
 		// Then
 		equal(e.target.length, 6, "a number of elements are 6");
 		equal(this.core.items.length, 6, "a number of elements are 6");
 		equal(this.isProcessing(), false, "idel in layoutComplete");
 		done();
 	});
-	// When
 	// Then
-	equal(this.inst.isProcessing(), false, "idel");
-
-	// When
-	this.inst.layout();
+	equal(this.inst.isProcessing(), true, "ing...");
 });
 
 test("check a append after a initialization (there aren't children)", function(assert) {
@@ -90,8 +120,9 @@ test("release event handler after destroy", function(assert) {
 
 	// Then
 	setTimeout(function() {
-		equal(scrollCount, 1, "should exist scroll event");
-		equal(resizeCount, 1, "should exist resize event");
+		// resize, scroll event is fired twice in IE8
+		ok(scrollCount > 0, "should exist scroll event");
+		ok(resizeCount > 0, "should exist resize event");
 		$global.off("scroll resize");
 		done();
 	},100);
@@ -368,6 +399,28 @@ module("infiniteGrid unit method Test", {
 	}
 });
 
+test("check object in restore method", function() {
+	// Given
+	this.inst = new eg.InfiniteGrid("#grid", {
+		"count" : 18
+	});
+
+	// When
+	var before = this.inst.getStatus();
+	this.inst.setStatus({});
+
+	// Then
+	equal(this.inst.core.element.style.cssText, before.cssText, "check cssText");
+	equal(this.inst.core.$element.html(), before.html, "check html");
+
+	// When
+	this.inst.setStatus();
+
+	// Then
+	equal(this.inst.core.element.style.cssText, before.cssText, "check cssText");
+	equal(this.inst.core.$element.html(), before.html, "check html");
+});
+
 test("restore status", function(assert) {
 	var done = assert.async();
 	var $el,
@@ -463,10 +516,9 @@ test("restore status", function(assert) {
 test("check a clear", function(assert) {
 	var done = assert.async();
 	// Given
+	// When
 	var beforeClear = true;
-	this.inst = new eg.InfiniteGrid("#grid", {
-		"isInitLayout" : false
-	});
+	this.inst = new eg.InfiniteGrid("#grid");
 	this.inst.on("layoutComplete",function(e) {
 		// Then
 		if(beforeClear) {
@@ -489,12 +541,6 @@ test("check a clear", function(assert) {
 			done();
 		}
 	});
-	// When
-	// Then
-	equal(this.inst.isProcessing(), false, "idel");
-
-	// When
-	this.inst.layout();
 });
 
 test("Check public methods return", function () {
@@ -775,3 +821,6 @@ test("Test prepend event", function(assert) {
 	this.inst._prevScrollTop = this.fakeDoc.body.scrollTop = 300;
 	this.inst.append(getContent("append",200));
 });
+
+//@todo add column count test when outlayer.js dropped.
+//outlayer couldn't invoke window properties

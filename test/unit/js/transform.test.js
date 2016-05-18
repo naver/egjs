@@ -7,7 +7,7 @@ QUnit.config.reorder = false;
 
 module("Absolute animate Test", {
 	beforeEach : function() {
-		this.egAnimate = eg.invoke("animate",[jQuery,window]);
+		this.egAnimate = eg.invoke("transform",[jQuery,window]);
 		this.$el1 = $("#box1");
 		this.$el2 = $("#box2");
 	},
@@ -44,7 +44,7 @@ $.each(ABSOLUTE_CASE, function(i, val) {
 		this.$el2
 			.animate({"transform" : val.transform}, function() {
 				//Then
-				var expected = self.egAnimate.toMatrix(val.css),
+				var expected = self.egAnimate.toMatrix(self.$el1.css("transform")),
 					actual = self.egAnimate.toMatrix(self.$el2.css("transform"));
 
 				// Ignore very tiny difference.
@@ -71,7 +71,7 @@ $.each(ABSOLUTE_CASE, function(i, val) {
 if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
 	module("Relative animate Test", {
 		beforeEach : function() {
-			this.egAnimate = eg.invoke("animate",[jQuery,window]);
+			this.egAnimate = eg.invoke("transform",[jQuery,window]);
 		},
 		afterEach : function() {
 		}
@@ -108,7 +108,7 @@ if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
 				.animate({"transform" : val.transform},
 					function() {
 						//Then
-						var expected = self.egAnimate.toMatrix(val.css),
+						var expected = self.egAnimate.toMatrix($el1.css("transform")),
 						 	result = self.egAnimate.toMatrix($el2.css("transform"));
 
 						// Ignore very tiny difference.
@@ -128,16 +128,29 @@ if ( navigator.userAgent.indexOf("PhantomJS") == -1 ) {
 	});
 }
 
-if (navigator.userAgent.indexOf("WebKit") >= 0) {
+if (navigator.userAgent.indexOf("WebKit") >= 0 || navigator.userAgent.indexOf("Firefox") >= 0) {
 	module("3d animate Test", {
 		beforeEach : function() {
-			this.egAnimate = eg.invoke("animate",[jQuery,window]);
+			this.egAnimate = eg.invoke("transform",[jQuery,window]);
 		},
 		afterEach : function() {
 		}
 	});
 
 	var ANI_3D_CASE = [
+		{title : "translateX(-100px)", css : "translateX(-100px)", transform: "translateX(-100px)"},
+		{title : "translateY(-50%)", css : "translateY(-60px)", transform: "translateY(-50%)"},
+		{title : "translateZ(100px)", css : "translateZ(100px)", transform: "translateZ(100px)"},
+		{title : "translate3d(10px, 10%, 0)", css : "translate3d(10px, 12px, 0)", transform: "translate3d(10px, 10%, 0)"},
+		{title : "scaleX(2)", css : "scaleX(2)", transform: "scaleX(2)"},
+		{title : "scaleY(0.5)", css : "scaleY(0.5)", transform: "scaleY(0.5)"},
+		{title : "scaleZ(1)", css : "scaleZ(1)", transform: "scaleZ(1)"},
+		{title : "scale3d(2, 0.5, 1)", css : "scale3d(2, 0.5, 1)", transform: "scale3d(2, 0.5, 1)"},
+		{title : "rotateX(-90deg)", css : "rotateX(-90deg)", transform: "rotateX(-90deg)"},
+		{title : "rotateY(180deg)", css : "rotateY(180deg)", transform: "rotateY(180deg)"},
+		{title : "rotateZ(360deg)", css : "rotateZ(360deg)", transform: "rotateZ(360deg)"},
+		{title : "rotate3d(1, -1, 1, 180deg)", css : "rotate3d(1, -1, 1, 180deg)", transform: "rotate3d(1, -1, 1, 180deg)"},
+		{title : "scaleX(0.5) scaleY(2) rotate3d(0, 0, 1, 45deg)", css : "scaleX(0.5) scaleY(2) rotate3d(0, 0, 1, 45deg)", transform: "scaleX(0.5) scaleY(2) rotate3d(0, 0, 1, 45deg)"},
 		{title : "translate3d(100px, 100px, 100px)", css : "translate3d(100px, 100px, 100px)", transform: "translate3d(100px, 100px, 100px)"}
 	];
 
@@ -174,7 +187,7 @@ if (navigator.userAgent.indexOf("WebKit") >= 0) {
 				.animate({"transform" : val.transform},
 					function() {
 						//Then
-						var t1 = self.egAnimate.toMatrix(val.css),
+						var t1 = self.egAnimate.toMatrix($el1.css("transform")),
 						 	t2 = self.egAnimate.toMatrix($el2.css("transform"));
 
 						if (t1[1].length < t2[1].length) {
@@ -197,23 +210,24 @@ if (navigator.userAgent.indexOf("WebKit") >= 0) {
 		});
 	});
 
-	test("Unintended 2d converting is prevented", function(assert) {
-		var transformString = "translate3d(0, 0, 0)",
-			done = assert.async(),
-			$el1, $el2, convertedStyle;
+	// test("Unintended 2d converting is prevented", function(assert) {
+	// 	var transformString = "translate3d(0, 0, 0)",
+	// 		done = assert.async(),
+	// 		$el1, $el2, convertedStyle;
 
-		//Given
-		$el1 = $("#box1"),
-		$el2 = $("#box2");
-		$el1.css("transform", transformString);// This code is needless but matches style of other test.($el1, $el2 pair matching)
+	// 	//Given
+	// 	$el1 = $("#box1"),
+	// 	$el2 = $("#box2");
+	// 	$el1.css("transform", transformString);// This code is needless but matches style of other test.($el1, $el2 pair matching)
 
-		//When
-		$el2.animate({"transform": transformString}, function() {
-			//Then
-			convertedStyle = $("#box2")[0].style.cssText;
-			ok(convertedStyle.indexOf("matrix3d") >= 0);
-			done();
-		});
-	});
+	// 	//When
+	// 	$el2.animate({"transform": transformString}, function() {
+	// 		//Then
+	// 		debugger;
+	// 		convertedStyle = $("#box2")[0].style.cssText;
+	// 		ok(convertedStyle.indexOf("matrix3d") >= 0);
+	// 		done();
+	// 	});
+	// });
 }
 

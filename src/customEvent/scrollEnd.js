@@ -15,7 +15,7 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 	* @event
 	* @param {Number} e.top top position <ko>상단(top) 위치 값</ko>
 	* @param {Number} e.left left position <ko>왼쪽(left) 위치 값</ko>
-	* @support {"ie": "9+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
+	* @support {"ie": "9+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	* @example
 	* $(window).on("scrollend",function(e){
 	*      e.top;
@@ -72,7 +72,11 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 
 		// Browsers that trigger scroll event like scrollstop : SCROLLBASE
 		if (osInfo.name === "ios") {
-			if (browserInfo.webview === true || osVersion <= 7) {
+
+			// webview : TIMERBASE
+			if (browserInfo.webview === true) {
+				retValue = TIMERBASE;
+			} else if (osVersion <= 7) {
 				retValue = SCROLLBASE;
 			}
 		} else if (osInfo.name === "android") {
