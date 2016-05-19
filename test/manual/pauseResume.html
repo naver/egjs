@@ -1,3 +1,8 @@
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
+<title>PauseResume - QA</title>
 <style>
 	.test {
 		width:100px;
@@ -66,6 +71,30 @@ div.notice {
 	background-color:#FEFEFE;
 	color:#CE0872;
 }
+
+.pause-resume-button {
+	width: 100px;
+	height: 50px;
+	border: 0px;
+	border-radius: 3px;
+	margin: 10px;
+	text-align: center;
+	font-family: 'Roboto', sans-serif;
+	font-weight: lighter;
+	font-size: 27px;
+	color: #FFFFFF;
+	background: #77CA72;
+	cursor: pointer;
+	overflow: hidden;
+	padding: 8px;
+	display: inline-block;
+	text-decoration: none;
+}
+
+.pause-resume-button.paused{
+	background-color: #EA7878
+}
+
 </style>
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css"> -->
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script> -->
@@ -75,11 +104,12 @@ div.notice {
 <script src="../../src/module.js"></script>
 <script src="../../src/eg.js"></script>
 <script src="../../src/hook/pauseResume.js"></script>
-
+</head>
 <body>
 	<div class="notice">Common Notice: <br/>
-		1. When mouse pointer is over the box in the yellow area, this box will be paused. and when mouse pointer is leave the box, this box will be resumed.<br/>
-		2. Before pause/resume, observe the animation first. and check it acts identically after pause/resume 
+		1. <span style="color:blue">(PC)</span> When mouse pointer is <b>over</b> the box in the yellow area, this box will be paused. and when mouse pointer is leave the box, this box will be resumed.<br/>
+		2. <span style="color:red">(Mobile)</span> Press button(s) above a yellow test box to pause/resume.<br/>
+		3. Before pause/resume, observe the animation first. and check it acts identically after pause/resume 
 	</div>
 	<h1>Marquee</h1>
 	<div class="notice">Test marquee</div>
@@ -93,8 +123,9 @@ function testMarquee() {
 testMarquee();
 		</code>
 	</pre>
+	<button id="test1-pr-button1" class="pause-resume-button" data-target-el=".voxNews">pause</button>
 	<div id="news_slide">
-		<ul class="voxNews">
+		<ul class="voxNews" data-rel-button="#test1-pr-button1">
 			<li><a href="#">Penny lane</a></li>
 			<li><a href="#">The best holiday ever !</a></li>
 			<li><a href="#">Hello World</a></li>
@@ -104,7 +135,6 @@ testMarquee();
 			<li><a href="#">Around the world in 80 days</a></li>
 		</ul>
 	</div>
-
 	<h1>Individual Element Test</h1>
 	<div class="notice">Test other element is not affected when an specific element is paused.</div>
 	<pre>
@@ -123,10 +153,14 @@ function startIndividualElementTest() {
 }
 		</code>
 	</pre>
+	<button id="test2-pr-button1" class="pause-resume-button" data-target-el="#box1">pause1</button>
+	<button id="test2-pr-button2" class="pause-resume-button" data-target-el="#box2">pause2</button>
+	<button id="test2-pr-button3" class="pause-resume-button" data-target-el="#box3">pause3</button>
+
 	<div class="testBackground">
-		<div id="box1" class="test individual"></div>
-		<div id="box2" class="test individual"></div>
-		<div id="box3" class="test individual"></div>
+		<div id="box1" class="test individual" data-rel-button="#test2-pr-button1"></div>
+		<div id="box2" class="test individual" data-rel-button="#test2-pr-button2"></div>
+		<div id="box3" class="test individual" data-rel-button="#test2-pr-button3"></div>
 	</div>
 	<h1>Chaining Test</h1>
 	<div class="notice">Test the red box is drawing a rectangle clockwise with maintaining the easing status after pause and resume.</div>
@@ -145,8 +179,9 @@ function drawRectangle() {
 drawRectangle();
 		</code>
 	</pre>
+	<button id="test3-pr-button1" class="pause-resume-button" data-target-el="#rectBox">pause</button>
 	<div class="testBackground">
-		<div id="rectBox" class="test"></div>
+		<div id="rectBox" class="test" data-rel-button="#test3-pr-button1"></div>
 	</div>
 
 	<h1>Easing Test</h1>
@@ -161,8 +196,9 @@ function startEasingTest() {
 startEasingTest();
 	</code>
 	</pre>
+	<button id="test4-pr-button1" class="pause-resume-button" data-target-el="#easingBox">pause</button>
 	<div class="testBackground">
-		<div id="easingBox" class="test"></div>
+		<div id="easingBox" class="test" data-rel-button="#test4-pr-button1"></div>
 	</div>
 
 	<h1>Relative Test</h1>
@@ -180,8 +216,9 @@ function startRelativeTest() {
 startRelativeTest();
 	</code>
 	</pre>
+	<button id="test5-pr-button1" class="pause-resume-button" data-target-el="#relativeBox">pause</button>
 	<div class="testBackground">
-		<div id="relativeBox" class="test" style="left:0px;top:0px"></div>
+		<div id="relativeBox" class="test" style="left:0px;top:0px" data-rel-button="#test5-pr-button1"></div>
 	</div>
 
 	<h1>Non-CSS Property animation by step/complete callback</h1>
@@ -206,7 +243,8 @@ function counter(){
 counter();
 	</code>
 	</pre>
-	<div id="counter" class="test" style="background:yellow;color:#000;font-size:32px;padding:30px;display:inline-block;width:40px;height:40px;text-align:center"></div>
+	<button id="test6-pr-button1" class="pause-resume-button" data-target-el="#counter">pause</button>
+	<div id="counter" class="test" style="background:yellow;color:#000;font-size:32px;padding:30px;display:inline-block;width:40px;height:40px;text-align:center" data-rel-button="#test6-pr-button1"></div>
 	<h1>Delay Test</h1>
 	<div class="notice">Test delay can be paused and resumed</div>
 	<pre>
@@ -221,8 +259,9 @@ $delayBox
   }
 	</code>
 	</pre>
+	<button id="test7-pr-button1" class="pause-resume-button" data-target-el="#delayCounter, #delayBox">pause</button>
 	<div class="testBackground">
-		<div id="delayBox" class="test" style="left:0px;top:0px">
+		<div id="delayBox" class="test" style="left:0px;top:0px" data-rel-button="#test7-pr-button1">
 			<div id="delayBoxText"></div>
 			<div id="delayCounter" class="test"></div>
 		</div>
@@ -233,15 +272,24 @@ $delayBox
 		var $relativeBox = $("#relativeBox");
 		var $individualBox = $(".individual");
 		var $voxNews;
-
-		$(".test").hover(function() {
-			$(this).pause();
-		}, function() {
-			$(this).resume();
-		});
-
 		var vox_news = 0;
 		var marqueeWidth = 0;
+
+		/**
+		 * TEST BOX Event Handler - hover
+		 */
+		$(".test").hover(function() {
+			var $box = $(this);
+			var $btn = $($box.data("relButton"));
+			setPauseResumeButtonStatus($btn, "pause")
+			$box.pause();
+		}, function() {
+			var $box = $(this);
+			var $btn = $($box.data("relButton"));
+			setPauseResumeButtonStatus($btn, "resume")
+			$box.resume();
+		});
+
 		$(".voxNews li").each(function(i, el) {
 			var w = $(el).outerWidth(true);
 			marqueeWidth += w;
@@ -249,11 +297,49 @@ $delayBox
 		
 		$voxNews = $(".voxNews");
 		$voxNews.width(marqueeWidth + 1);//+1 for difference in calculating floating point.
+		/**
+		 * Marquee Event Handler - hover
+		 */
 		$voxNews.find("a").hover(function() {
+			var $btn = $($voxNews.data("relButton"));
+			setPauseResumeButtonStatus($btn, "pause")
 			$voxNews.pause();
 		}, function() {
+			var $btn = $($voxNews.data("relButton"));
+			setPauseResumeButtonStatus($btn, "resume")
 			$voxNews.resume();
 		});
+
+		/**
+		 *
+		 */
+		$(".pause-resume-button").on("click", function() {
+			var $button = $(this);
+			var $target = $($button.data("targetEl"));
+			var buttonText = "";
+
+			if ($button.hasClass("paused")) {
+				setPauseResumeButtonStatus($button, "resume")
+				$target.resume();
+			} else {
+				setPauseResumeButtonStatus($button, "pause")
+				$target.pause();
+			}
+		});
+
+		function setPauseResumeButtonStatus($btn, status) {
+			var replaceWith = "";
+			if (status === "pause") {
+				$btn.addClass("paused");
+				replaceWith = "resume";
+			} else {
+				$btn.removeClass("paused");
+				replaceWith = "pause";
+			};
+			
+			buttonText = $btn.text().replace(status, replaceWith);
+			$btn.text(buttonText);
+		}
 
 		function testMarquee() {
 			$voxNews
