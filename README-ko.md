@@ -1,7 +1,7 @@
 # egjs
 [![Build Status](https://travis-ci.org/naver/egjs.svg?branch=master)](https://travis-ci.org/naver/egjs) [![Test coverage](https://codeclimate.com/github/naver/egjs/badges/coverage.svg)](https://codeclimate.com/github/naver/egjs/coverage)
 
-egjs는 jQuery기반의 UI 인터렉션, 이펙트, 유틸리티로 구성된 통합 라이브러리로 다양한 환경을 지원하는 빠른 웹 어플리케이션을 쉽게 개발할 수 있도록 도와준다. 
+egjs는 jQuery기반의 UI 인터렉션, 이펙트, 유틸리티로 구성된 통합 라이브러리로 다양한 환경을 지원하는 빠른 웹 어플리케이션을 쉽게 개발할 수 있도록 도와준다.
 
 > - **데모**: http://codepen.io/egjs/
 > - **API 문서**
@@ -18,7 +18,7 @@ egjs는 jQuery기반의 UI 인터렉션, 이펙트, 유틸리티로 구성된 �
 * **eg.Flicking** : 플리킹 인터랙션을 구현하는 컴포넌트
 * **eg.Visible** : 요소가 뷰포트상에 위치해 있는지 확인하는 컴포넌트
 * **eg.infiniteGrid** : 카드 격자형 컨텐츠를 무한 배치하는 컴포넌트
- 
+
 ### jQuery Extensions
 #### methods
 * **persist** : 히스토리 네비게이션시 데이터를 저장/복원할 수 있는 캐시 인터페이스
@@ -40,9 +40,10 @@ egjs는 jQuery기반의 UI 인터렉션, 이펙트, 유틸리티로 구성된 �
 ### Compressed (제품버전)
   - 최신 : http://naver.github.io/egjs/latest/dist/eg.min.js
   - 버전별 : `http://naver.github.io/egjs/[VERSION]/dist/eg.min.js`
-  
+
 ### from CDN
   - cdnjs : https://cdnjs.com/libraries/egjs
+  - jsDelivr : https://www.jsdelivr.com/projects/egjs
 
 ### with Bower
 
@@ -62,7 +63,7 @@ $ bower install egjs
 - 컴포넌트별 지원범위가 다를수 있으며, 사용시 API 문서를 참조한다.
 
 ## 의존성
-egjs는 다음의 라이브러리들에 대한 의존성을 가지고 있다. 
+egjs는 다음의 라이브러리들에 대한 의존성을 가지고 있다.
 
 |[jQuery](https://jquery.com/)|[Hammer.js](http://hammerjs.github.io/)|[Outlayer](https://github.com/metafizzy/outlayer/)|
 |---|---|---|---|
@@ -75,11 +76,11 @@ egjs는 다음의 라이브러리들에 대한 의존성을 가지고 있다.
 jQuery를 먼저 로딩 후, egjs를 로딩한다. (CDN 서비스인 [cdnjs](https://cdnjs.com/libraries/egjs)에도 등록되어 있다.)
 
 ```html
-<!-- jQuery 로딩 --> 
+<!-- jQuery 로딩 -->
 <script src="bower_components/jquery/jquery.js"></script>
 
-<!-- 모든 의존성(Hammer.js와 Outlayer) 파일들이 패키징된 egjs를 로딩 --> 
-<!-- 로컬에 설치된 파일을 로딩 --> 
+<!-- 모든 의존성(Hammer.js와 Outlayer) 파일들이 패키징된 egjs를 로딩 -->
+<!-- 로컬에 설치된 파일을 로딩 -->
 <script src="bower_components/egjs/dist/pkgd/eg.pkgd.min.js"></script>
 
 <!-- 또는 CDN 에서 로딩 -->
