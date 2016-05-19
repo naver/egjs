@@ -1,6 +1,6 @@
-# egjs 
+# egjs
 [![Build Status](https://travis-ci.org/naver/egjs.svg?branch=master)](https://travis-ci.org/naver/egjs) [![Test coverage](https://codeclimate.com/github/naver/egjs/badges/coverage.svg)](https://codeclimate.com/github/naver/egjs/coverage)
- 
+
 'egjs' is a set of UI interactions, effects and utilities components library using jQuery, which brings easiest and fastest way to build web application in your way.
 
 > - **Demo**: http://codepen.io/egjs/
@@ -18,7 +18,7 @@
 * **eg.Flicking** : Implement flicking interaction UI.
 * **eg.Visible** : Check whether elements are within viewport.
 * **eg.infiniteGrid** : Make card style UI arranged in grid style in infinite way.
- 
+
 ### jQuery Extensions
 #### Methods
 * **persist** : Provide cache interface to handle persisted data among history navigation.
@@ -33,15 +33,16 @@
 For latest version, check out - https://github.com/naver/egjs/tree/gh-pages/latest/dist
 
 ### Uncompressed (for development)
-  - Latest : https://naver.github.io/egjs/latest/dist/eg.js  
-  - For specific version :  `https://naver.github.io/egjs/[VERSION]/dist/eg.js  `
+  - Latest : https://naver.github.io/egjs/latest/dist/eg.js
+  - For specific version :  `https://naver.github.io/egjs/[VERSION]/dist/eg.js`
 
 ### Compressed (for production)
   - Latest : https://naver.github.io/egjs/latest/dist/eg.min.js
   - For specific version : `https://naver.github.io/egjs/[VERSION]/dist/eg.min.js`
-  
+
 ### from CDN
   - cdnjs : https://cdnjs.com/libraries/egjs
+  - jsDelivr : https://www.jsdelivr.com/projects/egjs
 
 ### with Bower
 
@@ -75,11 +76,11 @@ egjs has following dependencies.
 Load jQuery first, then load egjs (also available on [cdnjs](https://cdnjs.com/libraries/egjs))
 
 ```html
-<!-- load jQuery --> 
+<!-- load jQuery -->
 <script src="bower_components/jquery/jquery.js"></script>
 
 <!-- load egjs packaged with all dependencies (Hammer.js and Outlayer) -->
-<!-- load from your local installation --> 
+<!-- load from your local installation -->
 <script src="bower_components/egjs/dist/pkgd/eg.pkgd.min.js"></script>
 
 <!-- or load from CDN -->
