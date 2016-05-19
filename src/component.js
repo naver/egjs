@@ -12,7 +12,7 @@ eg.module("component", [eg], function(ns) {
 	 * @group egjs
 	 * @name eg.Component
 	 *
-	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
+	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 */
 	ns.Component = ns.Class({
 		construct: function() {

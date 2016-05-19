@@ -186,6 +186,7 @@ eg.module("pauseResume", ["jQuery"], function($) {
 	 *
 	 * @name jQuery#pause
 	 * @method
+	 * @support {"ie": "10+", "ch" : "latest", "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
 	 * @example
 	 * $("#box").pause(); //paused the current animation
 	 */
@@ -217,7 +218,7 @@ eg.module("pauseResume", ["jQuery"], function($) {
 	 *
 	 * @name jQuery#resume
 	 * @method
-	 *
+	 * @support {"ie": "10+", "ch" : "latest", "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
 	 * @example
 	 * $("#box").resume(); //resume the paused animation
 	 */
