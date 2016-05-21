@@ -122,42 +122,38 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @param {Object} options
 		 */
 		_setOptions: function(options) {
-			var padding = [0, 0];
-			var bounce = [10, 10];
-			var self = this;
-
-			var setDefault = function (name, defVal) {
-				var options = self.options;
-				var val = options[ name ];
-
-				if (typeof val === "number") {
-					val = $.each(defVal, function(i) {
-						defVal[i] = val;
-					});
-				} else if (val.constructor !== Array) {
-					val = defVal;
-				}
-
-				options[ name ] = val;
+			var arrVal = {
+			    previewPadding: [ 0, 0 ],
+			    bounce: [ 10, 10 ]
 			};
 
 			$.extend(this.options = {
 				hwAccelerable: ns.isHWAccelerable(),  // check weather hw acceleration is available
-				prefix: "eg-flick",			// prefix value of class name
-				deceleration: 0.0006,		// deceleration value
-				horizontal: true,			// move direction (true == horizontal, false == vertical)
+				prefix: "eg-flick",         // prefix value of class name
+				deceleration: 0.0006,       // deceleration value
+				horizontal: true,           // move direction (true == horizontal, false == vertical)
 				circular: false,			// circular mode. In this mode at least 3 panels are required.
-				previewPadding: padding,	// preview padding value in left(up) to right(down) order. In this mode at least 5 panels are required.
-				bounce: bounce,				// bounce value in left(up) to right(down) order. Works only in non-circular mode.
+				previewPadding: arrVal.previewPadding,	// preview padding value in left(up) to right(down) order. In this mode at least 5 panels are required.
+				bounce: arrVal.bounce,      // bounce value in left(up) to right(down) order. Works only in non-circular mode.
 				threshold: 40,				// the distance pixel threshold value for change panel
 				duration: 100,				// duration ms for animation
 				panelEffect: $.easing.easeOutCubic,  // $.easing function for panel change animation
 				defaultIndex: 0,			// initial panel index to be shown
-				inputType: ["touch", "mouse"]	// input type
+				inputType: ["touch", "mouse"]  // input type
 			}, options);
 
-			setDefault("previewPadding", padding);
-			setDefault("bounce", bounce);
+			var self = this;
+            $.each(arrVal, function(i, v) {
+				var val = self.options[i];
+
+				if ($.isNumeric(val)) {
+					val = [ val, val ];
+				} else if (!$.isArray(val)) {
+					val = v;
+				}
+
+				self.options[i] = val;
+            });
 		},
 
 		/**
