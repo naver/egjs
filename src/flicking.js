@@ -123,8 +123,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 */
 		_setOptions: function(options) {
 			var arrVal = {
-			    previewPadding: [ 0, 0 ],
-			    bounce: [ 10, 10 ]
+				previewPadding: [ 0, 0 ],
+				bounce: [ 10, 10 ]
 			};
 
 			$.extend(this.options = {
@@ -143,7 +143,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			}, options);
 
 			var self = this;
-            $.each(arrVal, function(i, v) {
+			$.each(arrVal, function(i, v) {
 				var val = self.options[i];
 
 				if ($.isNumeric(val)) {
@@ -153,7 +153,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				}
 
 				self.options[i] = val;
-            });
+			});
 		},
 
 		/**
