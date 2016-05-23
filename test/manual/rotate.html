@@ -24,8 +24,8 @@ $(document).ready(function(){
 		}
 	}); 
 
-	$(window).on("rotate",function(e){
-		$("#layer").text(e.isVertical?"vertical":"horizontal");
+	$(window).on("rotate",function(e,info){
+		$("#layer").text(info.isVertical?"vertical":"horizontal");
 	});
 });
 </script>
