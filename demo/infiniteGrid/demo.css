@@ -15,8 +15,3 @@ body {background-color: #f1f2f6;}
     width : 25%;
   }
 }
-@media (min-width: 1200px) {
-  .item {
-    width : 16.66666667%;
-  }
-}
