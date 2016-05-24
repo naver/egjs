@@ -2,7 +2,7 @@
 <html lang="en">
 {% include demo/head.html %}
 {% for css in page.css_srcs %}
-	<link rel="stylesheet" href="./{{ css }}">
+	<link rel="stylesheet" href="{{ css }}">
 {% endfor %}
 <body>
 {% include demo/facebook.html %}
@@ -29,5 +29,8 @@
 	</section>
 </div>
 {% include demo/footer.html %}
+{% for js in page.js_srcs %}
+	<script src="{{ js }}"></script>
+{% endfor %}
 </body>
 </html>

@@ -1,5 +1,6 @@
-#### Horizontal direction
-##### Non-Circular
+### Horizontal direction
+
+#### Non-Circular
 
 <div id="mflick1" class="flick">
 	<div style="background-color:#CC66CC">
@@ -22,7 +23,7 @@ $("#wrapper").flicking();
 new eg.Flicking("#wrapper");
 ```
 
-##### Circular
+#### Circular
 <div id="mflick2" class="flick">
 	<div id="item1" style="background-color:#CC66CC">
 		<p>panel 0</p>
@@ -52,7 +53,7 @@ new eg.Flicking("#wrapper", {
 });
 ```
 
-##### Preview & circular
+#### Preview & circular
 
 <div id="mflick3" class="flick">
 	<div class="p0" style="background-color:#CC66CC">
@@ -90,8 +91,10 @@ new eg.Flicking("#wrapper", {
   defaultIndex: 3
 });
 ```
-#### Vertical direction
-##### Non-Circular
+
+### Vertical direction
+
+#### Non-Circular
 
 <div id="vflick1" class="flick vertical">
 	<div style="background-color:#CC66CC">
@@ -118,7 +121,7 @@ new eg.Flicking("#wrapper", {
 });
 ```
 
-##### Circular
+#### Circular
 <div id="vflick2" class="flick vertical">
 	<div style="background-color:#CC66CC">
 		<p>panel 0</p>
@@ -150,7 +153,7 @@ new eg.Flicking("#wrapper", {
 });
 ```
 
-##### Preview & circular
+#### Preview & circular
 
 <div id="vflick3" class="flick f_vertical">
 	<div class="p0" style="background-color:#CC66CC">
@@ -191,7 +194,7 @@ new eg.Flicking("#wrapper", {
 });
 ```
 
-#### Custom events
+### Custom events
 
 <div id="mflick4" class="flick">
 	<div id="item1" style="background-color:#CC66CC">
@@ -240,7 +243,7 @@ function handler(e) {
 }
 ```
 
-#### Handle multiple data with fixed panel divs
+### Handle multiple data with fixed panel divs
 
 <div id="mflick5" class="flick">
 	<div style="background-color:#CC66CC"></div>

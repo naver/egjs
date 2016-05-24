@@ -3,7 +3,13 @@ title: egjs
 latestVersion: 1.1.0
 # Build settings
 safe: true
+
 markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+highlighter: rouge
+
 exclude:
   - .gitignore
   - .grunt

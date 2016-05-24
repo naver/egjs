@@ -614,3 +614,13 @@ pre code {
 /* Small devices (tablets, 768px and up) */
 /* Medium devices (desktops, 992px and up) */
 /* Large devices (large desktops, 1200px and up) */
+
+pre {
+  background-color: #333;
+  border: 1px solid #333;
+}
+
+pre code {
+  font-size: 14px;
+  color: #f8f8f2;
+}
