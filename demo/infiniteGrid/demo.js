@@ -27,7 +27,6 @@ $(document).ready(function() {
 			var gk = this.getGroupKeys();
 			var lastGk = gk[gk.length-1];
 			lastGk++;
-			console.log(template(data.getItems(lastGk)));
 			ig.append(template(data.getItems(lastGk)), lastGk);
 		},
 		"prepend" : function(e) {
