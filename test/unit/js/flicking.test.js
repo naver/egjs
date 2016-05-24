@@ -14,6 +14,30 @@ function $getTransformValue(el, match) {
 	return match ? (elStyle.match(rx) ||[,])[1] : elStyle;
 }
 
+// create Flicking instance
+function create(el, option, handler) {
+	handler = handler || $.noop;
+
+	return new eg.Flicking(el, option || {}).on({
+		beforeFlickStart: handler,
+		flick : handler,
+		flickEnd : handler,
+		beforeRestore : handler,
+		restore : handler
+	});
+}
+
+// run gesture simulator
+function simulator(el, option, callback) {
+	Simulator.gestures.pan(el, $.extend({
+		pos: [50, 50],
+		deltaX: -100,
+		deltaY: 0,
+		duration: 500,
+		easing: "linear"
+	}, option), callback);
+}
+
 var hooks = {
 	beforeEach: function() {
 		this.inst = null;
@@ -1095,15 +1119,18 @@ test("When restoring after event stop", function () {
 
 module("Custom events", hooks);
 test("When changes panel normally", function(assert) {
-	var done = assert.async();
+	var done1 = assert.async();
+	var done2 = assert.async();
 
 	// Given
-	var el = $("#mflick1").get(0),
-		eventOrder = ["beforeFlickStart", "flick", "flickEnd"],
-		eventFired = [],
-		panel = {},
+	var eventOrder = ["beforeFlickStart", "flick", "flickEnd"],
+		data = {},
 		handler = function(e) {
 			var type = e.eventType;
+			var id = this.$wrapper[0].id;
+
+			var eventFired = data[id].eventFired;
+			var panel = data[id].panel;
 
 			if(eventFired.indexOf(type) == -1) {
 				if (!e.holding) {
@@ -1111,52 +1138,110 @@ test("When changes panel normally", function(assert) {
 
 					panel[type] = {
 						index: e.index,
-						no: e.no
+						no: e.no,
+						getElement: this.getElement(),
+						getIndex: this.getIndex(),
+						getNextElement: this.getNextElement(),
+						getPrevElement: this.getPrevElement(),
+						getNextIndex: this.getNextIndex(),
+						getPrevIndex: this.getPrevIndex()
 					};
 				}
 			}
 		};
 
-	this.inst = new eg.Flicking(el).on({
-		beforeFlickStart: handler,
-		flick : handler,
-		flickEnd : handler,
-		beforeRestore : handler,
-		restore : handler
-	});
+	var setCondition = function(el, option) {
+		var inst;
 
-	var currentPanel = {
-		index: this.inst._conf.panel.index,
-		no: this.inst._conf.panel.no
+		data[el.id] = {
+			eventFired: [],
+			panel: {},
+			inst: inst = create(el, option, handler),
+			currentPanel: {
+				index: inst._conf.panel.currIndex,
+				no: inst._conf.panel.currNo,
+				getElement: inst.getElement(),
+				getIndex: inst.getIndex(),
+				getNextElement: inst.getNextElement(),
+				getPrevElement: inst.getPrevElement(),
+				getNextIndex: inst.getNextIndex(),
+				getPrevIndex: inst.getPrevIndex()
+			}
+		};
 	};
 
-	// When
-	Simulator.gestures.pan(el, {
-		pos: [0, 0],
-		deltaX: -70,
-		deltaY: 0,
-		duration: 500,
-		easing: "linear"
-	}, function() {
-		// Then
-		setTimeout(function() {
-			assert.deepEqual(eventOrder, eventFired, "Custom events are fired in correct order");
+	var runTest = function(el, done) {
+		simulator(el, {
+			deltaX: -70
+		}, function() {
 
-			$.each(panel, function(i, v) {
-				var oPanel = panel[i];
+			var eventFired = data[el.id].eventFired;
+			var inst = data[el.id].inst;
+			var panel = data[el.id].panel;
+			var currentPanel = data[el.id].currentPanel;
 
-				if (i === "flickEnd") {
-					assert.equal(oPanel.index, currentPanel.index + 1, "Panel index should be change on 'flickEnd' event.");
-					assert.equal(oPanel.no, currentPanel.no + 1, "Panel no should be change on 'flickEnd' event.");
-				} else {
-					assert.equal(oPanel.index, currentPanel.index, "Panel index shouldn't be changed before 'flickEnd' event.");
-					assert.equal(oPanel.no, currentPanel.no, "Panel no shouldn't be changed before 'flickEnd' event.");
-				}
-			});
+			// Then
+			setTimeout(function() {
+				assert.deepEqual(eventOrder, eventFired, "Custom events are fired in correct order");
 
-			done();
-		},1000);
-	});
+				var isCircular = inst.options.circular;
+
+				$.each(panel, function(i) {
+					var oPanel = panel[i];
+					var condition, value;
+
+					if (i === "flickEnd") {
+						condition = {
+							// after flickEnd -> before flickEnd order
+							// ex) getElement() on 'flickEnd' event is same as getNextElement() before 'flickEnd'
+							getElement: "getNextElement",
+							getIndex: "getNextIndex",
+							getNextElement: isCircular ? "getPrevElement" : inst.getNextElement(),
+							getNextIndex: currentPanel.no + 2,
+							getPrevElement: "getElement",
+							getPrevIndex: "getIndex"
+						};
+
+						$.each(oPanel, function(x) {
+							if (/^(index|no|getIndex)$/.test(x)) {
+								var value = currentPanel[x];
+
+								if (!isCircular || (isCircular && x !== "index")) {
+									value += 1;
+								}
+
+								assert.equal(oPanel[x], value, "Panel "+ x +" should be changed on '"+ i +"' event.");
+
+							} else {
+								value = condition[x];
+
+								if (typeof value === "string") {
+									value = currentPanel[ value ];
+								}
+
+								assert.deepEqual(oPanel[x], value, "The value from '"+ x +"', should be equals with previous '"+ condition[x] +"' changed on "+ i +" event.");
+							}
+						});
+
+					} else {
+						$.each(oPanel, function(x) {
+							assert.deepEqual(oPanel[x], currentPanel[x], "The value from '"+ x +"', shouldn't be changed during '"+ i +"' event.");
+						});
+					}
+				});
+
+				done();
+			},1000);
+		});
+	};
+
+	var el = $("#mflick1")[0];
+	setCondition(el);
+	runTest(el, done1);
+
+	el = $("#mflick2")[0];
+	setCondition(el, { circular: true });
+	runTest(el, done2);
 });
 
 test("When stop event on beforeRestore", function(assert) {
@@ -1655,7 +1740,7 @@ test("Workaround for buggy link highlighting on android 2.x", function () {
 	ok($dummyAnchor.tagName === "A" && !$dummyAnchor.innerHTML, "Dummy anchor element should be added.");
 
 	// When
-	inst.next();
+	inst.next(0);
 
 	leftValue = $.css(inst.getElement()[0], "left");
 
