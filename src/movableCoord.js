@@ -82,6 +82,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 				prevented: false		//  check whether the animation event was prevented
 			};
 			this._hammers = {};
+			this._isActivate = true;
 			this._pos = this.options.min.concat();
 			this._subOptions = {};
 			this._raf = null;
@@ -107,6 +108,9 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		 * @return {eg.MovableCoord} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		bind: function(el, options) {
+			if (!this._isActivate) {
+				return this;
+			}
 			var $el = $(el);
 			var keyValue = $el.data(MC._KEY);
 			var subOptions = {
@@ -123,19 +127,21 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			if (!inputClass) {
 				return this;
 			}
+
 			if (keyValue) {
-				this._hammers[keyValue].get("pan").set({
-					direction: subOptions.direction
-				});
+				this._hammers[keyValue].inst.destroy();
 			} else {
 				keyValue = Math.round(Math.random() * new Date().getTime());
-				this._hammers[keyValue] = this._createHammer(
+			}
+			this._hammers[keyValue] = {
+				inst: this._createHammer(
 					$el.get(0),
 					subOptions,
 					inputClass
-				);
-				$el.data(MC._KEY, keyValue);
-			}
+				),
+				options: subOptions
+			};
+			$el.data(MC._KEY, keyValue);
 			return this;
 		},
 
@@ -169,17 +175,26 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 						},
 						inputClass: inputClass
 					});
-				return hammer.on("hammer.input", $.proxy(function(e) {
+
+				return this._attachHammerEvents(hammer, subOptions);
+			} catch (e) {}
+		},
+
+		_attachHammerEvents: function(hammer, options) {
+			return hammer.on("hammer.input", $.proxy(function(e) {
 					if (e.isFirst) {
 						// apply options each
-						this._subOptions = subOptions;
+						this._subOptions = options;
 						this._status.curHammer = hammer;
 						this._panstart(e);
 					}
 				}, this))
 				.on("panstart panmove", this._panmove)
 				.on("panend tap", this._panend);
-			} catch (e) {}
+		},
+
+		_detachHammerEvents: function(hammer) {
+			hammer.off("hammer.input panstart panmove panend tap");
 		},
 
 		_convertInputType: function(inputType) {
@@ -204,10 +219,13 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		 * @return {eg.MovableCoord} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		unbind: function(el) {
+			if (!this._isActivate) {
+				return this;
+			}
 			var $el = $(el);
 			var key = $el.data(MC._KEY);
 			if (key) {
-				this._hammers[key].destroy();
+				this._hammers[key].inst.destroy();
 				delete this._hammers[key];
 				$el.data(MC._KEY, null);
 			}
@@ -724,6 +742,9 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		 * @return {eg.MovableCoord} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		setTo: function(x, y, duration) {
+			if (!this._isActivate) {
+				return this;
+			}
 			this._grab();
 			var pos = this._pos.concat();
 			var circular = this.options.circular;
@@ -770,6 +791,9 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		 * @return {eg.MovableCoord} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		setBy: function(x, y, duration) {
+			if (!this._isActivate) {
+				return this;
+			}
 			return this.setTo(
 				x != null ? this._pos[0] + x : this._pos[0],
 				y != null ? this._pos[1] + y : this._pos[1],
@@ -801,6 +825,32 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			(this._status.prevented = prevented);
 		},
 
+		activate: function() {
+			if (this._isActivate) {
+				return this;
+			}
+			for (var p in this._hammers) {
+				this._attachHammerEvents(p.inst, p.options);
+			}
+			this._isActivate = true;
+			return this;
+		},
+
+		deactivate: function() {
+			if (!this._isActivate) {
+				return this;
+			}
+			for (var p in this._hammers) {
+				this._detachHammerEvents(p.inst);
+			}
+			this._isActivate = false;
+			return this;
+		},
+
+		isActivate: function() {
+			return this._isActivate;
+		},
+
 		/**
 		 * Release resources and unbind custom events
 		 * @ko 모든 커스텀 이벤트와 자원을 해제한다.
@@ -809,7 +859,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		destroy: function() {
 			this.off();
 			for (var p in this._hammers) {
-				this._hammers[p].destroy();
+				this._hammers[p].inst.destroy();
 				this._hammers[p] = null;
 			}
 		}

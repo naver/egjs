@@ -125,7 +125,6 @@ test("unbind", function() {
 
 	// When
 	var returnVal = this.inst.unbind($el);
-
 	// Then
 	var key = $el.data(eg.MovableCoord._KEY);
 	equal(returnVal, this.inst, "return instance" );
@@ -162,7 +161,7 @@ test("one element, double bind", function() {
 	});
 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
 	var before = $el.data(eg.MovableCoord._KEY);
-	var beforeHammerInstance = this.inst._hammers[before];
+	var beforeHammerObject = this.inst._hammers[before];
 
 	// When
 	this.inst.bind($el, {
@@ -172,8 +171,7 @@ test("one element, double bind", function() {
 	// Then
 	var key = $el.data(eg.MovableCoord._KEY);
 	equal(before, key, "key data value is same" );
-	equal(this.inst._hammers[key].get("pan").options.direction, eg.MovableCoord.DIRECTION_HORIZONTAL, "options was changed" );
-	deepEqual(beforeHammerInstance, this.inst._hammers[key], "recycle hammer instance" );
+	notDeepEqual(beforeHammerObject.inst, this.inst._hammers[key].inst, "recreate hammer instance" );
 	equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "hammer instance count is same" );
 });
 
@@ -1021,7 +1019,7 @@ test("interrupt test. Second 'MovableCoord move' can be available after 'no move
             duration: 1000,
             easing: "linear"
 		}, function() {
-			equal(releaseCount, EXPECTED_RELEASE_COUNT, 
+			equal(releaseCount, EXPECTED_RELEASE_COUNT,
 				"Second 'MovableCoord move' can be available after 'No move' by first MovableCoord move")
 			done();
 		});
@@ -1233,4 +1231,90 @@ test("_convertInputType (not support touch)", function() {
 	inputType = [ ];
 	// Then
 	equal(inst._convertInputType(inputType), null, "type is null(not supporting touch)");
+});
+
+
+module("movableCoord activate/deactivate Test", {
+	setup : function() {
+		this.inst = new eg.MovableCoord( {
+			min : [ 0, 0 ],
+			max : [ 300, 400 ],
+			bounce : 100,
+			margin : 0,
+			circular : false
+		});
+	},
+	teardown : function() {
+		this.inst.destroy();
+		this.inst = null;
+	}
+});
+
+test("check activation", function() {
+	//Given
+	var before = this.inst.isActivate();
+
+	// When
+	var inst = this.inst.activate();
+
+	// Then
+	equal(inst, this.inst, "return instance");
+	equal(before, true, "check activation status");
+	equal(this.inst.isActivate(), true, "check double activation");
+});
+
+test("check deactivation", function() {
+	//Given
+	var before = this.inst.isActivate();
+
+	// When
+	var inst = this.inst.deactivate();
+
+	// Then
+	equal(inst, this.inst, "return instance");
+	equal(before, true, "check activation status");
+	equal(this.inst.isActivate(), false, "check deactivation");
+
+	// When
+	inst = this.inst.deactivate();
+
+	// Then
+	equal(inst, this.inst, "return instance");
+	equal(this.inst.isActivate(), false, "check deactivation");
+});
+
+
+test("after deactivation, call methods", function() {
+	//Given
+	var before = this.inst.isActivate();
+	var beforePos = this.inst._pos.concat();
+	var beforeHammerCount = Object.keys(this.inst._hammers).length;
+	this.inst.deactivate();
+
+	// When
+	this.inst.setTo(10,10);
+
+	// Then
+	equal(this.inst.isActivate(), false, "check deactivation");
+	deepEqual(beforePos, this.inst._pos, "check whether position is moved");
+
+	// When
+	this.inst.setBy(10,10);
+
+	// Then
+	deepEqual(beforePos, this.inst._pos, "check whether position is moved");
+
+	// When
+	this.inst.bind("#area", {
+		direction : eg.MovableCoord.DIRECTION_ALL
+	});
+
+	// Then
+	deepEqual(beforeHammerCount, Object.keys(this.inst._hammers).length, "check whether bind is worked");
+
+	// When
+	this.inst.unbind("#area");
+
+	// Then
+	deepEqual(beforeHammerCount, Object.keys(this.inst._hammers).length, "check whether unbind is worked");
 });
