@@ -82,7 +82,6 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 				prevented: false		//  check whether the animation event was prevented
 			};
 			this._hammers = {};
-			this._isActivate = true;
 			this._pos = this.options.min.concat();
 			this._subOptions = {};
 			this._raf = null;
@@ -108,9 +107,6 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		 * @return {eg.MovableCoord} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		bind: function(el, options) {
-			if (!this._isActivate) {
-				return this;
-			}
 			var $el = $(el);
 			var keyValue = $el.data(MC._KEY);
 			var subOptions = {
@@ -219,9 +215,6 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		 * @return {eg.MovableCoord} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		unbind: function(el) {
-			if (!this._isActivate) {
-				return this;
-			}
 			var $el = $(el);
 			var key = $el.data(MC._KEY);
 			if (key) {
@@ -742,9 +735,6 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		 * @return {eg.MovableCoord} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		setTo: function(x, y, duration) {
-			if (!this._isActivate) {
-				return this;
-			}
 			this._grab();
 			var pos = this._pos.concat();
 			var circular = this.options.circular;
@@ -791,9 +781,6 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		 * @return {eg.MovableCoord} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		setBy: function(x, y, duration) {
-			if (!this._isActivate) {
-				return this;
-			}
 			return this.setTo(
 				x != null ? this._pos[0] + x : this._pos[0],
 				y != null ? this._pos[1] + y : this._pos[1],
@@ -823,34 +810,6 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		_setInterrupt: function(prevented) {
 			!this._subOptions.interruptable &&
 			(this._status.prevented = prevented);
-		},
-
-		activate: function() {
-			if (this._isActivate) {
-				return this;
-			}
-			var v;
-			for (var p in this._hammers) {
-				v = this._hammers[p];
-				this._attachHammerEvents(v.inst, v.options);
-			}
-			this._isActivate = true;
-			return this;
-		},
-
-		deactivate: function() {
-			if (!this._isActivate) {
-				return this;
-			}
-			for (var p in this._hammers) {
-				this._detachHammerEvents(this._hammers[p].inst);
-			}
-			this._isActivate = false;
-			return this;
-		},
-
-		isActivate: function() {
-			return this._isActivate;
 		},
 
 		/**
