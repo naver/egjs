@@ -780,6 +780,40 @@ test("prev() - Animation #2", function (assert) {
 	}, this), 400);
 });
 
+test("enaableInput() / disableInput()", function(assert) {
+	var done1 = assert.async();
+	var done2 = assert.async();
+
+	// Given
+	var el = $("#mflick1")[0];
+	var isEventFired = false;
+
+	var inst = create(el, null, function(e) {
+		isEventFired = true;
+	});
+
+	// When
+	inst.disableInput();
+
+	simulator(el, {
+		deltaX: -70
+	}, function() {
+		assert.ok(!isEventFired, "Input action should be disabled.");
+		done1();
+
+		// When
+		inst.enableInput();
+
+		simulator(el, {
+			deltaX: -70
+		}, function() {
+			assert.ok(isEventFired, "Input action should be enabled.");
+			done2();
+		});
+	});
+});
+
+
 
 module("moveTo() method", hooks);
 test("Check for functionality", function() {
