@@ -1390,7 +1390,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		_setInputEvent: function(bind) {
 			var inputEvent = this._conf.inputEvent;
 
-			if (bind && !inputEvent || !bind && inputEvent) {
+			if (bind ^ inputEvent) {
 				this._bindEvents(bind);
 			}
 
