@@ -264,6 +264,7 @@ test("isVertical : If event is orientationchange then horizontal. (orientation:9
   ok(isNotVertical);
 });
 
+
 module("rotate: handler", {
   setup : function() {
    var agent = eg.agent();
@@ -299,6 +300,33 @@ module("rotate: handler", {
   }
 });
 
+test("Check info object when rotate event fire.", function() {
+  // Given
+  var method = eg.invoke("rotate",[jQuery, null, this.fakeWindow, this.fakeDocument]);
+  var isVertical;
+  var isVertical2;
+  var isCall = false;
+  eg.isPortrait();
+  $(this.fakeWindow).on("rotate",function(e,info){
+    isCall = true;
+    isVertical = e.isVertical;
+    isVertical2 = info.isVertical;
+  });
+
+  // When
+  this.fakeWindow.orientation =  90;
+
+  method.handler({
+    type : "orientationchange"
+  });
+  this.clock.tick( 310 );
+
+  // Then
+  ok(isCall);
+  ok(typeof isVertical === "boolean");
+  ok(typeof isVertical2 === "boolean");
+
+});
 
 test("If event is orientationchange then trigger and not android.", function() {
   // Given

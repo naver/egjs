@@ -17,6 +17,47 @@ module("scrollEnd", {
   }
 });
 
+test("It should fire scrollend event.", function() {
+
+   // Given
+  var checkInfo;
+  eg.agent = function(){
+    return {
+      "os" : {
+        "name" : "ios",
+        "version" : "8.0"
+      },
+      "browser" : {
+        "name" : ""
+      }
+    }
+  };
+
+  window.scrollTo(0, 1);
+  var method = eg.invoke("scrollEnd");
+  var self = this;
+
+  // When
+  $(window).on("scrollend", function(e,info){
+    checkInfo = info;
+  });
+
+  this.intervalNum = setInterval(function(){
+    self.topPos += 10;
+    window.scrollTo(0, self.topPos);
+    if(self.topPos > 20){
+      clearInterval(self.intervalNum);
+    }
+  }, 30);
+
+  // Then
+  stop();
+  setTimeout(function(){
+    equal(checkInfo.top, 30);
+    equal(checkInfo.left, 0);
+    start();
+  }, 500);
+});
 
 test("getDeviceType : android && 2.1 ", function() {
     // Given
@@ -96,7 +137,7 @@ test("getDeviceType : ios 7 && not webview ", function() {
        "os" : {
            "name" : "ios",
            "version" : "7.0"
-       	},
+        },
         "browser" : {
             "name" : "safari",
             "version" : "7.0",
@@ -149,7 +190,7 @@ test("getDeviceType : ios 8 && webview ", function() {
        "os" : {
            "name" : "ios",
            "version" : "8.0"
-       	},
+        },
         "browser" : {
             "name" : "safari",
             "version" : "-1",
@@ -175,7 +216,7 @@ test("getDeviceType : ios 7 && webview ", function() {
        "os" : {
            "name" : "ios",
            "version" : "7.0"
-       	},
+        },
         "browser" : {
             "name" : "safari",
             "version" : "-1",
@@ -245,131 +286,131 @@ test("scroll after rotate", function() {
       start();
   }, 1000);
 });
-	
+  
 if(eg.agent().browser.name === "PhantomJS") {
-	test("scroll scroll", function() {
-	  // Given
-	  eg.agent = function(){
-	    return {
-	       "os" : {
-	           "name" : "ios",
-	           "version" : "7.0"
-	       },
-	       "browser" : {
-	            "name" : ""
-	       }
-	     }
-	    };
-	
-	    window.scrollTo(0, 1);
-	    var method = eg.invoke("scrollEnd");
-	    var self = this;
-	
-	  // When
-	    $(window).on("scrollend", function(){
-	       self.isFireEvent = true;
-	    });
-	
-	    this.intervalNum = setInterval(function(){
-	        self.topPos += 10;
-	        window.scrollTo(0, self.topPos);
-	        if(self.topPos > 20){
-	            clearInterval(self.intervalNum);
-	        }
-	    }, 30);
-	
-	  // Then
-	  equal(method.getDeviceType(), method.SCROLLBASE);
-	
-	  stop();
-	  setTimeout(function(){
-	      strictEqual(self.isFireEvent , true, "scrollend event occurred");
-	      start();
-	  }, 500);
-	});
-	
-	
-	test("timer scroll", function() {
-	  // Given
-	  eg.agent = function(){
-	    return {
-	       "os" : {
-	           "name" : "ios",
-	           "version" : "8.0"
-	       },
-	       "browser" : {
-	            "name" : ""
-	       }
-	     }
-	    };
-	
-	    window.scrollTo(0, 1);
-	    var method = eg.invoke("scrollEnd");
-	    var self = this;
-	
-	  // When
-	    $(window).on("scrollend", function(){
-	       self.isFireEvent = true;
-	    });
-	
-	    this.intervalNum = setInterval(function(){
-	        self.topPos += 10;
-	        window.scrollTo(0, self.topPos);
-	        if(self.topPos > 20){
-	            clearInterval(self.intervalNum);
-	        }
-	    }, 30);
-	
-	  // Then
-	  equal(method.getDeviceType(), method.TIMERBASE);
-	
-	  stop();
-	  setTimeout(function(){
-	      strictEqual(self.isFireEvent , true, "scrollend event occurred");
-	      start();
-	  }, 500);
-	});
-	
-	
-	test("chrome scroll", function() {
-	  // Given
-	  eg.agent = function(){
-	    return {
-	       "os" : {
-	           "name" : "android",
-	           "version" : "4.1"
-	       },
-	       "browser" : {
-	            "name" : "chrome"
-	       }
-	     }
-	    };
-	
-	    window.scrollTo(0, 1);
-	    var method = eg.invoke("scrollEnd");
-	    var self = this;
-	
-	  // When
-	    $(window).on("scrollend", function(){
-	       self.isFireEvent = true;
-	    });
-	    $(window).trigger("orientationchange");
-	
-	    this.intervalNum = setInterval(function(){
-	        self.topPos += 10;
-	        window.scrollTo(0, self.topPos);
-	        if(self.topPos > 40){
-	            clearInterval(self.intervalNum);
-	        }
-	    }, 30);
-	
-	  // Then
-	  equal(method.getDeviceType(), method.TIMERBASE);
-	
-	  stop();
-	  setTimeout(function(){
-	      strictEqual(self.isFireEvent , true, "scrollend event occurred");
-	      start();
-	  }, 500);
-	});
+  test("scroll scroll", function() {
+    // Given
+    eg.agent = function(){
+      return {
+         "os" : {
+             "name" : "ios",
+             "version" : "7.0"
+         },
+         "browser" : {
+              "name" : ""
+         }
+       }
+      };
+  
+      window.scrollTo(0, 1);
+      var method = eg.invoke("scrollEnd");
+      var self = this;
+  
+    // When
+      $(window).on("scrollend", function(){
+         self.isFireEvent = true;
+      });
+  
+      this.intervalNum = setInterval(function(){
+          self.topPos += 10;
+          window.scrollTo(0, self.topPos);
+          if(self.topPos > 20){
+              clearInterval(self.intervalNum);
+          }
+      }, 30);
+  
+    // Then
+    equal(method.getDeviceType(), method.SCROLLBASE);
+  
+    stop();
+    setTimeout(function(){
+        strictEqual(self.isFireEvent , true, "scrollend event occurred");
+        start();
+    }, 500);
+  });
+  
+  
+  test("timer scroll", function() {
+    // Given
+    eg.agent = function(){
+      return {
+         "os" : {
+             "name" : "ios",
+             "version" : "8.0"
+         },
+         "browser" : {
+              "name" : ""
+         }
+       }
+      };
+  
+      window.scrollTo(0, 1);
+      var method = eg.invoke("scrollEnd");
+      var self = this;
+  
+    // When
+      $(window).on("scrollend", function(){
+         self.isFireEvent = true;
+      });
+  
+      this.intervalNum = setInterval(function(){
+          self.topPos += 10;
+          window.scrollTo(0, self.topPos);
+          if(self.topPos > 20){
+              clearInterval(self.intervalNum);
+          }
+      }, 30);
+  
+    // Then
+    equal(method.getDeviceType(), method.TIMERBASE);
+  
+    stop();
+    setTimeout(function(){
+        strictEqual(self.isFireEvent , true, "scrollend event occurred");
+        start();
+    }, 500);
+  });
+  
+  
+  test("chrome scroll", function() {
+    // Given
+    eg.agent = function(){
+      return {
+         "os" : {
+             "name" : "android",
+             "version" : "4.1"
+         },
+         "browser" : {
+              "name" : "chrome"
+         }
+       }
+      };
+  
+      window.scrollTo(0, 1);
+      var method = eg.invoke("scrollEnd");
+      var self = this;
+  
+    // When
+      $(window).on("scrollend", function(){
+         self.isFireEvent = true;
+      });
+      $(window).trigger("orientationchange");
+  
+      this.intervalNum = setInterval(function(){
+          self.topPos += 10;
+          window.scrollTo(0, self.topPos);
+          if(self.topPos > 40){
+              clearInterval(self.intervalNum);
+          }
+      }, 30);
+  
+    // Then
+    equal(method.getDeviceType(), method.TIMERBASE);
+  
+    stop();
+    setTimeout(function(){
+        strictEqual(self.isFireEvent , true, "scrollend event occurred");
+        start();
+    }, 500);
+  });
 }
