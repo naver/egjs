@@ -829,8 +829,8 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			if (this._isActivate) {
 				return this;
 			}
-			var p, v;
-			for (p in this._hammers) {
+			var v;
+			for (var p in this._hammers) {
 				v = this._hammers[p];
 				this._attachHammerEvents(v.inst, v.options);
 			}
