@@ -11,3 +11,4 @@ doc
 dist
 browserstack-run.pid
 config/browertstack.config.json
+_site

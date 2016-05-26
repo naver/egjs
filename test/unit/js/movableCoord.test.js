@@ -125,7 +125,6 @@ test("unbind", function() {
 
 	// When
 	var returnVal = this.inst.unbind($el);
-
 	// Then
 	var key = $el.data(eg.MovableCoord._KEY);
 	equal(returnVal, this.inst, "return instance" );
@@ -162,7 +161,7 @@ test("one element, double bind", function() {
 	});
 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
 	var before = $el.data(eg.MovableCoord._KEY);
-	var beforeHammerInstance = this.inst._hammers[before];
+	var beforeHammerObject = this.inst._hammers[before];
 
 	// When
 	this.inst.bind($el, {
@@ -172,8 +171,7 @@ test("one element, double bind", function() {
 	// Then
 	var key = $el.data(eg.MovableCoord._KEY);
 	equal(before, key, "key data value is same" );
-	equal(this.inst._hammers[key].get("pan").options.direction, eg.MovableCoord.DIRECTION_HORIZONTAL, "options was changed" );
-	deepEqual(beforeHammerInstance, this.inst._hammers[key], "recycle hammer instance" );
+	notDeepEqual(beforeHammerObject.inst, this.inst._hammers[key].inst, "recreate hammer instance" );
 	equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "hammer instance count is same" );
 });
 
@@ -1021,7 +1019,7 @@ test("interrupt test. Second 'MovableCoord move' can be available after 'no move
             duration: 1000,
             easing: "linear"
 		}, function() {
-			equal(releaseCount, EXPECTED_RELEASE_COUNT, 
+			equal(releaseCount, EXPECTED_RELEASE_COUNT,
 				"Second 'MovableCoord move' can be available after 'No move' by first MovableCoord move")
 			done();
 		});
