@@ -829,8 +829,10 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			if (this._isActivate) {
 				return this;
 			}
-			for (var p in this._hammers) {
-				this._attachHammerEvents(p.inst, p.options);
+			var p, v;
+			for (p in this._hammers) {
+				v = this._hammers[p];
+				this._attachHammerEvents(v.inst, v.options);
 			}
 			this._isActivate = true;
 			return this;
@@ -841,7 +843,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 				return this;
 			}
 			for (var p in this._hammers) {
-				this._detachHammerEvents(p.inst);
+				this._detachHammerEvents(this._hammers[p].inst);
 			}
 			this._isActivate = false;
 			return this;

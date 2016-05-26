@@ -1284,7 +1284,7 @@ test("check deactivation", function() {
 });
 
 
-test("after deactivation, call methods", function() {
+test("after deactivation, call setTo/By methods", function() {
 	//Given
 	var before = this.inst.isActivate();
 	var beforePos = this.inst._pos.concat();
@@ -1304,17 +1304,50 @@ test("after deactivation, call methods", function() {
 	// Then
 	deepEqual(beforePos, this.inst._pos, "check whether position is moved");
 
+	// Given
+	this.inst.activate();
+
+	// When
+	this.inst.setTo(10,10);
+
+	// Then
+	equal(this.inst.isActivate(), true, "check activation");
+	deepEqual([10,10], this.inst._pos, "check whether position is moved");
+
+	// When
+	this.inst.setBy(10,10);
+
+	// Then
+	deepEqual([20,20], this.inst._pos, "check whether position is moved");
+
+});
+
+test("after deactivation, call bind/unbind methods", function() {
+	//Given
+	var before = this.inst.isActivate();
+	var beforePos = this.inst._pos.concat();
+	var beforeHammerCount = Object.keys(this.inst._hammers).length;
+	this.inst.deactivate();
+
 	// When
 	this.inst.bind("#area", {
 		direction : eg.MovableCoord.DIRECTION_ALL
 	});
 
 	// Then
-	deepEqual(beforeHammerCount, Object.keys(this.inst._hammers).length, "check whether bind is worked");
+	equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "check whether bind is worked");
+
+	// Given
+	this.inst.activate();
+	this.inst.bind("#area", {
+		direction : eg.MovableCoord.DIRECTION_ALL
+	});
+	beforeHammerCount = Object.keys(this.inst._hammers).length;
+	this.inst.deactivate();
 
 	// When
 	this.inst.unbind("#area");
 
 	// Then
-	deepEqual(beforeHammerCount, Object.keys(this.inst._hammers).length, "check whether unbind is worked");
+	equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "check whether unbind is worked");
 });
