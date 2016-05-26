@@ -13,6 +13,7 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 	* @ko jQuery custom scrollEnd 이벤트 지원
 	* @name jQuery#scrollEnd
 	* @event
+	* @param {Event} e
 	* @param {Object} info
 	* @param {Number} info.top top position <ko>상단(top) 위치 값</ko>
 	* @param {Number} info.left left position <ko>왼쪽(left) 위치 값</ko>
