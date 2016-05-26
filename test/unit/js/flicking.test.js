@@ -14,6 +14,30 @@ function $getTransformValue(el, match) {
 	return match ? (elStyle.match(rx) ||[,])[1] : elStyle;
 }
 
+// create Flicking instance
+function create(el, option, handler) {
+	handler = handler || $.noop;
+
+	return new eg.Flicking(el, option || {}).on({
+		beforeFlickStart: handler,
+		flick : handler,
+		flickEnd : handler,
+		beforeRestore : handler,
+		restore : handler
+	});
+}
+
+// run gesture simulator
+function simulator(el, option, callback) {
+	Simulator.gestures.pan(el, $.extend({
+		pos: [50, 50],
+		deltaX: -100,
+		deltaY: 0,
+		duration: 500,
+		easing: "linear"
+	}, option), callback);
+}
+
 var hooks = {
 	beforeEach: function() {
 		this.inst = null;
@@ -757,6 +781,40 @@ test("prev() - Animation #2", function (assert) {
 		done();
 	}, this), 400);
 });
+
+test("enaableInput() / disableInput()", function(assert) {
+	var done1 = assert.async();
+	var done2 = assert.async();
+
+	// Given
+	var el = $("#mflick1")[0];
+	var isEventFired = false;
+
+	var inst = create(el, null, function(e) {
+		isEventFired = true;
+	});
+
+	// When
+	inst.disableInput();
+
+	simulator(el, {
+		deltaX: -70
+	}, function() {
+		assert.ok(!isEventFired, "Input action should be disabled.");
+		done1();
+
+		// When
+		inst.enableInput();
+
+		simulator(el, {
+			deltaX: -70
+		}, function() {
+			assert.ok(isEventFired, "Input action should be enabled.");
+			done2();
+		});
+	});
+});
+
 
 
 module("moveTo() method", hooks);
