@@ -108,7 +108,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			!ns._hasClickBug() && (this._setPointerEvents = $.noop);
 
 			this._build();
-			this._bindEvents();
+			this._bindEvents(true);
 
 			this._applyPanelsCss();
 			this._arrangePanels();
@@ -190,6 +190,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 					restore: false,
 					restoreCall: false
 				},
+				inputEvent: false,		// input event biding status
 				useLayerHack: options.hwAccelerable && !SUPPORT_WILLCHANGE,
 				dirData: [],			// direction constant value according horizontal or vertical
 				indexToMove: 0,
@@ -254,12 +255,6 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				easing: options.panelEffect,
 				deceleration: options.deceleration,
 				bounce: this._getDataByDirection([ 0, bounce[1], 0, bounce[0] ])
-			}).bind(this.$wrapper, {
-				scale: this._getDataByDirection([-1, 0]),
-				direction: MC["DIRECTION_" +
-					(horizontal ? "HORIZONTAL" : "VERTICAL")],
-				interruptable: false,
-				inputType: options.inputType
 			});
 
 			this._setDefaultPanel(options.defaultIndex);
@@ -569,15 +564,32 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 
 		/**
 		 * Bind events
+		 * @param {Boolean} bind
 		 */
-		_bindEvents: function () {
-			this._mcInst.on({
-				hold: $.proxy(this._holdHandler, this),
-				change: $.proxy(this._changeHandler, this),
-				release: $.proxy(this._releaseHandler, this),
-				animationStart: $.proxy(this._animationStartHandler, this),
-				animationEnd: $.proxy(this._animationEndHandler, this)
-			});
+		_bindEvents: function (bind) {
+			var options = this.options;
+			var $wrapper = this.$wrapper;
+			var mcInst = this._mcInst;
+
+			if (bind) {
+				mcInst.bind($wrapper, {
+					scale: this._getDataByDirection([-1, 0]),
+					direction: MC["DIRECTION_" +
+					(options.horizontal ? "HORIZONTAL" : "VERTICAL")],
+					interruptable: false,
+					inputType: options.inputType
+				}).on({
+					hold: $.proxy(this._holdHandler, this),
+					change: $.proxy(this._changeHandler, this),
+					release: $.proxy(this._releaseHandler, this),
+					animationStart: $.proxy(this._animationStartHandler, this),
+					animationEnd: $.proxy(this._animationEndHandler, this)
+				});
+			} else {
+				mcInst.unbind($wrapper).off();
+			}
+
+			this._conf.inputEvent = !!bind;
 		},
 
 		/**
@@ -1368,6 +1380,41 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			}
 
 			return this;
+		},
+
+		/**
+		 * Set input event biding
+		 * @param {Boolean} bind - true: bind, false: unbind
+		 * @return {eg.Flicking} instance of itself
+		 */
+		_setInputEvent: function(bind) {
+			var inputEvent = this._conf.inputEvent;
+
+			if (bind && !inputEvent || !bind && inputEvent) {
+				this._bindEvents(bind);
+			}
+
+			return this;
+		},
+
+		/**
+		 * Enable input events
+		 * @ko 입력 이벤트 활성
+		 * @method eg.Flicking#enableInput
+		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
+		 */
+		enableInput: function() {
+			return this._setInputEvent(true);
+		},
+
+		/**
+		 * Disable input events
+		 * @ko 입력 이벤트 비활성
+		 * @method eg.Flicking#disableInput
+		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
+		 */
+		disableInput: function() {
+			return this._setInputEvent();
 		}
 	});
 });
