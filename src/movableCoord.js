@@ -123,19 +123,21 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			if (!inputClass) {
 				return this;
 			}
+
 			if (keyValue) {
-				this._hammers[keyValue].get("pan").set({
-					direction: subOptions.direction
-				});
+				this._hammers[keyValue].inst.destroy();
 			} else {
 				keyValue = Math.round(Math.random() * new Date().getTime());
-				this._hammers[keyValue] = this._createHammer(
+			}
+			this._hammers[keyValue] = {
+				inst: this._createHammer(
 					$el.get(0),
 					subOptions,
 					inputClass
-				);
-				$el.data(MC._KEY, keyValue);
-			}
+				),
+				options: subOptions
+			};
+			$el.data(MC._KEY, keyValue);
 			return this;
 		},
 
@@ -169,17 +171,26 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 						},
 						inputClass: inputClass
 					});
-				return hammer.on("hammer.input", $.proxy(function(e) {
+
+				return this._attachHammerEvents(hammer, subOptions);
+			} catch (e) {}
+		},
+
+		_attachHammerEvents: function(hammer, options) {
+			return hammer.on("hammer.input", $.proxy(function(e) {
 					if (e.isFirst) {
 						// apply options each
-						this._subOptions = subOptions;
+						this._subOptions = options;
 						this._status.curHammer = hammer;
 						this._panstart(e);
 					}
 				}, this))
 				.on("panstart panmove", this._panmove)
 				.on("panend tap", this._panend);
-			} catch (e) {}
+		},
+
+		_detachHammerEvents: function(hammer) {
+			hammer.off("hammer.input panstart panmove panend tap");
 		},
 
 		_convertInputType: function(inputType) {
@@ -207,7 +218,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			var $el = $(el);
 			var key = $el.data(MC._KEY);
 			if (key) {
-				this._hammers[key].destroy();
+				this._hammers[key].inst.destroy();
 				delete this._hammers[key];
 				$el.data(MC._KEY, null);
 			}
@@ -809,7 +820,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		destroy: function() {
 			this.off();
 			for (var p in this._hammers) {
-				this._hammers[p].destroy();
+				this._hammers[p].inst.destroy();
 				this._hammers[p] = null;
 			}
 		}
