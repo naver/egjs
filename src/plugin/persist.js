@@ -10,7 +10,6 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	// jscs:enable maximumLineLength
 	var wp = global.performance;
 	var history = global.history;
-	var location = global.location;
 	var userAgent = global.navigator.userAgent;
 	var JSON = global.JSON;
 	var CONST_PERSIST = "___persist___";
@@ -37,15 +36,16 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 		}
 		var TMP_KEY = "__tmp__" + CONST_PERSIST;
 
-		// In case of iOS safari private mode, calling setItem on storage throws error
 		try {
+			// In case of iOS safari private mode, calling setItem on storage throws error
 			storage.setItem(TMP_KEY, CONST_PERSIST);
+
+			// In Chrome incognito mode, can not get saved value
+			// In IE8, calling storage.getItem occasionally makes "Permission denied" error
+			return storage.getItem(TMP_KEY) === CONST_PERSIST;
 		} catch (e) {
 			return false;
 		}
-
-		// In Chrome incognito mode, can not get saved value
-		return storage.getItem(TMP_KEY) === CONST_PERSIST ? true : false;
 	}
 
 	if (!isSupportState && !storage) {
@@ -87,7 +87,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	function getState() {
 		var state;
 		var stateStr = storage ?
-			storage.getItem(location.href + CONST_PERSIST) : history.state;
+			storage.getItem(global.location.href + CONST_PERSIST) : history.state;
 
 		// the storage is clean
 		if (stateStr === null) {
@@ -140,16 +140,17 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	function setState(state) {
 		if (storage) {
 			if (state) {
-				storage.setItem(location.href + CONST_PERSIST, JSON.stringify(state));
+				storage.setItem(
+					global.location.href + CONST_PERSIST, JSON.stringify(state));
 			} else {
-				storage.removeItem(location.href  + CONST_PERSIST);
+				storage.removeItem(global.location.href  + CONST_PERSIST);
 			}
 		} else {
 			try {
 				history.replaceState(
 					state === null ? null : JSON.stringify(state),
 					doc.title,
-					location.href
+					global.location.href
 				);
 			} catch (e) {
 				/* jshint ignore:start */
