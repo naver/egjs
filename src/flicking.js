@@ -192,6 +192,18 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 					restore: false,
 					restoreCall: false
 				},
+				origPanelStyle: {		// remember original class and inline style in case of restoration on destroy()
+					wrapper: {
+						className: this.$wrapper.attr("class") || null,
+						style: this.$wrapper.attr("style") || null
+					},
+					list: $children.map(function(i, v) {
+						return {
+							className: $(v).attr("class") || null,
+							style: $(v).attr("style") || null
+						};
+					})
+				},
 				inputEvent: false,		// input event biding status
 				useLayerHack: options.hwAccelerable && !SUPPORT_WILLCHANGE,
 				dirData: [],			// direction constant value according horizontal or vertical
@@ -1459,6 +1471,36 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 */
 		disableInput: function() {
 			return this._setInputEvent();
+		},
+
+		/**
+		 * Release resources and events attached
+		 * @ko 사용된 리소스와 이벤트를 해제
+		 * @method eg.Flicking#destroy
+		 */
+		destroy: function() {
+			var conf = this._conf;
+			var origPanelStyle = conf.origPanelStyle;
+			var wrapper = origPanelStyle.wrapper;
+			var list = origPanelStyle.list;
+
+			// unwrap container element and restore original inline style
+			this.$wrapper.attr("class", wrapper.className)
+				.attr("style", wrapper.style);
+
+			conf.panel.$list.unwrap().each(function(i, v) {
+				$(v).attr("class", list[i].className)
+					.attr("style", list[i].style);
+			});
+
+			// unbind events
+			this.disableInput();
+			this.off();
+
+			// release resources
+			for (var x in this) {
+				this[x] = null;
+			}
 		}
 	});
 });

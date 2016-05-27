@@ -780,7 +780,7 @@ test("prev() - Animation #2", function (assert) {
 	}, this), 400);
 });
 
-test("enaableInput() / disableInput()", function(assert) {
+test("enableInput() / disableInput()", function(assert) {
 	var done1 = assert.async();
 	var done2 = assert.async();
 
@@ -813,6 +813,60 @@ test("enaableInput() / disableInput()", function(assert) {
 	});
 });
 
+test("destroy()", function(assert) {
+	var done = assert.async();
+
+	// Given
+	var $el = $("#mflick1");
+	var $panel = $el.children();
+	var isEventFired = false;
+
+	var origPanelStyle = {
+		wrapper: {
+			className: $el.attr("class"),
+			style: $el.attr("style")
+		},
+		list: $panel.map(function(i,v) {
+			return {
+				className: $(v).attr("class"),
+				style: $(v).attr("style")
+			};
+		})
+	};
+
+	var inst = create($el, null, function(e) {
+		isEventFired = true;
+	});
+
+	var containerClassName = inst.$container.attr("class");
+
+	// When
+	inst.destroy();
+
+	simulator($el[0], {
+		deltaX: -70
+	}, function() {
+		assert.ok(!isEventFired, "Input action should be disabled.");
+		assert.ok($el.find("."+ containerClassName).length === 0, "Container element was removed?");
+
+		assert.ok($el.attr("class") === origPanelStyle.wrapper.className, "Wrapper element class has been restored?");
+		assert.ok($el.attr("style") === origPanelStyle.wrapper.style, "Wrapper element style has been restored?");
+
+		$panel.each(function(i, v) {
+			var $panelEl = $(v);
+
+			assert.ok($panelEl.attr("class") === origPanelStyle.list[i].className, "Panel element class has been restored?");
+			assert.ok($panelEl.attr("style") === origPanelStyle.list[i].style, "Panel element style has been restored?");
+		});
+
+		// check for the resources release
+		for(var x in inst) {
+			assert.equal(inst[x], null, "'"+ x +"' is released?");
+		}
+
+		done();
+	});
+});
 
 
 module("moveTo() method", hooks);
