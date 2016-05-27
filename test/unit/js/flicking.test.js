@@ -780,7 +780,7 @@ test("prev() - Animation #2", function (assert) {
 	}, this), 400);
 });
 
-test("enaableInput() / disableInput()", function(assert) {
+test("enableInput() / disableInput()", function(assert) {
 	var done1 = assert.async();
 	var done2 = assert.async();
 
@@ -813,6 +813,36 @@ test("enaableInput() / disableInput()", function(assert) {
 	});
 });
 
+test("destroy()", function(assert) {
+	var done = assert.async();
+
+	// Given
+	var el = $("#mflick1")[0];
+	var isEventFired = false;
+
+	var inst = create(el, null, function(e) {
+		isEventFired = true;
+	});
+
+	var containerClassName = inst.$container.attr("class");
+
+	// When
+	inst.destroy();
+
+	simulator(el, {
+		deltaX: -70
+	}, function() {
+		assert.ok(!isEventFired, "Input action should be disabled.");
+		assert.ok($(el).find("."+ containerClassName).length === 0, "Container element was removed?");
+
+		// check for the resources release
+		for(var x in inst) {
+			assert.equal(inst[x], null, "'"+ x +"' is released?");
+		}
+
+		done();
+	});
+});
 
 
 module("moveTo() method", hooks);

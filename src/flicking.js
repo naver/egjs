@@ -1459,6 +1459,26 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 */
 		disableInput: function() {
 			return this._setInputEvent();
+		},
+
+		/**
+		 * Release resources and events attached
+		 * @ko 사용된 리소스와 이벤트를 해제
+		 * @method eg.Flicking#destroy
+		 */
+		destroy: function() {
+			// remove applied inline style and unwrap container element
+			this.$wrapper.attr("style", "");
+			this._conf.panel.$list.attr("style", "").unwrap();
+
+			// unbind events
+			this.disableInput();
+			this.off();
+
+			// release resources
+			for (var x in this) {
+				this[x] = null;
+			}
 		}
 	});
 });
