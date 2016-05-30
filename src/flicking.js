@@ -192,6 +192,18 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 					restore: false,
 					restoreCall: false
 				},
+				origPanelStyle: {		// remember original class and inline style in case of restoration on destroy()
+					wrapper: {
+						class: this.$wrapper.attr("class") || null,
+						style: this.$wrapper.attr("style") || null
+					},
+					list: $children.map(function(i, v) {
+						return {
+							class: $(v).attr("class") || null,
+							style: $(v).attr("style") || null
+						};
+					})
+				},
 				inputEvent: false,		// input event biding status
 				useLayerHack: options.hwAccelerable && !SUPPORT_WILLCHANGE,
 				dirData: [],			// direction constant value according horizontal or vertical
@@ -1467,9 +1479,19 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @method eg.Flicking#destroy
 		 */
 		destroy: function() {
-			// remove applied inline style and unwrap container element
-			this.$wrapper.attr("style", "");
-			this._conf.panel.$list.attr("style", "").unwrap();
+			var conf = this._conf;
+			var origPanelStyle = conf.origPanelStyle;
+			var wrapper = origPanelStyle.wrapper;
+			var list = origPanelStyle.list;
+
+			// unwrap container element and restore original inline style
+			this.$wrapper.attr("class", wrapper.class)
+				.attr("style", wrapper.style);
+
+			conf.panel.$list.unwrap().each(function(i, v) {
+				$(v).attr("class", list[i].class)
+					.attr("style", list[i].style);
+			});
 
 			// unbind events
 			this.disableInput();
