@@ -194,12 +194,12 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				},
 				origPanelStyle: {		// remember original class and inline style in case of restoration on destroy()
 					wrapper: {
-						class: this.$wrapper.attr("class") || null,
+						className: this.$wrapper.attr("class") || null,
 						style: this.$wrapper.attr("style") || null
 					},
 					list: $children.map(function(i, v) {
 						return {
-							class: $(v).attr("class") || null,
+							className: $(v).attr("class") || null,
 							style: $(v).attr("style") || null
 						};
 					})
@@ -1485,11 +1485,11 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var list = origPanelStyle.list;
 
 			// unwrap container element and restore original inline style
-			this.$wrapper.attr("class", wrapper.class)
+			this.$wrapper.attr("class", wrapper.className)
 				.attr("style", wrapper.style);
 
 			conf.panel.$list.unwrap().each(function(i, v) {
-				$(v).attr("class", list[i].class)
+				$(v).attr("class", list[i].className)
 					.attr("style", list[i].style);
 			});
 
