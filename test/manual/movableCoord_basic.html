@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
 <style>
 #area {
-  position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;
+  position:relative; border:5px solid #444; width:200px; height:300px; color:#aaa; margin:0;
   box-sizing:content-box; z-index:9;
 }
 
@@ -15,12 +15,12 @@
 
 #hmove {
   position:relative; border:5px solid #888; background-color:yellowgreen;
-  width:300px; height:80px;
+  width:200px; height:80px;
 }
 
 #vmove {
   position:relative; border:5px solid #888; background-color:skyblue;
-  width:80px; height:400px; left:310px; top:-500px;
+  width:80px; height:300px; left:210px; top:-400px;
 }
 
 .log{border:solid 1px #000;overflow:scroll;-webkit-overflow-scrolling:touch; width:99%;height:300px}
@@ -63,7 +63,7 @@ var $dot = $("#dot"),
   useHW = eg.isHWAccelerable(),
   inst = new eg.MovableCoord({
     min : [ 0, 0 ],
-    max : [ 300, 400 ],
+    max : [ 200, 300 ],
     bounce : 100,
     deceleration : 0.0024
   }).on({
