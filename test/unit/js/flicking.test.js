@@ -16,15 +16,21 @@ function $getTransformValue(el, match) {
 
 // create Flicking instance
 function create(el, option, handler) {
-	handler = handler || $.noop;
-
-	return new eg.Flicking(el, option || {}).on({
+	var customEvt = {
 		beforeFlickStart: handler,
 		flick : handler,
 		flickEnd : handler,
 		beforeRestore : handler,
 		restore : handler
-	});
+	};
+
+	if ($.isPlainObject(handler)) {
+		customEvt = handler;
+	} else {
+		handler = handler || $.noop;
+	}
+
+	return new eg.Flicking(el, option || {}).on(customEvt);
 }
 
 // run gesture simulator
@@ -1216,18 +1222,12 @@ test("Check for basic functionality", function (assert) {
 			}
 		};
 
-	var inst = new eg.Flicking(el, {
+	var inst = create(el, {
 		duration : 200,
 		hwAccelerable : true,
 		threshold : 70,
 		circular: true
-	}).on({
-			beforeFlickStart: handler,
-			flick : handler,
-			flickEnd : handler,
-			beforeRestore : handler,
-			restore : handler
-		});
+	}, handler);
 
 	var panelIndex = {
 		no: inst._conf.panel.no,
@@ -1240,14 +1240,35 @@ test("Check for basic functionality", function (assert) {
 		inst._setTranslate([-145,0]);
 	};
 
+	var setCondition2 = function() {
+		var panel = inst._conf.panel;
+		var pos = panel.size * (panel.currIndex + 1);
+		eventFired = [];
+
+		inst._mcInst._pos = [pos,0];
+		inst._setTranslate([-pos,0]);
+	};
+
 	var runTest = function() {
-		assert.ok(inst._mcInst.get()[0] % inst._conf.panel.size === 0, "Restored in right position?");
+		var currPos = inst._mcInst.get()[0];
+		var panel = inst._conf.panel;
+
+		assert.ok(currPos % panel.size === 0 && currPos === panel.currIndex * panel.size, "Restored in right position?");
 		assert.ok(panelIndex.no === inst.getIndex() && panelIndex.index === inst.getIndex(true), "Restored to previous panel number?");
 		assert.deepEqual(eventFired, eventOrder, "Custom events are fired correctly?");
 	};
 
 	// Given
 	setCondition();
+
+	// When
+	inst.restore(0);
+
+	// Then
+	runTest();
+
+	// Given
+	setCondition2();
 
 	// When
 	inst.restore(0);
@@ -1280,12 +1301,12 @@ test("When restoring after event stop", function () {
 			}
 		};
 
-	var inst = new eg.Flicking(el, {
+	var inst = create(el, {
 		duration : 100,
 		hwAccelerable : true,
 		threshold : 70,
 		circular: true
-	}).on({
+	}, {
 		beforeFlickStart: function(e) {
 			if(e.no === 0) {
 				e.stop();

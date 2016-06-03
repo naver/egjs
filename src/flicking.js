@@ -1414,7 +1414,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var destPos;
 
 			// check if the panel isn't in right position
-			if (currPos[0] % panel.size) {
+			if (currPos[0] !== panel.currIndex * panel.size) {
 				conf.customEvent.restoreCall = true;
 				duration = this._getNumValue(duration, this.options.duration);
 
