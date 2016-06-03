@@ -1835,133 +1835,94 @@ test("Check for direction during hold and unhold on flick event", function(asser
 	var done4 = assert.async();
 
 	// Given
-	var el,
-		directionHold = [],
-		directionUnhold = [],
+	var directionHold = {},
+		directionUnhold = {},
 		handler = function(e) {
+			var id = this.$wrapper[0].id;
+
+			if (!directionHold[id]) {
+				directionHold[id] = [];
+				directionUnhold[id] = [];
+			}
+
 			if(e.holding) {
-				directionHold.push(e.direction);
+				directionHold[id].push(e.direction);
 			} else {
-				directionUnhold.push(e.direction);
+				directionUnhold[id].push(e.direction);
 			}
 		};
+
+	var setCondition = function(elem, options) {
+		create(elem, options || { circular: true }, {
+			flick: handler,
+			circular: true
+		});
+	}
 
 	var check = function(arr, val) {
 		return arr.join("").replace(new RegExp(val,"g"), "") === "";
 	};
 
 	// When
-	el = $("#mflick1")[0];
-	direction = null;
+	var el = $("#mflick1")[0];
+	setCondition(el);
 
-	this.inst = new eg.Flicking(el, {
-		circular: true
-	}).on({
-		flick: handler,
-		circular: true
-	});
+	simulator(el, { deltaX: -100, deltaY: 90 },function(e) {
+		var id = el.id;
 
-	Simulator.gestures.pan(el, {
-		pos: [50, 50],
-		deltaX: -100,
-		deltaY: 90,
-		duration: 1000,
-		easing: "linear"
-	}, function() {
 		// Then
-		assert.ok(check(directionHold, eg.MovableCoord.DIRECTION_LEFT), "Is left during touch hold?");
-		assert.ok(check(directionUnhold,eg.MovableCoord.DIRECTION_LEFT), "Is left during touch unhold?");
+		assert.ok(check(directionHold[id], eg.MovableCoord.DIRECTION_LEFT), "Is left during touch hold?");
+		assert.ok(check(directionUnhold[id], eg.MovableCoord.DIRECTION_LEFT), "Is left during touch unhold?");
 		done1();
 	});
 
 	// Given
-	setTimeout(function() {
-		el = $("#mflick2")[0];
-		direction = null;
-		directionHold = [];
-		directionUnhold = [];
+	var el2 = $("#mflick2")[0];
+	setCondition(el2);
 
-		this.inst = new eg.Flicking(el, {
-			circular: true
-		}).on({
-			flick: handler,
-			circular: true
-		});
+	// When
+	simulator(el2, { deltaX: 100, deltaY: 50 }, function() {
+		var id = el2.id;
 
-		// When
-		Simulator.gestures.pan(el, {
-			pos: [50, 50],
-			deltaX: 100,
-			deltaY: 50,
-			duration: 1000,
-			easing: "linear"
-		}, function() {
-			// Then
-			assert.ok(check(directionHold, eg.MovableCoord.DIRECTION_RIGHT), "Is right during touch hold?");
-			assert.ok(check(directionUnhold, eg.MovableCoord.DIRECTION_RIGHT), "Is right during touch unhold?");
-			done2();
-		});
-	}, 1500);
+		// Then
+		assert.ok(check(directionHold[id], eg.MovableCoord.DIRECTION_RIGHT), "Is right during touch hold?");
+		assert.ok(check(directionUnhold[id], eg.MovableCoord.DIRECTION_RIGHT), "Is right during touch unhold?");
+		done2();
+	});
 
 	// Given
-	setTimeout(function() {
-		el = $("#mflick3")[0];
-		direction = null;
-		directionHold = [];
-		directionUnhold = [];
+	var el3 = $("#mflick3")[0];
+	setCondition(el3, {
+		circular: true,
+		horizontal: false
+	});
 
-		this.inst = new eg.Flicking(el, {
-			circular: true,
-			horizontal: false
-		}).on({
-			flick: handler,
-			circular: true
-		});
+	// When
+	simulator(el3, { deltaX: 50, deltaY: -100 }, function() {
+		var id = el3.id;
 
-		// When
-		Simulator.gestures.pan(el, {
-			pos: [50, 50],
-			deltaX: 50,
-			deltaY: -100,
-			duration: 1000,
-			easing: "linear"
-		}, function() {
-			// Then
-			assert.ok(check(directionHold, eg.MovableCoord.DIRECTION_UP), "Is up during touch hold?");
-			assert.ok(check(directionUnhold, eg.MovableCoord.DIRECTION_UP), "Is up during touch unhold?");
-			done3();
-		});
-	}, 3000);
+		// Then
+		assert.ok(check(directionHold[id], eg.MovableCoord.DIRECTION_UP), "Is up during touch hold?");
+		assert.ok(check(directionUnhold[id], eg.MovableCoord.DIRECTION_UP), "Is up during touch unhold?");
+		done3();
+	});
 
 	// Given
-	setTimeout(function() {
-		el = $("#mflick3-1")[0];
-		direction = null;
-		directionHold = [];
-		directionUnhold = [];
+	var el4 = $("#mflick3-1")[0];
+	setCondition(el4, {
+		circular: true,
+		horizontal: false
+	});
 
-		this.inst = new eg.Flicking(el, {
-			circular: true,
-			horizontal: false
-		}).on({
-			flick: handler,
-			circular: true
-		});
+	// When
+	simulator(el4, { deltaX: -50, deltaY: 100 }, function() {
+		var id = el4.id;
 
-		// When
-		Simulator.gestures.pan(el, {
-			pos: [50, 50],
-			deltaX: -50,
-			deltaY: 100,
-			duration: 1000,
-			easing: "linear"
-		}, function() {
-			// Then
-			assert.ok(check(directionHold, eg.MovableCoord.DIRECTION_DOWN), "Is down during touch hold?");
-			assert.ok(check(directionUnhold, eg.MovableCoord.DIRECTION_DOWN), "Is down during touch unhold?");
-			done4();
-		});
-	}, 4500);
+		// Then
+		assert.ok(check(directionHold[id], eg.MovableCoord.DIRECTION_DOWN), "Is down during touch hold?");
+		assert.ok(check(directionUnhold[id], eg.MovableCoord.DIRECTION_DOWN), "Is down during touch unhold?");
+		done4();
+	});
 });
 
 
