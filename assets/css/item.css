@@ -20,3 +20,10 @@ body {background-color: #f1f2f6;}
     width : 16.66666667%;
   }
 }
+
+p.desc {
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp:1;
+  display: -webkit-box;
+  overflow: hidden;
+}
