@@ -1488,8 +1488,14 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			this.$wrapper.attr("class", wrapper.className)
 				.attr("style", wrapper.style);
 
-			conf.panel.$list.unwrap().each(function(i, v) {
-				$(v).attr("class", list[i].className)
+			this.$container.children().unwrap().each(function(i, v) {
+				var $el = $(v);
+
+				if (i > list.length - 1) {
+					return !!$el.remove();
+				}
+
+				$el.attr("class", list[i].className)
 					.attr("style", list[i].style);
 			});
 
