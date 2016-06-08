@@ -840,7 +840,10 @@ test("destroy()", function(assert) {
 		})
 	};
 
-	var inst = create($el, null, function(e) {
+	var inst = create($el, {
+		defaultIndex: 2,
+		circular: true
+	}, function(e) {
 		isEventFired = true;
 	});
 
@@ -867,11 +870,25 @@ test("destroy()", function(assert) {
 
 		// check for the resources release
 		for(var x in inst) {
-			assert.equal(inst[x], null, "'"+ x +"' is released?");
+			assert.equal(inst[x], null, "'" + x + "' is released?");
 		}
 
 		done();
 	});
+
+	// Given
+	var $el2 = $("#mflick2");
+	var panelCount = $el2.children().length;
+	var inst2 = create($el2[0], {
+		previewPadding: 10,
+		circular: true
+	});
+
+	// When
+	inst2.destroy();
+
+	// Then
+	assert.equal(panelCount, $el2.children().length, "Removed cloned panel elements?");
 });
 
 
