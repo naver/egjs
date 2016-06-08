@@ -176,6 +176,6 @@ $RECYCLE.BIN/
 *.lnk
 
 
-dist
-doc
-report
+/dist
+/doc
+/report
