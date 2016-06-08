@@ -176,6 +176,12 @@
     
     <span class="subtitle">Methods</span>
     
+        <li data-name="eg.Flicking#destroy"><a href="eg.Flicking.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.Flicking#disableInput"><a href="eg.Flicking.html#disableInput">disableInput</a></li>
+    
+        <li data-name="eg.Flicking#enableInput"><a href="eg.Flicking.html#enableInput">enableInput</a></li>
+    
         <li data-name="eg.Flicking#getAllElements"><a href="eg.Flicking.html#getAllElements">getAllElements</a></li>
     
         <li data-name="eg.Flicking#getElement"><a href="eg.Flicking.html#getElement">getElement</a></li>
@@ -185,6 +191,8 @@
         <li data-name="eg.Flicking#getNextElement"><a href="eg.Flicking.html#getNextElement">getNextElement</a></li>
     
         <li data-name="eg.Flicking#getNextIndex"><a href="eg.Flicking.html#getNextIndex">getNextIndex</a></li>
+    
+        <li data-name="eg.Flicking#getPrevElement"><a href="eg.Flicking.html#getPrevElement">getPrevElement</a></li>
     
         <li data-name="eg.Flicking#getPrevIndex"><a href="eg.Flicking.html#getPrevIndex">getPrevIndex</a></li>
     
@@ -367,8 +375,6 @@
     
         <li data-name="eg.MovableCoord#event:animationEnd"><a href="eg.MovableCoord.html#event:animationEnd">animationEnd</a></li>
     
-        <li data-name="eg.MovableCoord#event:animationStart"><a href="eg.MovableCoord.html#event:animationStart">animationStart</a></li>
-    
         <li data-name="eg.MovableCoord#event:change"><a href="eg.MovableCoord.html#event:change">change</a></li>
     
         <li data-name="eg.MovableCoord#event:hold"><a href="eg.MovableCoord.html#event:hold">hold</a></li>
@@ -465,6 +471,10 @@
         <li data-name="jQuery.visible"><a href="jQuery.html#visible">visible</a></li>
     
         <li data-name="jQuery#animate"><a href="jQuery.html#animate">animate</a></li>
+    
+        <li data-name="jQuery#pause"><a href="jQuery.html#pause">pause</a></li>
+    
+        <li data-name="jQuery#resume"><a href="jQuery.html#resume">resume</a></li>
     
     </ul>
     <ul class="events itemMembers">
@@ -590,7 +600,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1321">line 1321</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1513">line 1513</a>
         </div>
         
     </div>
@@ -705,7 +715,7 @@ $(&quot;#content&quot;).flicking(&quot;getNextIndex&quot;,1); // Get next panel 
     
         
         <div class="tag-source">
-            <a href="infiniteGrid.js.html">infiniteGrid.js</a>, <a href="infiniteGrid.js.html#line825">line 825</a>
+            <a href="infiniteGrid.js.html">infiniteGrid.js</a>, <a href="infiniteGrid.js.html#line846">line 846</a>
         </div>
         
     </div>
@@ -816,7 +826,7 @@ $(&quot;#grid&quot;).infiniteGrid({
     
         
         <div class="tag-source">
-            <a href="persist.js.html">plugin/persist.js</a>, <a href="persist.js.html#line149">line 149</a>
+            <a href="persist.js.html">plugin/persist.js</a>, <a href="persist.js.html#line171">line 171</a>
         </div>
         
     </div>
@@ -827,7 +837,7 @@ $(&quot;#grid&quot;).infiniteGrid({
     
     
     <div class="description en">
-        <p>Save current state</p>
+        <p>Save current state.</p>
     </div>
     
     
@@ -909,6 +919,8 @@ $(&quot;#grid&quot;).infiniteGrid({
     
 
     
+        <dt class="important tag-deprecated">Deprecated</dt><dd><ul class="dummy"><li>since version 1.2.0</li><ul></dd>
+    
 
     
 
@@ -941,7 +953,7 @@ $(&quot;#grid&quot;).infiniteGrid({
     
         
         <div class="tag-source">
-            <a href="persist.js.html">plugin/persist.js</a>, <a href="persist.js.html#line150">line 150</a>
+            <a href="persist.js.html">plugin/persist.js</a>, <a href="persist.js.html#line172">line 172</a>
         </div>
         
     </div>
@@ -1036,6 +1048,8 @@ $(&quot;#grid&quot;).infiniteGrid({
     
 
     
+        <dt class="important tag-deprecated">Deprecated</dt><dd><ul class="dummy"><li>since version 1.2.0</li><ul></dd>
+    
 
     
 
@@ -1068,7 +1082,7 @@ $(&quot;#grid&quot;).infiniteGrid({
     
         
         <div class="tag-source">
-            <a href="persist.js.html">plugin/persist.js</a>, <a href="persist.js.html#line151">line 151</a>
+            <a href="persist.js.html">plugin/persist.js</a>, <a href="persist.js.html#line173">line 173</a>
         </div>
         
     </div>
@@ -1257,7 +1271,7 @@ $(&quot;#grid&quot;).infiniteGrid({
     
         
         <div class="tag-source">
-            <a href="persist.js.html">plugin/persist.js</a>, <a href="persist.js.html#line152">line 152</a>
+            <a href="persist.js.html">plugin/persist.js</a>, <a href="persist.js.html#line174">line 174</a>
         </div>
         
     </div>
@@ -1523,7 +1537,7 @@ $(&quot;body&quot;).visible();
     
         
         <div class="tag-source">
-            <a href="animate.js.html">hook/animate.js</a>, <a href="animate.js.html#line9">line 9</a>
+            <a href="transform.js.html">hook/transform.js</a>, <a href="transform.js.html#line3">line 3</a>
         </div>
         
     </div>
@@ -1759,6 +1773,180 @@ $(&quot;body&quot;).visible();
 
 </dd>
 
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="pause">
+            
+            pause<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="pauseResume.js.html">hook/pauseResume.js</a>, <a href="pauseResume.js.html#line183">line 183</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description en">
+        <p>Pause animation</p>
+    </div>
+    
+    
+    <div class="description ko">
+        에니메이션을 일시 정지한다
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>$(&quot;#box&quot;).pause(); //paused the current animation</p></code></pre>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="resume">
+            
+            resume<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="pauseResume.js.html">hook/pauseResume.js</a>, <a href="pauseResume.js.html#line215">line 215</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description en">
+        <p>Resume animation</p>
+    </div>
+    
+    
+    <div class="description ko">
+        애니메이션을 재개한다
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>$(&quot;#box&quot;).resume(); //resume the paused animation</p></code></pre>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
         </dl>
     
 
@@ -1826,8 +2014,30 @@ $(&quot;body&quot;).visible();
         <!-- Description -->
         <div>
             
-            <div class="description en"><p>event</p></div>
-            <div class="description ko"><p>event</p></div>
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>info</strong>
+            
+
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Object</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
             
         </div>
 
@@ -1887,8 +2097,8 @@ $(&quot;body&quot;).visible();
         
 
     
-    <pre class="prettyprint"><code><p>$(window).on(&quot;rotate&quot;,function(e){
-     e.isVertical;
+    <pre class="prettyprint"><code><p>$(window).on(&quot;rotate&quot;,function(e, info){
+     info.isVertical;
 });</p></code></pre>
     
 
@@ -1967,7 +2177,59 @@ $(&quot;body&quot;).visible();
     <li>
         <!-- parameter name -->
         <div>
-            <strong>e.top</strong>
+            <strong>e</strong>
+            
+
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Event</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>info</strong>
+            
+
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Object</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+            
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>top</strong>
             
 
             
@@ -1995,7 +2257,7 @@ $(&quot;body&quot;).visible();
     <li>
         <!-- parameter name -->
         <div>
-            <strong>e.left</strong>
+            <strong>left</strong>
             
 
             
@@ -2021,6 +2283,10 @@ $(&quot;body&quot;).visible();
     </li>
     
 </ul>
+        
+    </li>
+    
+</ul>
     
     
     
@@ -2038,9 +2304,9 @@ $(&quot;body&quot;).visible();
         
 
     
-    <pre class="prettyprint"><code><p>$(window).on(&quot;scrollend&quot;,function(e){
-     e.top;
-     e.left;
+    <pre class="prettyprint"><code><p>$(window).on(&quot;scrollend&quot;,function(e, info){
+     info.top;
+     info.left;
 });</p></code></pre>
     
 
@@ -2087,7 +2353,7 @@ $(&quot;body&quot;).visible();
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1323">line 1323</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1515">line 1515</a>
         </div>
         
     </div>
@@ -2183,7 +2449,7 @@ $(&quot;body&quot;).visible();
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1322">line 1322</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1514">line 1514</a>
         </div>
         
     </div>
@@ -2279,7 +2545,7 @@ $(&quot;body&quot;).visible();
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1324">line 1324</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1516">line 1516</a>
         </div>
         
     </div>
@@ -2375,7 +2641,7 @@ $(&quot;body&quot;).visible();
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1325">line 1325</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1517">line 1517</a>
         </div>
         
     </div>
@@ -2471,7 +2737,7 @@ $(&quot;body&quot;).visible();
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1326">line 1326</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1518">line 1518</a>
         </div>
         
     </div>
@@ -2567,7 +2833,7 @@ $(&quot;body&quot;).visible();
     
         
         <div class="tag-source">
-            <a href="infiniteGrid.js.html">infiniteGrid.js</a>, <a href="infiniteGrid.js.html#line827">line 827</a>
+            <a href="infiniteGrid.js.html">infiniteGrid.js</a>, <a href="infiniteGrid.js.html#line848">line 848</a>
         </div>
         
     </div>
@@ -2678,7 +2944,7 @@ $(&quot;#grid&quot;).infiniteGrid({
     
         
         <div class="tag-source">
-            <a href="infiniteGrid.js.html">infiniteGrid.js</a>, <a href="infiniteGrid.js.html#line826">line 826</a>
+            <a href="infiniteGrid.js.html">infiniteGrid.js</a>, <a href="infiniteGrid.js.html#line847">line 847</a>
         </div>
         
     </div>
@@ -2789,7 +3055,7 @@ $(&quot;#grid&quot;).infiniteGrid({
     
         
         <div class="tag-source">
-            <a href="infiniteGrid.js.html">infiniteGrid.js</a>, <a href="infiniteGrid.js.html#line828">line 828</a>
+            <a href="infiniteGrid.js.html">infiniteGrid.js</a>, <a href="infiniteGrid.js.html#line849">line 849</a>
         </div>
         
     </div>
@@ -3010,7 +3276,7 @@ $(&quot;body&quot;).visible();
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Mon May 09 2016 14:54:17 GMT+0900 (KST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Wed Jun 08 2016 19:04:00 GMT+0900 (KST)
         </footer>
     </div>
 </div>

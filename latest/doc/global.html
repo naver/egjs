@@ -176,6 +176,12 @@
     
     <span class="subtitle">Methods</span>
     
+        <li data-name="eg.Flicking#destroy"><a href="eg.Flicking.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.Flicking#disableInput"><a href="eg.Flicking.html#disableInput">disableInput</a></li>
+    
+        <li data-name="eg.Flicking#enableInput"><a href="eg.Flicking.html#enableInput">enableInput</a></li>
+    
         <li data-name="eg.Flicking#getAllElements"><a href="eg.Flicking.html#getAllElements">getAllElements</a></li>
     
         <li data-name="eg.Flicking#getElement"><a href="eg.Flicking.html#getElement">getElement</a></li>
@@ -185,6 +191,8 @@
         <li data-name="eg.Flicking#getNextElement"><a href="eg.Flicking.html#getNextElement">getNextElement</a></li>
     
         <li data-name="eg.Flicking#getNextIndex"><a href="eg.Flicking.html#getNextIndex">getNextIndex</a></li>
+    
+        <li data-name="eg.Flicking#getPrevElement"><a href="eg.Flicking.html#getPrevElement">getPrevElement</a></li>
     
         <li data-name="eg.Flicking#getPrevIndex"><a href="eg.Flicking.html#getPrevIndex">getPrevIndex</a></li>
     
@@ -367,8 +375,6 @@
     
         <li data-name="eg.MovableCoord#event:animationEnd"><a href="eg.MovableCoord.html#event:animationEnd">animationEnd</a></li>
     
-        <li data-name="eg.MovableCoord#event:animationStart"><a href="eg.MovableCoord.html#event:animationStart">animationStart</a></li>
-    
         <li data-name="eg.MovableCoord#event:change"><a href="eg.MovableCoord.html#event:change">change</a></li>
     
         <li data-name="eg.MovableCoord#event:hold"><a href="eg.MovableCoord.html#event:hold">hold</a></li>
@@ -465,6 +471,10 @@
         <li data-name="jQuery.visible"><a href="jQuery.html#visible">visible</a></li>
     
         <li data-name="jQuery#animate"><a href="jQuery.html#animate">animate</a></li>
+    
+        <li data-name="jQuery#pause"><a href="jQuery.html#pause">pause</a></li>
+    
+        <li data-name="jQuery#resume"><a href="jQuery.html#resume">resume</a></li>
     
     </ul>
     <ul class="events itemMembers">
@@ -638,14 +648,14 @@ If browser doesn't support transform, then use left/top properties instead.</p>
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="* @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}">
+        <h4 class="name" id="* @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}">
             
-            * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}<span class="signature">()</span>
+            * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}<span class="signature">()</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="css.js.html">hook/css.js</a>, <a href="css.js.html#line9">line 9</a>
+            <a href="cssPrefix.js.html">hook/cssPrefix.js</a>, <a href="cssPrefix.js.html#line9">line 9</a>
         </div>
         
     </div>
@@ -736,7 +746,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line267">line 267</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line309">line 309</a>
         </div>
         
     </div>
@@ -847,7 +857,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line440">line 440</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line499">line 499</a>
         </div>
         
     </div>
@@ -986,7 +996,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line674">line 674</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line753">line 753</a>
         </div>
         
     </div>
@@ -1061,7 +1071,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line640">line 640</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line719">line 719</a>
         </div>
         
     </div>
@@ -1136,7 +1146,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line397">line 397</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line456">line 456</a>
         </div>
         
     </div>
@@ -1212,7 +1222,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line369">line 369</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line428">line 428</a>
         </div>
         
     </div>
@@ -1287,7 +1297,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line520">line 520</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line583">line 583</a>
         </div>
         
     </div>
@@ -1418,7 +1428,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line338">line 338</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line391">line 391</a>
         </div>
         
     </div>
@@ -1550,12 +1560,12 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     <div class="nameContainer">
         <h4 class="name" id="_bindEvents">
             
-            _bindEvents<span class="signature">()</span>
+            _bindEvents<span class="signature">(bind)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line536">line 536</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line599">line 599</a>
         </div>
         
     </div>
@@ -1575,6 +1585,37 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
     
     
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>bind</strong>
+            
+
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Boolean</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
     
     
     
@@ -1630,7 +1671,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line180">line 180</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line226">line 226</a>
         </div>
         
     </div>
@@ -1705,7 +1746,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line559">line 559</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line638">line 638</a>
         </div>
         
     </div>
@@ -1780,7 +1821,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1199">line 1199</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1322">line 1322</a>
         </div>
         
     </div>
@@ -1855,7 +1896,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line528">line 528</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line591">line 591</a>
         </div>
         
     </div>
@@ -1930,7 +1971,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line856">line 856</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line961">line 961</a>
         </div>
         
     </div>
@@ -2075,7 +2116,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line510">line 510</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line572">line 572</a>
         </div>
         
     </div>
@@ -2217,7 +2258,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line923">line 923</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1050">line 1050</a>
         </div>
         
     </div>
@@ -2408,6 +2449,81 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="_getNumByDirection">
+            
+            _getNumByDirection<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line885">line 885</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description en">
+        <p>Get positive or negative according direction</p>
+    </div>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="_getNumValue">
             
             _getNumValue<span class="signature">(val, defVal)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Number}</span>
@@ -2415,7 +2531,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line981">line 981</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1108">line 1108</a>
         </div>
         
     </div>
@@ -2582,7 +2698,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line886">line 886</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line991">line 991</a>
         </div>
         
     </div>
@@ -2727,7 +2843,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line549">line 549</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line628">line 628</a>
         </div>
         
     </div>
@@ -2802,7 +2918,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line894">line 894</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line999">line 999</a>
         </div>
         
     </div>
@@ -2877,7 +2993,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1085">line 1085</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1212">line 1212</a>
         </div>
         
     </div>
@@ -3008,7 +3124,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1112">line 1112</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1239">line 1239</a>
         </div>
         
     </div>
@@ -3173,7 +3289,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line291">line 291</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line333">line 333</a>
         </div>
         
     </div>
@@ -3310,7 +3426,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line612">line 612</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line691">line 691</a>
         </div>
         
     </div>
@@ -3378,6 +3494,218 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="_revertPanelNo">
+            
+            _revertPanelNo<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line893">line 893</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description en">
+        <p>Revert panel number</p>
+    </div>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="_setConfig">
+            
+            _setConfig<span class="signature">($children, _prefix)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line164">line 164</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description en">
+        <p>Set config values</p>
+    </div>
+    
+    
+
+    
+    
+    
+    
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>$children</strong>
+            
+
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type"><a href="jQuery.html">jQuery</a></span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>wrappers' children elements</p></div>
+            <div class="description ko"><p>wrappers' children elements</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>_prefix</strong>
+            
+
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">String</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>event prefix</p></div>
+            <div class="description ko"><p>event prefix</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="_setDefaultPanel">
             
             _setDefaultPanel<span class="signature">(index)</span>
@@ -3385,7 +3713,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line304">line 304</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line346">line 346</a>
         </div>
         
     </div>
@@ -3491,7 +3819,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line498">line 498</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line560">line 560</a>
         </div>
         
     </div>
@@ -3560,6 +3888,151 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="_setInputEvent">
+            
+            _setInputEvent<span class="signature">(bind)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.Flicking.html">eg.Flicking</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1446">line 1446</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description en">
+        <p>Set input event biding</p>
+    </div>
+    
+    
+
+    
+    
+    
+    
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>bind</strong>
+            
+
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Boolean</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>true: bind, false: unbind</p></div>
+            <div class="description ko"><p>true: bind, false: unbind</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        <a href="eg.Flicking.html">eg.Flicking</a>
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en">instance of itself</div>
+                <div class="ko">instance of itself</div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="_setMovableCoord">
             
             _setMovableCoord<span class="signature">(method, coord, isDirVal, duration)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.MovableCoord.html">eg.MovableCoord</a>}</span>
@@ -3567,7 +4040,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line489">line 489</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line548">line 548</a>
         </div>
         
     </div>
@@ -3777,6 +4250,112 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="_setOptions">
+            
+            _setOptions<span class="signature">(options)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line124">line 124</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description en">
+        <p>Set options values</p>
+    </div>
+    
+    
+
+    
+    
+    
+    
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>options</strong>
+            
+
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Object</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="_setPadding">
             
             _setPadding<span class="signature">(padding, build)</span>
@@ -3784,7 +4363,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line240">line 240</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line282">line 282</a>
         </div>
         
     </div>
@@ -3910,12 +4489,12 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     <div class="nameContainer">
         <h4 class="name" id="_setPanelNo">
             
-            _setPanelNo<span class="signature">(recover)</span>
+            _setPanelNo<span class="signature">(obj)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line807">line 807</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line910">line 910</a>
         </div>
         
     </div>
@@ -3926,7 +4505,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
     
     <div class="description en">
-        <p>Set the logical panel index number</p>
+        <p>Set the panel number</p>
     </div>
     
     
@@ -3943,7 +4522,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     <li>
         <!-- parameter name -->
         <div>
-            <strong>recover</strong>
+            <strong>obj</strong>
             
 
             
@@ -3951,13 +4530,16 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
         <!-- parameter type -->
         
         <div>Type: 
-<span class="param-type">Boolean</span>
+<span class="param-type">Object</span>
 
 </div>
         
     
         <!-- Description -->
         <div>
+            
+            <div class="description en"><p>number object</p></div>
+            <div class="description ko"><p>number object</p></div>
             
         </div>
 
@@ -4021,7 +4603,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line748">line 748</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line827">line 827</a>
         </div>
         
     </div>
@@ -4155,7 +4737,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line835">line 835</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line940">line 940</a>
         </div>
         
     </div>
@@ -4261,7 +4843,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line870">line 870</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line975">line 975</a>
         </div>
         
     </div>
@@ -4370,7 +4952,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line968">line 968</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1095">line 1095</a>
         </div>
         
     </div>
@@ -4476,7 +5058,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line685">line 685</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line764">line 764</a>
         </div>
         
     </div>
@@ -4585,7 +5167,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line904">line 904</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1025">line 1025</a>
         </div>
         
     </div>
@@ -4755,7 +5337,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line724">line 724</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line803">line 803</a>
         </div>
         
     </div>
@@ -4830,7 +5412,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line93">line 93</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line94">line 94</a>
         </div>
         
     </div>
@@ -4984,7 +5566,7 @@ $(&quot;#ID&quot;).css(&quot;webkitTransform&quot;);</p></code></pre>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Mon May 09 2016 14:54:17 GMT+0900 (KST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Wed Jun 08 2016 19:03:58 GMT+0900 (KST)
         </footer>
     </div>
 </div>

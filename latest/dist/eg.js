@@ -6,8 +6,8 @@
 * egjs JavaScript library
 * http://naver.github.io/egjs
 *
-* @version 1.1.0
-* @SHA-1 fb4a69e (1.1.0-rc)
+* @version 1.2.0
+* @SHA-1 fd00a4e (1.2.0-rc)
 *
 * For custom build use egjs-cli
 * https://github.com/naver/egjs-cli
@@ -336,7 +336,7 @@ var raf = global.requestAnimationFrame || global.webkitRequestAnimationFrame ||
 	 * @description version infomation
 	 * @ko 버전 정보
 	 */
-	ns.VERSION = "1.1.0";
+	ns.VERSION = "1.2.0";
 	ns.hook =  {
 		// isHWAccelerable : null,
 		// isTransitional 	: null,
@@ -724,7 +724,7 @@ return defaultVal;
 		var agent = ns.agent();
 		var browser = agent.browser.name;
 
-		if (/chrome|firefox/.test(browser)) {
+		if (/chrome|firefox|sbrowser/.test(browser)) {
 			result = true;
 		} else {
 			switch (agent.os.name) {
@@ -733,12 +733,12 @@ return defaultVal;
 							parseInt(agent.os.version, 10) < 6;
 					break;
 				case "window" :
-					result = browser.indexOf("safari") !== -1 ||
-							(browser.indexOf("ie") !== -1 &&
+					result = /safari/.test(browser) ||
+							(/ie/.test(browser) &&
 								parseInt(agent.browser.nativeVersion, 10) >= 10);
 					break;
 				default :
-					result = /chrome|firefox|safari/.test(browser);
+					result = /safari/.test(browser);
 					break;
 			}
 		}
@@ -803,7 +803,7 @@ eg.module("class", [eg], function(ns) {
 	 * @class
 	 * @name eg.Class
 	 *
-	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
+	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 * @param {Object} def Class definition of object literal type. <ko>리터럴 형태의 클래스 정의부</ko>
 	 * @example
 	 	var Some = eg.Class({
@@ -893,7 +893,7 @@ eg.module("component", [eg], function(ns) {
 	 * @group egjs
 	 * @name eg.Component
 	 *
-	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
+	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 */
 	ns.Component = ns.Class({
 		construct: function() {
@@ -1118,12 +1118,13 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 	 * @ko jQuery custom rotate 이벤트 지원
 	 * @name jQuery#rotate
 	 * @event
-	 * @param {Event} e event
-	 * @param {Boolean} e.isVertical vertical <ko>수직여부</ko>
+	 * @param {Event} e
+	 * @param {Object} info
+	 * @param {Boolean} info.isVertical vertical <ko>수직여부</ko>
 	 * @support { "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 * @example
-	 * $(window).on("rotate",function(e){
-	 *      e.isVertical;
+	 * $(window).on("rotate",function(e, info){
+	 *      info.isVertical;
 	 * });
 	 *
 	 */
@@ -1133,6 +1134,14 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 	var rotateTimer = null;
 	var agent = ns.agent();
 	var isMobile = /android|ios/.test(agent.os.name);
+
+	if (!isMobile) {
+		ns.isPortrait = function() {
+			return;
+		};
+
+		return;
+	}
 
 	/**
 	 * Return event name string for orientationChange according browser support
@@ -1189,8 +1198,6 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 					vertical = false;
 				}
 			}
-
-			beforeScreenWidth = screenWidth;
 		} else {
 			degree = global.orientation;
 			if (degree === 0 || degree === 180) {
@@ -1206,11 +1213,15 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 	* Trigger rotate event
 	*/
 	function triggerRotate() {
+
 		var currentVertical = isVertical();
 		if (isMobile) {
 			if (beforeVertical !== currentVertical) {
 				beforeVertical = currentVertical;
-				$(global).trigger("rotate");
+				beforeScreenWidth = doc.documentElement.clientWidth;
+				$(global).trigger("rotate", {
+					isVertical: beforeVertical
+				});
 			}
 		}
 	}
@@ -1240,7 +1251,6 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 					// When width value wasn't changed after firing orientationchange, then call handler again after 300ms.
 					return false;
 				}
-				beforeScreenWidth = screenWidth;
 			}
 
 			global.clearTimeout(rotateTimer);
@@ -1294,13 +1304,15 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 	* @ko jQuery custom scrollEnd 이벤트 지원
 	* @name jQuery#scrollEnd
 	* @event
-	* @param {Number} e.top top position <ko>상단(top) 위치 값</ko>
-	* @param {Number} e.left left position <ko>왼쪽(left) 위치 값</ko>
-	* @support {"ie": "9+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
+	* @param {Event} e
+	* @param {Object} info
+	* @param {Number} info.top top position <ko>상단(top) 위치 값</ko>
+	* @param {Number} info.left left position <ko>왼쪽(left) 위치 값</ko>
+	* @support {"ie": "9+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	* @example
-	* $(window).on("scrollend",function(e){
-	*      e.top;
-	*      e.left;
+	* $(window).on("scrollend",function(e, info){
+	*      info.top;
+	*      info.left;
 	* });
 	*
 	*/
@@ -1430,143 +1442,32 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 * egjs projects are licensed under the MIT license
 */
 
-eg.module("animate", ["jQuery", window], function($, global) {
 /**
-     * Extends jQuery animate in order to use 'transform' property
-     * @ko jQuery animate 사용시 transform을 사용할 수 있도록 확장한 animate 메소드
-     * @name jQuery#animate
-     * @method
-     * @param {Object} properties An object of CSS properties and values that the animation will move toward. <ko>애니메이션 할 CSS 속성과 값으로 구성된 오브젝트</ko>
-     * @param {Number|String} [duration=4000] A string or number determining how long the animation will run. <ko>애니메이션 진행 시간</ko>
-     * @param {String} [easing="swing"] A string indicating which easing function to use for the transition. <ko>transition에 사용할 easing 함수명</ko>
-     * @param {Function} [complete] A function to call once the animation is complete. <ko>애니메이션이 완료한 후 호출하는 함수</ko>
-     *
-     * @example
-     * $("#box")
-     * 		.animate({"transform" : "translate3d(150px, 100px, 0px) rotate(20deg) scaleX(1)"} , 3000)
-     * 		.animate({"transform" : "+=translate3d(150px, 10%, -20px) rotate(20deg) scale3d(2, 4.2, 1)"} , 3000);
-     * @see {@link http://api.jquery.com/animate/}
-     *
-     * @support {"ie": "10+", "ch" : "latest", "sf" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
-     */
-	var supportFloat32Array = "Float32Array" in window;
-	var CSSMatrix = global.WebKitCSSMatrix || global.MSCSSMatrix ||
-					global.OCSSMatrix || global.MozMatrix || global.CSSMatrix;
-
-	/**
-	 * Utility functions : matrix and toRadian is copied from transform2d
-	 * turns a transform string into its "matrix(A, B, C, D, X, Y)" form (as an array, though)
-	 */
-	function matrix(transform) {
-		transform = transform.split(")");
-		var trim = $.trim;
-		var i = -1;
-
-		// last element of the array is an empty string, get rid of it
-		var l = transform.length - 1;
-		var split;
-		var prop;
-		var val;
-		var prev = supportFloat32Array ? new Float32Array(6) : [];
-		var curr = supportFloat32Array ? new Float32Array(6) : [];
-		var rslt = supportFloat32Array ? new Float32Array(6) : [1, 0, 0, 1, 0, 0];
-
-		prev[0] = prev[3] = rslt[0] = rslt[3] = 1;
-		prev[1] = prev[2] = prev[4] = prev[5] = 0;
-
-		// Loop through the transform properties, parse and multiply them
-		while (++i < l) {
-			split = transform[i].split("(");
-			prop = trim(split[0]);
-			val = split[1];
-			curr[0] = curr[3] = 1;
-			curr[1] = curr[2] = curr[4] = curr[5] = 0;
-
-			switch (prop) {
-				case "translateX":
-					curr[4] = parseInt(val, 10);
-					break;
-
-				case "translateY":
-					curr[5] = parseInt(val, 10);
-					break;
-
-				case "translate":
-					val = val.split(",");
-					curr[4] = parseInt(val[0], 10);
-					curr[5] = parseInt(val[1] || 0, 10);
-					break;
-
-				case "rotate":
-					val = toRadian(val);
-					curr[0] = Math.cos(val);
-					curr[1] = Math.sin(val);
-					curr[2] = -Math.sin(val);
-					curr[3] = Math.cos(val);
-					break;
-
-				case "scaleX":
-					curr[0] = +val;
-					break;
-
-				case "scaleY":
-					curr[3] = val;
-					break;
-
-				case "scale":
-					val = val.split(",");
-					curr[0] = val[0];
-					curr[3] = val.length > 1 ? val[1] : val[0];
-					break;
-
-				case "skewX":
-					curr[2] = Math.tan(toRadian(val));
-					break;
-
-				case "skewY":
-					curr[1] = Math.tan(toRadian(val));
-					break;
-
-				case "matrix":
-					val = val.split(",");
-					curr[0] = val[0];
-					curr[1] = val[1];
-					curr[2] = val[2];
-					curr[3] = val[3];
-					curr[4] = parseInt(val[4], 10);
-					curr[5] = parseInt(val[5], 10);
-					break;
-			}
-
-			// Matrix product (array in column-major order)
-			rslt[0] = prev[0] * curr[0] + prev[2] * curr[1];
-			rslt[1] = prev[1] * curr[0] + prev[3] * curr[1];
-			rslt[2] = prev[0] * curr[2] + prev[2] * curr[3];
-			rslt[3] = prev[1] * curr[2] + prev[3] * curr[3];
-			rslt[4] = prev[0] * curr[4] + prev[2] * curr[5] + prev[4];
-			rslt[5] = prev[1] * curr[4] + prev[3] * curr[5] + prev[5];
-
-			prev = [rslt[0],rslt[1],rslt[2],rslt[3],rslt[4],rslt[5]];
-		}
-		return rslt;
-	}
-
-	// converts an angle string in any unit to a radian Float
-	function toRadian(value) {
-		return ~value.indexOf("deg") ?
-			parseInt(value, 10) * (Math.PI * 2 / 360) :
-			~value.indexOf("grad") ?
-				parseInt(value, 10) * (Math.PI / 200) :
-				parseFloat(value);
-	}
-
-	/**
+ * Extends jQuery animate in order to use 'transform' property
+ * @ko jQuery animate 사용시 transform을 사용할 수 있도록 확장한 animate 메소드
+ * @name jQuery#animate
+ * @method
+ * @param {Object} properties An object of CSS properties and values that the animation will move toward. <ko>애니메이션 할 CSS 속성과 값으로 구성된 오브젝트</ko>
+ * @param {Number|String} [duration=4000] A string or number determining how long the animation will run. <ko>애니메이션 진행 시간</ko>
+ * @param {String} [easing="swing"] A string indicating which easing function to use for the transition. <ko>transition에 사용할 easing 함수명</ko>
+ * @param {Function} [complete] A function to call once the animation is complete. <ko>애니메이션이 완료한 후 호출하는 함수</ko>
+ *
+ * @example
+ * $("#box")
+ * 		.animate({"transform" : "translate3d(150px, 100px, 0px) rotate(20deg) scaleX(1)"} , 3000)
+ * 		.animate({"transform" : "+=translate3d(150px, 10%, -20px) rotate(20deg) scale3d(2, 4.2, 1)"} , 3000);
+ * @see {@link http://api.jquery.com/animate/}
+ *
+ * @support {"ie": "10+", "ch" : "latest", "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
+ */
+eg.module("transform", ["jQuery", window], function($) {
+/**
 	 * Get a 'px' converted value if it has a %.
 	 * Otherwise it returns value appened with 'px'.
 	 */
 	function getConverted(val, base) {
 		var ret = val;
-		var num = val.match(/([0-9]*)%/);
+		var num = val.match(/((-|\+)*[0-9]+)%/);
 
 		if (num && num.length >= 1) {
 			ret = base * (parseFloat(num[1]) / 100) + "px";
@@ -1635,9 +1536,9 @@ eg.module("animate", ["jQuery", window], function($, global) {
 	 * which is called very frequently.
 	 */
 	function toParsedFloat(val) {
-		var m = val.match(/(-*[\d|\.]+)(px|deg|rad)*/);
+		var m = val.match(/((-|\+)*[\d|\.]+)(px|deg|rad)*/);
 		if (m && m.length >= 1) {
-			return {"num": parseFloat(m[1]), "unit": m[2]};
+			return {"num": parseFloat(m[1]), "unit": m[3]};
 		}
 	}
 
@@ -1645,6 +1546,7 @@ eg.module("animate", ["jQuery", window], function($, global) {
 		var splitted = transform.split(")");
 		var list = [];
 
+		//Make parsed transform list.
 		for (var i = 0, len = splitted.length - 1; i < len; i++) {
 			var parsed = parseStyle(splitted[i]);
 
@@ -1657,8 +1559,10 @@ eg.module("animate", ["jQuery", window], function($, global) {
 			var defaultVal = 0;
 
 			$.each(list, function(i) {
-				if (list[i][0] === "scale") {
+				if (list[i][0].indexOf("scale") >= 0) {
 					defaultVal = 1;
+				} else {
+					defaultVal = 0;
 				}
 
 				var valStr = $.map(list[i][1], function(value) {
@@ -1678,6 +1582,7 @@ eg.module("animate", ["jQuery", window], function($, global) {
 		var isRelative = endTf.indexOf("+=") >= 0;
 		var start;
 		var end;
+		var basePos;
 
 		// Convert translate unit to 'px'.
 		endTf = correctUnit(endTf,
@@ -1689,40 +1594,42 @@ eg.module("animate", ["jQuery", window], function($, global) {
 						"matrix(1, 0, 0, 1, 0, 0)" : startTf;
 			end = getTransformGenerateFunction(endTf);
 		} else {
-			start = toMatrix(startTf);
-			end = toMatrix(endTf);
+			start = toMatrixArray(startTf);
+			basePos = toMatrixArray("none");//transform base-position
 
 			//If the type of matrix is not equal, then match to matrix3d
-			if (start[1].length < end[1].length) {
+			if (start[1].length < basePos[1].length) {
 				start = toMatrix3d(start);
-			} else if (start[1].length > end[1].length) {
-				end = toMatrix3d(end);
+			} else if (start[1].length > basePos[1].length) {
+				basePos = toMatrix3d(basePos);
 			}
+
+			end = getTransformGenerateFunction(endTf);
 		}
 
 		return function(pos) {
 			var result = [];
-			var ret = "";
+			var ret = "";//matrix for interpolated value from current to base(1, 0, 0, 1, 0, 0)
 
 			if (isRelative) {
 				// This means a muliply between a matrix and a transform.
-				ret = start + end(pos);
-				return ret;
+				return start + end(pos);
 			}
 
 			if (pos === 1) {
-				ret = data2String(end);
+				ret = data2String(basePos);
 			} else {
 				for (var i = 0, s, e, l = start[1].length; i < l; i++) {
 					s = parseFloat(start[1][i]);
-					e = parseFloat(end[1][i]);
+					e = parseFloat(basePos[1][i]);
+
 					result.push(s + (e - s) * pos);
 				}
 
 				ret = data2String([start[0], result]);
 			}
 
-			return ret;
+			return ret + end(pos);
 		};
 	}
 
@@ -1772,27 +1679,23 @@ eg.module("animate", ["jQuery", window], function($, global) {
 		return result;
 	}
 
-	function toMatrix(transform) {
-		var retMatrix = [];
+	/**
+	 * Convert matrix string to array type.
+	 *
+	 * eg. matrix(1, 0, 0, 1, 0, 0) ==>  ["matrix", [1, 0, 0, 1, 0, 0]]
+	 * matrix3d(1,0,0,0,0,1,-2.44929e-16,0,0,2.44929e-16,1,0,0,0,0,1)
+	 */
+	function toMatrixArray(matrixStr) {
+		var matched;
 
-		if (!transform || transform === "none") {
+		if (!matrixStr || matrixStr === "none") {
 			return ["matrix", [ "1", "0", "0", "1", "0", "0"] ];
 		}
 
-		retMatrix = CSSMatrix ? parseStyle(new CSSMatrix(transform).toString()) :
-								["matrix", matrix(transform)];
+		matrixStr = matrixStr.replace(/\s/g, "");
+		matched = matrixStr.match(/(matrix)(3d)*\((.*)\)/);
 
-		/**
-		 * Make an unintended 2d matrix to 3d matrix.
-		 *
-		 * WebkitCSSMatrix changes 'transform3d' style to '2d matix' if it is judged as needless.
-		 * But generally, Developers would intend 3d transform by force for a HW Accelation. eg. translate3d(a, b, 0)
-		 */
-		if (transform.indexOf("3d") >= 0 && retMatrix[0].indexOf("3d") < 0) {
-			retMatrix = toMatrix3d(retMatrix);
-		}
-
-		return retMatrix;
+		return [matched[1] + (matched[2] || ""), matched[3].split(",")];
 	}
 
 	function toMatrix3d(matrix) {
@@ -1819,7 +1722,7 @@ eg.module("animate", ["jQuery", window], function($, global) {
 
 	// All of this interfaces are functions for unit testing.
 	return {
-		toMatrix: toMatrix,
+		toMatrix: toMatrixArray,
 		toMatrix3d: toMatrix3d
 	};
 });
@@ -1829,15 +1732,15 @@ eg.module("animate", ["jQuery", window], function($, global) {
 * egjs projects are licensed under the MIT license
 */
 
-eg.module("css", ["jQuery", document], function($, doc) {
+eg.module("cssPrefix", ["jQuery", document], function($, doc) {
 /**
 	 * Apply css prefix cssHooks
 	 * @ko css prefix cssHooks 적용
 	 *
-	 * @name jQuery#css
+	 * @name jQuery#cssPrefix
 	 * @method
 	 *
-	 * * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
+	 * * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 * @example
 	 * $("#ID").css("transform", "translate('10px', '10px');
 	 * $("#ID").css("Transform", "translate('10px', '10px');
@@ -1906,13 +1809,356 @@ eg.module("css", ["jQuery", document], function($, doc) {
 * Copyright (c) 2015 NAVER Corp.
 * egjs projects are licensed under the MIT license
 */
+eg.module("pauseResume", ["jQuery"], function($) {
+var animateFn = $.fn.animate;
+	var stopFn = $.fn.stop;
+	var delayFn = $.fn.delay;
+	var uuid = 1;
+
+	function AniProperty(type, el, prop, optall) {
+		this.el = el;
+		this.opt = optall;
+		this.start = -1;
+		this.elapsed = 0;
+		this.paused = false;
+		this.uuid = uuid++;
+		this.easingNames = [];
+		this.prop = prop;
+		this.type = type;
+	}
+
+	/**
+	 * Generate a new absolute value maker.
+	 *
+	 * function to avoid JS Hint error "Don't make functions within a loop"
+	 */
+	function generateAbsoluteValMaker(prevValue, propName, sign) {
+		return function absoluteValMaker(match) {
+			if (!prevValue || prevValue === "auto") {
+				// Empty strings, null, undefined and "auto" are converted to 0.
+				// This solution is somewhat extracted from jQuery Tween.propHooks._default.get
+				// TODO: Should we consider adopting a Tween.propHooks?
+				prevValue = 0;
+			} else {
+				prevValue = parseFloat(prevValue);
+			}
+			return prevValue + (match * sign);
+		};
+	}
+
+	AniProperty.prototype.init = function() {
+		var currValue;
+		this.start = $.now();
+		this.elapsed = 0;
+
+		for (var propName in this.prop) {
+			var propValue = this.prop[propName];
+			var markIndex;
+			var sign;
+
+			//If it has a absoulte value.
+			if (typeof propValue !== "string" ||
+				(markIndex = propValue.search(/[+|-]=/)) < 0) {
+				// this.prop[propName] = propValue;
+				continue;
+			}
+
+			//If it has a relative value
+			sign = propValue.charAt(markIndex) === "-" ? -1 : 1;
+
+			// Current value
+			currValue = $.css(this.el, propName);
+
+			// CurrValue + (relativeValue)
+			this.prop[propName] = propValue
+				.replace(/([-|+])*([\d|\.])+/g,
+					generateAbsoluteValMaker(currValue, propName, sign))
+				.replace(/[-|+]+=/g, "");
+		}
+	};
+
+	AniProperty.prototype.addEasingFn = function(easingName) {
+		this.easingNames.push(easingName);
+	};
+
+	AniProperty.prototype.clearEasingFn = function() {
+		var easing;
+		while (easing = this.easingNames.shift()) {
+			delete $.easing[easing];
+		}
+		this.easingNames = [];
+	};
+
+	function addAniProperty(type, el, prop, optall) {
+		var newProp;
+
+		newProp = new AniProperty(type, el, prop, optall);
+		el.__aniProps = el.__aniProps || [];
+
+		//Animation is excuted immediately.
+		if (el.__aniProps.length === 0) {
+			newProp.init();
+		}
+		el.__aniProps.push(newProp);
+	}
+
+	function removeAniProperty(el) {
+		var removeProp = el.__aniProps.shift();
+		removeProp && removeProp.clearEasingFn();
+
+		el.__aniProps[0] && el.__aniProps[0].init();
+	}
+
+	$.fn.animate = function(prop, speed, easing, callback) {
+		return this.each(function() {
+			//optall should be made for each elements.
+			var optall = $.speed(speed, easing, callback);
+			var userCallback = optall.old;//hook a user callback.
+
+			//Override to check current animation is done.
+			optall.complete = function() {
+				//Dequeue animation property that was ended.
+				var removeProp = this.__aniProps.shift();
+				removeProp.clearEasingFn();
+
+				// Callback should be called before aniProps.init()
+				if (userCallback && typeof userCallback === "function") {
+					userCallback.call(this);
+				}
+
+				// If next ani property exists
+				this.__aniProps[0] && this.__aniProps[0].init();
+			};
+
+			//Queue animation property to recover the current animation.
+			addAniProperty("animate", this, prop, optall);
+			animateFn.call($(this), prop, optall);
+		});
+
+		// TODO: Below code is more reasonable?
+		// return animateFn.call(this, prop, optall); // and declare optall at outside this.each loop.
+	};
+
+	// Check if this element can be paused/resume.
+	function getStatus(el) {
+		if (!el.__aniProps || el.__aniProps.length === 0) {
+			// Current element doesn't have animation information.
+			// Check 'animate' is applied to this element.
+			return "empty";
+		}
+
+		return el.__aniProps[0].paused ? "paused" : "inprogress";
+	}
+
+	/**
+	 * Set a timer to delay execution of subsequent items in the queue.
+	 * And it internally manages "fx"queue to support pause/resume if "fx" type.
+	 *
+	 * @param {Number} An integer indicating the number of milliseconds to delay execution of the next item in the queue.
+	 * @param {String} A string containing the name of the queue. Defaults to fx, the standard effects queue.
+	 */
+	$.fn.delay = function(time, type) {
+		var t;
+		var isCallByResume = arguments[2];//internal used value.
+
+		if (type && type !== "fx") {
+			return delayFn.call(this, time, type);
+		}
+
+		t = parseInt(time, 10);
+		t = isNaN(t) ? 0 : t;
+
+		return this.each(function() {
+			if (!isCallByResume) {
+				// Queue delay property to recover the current animation.
+				// Don't add property when delay is called by resume.
+				addAniProperty("delay", this, null, {duration: t});
+			}
+
+			var self = this;
+			delayFn.call($(this), time).queue(function(next) {
+				next();
+
+				// Remove delay property when delay has been expired.
+				removeAniProperty(self);
+			});
+		});
+	};
+
+	/**
+	 * Pause animation
+	 * @ko 에니메이션을 일시 정지한다
+	 *
+	 * @name jQuery#pause
+	 * @method
+	 * @support {"ie": "10+", "ch" : "latest", "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
+	 * @example
+	 * $("#box").pause(); //paused the current animation
+	 */
+	$.fn.pause = function() {
+		return this.each(function() {
+			var p;
+			var type = "fx";
+
+			if (getStatus(this) !== "inprogress") {
+				return;
+			}
+
+			//Clear fx-queue except 1 dummy function
+			//for promise not to be expired when calling stop()
+			$.queue(this, type || "fx", [$.noop]);
+			stopFn.call($(this));
+
+			//Remember current animation property
+			if (p = this.__aniProps[0]) {
+				p.elapsed += $.now() - p.start;
+				p.paused = true;
+			}
+		});
+	};
+
+	/**
+	 * Resume animation
+	 * @ko 애니메이션을 재개한다
+	 *
+	 * @name jQuery#resume
+	 * @method
+	 * @support {"ie": "10+", "ch" : "latest", "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
+	 * @example
+	 * $("#box").resume(); //resume the paused animation
+	 */
+	$.fn.resume = function() {
+		return this.each(function() {
+			var type = "fx";
+			var p;
+			var i;
+
+			if (getStatus(this) !== "paused") {
+				return;
+			}
+
+			//Clear fx-queue,
+			//And this queue will be initialized by animate call.
+			$.queue(this, type || "fx", []);
+
+			// Restore __aniProps
+			i = 0;
+			while (p = this.__aniProps[i]) {
+				// Restore easing status
+				if (p.elapsed > 0 && p.opt.easing) {
+					var resumePercent = p.elapsed / p.opt.duration;
+					var remainPercent = 1 - resumePercent;
+					var originalEasing = $.easing[p.opt.easing];
+					var startEasingValue = originalEasing(resumePercent);
+					var scale = scaler([startEasingValue, 1], [0, 1]);
+					var newEasingName = p.opt.easing + "_" + p.uuid;
+
+					// Make new easing function that continues from pause point.
+					$.easing[newEasingName] = generateNewEasingFunc(
+						resumePercent, remainPercent, scale, originalEasing);
+					p.opt.easing = newEasingName;
+
+					//Store new easing function to clear it later.
+					p.addEasingFn(newEasingName);
+				}
+
+				p.paused = false;
+				p.opt.duration -= p.elapsed;
+
+				// If duration remains, request 'animate' with storing aniProps
+				if (p.opt.duration > 0 || p.elapsed === 0) {
+					i === 0 && p.init();
+
+					if (p.type === "delay") {
+						// pass last parameter 'true' not to add an aniProperty.
+						$(this).delay(p.opt.duration, "fx", true);
+					} else {
+						animateFn.call($(this), p.prop, p.opt);
+					}
+				}
+
+				i++;
+			}
+		});
+	};
+
+	/**
+	 * Generate a new easing function.
+	 *
+	 * function to avoid JS Hint error "Don't make functions within a loop"
+	 */
+	function generateNewEasingFunc(resumePercent, remainPercent, scale, originalEasing) {
+		return function easingFunc(percent) {
+			var newPercent = resumePercent + remainPercent * percent;
+			return scale(originalEasing(newPercent));
+		};
+	}
+
+	$.fn.stop = function(type, clearQueue) {
+		var clearQ = clearQueue;
+		stopFn.apply(this, arguments);
+
+		if (typeof type !== "string") {
+			clearQ = type;
+		}
+
+		return this.each(function() {
+			var p;
+
+			if (!clearQ) {
+				p = this.__aniProps.shift();
+				p && p.clearEasingFn();
+			} else {
+				//If clearQueue is requested,
+				//then all properties must be initialized
+				//for element not to be resumed.
+				while (p = this.__aniProps.shift()) {
+					p.clearEasingFn();
+				}
+				this.__aniProps = [];
+			}
+		});
+	};
+
+	jQuery.expr.filters.paused = function(elem) {
+		return getStatus(elem) === "paused";
+	};
+
+	//Adopt linear scale from d3
+	function scaler(domain, range) {
+		var u = uninterpolateNumber(domain[0], domain[1]);
+		var i = interpolateNumber(range[0], range[1]);
+
+		return function(x) {
+			return i(u(x));
+		};
+	}
+
+	function interpolateNumber(a, b) {
+		a = +a, b = +b;
+		return function(t) {
+			return a * (1 - t) + b * t;
+		};
+	}
+
+	function uninterpolateNumber(a, b) {
+		b = (b -= a = +a) || 1 / b;
+		return function(x) {
+			return (x - a) / b;
+		};
+	}
+});
+
+/**
+* Copyright (c) 2015 NAVER Corp.
+* egjs projects are licensed under the MIT license
+*/
 
 // jscs:disable maximumLineLength
 eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, doc) {
 // jscs:enable maximumLineLength
 	var wp = global.performance;
 	var history = global.history;
-	var location = global.location;
 	var userAgent = global.navigator.userAgent;
 	var JSON = global.JSON;
 	var CONST_PERSIST = "___persist___";
@@ -1926,32 +2172,48 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	var isSupportState = "replaceState" in history && "state" in history;
 
 	var storage = (function() {
-		if (!isSupportState) {
-			if ("sessionStorage" in global) {
-				var tmpKey = "__tmp__" + CONST_PERSIST;
-				sessionStorage.setItem(tmpKey, CONST_PERSIST);
-				return sessionStorage.getItem(tmpKey) === CONST_PERSIST ?
-						sessionStorage :
-						localStorage;
-			} else {
-				return global.localStorage;
-			}
+		if (isStorageAvailable(global.sessionStorage)) {
+			return global.sessionStorage;
+		} else if (isStorageAvailable(global.localStorage)) {
+			return global.localStorage;
 		}
 	})();
 
+	function isStorageAvailable(storage) {
+		if (!storage) {
+			return;
+		}
+		var TMP_KEY = "__tmp__" + CONST_PERSIST;
+
+		try {
+			// In case of iOS safari private mode, calling setItem on storage throws error
+			storage.setItem(TMP_KEY, CONST_PERSIST);
+
+			// In Chrome incognito mode, can not get saved value
+			// In IE8, calling storage.getItem occasionally makes "Permission denied" error
+			return storage.getItem(TMP_KEY) === CONST_PERSIST;
+		} catch (e) {
+			return false;
+		}
+	}
+
+	if (!isSupportState && !storage) {
+		return;
+	}
+
 	// jscs:disable maximumLineLength
 	/* jshint ignore:start */
-	if (!isSupportState && !storage ||
-		(!JSON && !console.warn(
-			"The JSON object is not supported in your browser.\r\n" +
-			"For work around use polyfill which can be found at:\r\n" +
-			"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON#Polyfill")
-		)) {
+	if (!JSON) {
+		console.warn(
+		"The JSON object is not supported in your browser.\r\n" +
+		"For work around use polyfill which can be found at:\r\n" +
+		"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON#Polyfill");
 		return;
 	}
 	/* jshint ignore:end */
 
 	// jscs:enable maximumLineLength
+
 	function onPageshow(e) {
 		isPersisted = isPersisted || (e.originalEvent && e.originalEvent.persisted);
 		if (!isPersisted && isBackForwardNavigated) {
@@ -1972,38 +2234,43 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	 * Get state value
 	 */
 	function getState() {
-		var stateStr;
-		var state = {};
-		var isValidStateStr = false;
+		var state;
+		var stateStr = storage ?
+			storage.getItem(global.location.href + CONST_PERSIST) : history.state;
 
-		if (isSupportState) {
-			stateStr = history.state;
-
-			// "null" is not a valid
-			isValidStateStr = typeof stateStr === "string" && stateStr !== "null";
-		} else {
-			stateStr = storage.getItem(location.href + CONST_PERSIST);
-			isValidStateStr = stateStr && stateStr.length > 0;
+		// the storage is clean
+		if (stateStr === null) {
+			return {};
 		}
 
-		if (isValidStateStr) {
-			try {
-				state = JSON.parse(stateStr);
+		// "null" is not a valid
+		var isValidStateStr = typeof stateStr === "string" &&
+									stateStr.length > 0 && stateStr !== "null";
+		var isValidType;
 
-				// like '[ ... ]', '1', '1.234', '"123"' is also not valid
-				if (jQuery.type(state) !== "object" || state instanceof Array) {
-					throw new Error();
-				}
-			} catch (e) {
-				/* jshint ignore:start */
-				console.warn("window.history or session/localStorage has no valid " +
-						"format data to be handled in persist.");
-				/* jshint ignore:end */
+		try {
+			state = JSON.parse(stateStr);
+
+			// like '[ ... ]', '1', '1.234', '"123"' is also not valid
+			isValidType = !(jQuery.type(state) !== "object" || state instanceof Array);
+
+			if (!isValidStateStr || !isValidType) {
+				throw new Error();
 			}
+		} catch (e) {
+			warnInvalidStorageValue();
+			state = {};
 		}
 
 		// Note2 (Android 4.3) return value is null
 		return state;
+	}
+
+	function warnInvalidStorageValue() {
+		/* jshint ignore:start */
+		console.warn("window.history or session/localStorage has no valid " +
+				"format data to be handled in persist.");
+		/* jshint ignore:end */
 	}
 
 	function getStateByKey(key) {
@@ -2020,25 +2287,27 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	 * Set state value
 	 */
 	function setState(state) {
-		if (isSupportState) {
+		if (storage) {
+			if (state) {
+				storage.setItem(
+					global.location.href + CONST_PERSIST, JSON.stringify(state));
+			} else {
+				storage.removeItem(global.location.href  + CONST_PERSIST);
+			}
+		} else {
 			try {
 				history.replaceState(
 					state === null ? null : JSON.stringify(state),
 					doc.title,
-					location.href
+					global.location.href
 				);
 			} catch (e) {
 				/* jshint ignore:start */
 				console.warn(e.message);
 				/* jshint ignore:end */
 			}
-		} else {
-			if (state) {
-				storage.setItem(location.href + CONST_PERSIST, JSON.stringify(state));
-			} else {
-				storage.removeItem(location.href  + CONST_PERSIST);
-			}
 		}
+
 		state ? $global.attr(CONST_PERSIST, true) : $global.attr(CONST_PERSIST, null);
 	}
 
@@ -2049,10 +2318,11 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	}
 
 	/**
-	* Save current state
+	* Save current state.
 	* @ko 인자로 넘긴 현재 상태정보를 저장한다.
 	* @method jQuery.persist
-	* @support {"ie": "9+", "ch" : "latest", "ff" : "1.5+",  "sf" : "latest", "ios" : "7+", "an" : "2.2+ (except 3.x)"}
+	* @deprecated since version 1.2.0
+	* @support {"ie": "9+", "ch" : "latest", "ff" : "1.5+",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.2+ (except 3.x)"}
 	* @param {Object} state State object to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체</ko>
 	* @example
 	$("a").on("click",function(e){
@@ -2065,6 +2335,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	* Return current state
 	* @ko 인자로 넘긴 현재 상태정보를 반환한다.
 	* @method jQuery.persist
+	* @deprecated since version 1.2.0
 	* @return {Object} state Stored state object <ko>복원을 위해 저장되어있는 상태 객체</ko>
 	* @example
 	$("a").on("click",function(e){
@@ -2181,7 +2452,7 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 	 * @param {Number} [options.expandSize=0] expand size of the wrapper.
 	 * e.g. If a wrapper size is 100 x 100 and 'expandSize' option is 20, visible range is 120 x 120
 	 * <ko> 상위 엘리먼트 기준으로 추가적인 영역을 확인하도록 지정</ko>
-	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
+	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 *
 	 * @codepen {"id":"WbWzqq", "ko":"Visible 기본 예제", "en":"Visible basic example", "collectionId":"Ayrabj", "height" : 403}
 	 */
@@ -2450,7 +2721,7 @@ var SUPPORT_TOUCH = "ontouchstart" in global;
 	 * @see Easing Functions Cheat Sheet {@link http://easings.net/}
 	 * @see To use other easing functions, import jQuery easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/}) or jQuery UI easing.({@link https://jqueryui.com/easing/})<ko>다른 easing 함수를 사용하고 싶다면, jQuery easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/})이나, jQuery UI easing({@link https://jqueryui.com/easing/}) 라이브러리를 삽입해야 한다.</ko>
 	 *
-	 * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
+	 * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
 	 */
 	var MC = ns.MovableCoord = ns.Class.extend(ns.Component, {
 		construct: function(options) {
@@ -2477,6 +2748,7 @@ var SUPPORT_TOUCH = "ontouchstart" in global;
 			this._subOptions = {};
 			this._raf = null;
 			this._animationEnd = $.proxy(this._animationEnd, this);	// for caching
+			this._restore = $.proxy(this._restore, this);	// for caching
 			this._panmove = $.proxy(this._panmove, this);	// for caching
 			this._panend = $.proxy(this._panend, this);	// for caching
 		},
@@ -2513,19 +2785,21 @@ var SUPPORT_TOUCH = "ontouchstart" in global;
 			if (!inputClass) {
 				return this;
 			}
+
 			if (keyValue) {
-				this._hammers[keyValue].get("pan").set({
-					direction: subOptions.direction
-				});
+				this._hammers[keyValue].inst.destroy();
 			} else {
 				keyValue = Math.round(Math.random() * new Date().getTime());
-				this._hammers[keyValue] = this._createHammer(
+			}
+			this._hammers[keyValue] = {
+				inst: this._createHammer(
 					$el.get(0),
 					subOptions,
 					inputClass
-				);
-				$el.data(MC._KEY, keyValue);
-			}
+				),
+				options: subOptions
+			};
+			$el.data(MC._KEY, keyValue);
 			return this;
 		},
 
@@ -2559,17 +2833,26 @@ var SUPPORT_TOUCH = "ontouchstart" in global;
 						},
 						inputClass: inputClass
 					});
-				return hammer.on("hammer.input", $.proxy(function(e) {
+
+				return this._attachHammerEvents(hammer, subOptions);
+			} catch (e) {}
+		},
+
+		_attachHammerEvents: function(hammer, options) {
+			return hammer.on("hammer.input", $.proxy(function(e) {
 					if (e.isFirst) {
 						// apply options each
-						this._subOptions = subOptions;
+						this._subOptions = options;
 						this._status.curHammer = hammer;
 						this._panstart(e);
 					}
 				}, this))
 				.on("panstart panmove", this._panmove)
 				.on("panend tap", this._panend);
-			} catch (e) {}
+		},
+
+		_detachHammerEvents: function(hammer) {
+			hammer.off("hammer.input panstart panmove panend tap");
 		},
 
 		_convertInputType: function(inputType) {
@@ -2597,7 +2880,7 @@ var SUPPORT_TOUCH = "ontouchstart" in global;
 			var $el = $(el);
 			var key = $el.data(MC._KEY);
 			if (key) {
-				this._hammers[key].destroy();
+				this._hammers[key].inst.destroy();
 				delete this._hammers[key];
 				$el.data(MC._KEY, null);
 			}
@@ -2606,6 +2889,7 @@ var SUPPORT_TOUCH = "ontouchstart" in global;
 
 		_grab: function() {
 			if (this._status.animationParam) {
+				this.trigger("animationEnd");
 				var pos = this._getCircularPos(this._pos);
 				if (pos[0] !== this._pos[0] || pos[1] !== this._pos[1]) {
 					this._pos = pos;
@@ -2646,7 +2930,9 @@ var SUPPORT_TOUCH = "ontouchstart" in global;
 		},
 
 		// from outside to outside
-		_isOutToOut: function(pos, destPos, min, max) {
+		_isOutToOut: function(pos, destPos) {
+			var min = this.options.min;
+			var max = this.options.max;
 			return (pos[0] < min[0] || pos[0] > max[0] ||
 				pos[1] < min[1] || pos[1] > max[1]) &&
 				(destPos[0] < min[0] || destPos[0] > max[0] ||
@@ -2800,16 +3086,42 @@ var SUPPORT_TOUCH = "ontouchstart" in global;
 				var vX =  Math.abs(e.velocityX);
 				var vY = Math.abs(e.velocityY);
 
-				// console.log(e.velocityX, e.velocityY, e.deltaX, e.deltaY);
 				!(direction & MC.DIRECTION_HORIZONTAL) && (vX = 0);
 				!(direction & MC.DIRECTION_VERTICAL) && (vY = 0);
 
-				this._animateBy(
-					this._getNextOffsetPos([
-						vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
-						vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
-					]),
-				this._animationEnd, false, null, e);
+				var offset = this._getNextOffsetPos([
+					vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
+					vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
+				]);
+				var destPos = [ pos[0] + offset[0], pos[1] + offset[1] ];
+				destPos = this._getPointOfIntersection(pos, destPos);
+				/**
+				 * When an area was released
+				 * @ko 스크린에서 사용자가 손을 떼었을 때
+				 * @name eg.MovableCoord#release
+				 * @event
+				 *
+				 * @param {Object} param
+				 * @param {Array} param.depaPos departure coordinate <ko>현재 좌표</ko>
+				 * @param {Number} param.depaPos.0 departure x-coordinate <ko>현재 x 좌표</ko>
+				 * @param {Number} param.depaPos.1 departure y-coordinate <ko>현재 y 좌표</ko>
+				 * @param {Array} param.destPos destination coordinate <ko>애니메이션에 의해 이동할 좌표</ko>
+				 * @param {Number} param.destPos.0 destination x-coordinate <ko>x 좌표</ko>
+				 * @param {Number} param.destPos.1 destination y-coordinate <ko>y 좌표</ko>
+				 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자의 액션에 대한 hammerjs 이벤트 정보 (API에 의해 호출될 경우, null 을 반환)</ko>
+				 *
+				 */
+				this.trigger("release", {
+					depaPos: pos.concat(),
+					destPos: destPos,
+					hammerEvent: e || null
+				});
+
+				if (pos[0] !== destPos[0] || pos[1] !== destPos[1]) {
+					this._animateTo(destPos, null, e || null);
+				} else {
+					this._setInterrupt(false);
+				}
 			}
 			this._status.moveDistance = null;
 		},
@@ -2828,22 +3140,6 @@ var SUPPORT_TOUCH = "ontouchstart" in global;
 			angle = Math.abs(angle);
 			return angle > thresholdAngle && angle < 180 - thresholdAngle ?
 					MC.DIRECTION_VERTICAL : MC.DIRECTION_HORIZONTAL;
-		},
-
-		_animationEnd: function() {
-			/**
-			 * When animation was ended.
-			 * @ko 에니메이션이 끝났을 때 발생한다.
-			 * @name eg.MovableCoord#animationEnd
-			 * @event
-			 */
-			var pos = this._pos;
-			var min = this.options.min;
-			var max = this.options.max;
-			this._animateTo([
-				Math.min(max[0], Math.max(min[0], pos[0])),
-				Math.min(max[1], Math.max(min[1], pos[1]))
-			], $.proxy(this.trigger, this, "animationEnd"), true, null);
 		},
 
 		_getNextOffsetPos: function(speeds) {
@@ -2865,14 +3161,6 @@ var SUPPORT_TOUCH = "ontouchstart" in global;
 
 			// when duration is under 100, then value is zero
 			return duration < 100 ? 0 : duration;
-		},
-
-		_animateBy: function(offset, callback, isBounce, duration, e) {
-			var pos = this._pos;
-			return this._animateTo([
-				pos[0] + offset[0],
-				pos[1] + offset[1]
-			], callback, isBounce, duration, e);
 		},
 
 		_getPointOfIntersection: function(depaPos, destPos) {
@@ -2905,142 +3193,125 @@ var SUPPORT_TOUCH = "ontouchstart" in global;
 			destPos[0] = yd ?
 							depaPos[0] + xd / yd * (destPos[1] - depaPos[1]) :
 							destPos[0];
-			return destPos;
-
+			return [
+				Math.min(max[0], Math.max(min[0], destPos[0])),
+				Math.min(max[1], Math.max(min[1], destPos[1]))
+			];
 		},
 
-		_isCircular: function(circular, destPos, min, max) {
+		_isCircular: function(destPos) {
+			var circular = this.options.circular;
+			var min = this.options.min;
+			var max = this.options.max;
 			return (circular[0] && destPos[1] < min[1]) ||
 					(circular[1] && destPos[0] > max[0]) ||
 					(circular[2] && destPos[1] > max[1]) ||
 					(circular[3] && destPos[0] < min[0]);
 		},
 
-		_animateTo: function(absPos, callback, isBounce, duration, e) {
+		_prepareParam: function(absPos, duration, hammerEvent) {
 			var pos = this._pos;
 			var destPos = this._getPointOfIntersection(pos, absPos);
-			var param = {
-					depaPos: pos.concat(),
-					destPos: destPos,
-					hammerEvent: e || null
-				};
-			if (!isBounce && e) {	// check whether user's action
-				/**
-				 * When an area was released
-				 * @ko 스크린에서 사용자가 손을 떼었을 때
-				 * @name eg.MovableCoord#release
-				 * @event
-				 *
-				 * @param {Object} param
-				 * @param {Array} param.depaPos departure coordinate <ko>현재 좌표</ko>
-				 * @param {Number} param.depaPos.0 departure x-coordinate <ko>현재 x 좌표</ko>
-				 * @param {Number} param.depaPos.1 departure y-coordinate <ko>현재 y 좌표</ko>
-				 * @param {Array} param.destPos destination coordinate <ko>애니메이션에 의해 이동할 좌표</ko>
-				 * @param {Number} param.destPos.0 destination x-coordinate <ko>x 좌표</ko>
-				 * @param {Number} param.destPos.1 destination y-coordinate <ko>y 좌표</ko>
-				 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자의 액션에 대한 hammerjs 이벤트 정보 (API에 의해 호출될 경우, null 을 반환)</ko>
-				 *
-				 */
-				this.trigger("release", param);
-			}
-			this._afterReleaseProcess(param, callback, isBounce, duration);
-		},
-
-		// when user release a finger, pointer or mouse
-		_afterReleaseProcess: function(param, callback, isBounce, duration) {
-			// caution: update option values, due to value was changed by "release" event
-			var pos = this._pos;
-			var min = this.options.min;
-			var max = this.options.max;
-			var circular = this.options.circular;
-			var isCircular = this._isCircular(
-								circular,
-								param.destPos,
-								min,
-								max
-							);
-			var destPos = this._isOutToOut(pos, param.destPos, min, max) ?
-				pos : param.destPos;
+			destPos = this._isOutToOut(pos, destPos) ? pos : destPos;
 			var distance = [
 				Math.abs(destPos[0] - pos[0]),
 				Math.abs(destPos[1] - pos[1])
 			];
-			var animationParam;
-			duration = duration === null ?
-						this._getDurationFromPos(distance) : duration;
+			duration = duration == null ? this._getDurationFromPos(distance) : duration;
 			duration = this.options.maximumDuration > duration ?
 						duration : this.options.maximumDuration;
-
-			var done = $.proxy(function(isNext) {
-					this._status.animationParam = null;
-					pos[0] = Math.round(destPos[0]);
-					pos[1] = Math.round(destPos[1]);
-					pos = this._getCircularPos(pos, min, max, circular);
-					!isNext && this._setInterrupt(false);
-					callback();
-				}, this);
-
-			if (distance[0] === 0 && distance[1] === 0) {
-				return done(!isBounce);
-			}
-
-			// prepare animation parameters
-			animationParam = {
-				duration: duration,
+			return {
 				depaPos: pos.concat(),
-				destPos: destPos,
-				isBounce: isBounce,
-				isCircular: isCircular,
-				done: done,
-				hammerEvent: param.hammerEvent
+				destPos: destPos.concat(),
+				isBounce: this._isOutside(destPos, this.options.min, this.options.max),
+				isCircular: this._isCircular(absPos),
+				duration: duration,
+				distance: distance,
+				hammerEvent: hammerEvent || null,
+				done: this._animationEnd
 			};
+		},
 
+		_restore: function(complete, hammerEvent) {
+			var pos = this._pos;
+			var min = this.options.min;
+			var max = this.options.max;
+			this._animate(this._prepareParam([
+				Math.min(max[0], Math.max(min[0], pos[0])),
+				Math.min(max[1], Math.max(min[1], pos[1]))
+			], null, hammerEvent), complete);
+		},
+
+		_animationEnd: function() {
+			this._status.animationParam = null;
+			this._pos = this._getCircularPos([
+				Math.round(this._pos[0]),
+				Math.round(this._pos[1])
+			]);
+			this._setInterrupt(false);
 			/**
-			 * When animation was started.
-			 * @ko 에니메이션이 시작했을 때 발생한다.
-			 * @name eg.MovableCoord#animationStart
+			 * When animation was ended.
+			 * @ko 에니메이션이 끝났을 때 발생한다.
+			 * @name eg.MovableCoord#animationEnd
 			 * @event
-			 * @param {Object} param
-			 * @param {Number} param.duration
-			 * @param {Array} param.depaPos departure coordinate <ko>현재 좌표</ko>
-			 * @param {Number} param.depaPos.0 departure x-coordinate <ko>현재 x 좌표</ko>
-			 * @param {Number} param.depaPos.1 departure y-coordinate <ko>현재 y 좌표</ko>
-			 * @param {Array} param.destPos destination coordinate <ko>애니메이션에 의해 이동할 좌표</ko>
-			 * @param {Number} param.destPos.0 destination x-coordinate <ko>x 좌표</ko>
-			 * @param {Number} param.destPos.1 destination y-coordinate <ko>y 좌표</ko>
-			 * @param {Boolean} param.isBounce When an animation is bounced, a value is 'true'.  <ko>바운스 되는 애니메이션인 경우 true</ko>
-			 * @param {Boolean} param.isCircular When the area is circular type, a value is 'true'. <ko>순환하여 움직여야하는 애니메이션인경우 true</ko>
-			 * @param {Function} param.done If user control animation, user must call this function. <ko>애니메이션이 끝났다는 것을 알려주는 함수</ko>
-			 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자의 액션에 대한 hammerjs 이벤트 정보 (API에 의해 호출될 경우, null 을 반환)</ko>
-			 *
 			 */
-			var retTrigger = this.trigger("animationStart", animationParam);
+			this.trigger("animationEnd");
+		},
+
+		_animate: function(param, complete) {
+			param.startTime = new Date().getTime();
+			this._status.animationParam = param;
+			if (param.duration) {
+				var info = this._status.animationParam;
+				var self = this;
+				(function loop() {
+					self._raf = null;
+					if (self._frame(info) >= 1) {
+						// deferred.resolve();
+						complete();
+						return;
+					} // animationEnd
+					self._raf = ns.requestAnimationFrame(loop);
+				})();
+			} else {
+				this._triggerChange(param.destPos, false);
+				complete();
+			}
+		},
+
+		_animateTo: function(absPos, duration, hammerEvent) {
+			var param = this._prepareParam(absPos, duration, hammerEvent);
+			var retTrigger = this.trigger("animationStart", param);
 
 			// You can't stop the 'animationStart' event when 'circular' is true.
-			if (isCircular && !retTrigger) {
+			if (param.isCircular && !retTrigger) {
 				throw new Error(
 					"You can't stop the 'animation' event when 'circular' is true."
 				);
 			}
-			animationParam.depaPos = pos;
-			animationParam.startTime = new Date().getTime();
-			this._status.animationParam = animationParam;
+
 			if (retTrigger) {
-				if (animationParam.duration) {
-					// console.error("depaPos", pos, "depaPos",destPos, "duration", duration, "ms");
-					var info = this._status.animationParam;
-					var self = this;
-					(function loop() {
-						self._raf = null;
-						if (self._frame(info) >= 1) {
-							return done(true);
-						} // animationEnd
-						self._raf = ns.requestAnimationFrame(loop);
-					})();
-				} else {
-					this._triggerChange(animationParam.destPos, false);
-					done(!isBounce);
+				var self = this;
+				var queue = [];
+				var dequeue = function() {
+					var task = queue.shift();
+					task && task.call(this);
+				};
+				if (param.depaPos[0] !== param.destPos[0] ||
+					param.depaPos[1] !== param.destPos[1]) {
+					queue.push(function() {
+						self._animate(param, dequeue);
+					});
 				}
+				if (this._isOutside(param.destPos, this.options.min, this.options.max)) {
+					queue.push(function() {
+						self._restore(dequeue, hammerEvent);
+					});
+				}
+				queue.push(function() {
+					self._animationEnd();
+				});
+				dequeue();
 			}
 		},
 
@@ -3152,7 +3423,7 @@ var SUPPORT_TOUCH = "ontouchstart" in global;
 				}
 			}
 			if (duration) {
-				this._animateTo([ x, y ], this._animationEnd, false, duration);
+				this._animateTo([ x, y ], duration);
 			} else {
 				this._pos = this._getCircularPos([ x, y ]);
 				this._triggerChange(this._pos, false);
@@ -3211,7 +3482,7 @@ var SUPPORT_TOUCH = "ontouchstart" in global;
 		destroy: function() {
 			this.off();
 			for (var p in this._hammers) {
-				this._hammers[p].destroy();
+				this._hammers[p].inst.destroy();
 				this._hammers[p] = null;
 			}
 		}
@@ -3294,6 +3565,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 	 * @param {Boolean} [options.horizontal=true] For move direction (when horizontal is false, then move direction is vertical) <ko>이동방향 설정 (horizontal == true 가로방향, horizontal == false 세로방향)</ko>
 	 * @param {Boolean} [options.circular=false] To make panels rotate infinitely  <ko>순환 여부</ko>
 	 * @param {Number|Array} [options.previewPadding=[0,0]] Padding value to display previous and next panels. If set array value the order is left(up) to right(down) <ko>이전과 다음 패널을 출력하는 프리뷰 형태에 사용되는 padding 값. 배열 형태로 지정시 좌측(상단), 우측(하단) 순서로 지정</ko>
+	 * @param {Number|Array} [options.bounce=[10,10]] Bounce value of start/end in non-circular mode. If set array value the order is left(up) to right(down) <ko>비순환일 때 시작/마지막 패널의 바운스 값. 배열 형태로 지정시 좌측(상단), 우측(하단) 순서로 지정</ko>
 	 * @param {Number} [options.threshold=40] Threshold pixels to move panels in prev/next direction <ko>다음 패널로 이동되기 위한 임계치 픽셀</ko>
 	 * @param {Number} [options.duration=100] Duration time of panel change animation in milliseconds <ko>패널 이동 애니메이션 진행시간(ms) 값</ko>
 	 * @param {Function} [options.panelEffect=easeOutCubic] easing function which is used on panel move animation<ko>패널 간의 이동 애니메이션에 사용되는 effect easing 함수</ko>
@@ -3302,7 +3574,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 	 *
 	 * @codepen {"id":"rVOpPK", "ko":"플리킹 기본 예제", "en":"Flicking default example", "collectionId":"ArxyLK", "height" : 403}
 	 *
-	 * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
+	 * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
 	 *
 	 * @see Easing Functions Cheat Sheet {@link http://easings.net/}
 	 * @see If you want to use another easing function then should be import jQuery easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/}) or jQuery UI easing.({@link https://jqueryui.com/easing/})<ko>다른 easing 함수를 사용하고 싶다면, jQuery easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/})이나, jQuery UI easing({@link https://jqueryui.com/easing/}) 라이브러리를 삽입해야 한다.</ko>
@@ -3372,34 +3644,77 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				// jscs:enable validateLineBreaks, maximumLineLength
 			}
 
+			this._setOptions(options);
+			this._setConfig($children, _prefix);
+
+			!ns._hasClickBug() && (this._setPointerEvents = $.noop);
+
+			this._build();
+			this._bindEvents(true);
+
+			this._applyPanelsCss();
+			this._arrangePanels();
+
+			this.options.hwAccelerable && SUPPORT_WILLCHANGE && this._setHint();
+			this._adjustContainerCss("end");
+		},
+
+		/**
+		 * Set options values
+		 * @param {Object} options
+		 */
+		_setOptions: function(options) {
+			var arrVal = {
+				previewPadding: [ 0, 0 ],
+				bounce: [ 10, 10 ]
+			};
+
 			$.extend(this.options = {
 				hwAccelerable: ns.isHWAccelerable(),  // check weather hw acceleration is available
-				prefix: "eg-flick",		// prefix value of class name
-				deceleration: 0.0006,		// deceleration value
-				horizontal: true,			// move direction (true == horizontal, false == vertical)
+				prefix: "eg-flick",         // prefix value of class name
+				deceleration: 0.0006,       // deceleration value
+				horizontal: true,           // move direction (true == horizontal, false == vertical)
 				circular: false,			// circular mode. In this mode at least 3 panels are required.
-				previewPadding: [0, 0],	// preview padding value in left(up) to right(down) order. In this mode at least 5 panels are required.
+				previewPadding: arrVal.previewPadding,	// preview padding value in left(up) to right(down) order. In this mode at least 5 panels are required.
+				bounce: arrVal.bounce,      // bounce value in left(up) to right(down) order. Works only in non-circular mode.
 				threshold: 40,				// the distance pixel threshold value for change panel
 				duration: 100,				// duration ms for animation
 				panelEffect: $.easing.easeOutCubic,  // $.easing function for panel change animation
 				defaultIndex: 0,			// initial panel index to be shown
-				inputType: ["touch", "mouse"]	// input type
+				inputType: ["touch", "mouse"]  // input type
 			}, options);
 
-			var padding = this.options.previewPadding;
+			var self = this;
+			$.each(arrVal, function(i, v) {
+				var val = self.options[i];
 
-			if (typeof padding === "number") {
-				padding = this.options.previewPadding = [ padding, padding ];
-			} else if (padding.constructor !== Array) {
-				padding = this.options.previewPadding = [ 0, 0 ];
-			}
+				if ($.isNumeric(val)) {
+					val = [ val, val ];
+				} else if (!$.isArray(val)) {
+					val = v;
+				}
+
+				self.options[i] = val;
+			});
+		},
+
+		/**
+		 * Set config values
+		 * @param {jQuery} $children wrappers' children elements
+		 * @param {String} _prefix event prefix
+		 */
+		_setConfig: function($children, _prefix) {
+			var options = this.options;
+			var padding = options.previewPadding;
 
 			// config value
 			this._conf = {
 				panel: {
 					$list: $children,	// panel list
-					index: 0,			// current physical dom index
-					no: 0,				// current logical panel index
+					index: 0,			// dom index used among process
+					no: 0,				// panel no used among process
+					currIndex: 0,       // current physical dom index
+					currNo: 0,          // current logical panel number
 					size: 0,			// panel size
 					count: 0,			// total physical panel count
 					origCount: 0,		// total count of given original panels
@@ -3419,7 +3734,20 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 					restore: false,
 					restoreCall: false
 				},
-				useLayerHack: this.options.hwAccelerable && !SUPPORT_WILLCHANGE,
+				origPanelStyle: {		// remember original class and inline style in case of restoration on destroy()
+					wrapper: {
+						className: this.$wrapper.attr("class") || null,
+						style: this.$wrapper.attr("style") || null
+					},
+					list: $children.map(function(i, v) {
+						return {
+							className: $(v).attr("class") || null,
+							style: $(v).attr("style") || null
+						};
+					})
+				},
+				inputEvent: false,		// input event biding status
+				useLayerHack: options.hwAccelerable && !SUPPORT_WILLCHANGE,
 				dirData: [],			// direction constant value according horizontal or vertical
 				indexToMove: 0,
 				eventPrefix: _prefix || "",
@@ -3428,21 +3756,10 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				$dummyAnchor: null
 			};
 
-			$([["LEFT", "RIGHT"], ["UP", "DOWN"]][+!this.options.horizontal]).each(
+			$([["LEFT", "RIGHT"], ["UP", "DOWN"]][+!options.horizontal]).each(
 				$.proxy(function (i, v) {
 					this._conf.dirData.push(MC["DIRECTION_" + v]);
 				}, this));
-
-			!ns._hasClickBug() && (this._setPointerEvents = $.noop);
-
-			this._build();
-			this._bindEvents();
-
-			this._applyPanelsCss();
-			this._arrangePanels();
-
-			this.options.hwAccelerable && SUPPORT_WILLCHANGE && this._setHint();
-			this._adjustContainerCss("end");
 		},
 
 		/**
@@ -3457,6 +3774,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var horizontal = options.horizontal;
 			var panelCount = panel.count = panel.origCount = $children.length;
 			var cssValue;
+			var bounce = options.bounce;
 
 			this._setPadding(padding, true);
 			var sizeValue = this._getDataByDirection([ panel.size, "100%" ]);
@@ -3491,13 +3809,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				margin: 0,
 				circular: false,
 				easing: options.panelEffect,
-				deceleration: options.deceleration
-			}).bind(this.$wrapper, {
-				scale: this._getDataByDirection([-1, 0]),
-				direction: MC["DIRECTION_" +
-					(horizontal ? "HORIZONTAL" : "VERTICAL")],
-				interruptable: false,
-				inputType: options.inputType
+				deceleration: options.deceleration,
+				bounce: this._getDataByDirection([ 0, bounce[1], 0, bounce[0] ])
 			});
 
 			this._setDefaultPanel(options.defaultIndex);
@@ -3576,6 +3889,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var panel = this._conf.panel;
 			var lastIndex = panel.count - 1;
 			var coords;
+			var baseIndex;
 
 			if (this.options.circular) {
 				// if default index is given, then move correspond panel to the first position
@@ -3584,13 +3898,23 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				}
 
 				// set first panel's position according physical node length
-				this._movePanelPosition(this._getBasePositionIndex(), false);
+				baseIndex = this._getBasePositionIndex();
+				this._movePanelPosition(baseIndex, false);
 
-				panel.no = index;
+				this._setPanelNo({
+					no: index,
+					currNo: index
+				});
 			} else {
 				// if defaultIndex option is given, then move to that index panel
 				if (index > 0 && index <= lastIndex) {
-					panel.no = panel.index = index;
+					this._setPanelNo({
+						index: index,
+						no: index,
+						currIndex: index,
+						currNo: index
+					});
+
 					coords = [ -(panel.size * index), 0];
 
 					this._setTranslate(coords);
@@ -3611,6 +3935,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var panel = conf.panel;
 			var touch = conf.touch;
 			var dirData = conf.dirData;
+			var baseIndex;
 
 			if (this.options.circular) {
 				// when arranging panels, set flag to not trigger flick custom event
@@ -3623,7 +3948,12 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				}
 
 				// set index for base element's position
-				panel.index = this._getBasePositionIndex();
+				baseIndex = this._getBasePositionIndex();
+
+				this._setPanelNo({
+					index: baseIndex,
+					currIndex: baseIndex
+				});
 
 				// arrange MovableCoord's coord position
 				conf.customEvent.flick = !!this._setMovableCoord("setTo", [
@@ -3758,7 +4088,10 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @return {eg.MovableCoord} MovableCoord instance
 		 */
 		_setMovableCoord: function (method, coord, isDirVal, duration) {
-			isDirVal && this._getDataByDirection(coord);
+			if (isDirVal) {
+				coord = this._getDataByDirection(coord);
+			}
+
 			return this._mcInst[method](coord[0], coord[1], duration);
 		},
 
@@ -3779,6 +4112,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @return {Array}
 		 */
 		_getDataByDirection: function (value) {
+			value = value.concat();
 			!this.options.horizontal && value.reverse();
 			return value;
 		},
@@ -3797,21 +4131,37 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * Get the base position index of the panel
 		 */
 		_getBasePositionIndex: function () {
-			var panel = this._conf.panel;
-			return panel.index = Math.floor(panel.count / 2 - 0.1);
+			return Math.floor(this._conf.panel.count / 2 - 0.1);
 		},
 
 		/**
 		 * Bind events
+		 * @param {Boolean} bind
 		 */
-		_bindEvents: function () {
-			this._mcInst.on({
-				hold: $.proxy(this._holdHandler, this),
-				change: $.proxy(this._changeHandler, this),
-				release: $.proxy(this._releaseHandler, this),
-				animationStart: $.proxy(this._animationStartHandler, this),
-				animationEnd: $.proxy(this._animationEndHandler, this)
-			});
+		_bindEvents: function (bind) {
+			var options = this.options;
+			var $wrapper = this.$wrapper;
+			var mcInst = this._mcInst;
+
+			if (bind) {
+				mcInst.bind($wrapper, {
+					scale: this._getDataByDirection([-1, 0]),
+					direction: MC["DIRECTION_" +
+					(options.horizontal ? "HORIZONTAL" : "VERTICAL")],
+					interruptable: false,
+					inputType: options.inputType
+				}).on({
+					hold: $.proxy(this._holdHandler, this),
+					change: $.proxy(this._changeHandler, this),
+					release: $.proxy(this._releaseHandler, this),
+					animationStart: $.proxy(this._animationStartHandler, this),
+					animationEnd: $.proxy(this._animationEndHandler, this)
+				});
+			} else {
+				mcInst.unbind($wrapper).off();
+			}
+
+			this._conf.inputEvent = !!bind;
 		},
 
 		/**
@@ -4022,8 +4372,6 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var panel = conf.panel;
 
 			if (phase === "start" && (panel.changed = this._isMovable())) {
-				conf.indexToMove === 0 && this._setPanelNo();
-
 				/**
 				 * Before panel changes
 				 * @ko 플리킹이 시작되기 전에 발생하는 이벤트
@@ -4045,6 +4393,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				if (!this._triggerEvent(EVENTS.beforeFlickStart, pos)) {
 					return panel.changed = panel.animating = false;
 				}
+
+				conf.indexToMove === 0 && this._setPanelNo();
 			} else if (phase === "end") {
 				if (options.circular && panel.changed) {
 					this._arrangePanels(true, conf.indexToMove);
@@ -4072,22 +4422,48 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		},
 
 		/**
-		 * Set the logical panel index number
-		 * @param {Boolean} recover
+		 * Get positive or negative according direction
 		 */
-		_setPanelNo: function (recover) {
+		_getNumByDirection: function() {
+			var conf = this._conf;
+			return conf.touch.direction === conf.dirData[0] ? 1 : -1;
+		},
+
+		/**
+		 * Revert panel number
+		 */
+		_revertPanelNo: function() {
+			var panel = this._conf.panel;
+			var num = this._getNumByDirection();
+
+			var index = panel.currIndex >= 0 ? panel.currIndex : panel.index - num;
+			var no = panel.currNo >= 0 ? panel.currNo : panel.no - num;
+
+			this._setPanelNo({
+				index: index,
+				no: no
+			});
+		},
+
+		/**
+		 * Set the panel number
+		 * @param {Object} obj number object
+		 */
+		_setPanelNo: function (obj) {
 			var panel = this._conf.panel;
 			var count = panel.origCount - 1;
-			var num = this._conf.touch.direction === this._conf.dirData[0] ? 1 : -1;
+			var num = this._getNumByDirection();
 
-			if (recover) {
-				panel.index = panel.prevIndex >= 0 ?
-					panel.prevIndex : panel.index - num;
-
-				panel.no = panel.prevNo >= 0 ?
-					panel.prevNo : panel.no - num;
+			if ($.isPlainObject(obj)) {
+				$.each(obj, function(i, v) {
+					panel[i] = v;
+				});
 
 			} else {
+				// remember current value
+				panel.currIndex = panel.index;
+				panel.currNo = panel.no;
+
 				panel.index += num;
 				panel.no += num;
 			}
@@ -4126,7 +4502,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 */
 		_getCoordsValue: function (coords) {
 			// the param comes as [ val, 0 ], whatever the direction. So reorder the value depend the direction.
-			this._getDataByDirection(coords);
+			coords = this._getDataByDirection(coords);
 
 			return {
 				x: this._getUnitValue(coords[0]),
@@ -4163,7 +4539,23 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * Check if panel passed through threshold pixel
 		 */
 		_isMovable: function () {
-			return Math.abs(this._conf.touch.distance) >= this.options.threshold;
+			var options = this.options;
+			var mcInst = this._mcInst;
+			var isMovable = Math.abs(this._conf.touch.distance) >= options.threshold;
+			var max;
+			var currPos;
+
+			if (!options.circular && isMovable) {
+				max = this._getDataByDirection(mcInst.options.max)[0];
+				currPos = this._getDataByDirection(mcInst.get())[0];
+
+				// if current position out of range
+				if (currPos < 0 || currPos > max) {
+					return false;
+				}
+			}
+
+			return isMovable;
 		},
 
 		/**
@@ -4176,10 +4568,16 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var conf = this._conf;
 			var panel = conf.panel;
 
+			// pass changed panel no only on 'flickEnd' event
+			if (name === EVENTS.flickEnd) {
+				panel.currNo = panel.no;
+				panel.currIndex = panel.index;
+			}
+
 			return this.trigger(conf.eventPrefix + name, $.extend({
 				eventType: name,
-				index: panel.index,
-				no: panel.no,
+				index: panel.currIndex,
+				no: panel.currNo,
 				direction: conf.touch.direction
 			}, param));
 		},
@@ -4194,7 +4592,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		_getElement: function (direction, element, physical) {
 			var panel = this._conf.panel;
 			var circular = this.options.circular;
-			var pos = panel.index;
+			var pos = panel.currIndex;
 			var next = direction === this._conf.dirData[0];
 			var result = null;
 			var total;
@@ -4206,7 +4604,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				index = pos;
 			} else {
 				total = panel.origCount;
-				index = panel.no;
+				index = panel.currNo;
 			}
 
 			currentIndex = index;
@@ -4261,7 +4659,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @return {Number} Number Current index number <ko>현재 패널 인덱스 번호</ko>
 		 */
 		getIndex: function (physical) {
-			return this._conf.panel[ physical ? "index" : "no" ];
+			return this._conf.panel[ physical ? "currIndex" : "currNo" ];
 		},
 
 		/**
@@ -4272,7 +4670,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 */
 		getElement: function () {
 			var panel = this._conf.panel;
-			return $(panel.$list[panel.index]);
+			return $(panel.$list[ panel.currIndex ]);
 		},
 
 		/**
@@ -4309,7 +4707,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		/**
 		 * Get previous panel element
 		 * @ko 이전 패널 요소의 레퍼런스를 반환한다.
-		 * @method ns.Flicking#getPrevElement
+		 * @method eg.Flicking#getPrevElement
 		 * @return {jQuery|null} Previous element or null if no more element exist <ko>이전 패널 요소. 패널이 없는 경우에는 null</ko>
 		 */
 		getPrevElement: function () {
@@ -4432,24 +4830,20 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				return this;
 			}
 
-			// remember current value in case of restoring
-			panel.prevIndex = currentIndex;
-			panel.prevNo = panel.no;
-
 			if (circular) {
 				indexToMove = no - panel.no;
 				isPositive = indexToMove > 0;
 
 				// check for real panel count which can be moved on each sides
 				if (Math.abs(indexToMove) > (isPositive ?
-						panel.count - (currentIndex + 1) : currentIndex)) {
+					panel.count - (currentIndex + 1) : currentIndex)) {
 					indexToMove = indexToMove + (isPositive ? -1 : 1) * panel.count;
 				}
 
-				panel.no = no;
+				this._setPanelNo({ no: no });
 			} else {
 				indexToMove = no - currentIndex;
-				panel.no = panel.index = no;
+				this._setPanelNo({ index: no, no: no });
 			}
 
 			this._conf.indexToMove = indexToMove;
@@ -4562,11 +4956,11 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var destPos;
 
 			// check if the panel isn't in right position
-			if (currPos[0] % panel.size) {
+			if (currPos[0] !== panel.currIndex * panel.size) {
 				conf.customEvent.restoreCall = true;
 				duration = this._getNumValue(duration, this.options.duration);
 
-				this._setPanelNo(true);
+				this._revertPanelNo();
 				destPos = this._getDataByDirection([panel.size * panel.index, 0]);
 
 				this._triggerBeforeRestore({ depaPos: currPos, destPos: destPos });
@@ -4579,13 +4973,82 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 
 				// to handle on api call
 			} else if (panel.changed) {
-				this._setPanelNo(true);
-
+				this._revertPanelNo();
 				conf.touch.distance = conf.indexToMove = 0;
-				panel.prevIndex = panel.prevNo = -1;
 			}
 
 			return this;
+		},
+
+		/**
+		 * Set input event biding
+		 * @param {Boolean} bind - true: bind, false: unbind
+		 * @return {eg.Flicking} instance of itself
+		 */
+		_setInputEvent: function(bind) {
+			var inputEvent = this._conf.inputEvent;
+
+			if (bind ^ inputEvent) {
+				this._bindEvents(bind);
+			}
+
+			return this;
+		},
+
+		/**
+		 * Enable input events
+		 * @ko 입력 이벤트 활성
+		 * @method eg.Flicking#enableInput
+		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
+		 */
+		enableInput: function() {
+			return this._setInputEvent(true);
+		},
+
+		/**
+		 * Disable input events
+		 * @ko 입력 이벤트 비활성
+		 * @method eg.Flicking#disableInput
+		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
+		 */
+		disableInput: function() {
+			return this._setInputEvent();
+		},
+
+		/**
+		 * Release resources and events attached
+		 * @ko 사용된 리소스와 이벤트를 해제
+		 * @method eg.Flicking#destroy
+		 */
+		destroy: function() {
+			var conf = this._conf;
+			var origPanelStyle = conf.origPanelStyle;
+			var wrapper = origPanelStyle.wrapper;
+			var list = origPanelStyle.list;
+
+			// unwrap container element and restore original inline style
+			this.$wrapper.attr("class", wrapper.className)
+				.attr("style", wrapper.style);
+
+			this.$container.children().unwrap().each(function(i, v) {
+				var $el = $(v);
+
+				if (i > list.length - 1) {
+					return !!$el.remove();
+				}
+
+				$el.attr("class", list[i].className)
+					.attr("style", list[i].style);
+			});
+
+			// unbind events
+			this.disableInput();
+			this.off();
+
+			// release resources
+			for (var x in this) {
+				this[x] = null;
+			}
 		}
 	});
 });
@@ -4679,6 +5142,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
  $("#mflick").trigger("flicking:restore",callback);
  * @see eg.Flicking#event:restore
  */
+
 /**
 * Copyright (c) 2015 NAVER Corp.
 * egjs projects are licensed under the MIT license
@@ -4696,7 +5160,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		var s;
 		$.each(what, function(i, v) {
 			s = source[v];
-			if (s != null) {
+			if (v in source) {
 				if ($.isArray(s)) {
 					target[v] = $.merge([], s);
 				} else if ($.isPlainObject(s)) {
@@ -4901,7 +5365,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 	 * @param {Number} [options.threshold=300] Threshold pixels to determine if grid needs to append or prepend elements<ko>엘리먼트가 append 또는 prepend될지를 결정하는 임계치 픽셀</ko>
 	 *
 	 * @codepen {"id":"zvrbap", "ko":"InfiniteGrid 데모", "en":"InfiniteGrid example", "collectionId":"DPYEww", "height": 403}
-	 *  @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
+	 *  @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 *
 	 *  @see Outlayer {@link https://github.com/metafizzy/outlayer}
 	 *
@@ -4979,6 +5443,9 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			return doc.body.scrollTop || doc.documentElement.scrollTop;
 		},
 		_onScroll: function() {
+			if (this.core && !this.core._isLayoutInited) {
+				return;
+			}
 			if (this.isProcessing()) {
 				return;
 			}
@@ -5044,11 +5511,16 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			if (this.resizeTimeout) {
 				clearTimeout(this.resizeTimeout);
 			}
+			if (this.core && !this.core._isLayoutInited) {
+				return;
+			}
 			var self = this;
 			function delayed() {
 				self._refreshViewport();
-				self.core.element.style.width = null;
-				self.core.needsResizeLayout() && self.layout();
+				if (self.core) {
+					self.core.element.style.width = null;
+					self.core.needsResizeLayout() && self.layout();
+				}
 				delete self.resizeTimeout;
 			}
 			this.resizeTimeout = setTimeout(delayed, 100);
@@ -5085,6 +5557,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		 * @return {eg.InfiniteGrid} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		setStatus: function(status) {
+			if (!status || !status.cssText || !status.html ||
+				!status.core || !status.data) {
+				return this;
+			}
 			this.core.element.style.cssText = status.cssText;
 			this.core.$element.html(status.html);
 			this.core.items = this.core.itemize(this.core.$element.children().toArray());
@@ -5141,7 +5617,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			while (v = this.core.items[i++]) {
 				v.isAppend = true;
 			}
-			this.core.layout();
+			!this.core._isLayoutInited ?
+				this._waitResource(this.core.$element, function() {
+					this.core.layout();
+				}) : this.core.layout();
 			return this;
 		},
 		/**
@@ -5204,7 +5683,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			this._reset();
 			this.layout();
 			return this;
-
 		},
 
 		_getTopItem: function() {
@@ -5327,21 +5805,26 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 				this.core.items = items.concat(this.core.items.slice(0));
 				items = items.reverse();
 			}
-			if (this.isRecycling()) {
-				this._adjustRange(isAppend, $cloneElements);
-			}
+			this.isRecycling() && this._adjustRange(isAppend, $cloneElements);
+
 			var noChild = this.core.$element.children().length === 0;
 			this.core.$element[isAppend ? "append" : "prepend"]($cloneElements);
 			noChild && this.core.resetLayout();		// for init-items
 
-			var needCheck = this._checkImageLoaded($cloneElements);
+			this._waitResource($cloneElements, function() {
+				this.core.layoutItems(items, true);
+			});
+		},
+		_waitResource: function($element, callback) {
+			var needCheck = this._checkImageLoaded($element);
 			if (needCheck.length > 0) {
-				this._waitImageLoaded(items, needCheck);
+				this._waitImageLoaded(needCheck, callback);
 			} else {
-				// convert to async
 				var self = this;
+
+				// convert to async
 				setTimeout(function() {
-					self.core.layoutItems(items, true);
+					callback && self.core && callback.apply(self);
 				}, 0);
 			}
 		},
@@ -5427,9 +5910,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			var y = this.core.updateCols();	// for prepend
 			while (item = this.core.items[i++]) {
 				item.position.y -= y;
-				applyDom && item.css({
-					"top": item.position.y + "px"
-				});
+				applyDom && $.style(item.element, "top", item.position.y + "px");
 			}
 			this.core.updateCols(true);	// for append
 			height = this.core._getContainerSize().height;
@@ -5473,13 +5954,13 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			});
 			return needCheck;
 		},
-		_waitImageLoaded: function(items, needCheck) {
-			var core = this.core;
+		_waitImageLoaded: function(needCheck, callback) {
+			var self = this;
 			var checkCount = needCheck.length;
 			var onCheck = function(e) {
 				checkCount--;
 				$(e.target).off("load error");
-				checkCount <= 0 && core.layoutItems(items, true);
+				checkCount <= 0 && callback && self.core && callback.apply(self);
 			};
 			$.each(needCheck, function(k, v) {
 				$(v).on("load error", onCheck);
@@ -5500,6 +5981,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			this.off();
 		}
 	});
+
+	return {
+		"clone": clone
+	};
 });
 /**
  * InfiniteGrid in jQuery plugin

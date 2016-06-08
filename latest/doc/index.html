@@ -176,6 +176,12 @@
     
     <span class="subtitle">Methods</span>
     
+        <li data-name="eg.Flicking#destroy"><a href="eg.Flicking.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.Flicking#disableInput"><a href="eg.Flicking.html#disableInput">disableInput</a></li>
+    
+        <li data-name="eg.Flicking#enableInput"><a href="eg.Flicking.html#enableInput">enableInput</a></li>
+    
         <li data-name="eg.Flicking#getAllElements"><a href="eg.Flicking.html#getAllElements">getAllElements</a></li>
     
         <li data-name="eg.Flicking#getElement"><a href="eg.Flicking.html#getElement">getElement</a></li>
@@ -185,6 +191,8 @@
         <li data-name="eg.Flicking#getNextElement"><a href="eg.Flicking.html#getNextElement">getNextElement</a></li>
     
         <li data-name="eg.Flicking#getNextIndex"><a href="eg.Flicking.html#getNextIndex">getNextIndex</a></li>
+    
+        <li data-name="eg.Flicking#getPrevElement"><a href="eg.Flicking.html#getPrevElement">getPrevElement</a></li>
     
         <li data-name="eg.Flicking#getPrevIndex"><a href="eg.Flicking.html#getPrevIndex">getPrevIndex</a></li>
     
@@ -367,8 +375,6 @@
     
         <li data-name="eg.MovableCoord#event:animationEnd"><a href="eg.MovableCoord.html#event:animationEnd">animationEnd</a></li>
     
-        <li data-name="eg.MovableCoord#event:animationStart"><a href="eg.MovableCoord.html#event:animationStart">animationStart</a></li>
-    
         <li data-name="eg.MovableCoord#event:change"><a href="eg.MovableCoord.html#event:change">change</a></li>
     
         <li data-name="eg.MovableCoord#event:hold"><a href="eg.MovableCoord.html#event:hold">hold</a></li>
@@ -466,6 +472,10 @@
     
         <li data-name="jQuery#animate"><a href="jQuery.html#animate">animate</a></li>
     
+        <li data-name="jQuery#pause"><a href="jQuery.html#pause">pause</a></li>
+    
+        <li data-name="jQuery#resume"><a href="jQuery.html#resume">resume</a></li>
+    
     </ul>
     <ul class="events itemMembers">
     
@@ -529,7 +539,7 @@
 
     <section>
         <article class="readme"><h1>egjs</h1>
-<p><a href="https://travis-ci.org/naver/egjs"><img src="https://travis-ci.org/naver/egjs.svg?branch=master" alt="Build Status"></a></p>
+<p><a href="https://travis-ci.org/naver/egjs"><img src="https://travis-ci.org/naver/egjs.svg?branch=master" alt="Build Status"></a> <a href="https://codeclimate.com/github/naver/egjs/coverage"><img src="https://codeclimate.com/github/naver/egjs/badges/coverage.svg" alt="Test coverage"></a></p>
 <p>'egjs' is a set of UI interactions, effects and utilities components library using jQuery, which brings easiest and fastest way to build web application in your way.</p>
 <blockquote>
 <ul>
@@ -570,13 +580,18 @@
 <p>For latest version, check out - <a href="https://github.com/naver/egjs/tree/gh-pages/latest/dist">https://github.com/naver/egjs/tree/gh-pages/latest/dist</a></p>
 <h3>Uncompressed (for development)</h3>
 <ul>
-<li>Latest : <a href="https://naver.github.io/egjs/latest/dist/eg.js">https://naver.github.io/egjs/latest/dist/eg.js</a>  </li>
+<li>Latest : <a href="https://naver.github.io/egjs/latest/dist/eg.js">https://naver.github.io/egjs/latest/dist/eg.js</a></li>
 <li>For specific version :  <code>https://naver.github.io/egjs/[VERSION]/dist/eg.js</code></li>
 </ul>
 <h3>Compressed (for production)</h3>
 <ul>
 <li>Latest : <a href="https://naver.github.io/egjs/latest/dist/eg.min.js">https://naver.github.io/egjs/latest/dist/eg.min.js</a></li>
 <li>For specific version : <code>https://naver.github.io/egjs/[VERSION]/dist/eg.min.js</code></li>
+</ul>
+<h3>from CDN</h3>
+<ul>
+<li>cdnjs : <a href="https://cdnjs.com/libraries/egjs">https://cdnjs.com/libraries/egjs</a></li>
+<li>jsDelivr : <a href="https://www.jsdelivr.com/projects/egjs">https://www.jsdelivr.com/projects/egjs</a></li>
 </ul>
 <h3>with Bower</h3>
 <pre><code class="lang-bash"># Intall bower if not (admin account required)
@@ -616,7 +631,7 @@ $ bower install egjs</code></pre>
 <thead>
 <tr>
 <th><a href="https://jquery.com/">jQuery</a></th>
-<th><a href="http://hammerjs.github.io/">hammer.js</a></th>
+<th><a href="http://hammerjs.github.io/">Hammer.js</a></th>
 <th><a href="https://github.com/metafizzy/outlayer/">Outlayer</a></th>
 </tr>
 </thead>
@@ -632,12 +647,16 @@ $ bower install egjs</code></pre>
 <li>Except <code>jQuery</code>, others are not mandatory. Required dependencies may differ according components.</li>
 </ul>
 <h2>How to use?</h2>
-<p>Load jQuery first, then load egjs.</p>
-<pre><code class="lang-html">&lt;!-- load jQuery --&gt; 
+<p>Load jQuery first, then load egjs (also available on <a href="https://cdnjs.com/libraries/egjs">cdnjs</a>)</p>
+<pre><code class="lang-html">&lt;!-- load jQuery --&gt;
 &lt;script src=&quot;bower_components/jquery/jquery.js&quot;&gt;&lt;/script&gt;
 
-&lt;!-- load egjs packaged with all dependencies (hammer.js and outlayer) --&gt; 
-&lt;script src=&quot;bower_components/egjs/dist/pkgd/eg.pkgd.min.js&quot;&gt;&lt;/script&gt;</code></pre>
+&lt;!-- load egjs packaged with all dependencies (Hammer.js and Outlayer) --&gt;
+&lt;!-- load from your local installation --&gt;
+&lt;script src=&quot;bower_components/egjs/dist/pkgd/eg.pkgd.min.js&quot;&gt;&lt;/script&gt;
+
+&lt;!-- or load from CDN --&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/egjs/1.1.0/pkgd/eg.pkgd.min.js&quot;&gt;&lt;/script&gt;</code></pre>
 <blockquote>
 <p>NOTE: For more details on separate dependency file inclusion, check out <a href="https://github.com/naver/egjs/wiki/Download-and-Using-egjs#how-to-use">Download and Using egjs</a> wiki page.</p>
 </blockquote>
@@ -723,7 +742,7 @@ THE SOFTWARE.</code></pre>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Mon May 09 2016 14:54:17 GMT+0900 (KST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Wed Jun 08 2016 19:03:58 GMT+0900 (KST)
         </footer>
     </div>
 </div>

@@ -176,6 +176,12 @@
     
     <span class="subtitle">Methods</span>
     
+        <li data-name="eg.Flicking#destroy"><a href="eg.Flicking.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.Flicking#disableInput"><a href="eg.Flicking.html#disableInput">disableInput</a></li>
+    
+        <li data-name="eg.Flicking#enableInput"><a href="eg.Flicking.html#enableInput">enableInput</a></li>
+    
         <li data-name="eg.Flicking#getAllElements"><a href="eg.Flicking.html#getAllElements">getAllElements</a></li>
     
         <li data-name="eg.Flicking#getElement"><a href="eg.Flicking.html#getElement">getElement</a></li>
@@ -185,6 +191,8 @@
         <li data-name="eg.Flicking#getNextElement"><a href="eg.Flicking.html#getNextElement">getNextElement</a></li>
     
         <li data-name="eg.Flicking#getNextIndex"><a href="eg.Flicking.html#getNextIndex">getNextIndex</a></li>
+    
+        <li data-name="eg.Flicking#getPrevElement"><a href="eg.Flicking.html#getPrevElement">getPrevElement</a></li>
     
         <li data-name="eg.Flicking#getPrevIndex"><a href="eg.Flicking.html#getPrevIndex">getPrevIndex</a></li>
     
@@ -367,8 +375,6 @@
     
         <li data-name="eg.MovableCoord#event:animationEnd"><a href="eg.MovableCoord.html#event:animationEnd">animationEnd</a></li>
     
-        <li data-name="eg.MovableCoord#event:animationStart"><a href="eg.MovableCoord.html#event:animationStart">animationStart</a></li>
-    
         <li data-name="eg.MovableCoord#event:change"><a href="eg.MovableCoord.html#event:change">change</a></li>
     
         <li data-name="eg.MovableCoord#event:hold"><a href="eg.MovableCoord.html#event:hold">hold</a></li>
@@ -465,6 +471,10 @@
         <li data-name="jQuery.visible"><a href="jQuery.html#visible">visible</a></li>
     
         <li data-name="jQuery#animate"><a href="jQuery.html#animate">animate</a></li>
+    
+        <li data-name="jQuery#pause"><a href="jQuery.html#pause">pause</a></li>
+    
+        <li data-name="jQuery#resume"><a href="jQuery.html#resume">resume</a></li>
     
     </ul>
     <ul class="events itemMembers">
@@ -1608,6 +1618,11 @@
                         </tr>
                         
                         <tr>
+                            <td>Desktop - Edge</td>
+                            <td>latest</td>
+                        </tr>
+                        
+                        <tr>
                             <td>iOS</td>
                             <td>7+</td>
                         </tr>
@@ -2022,7 +2037,7 @@
     
         
         <div class="tag-source">
-            <a href="movableCoord.js.html">movableCoord.js</a>, <a href="movableCoord.js.html#line92">line 92</a>
+            <a href="movableCoord.js.html">movableCoord.js</a>, <a href="movableCoord.js.html#line93">line 93</a>
         </div>
         
     </div>
@@ -4068,7 +4083,7 @@
     
         
         <div class="tag-source">
-            <a href="movableCoord.js.html">movableCoord.js</a>, <a href="movableCoord.js.html#line198">line 198</a>
+            <a href="movableCoord.js.html">movableCoord.js</a>, <a href="movableCoord.js.html#line210">line 210</a>
         </div>
         
     </div>
@@ -4231,7 +4246,7 @@
     
         
         <div class="tag-source">
-            <a href="movableCoord.js.html">movableCoord.js</a>, <a href="movableCoord.js.html#line443">line 443</a>
+            <a href="movableCoord.js.html">movableCoord.js</a>, <a href="movableCoord.js.html#line590">line 590</a>
         </div>
         
     </div>
@@ -4255,439 +4270,6 @@
     
     
     
-    
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-    <!-- if data.codepen -->
-</dl>
-
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="event:animationStart">
-            
-            animationStart
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="movableCoord.js.html">movableCoord.js</a>, <a href="movableCoord.js.html#line607">line 607</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description en">
-        <p>When animation was started.</p>
-    </div>
-    
-    
-    <div class="description ko">
-        에니메이션이 시작했을 때 발생한다.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<ul class="parameters">
-    
-    <li>
-        <!-- parameter name -->
-        <div>
-            <strong>param</strong>
-            
-
-            
-        </div>
-        <!-- parameter type -->
-        
-        <div>Type: 
-<span class="param-type">Object</span>
-
-</div>
-        
-    
-        <!-- Description -->
-        <div>
-            
-        </div>
-
-        <!-- Sub parameters -->
-        
-            
-
-<ul class="parameters">
-    
-    <li>
-        <!-- parameter name -->
-        <div>
-            <strong>duration</strong>
-            
-
-            
-        </div>
-        <!-- parameter type -->
-        
-        <div>Type: 
-<span class="param-type">Number</span>
-
-</div>
-        
-    
-        <!-- Description -->
-        <div>
-            
-        </div>
-
-        <!-- Sub parameters -->
-        
-    </li>
-    
-    <li>
-        <!-- parameter name -->
-        <div>
-            <strong>depaPos</strong>
-            
-
-            
-        </div>
-        <!-- parameter type -->
-        
-        <div>Type: 
-<span class="param-type">Array</span>
-
-</div>
-        
-    
-        <!-- Description -->
-        <div>
-            
-            <div class="description en"><p>departure coordinate </p></div>
-            <div class="description ko"><p>현재 좌표</p></div>
-            
-        </div>
-
-        <!-- Sub parameters -->
-        
-            
-
-<ul class="parameters">
-    
-    <li>
-        <!-- parameter name -->
-        <div>
-            <strong>0</strong>
-            
-
-            
-        </div>
-        <!-- parameter type -->
-        
-        <div>Type: 
-<span class="param-type">Number</span>
-
-</div>
-        
-    
-        <!-- Description -->
-        <div>
-            
-            <div class="description en"><p>departure x-coordinate </p></div>
-            <div class="description ko"><p>현재 x 좌표</p></div>
-            
-        </div>
-
-        <!-- Sub parameters -->
-        
-    </li>
-    
-    <li>
-        <!-- parameter name -->
-        <div>
-            <strong>1</strong>
-            
-
-            
-        </div>
-        <!-- parameter type -->
-        
-        <div>Type: 
-<span class="param-type">Number</span>
-
-</div>
-        
-    
-        <!-- Description -->
-        <div>
-            
-            <div class="description en"><p>departure y-coordinate </p></div>
-            <div class="description ko"><p>현재 y 좌표</p></div>
-            
-        </div>
-
-        <!-- Sub parameters -->
-        
-    </li>
-    
-</ul>
-        
-    </li>
-    
-    <li>
-        <!-- parameter name -->
-        <div>
-            <strong>destPos</strong>
-            
-
-            
-        </div>
-        <!-- parameter type -->
-        
-        <div>Type: 
-<span class="param-type">Array</span>
-
-</div>
-        
-    
-        <!-- Description -->
-        <div>
-            
-            <div class="description en"><p>destination coordinate </p></div>
-            <div class="description ko"><p>애니메이션에 의해 이동할 좌표</p></div>
-            
-        </div>
-
-        <!-- Sub parameters -->
-        
-            
-
-<ul class="parameters">
-    
-    <li>
-        <!-- parameter name -->
-        <div>
-            <strong>0</strong>
-            
-
-            
-        </div>
-        <!-- parameter type -->
-        
-        <div>Type: 
-<span class="param-type">Number</span>
-
-</div>
-        
-    
-        <!-- Description -->
-        <div>
-            
-            <div class="description en"><p>destination x-coordinate </p></div>
-            <div class="description ko"><p>x 좌표</p></div>
-            
-        </div>
-
-        <!-- Sub parameters -->
-        
-    </li>
-    
-    <li>
-        <!-- parameter name -->
-        <div>
-            <strong>1</strong>
-            
-
-            
-        </div>
-        <!-- parameter type -->
-        
-        <div>Type: 
-<span class="param-type">Number</span>
-
-</div>
-        
-    
-        <!-- Description -->
-        <div>
-            
-            <div class="description en"><p>destination y-coordinate </p></div>
-            <div class="description ko"><p>y 좌표</p></div>
-            
-        </div>
-
-        <!-- Sub parameters -->
-        
-    </li>
-    
-</ul>
-        
-    </li>
-    
-    <li>
-        <!-- parameter name -->
-        <div>
-            <strong>isBounce</strong>
-            
-
-            
-        </div>
-        <!-- parameter type -->
-        
-        <div>Type: 
-<span class="param-type">Boolean</span>
-
-</div>
-        
-    
-        <!-- Description -->
-        <div>
-            
-            <div class="description en"><p>When an animation is bounced, a value is 'true'.  </p></div>
-            <div class="description ko"><p>바운스 되는 애니메이션인 경우 true</p></div>
-            
-        </div>
-
-        <!-- Sub parameters -->
-        
-    </li>
-    
-    <li>
-        <!-- parameter name -->
-        <div>
-            <strong>isCircular</strong>
-            
-
-            
-        </div>
-        <!-- parameter type -->
-        
-        <div>Type: 
-<span class="param-type">Boolean</span>
-
-</div>
-        
-    
-        <!-- Description -->
-        <div>
-            
-            <div class="description en"><p>When the area is circular type, a value is 'true'. </p></div>
-            <div class="description ko"><p>순환하여 움직여야하는 애니메이션인경우 true</p></div>
-            
-        </div>
-
-        <!-- Sub parameters -->
-        
-    </li>
-    
-    <li>
-        <!-- parameter name -->
-        <div>
-            <strong>done</strong>
-            
-
-            
-        </div>
-        <!-- parameter type -->
-        
-        <div>Type: 
-<span class="param-type">function</span>
-
-</div>
-        
-    
-        <!-- Description -->
-        <div>
-            
-            <div class="description en"><p>If user control animation, user must call this function. </p></div>
-            <div class="description ko"><p>애니메이션이 끝났다는 것을 알려주는 함수</p></div>
-            
-        </div>
-
-        <!-- Sub parameters -->
-        
-    </li>
-    
-    <li>
-        <!-- parameter name -->
-        <div>
-            <strong>hammerEvent</strong>
-            
-
-            
-        </div>
-        <!-- parameter type -->
-        
-        <div>Type: 
-<span class="param-type">Object</span>
-
-</div>
-        
-    
-        <!-- Description -->
-        <div>
-            
-            <div class="description en"><p>Hammerjs event. if you use api, this value is null. <a href="http://hammerjs.github.io/api/#hammer.input-event">http://hammerjs.github.io/api/#hammer.input-event</a> </p></div>
-            <div class="description ko"><p>사용자의 액션에 대한 hammerjs 이벤트 정보 (API에 의해 호출될 경우, null 을 반환)</p></div>
-            
-        </div>
-
-        <!-- Sub parameters -->
-        
-    </li>
-    
-</ul>
-        
-    </li>
-    
-</ul>
     
     
     
@@ -5005,7 +4587,7 @@
     
         
         <div class="tag-source">
-            <a href="movableCoord.js.html">movableCoord.js</a>, <a href="movableCoord.js.html#line273">line 273</a>
+            <a href="movableCoord.js.html">movableCoord.js</a>, <a href="movableCoord.js.html#line288">line 288</a>
         </div>
         
     </div>
@@ -5239,7 +4821,7 @@
     
         
         <div class="tag-source">
-            <a href="movableCoord.js.html">movableCoord.js</a>, <a href="movableCoord.js.html#line537">line 537</a>
+            <a href="movableCoord.js.html">movableCoord.js</a>, <a href="movableCoord.js.html#line436">line 436</a>
         </div>
         
     </div>
@@ -5573,7 +5155,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Mon May 09 2016 14:54:17 GMT+0900 (KST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Wed Jun 08 2016 19:03:59 GMT+0900 (KST)
         </footer>
     </div>
 </div>

@@ -176,6 +176,12 @@
     
     <span class="subtitle">Methods</span>
     
+        <li data-name="eg.Flicking#destroy"><a href="eg.Flicking.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.Flicking#disableInput"><a href="eg.Flicking.html#disableInput">disableInput</a></li>
+    
+        <li data-name="eg.Flicking#enableInput"><a href="eg.Flicking.html#enableInput">enableInput</a></li>
+    
         <li data-name="eg.Flicking#getAllElements"><a href="eg.Flicking.html#getAllElements">getAllElements</a></li>
     
         <li data-name="eg.Flicking#getElement"><a href="eg.Flicking.html#getElement">getElement</a></li>
@@ -185,6 +191,8 @@
         <li data-name="eg.Flicking#getNextElement"><a href="eg.Flicking.html#getNextElement">getNextElement</a></li>
     
         <li data-name="eg.Flicking#getNextIndex"><a href="eg.Flicking.html#getNextIndex">getNextIndex</a></li>
+    
+        <li data-name="eg.Flicking#getPrevElement"><a href="eg.Flicking.html#getPrevElement">getPrevElement</a></li>
     
         <li data-name="eg.Flicking#getPrevIndex"><a href="eg.Flicking.html#getPrevIndex">getPrevIndex</a></li>
     
@@ -367,8 +375,6 @@
     
         <li data-name="eg.MovableCoord#event:animationEnd"><a href="eg.MovableCoord.html#event:animationEnd">animationEnd</a></li>
     
-        <li data-name="eg.MovableCoord#event:animationStart"><a href="eg.MovableCoord.html#event:animationStart">animationStart</a></li>
-    
         <li data-name="eg.MovableCoord#event:change"><a href="eg.MovableCoord.html#event:change">change</a></li>
     
         <li data-name="eg.MovableCoord#event:hold"><a href="eg.MovableCoord.html#event:hold">hold</a></li>
@@ -465,6 +471,10 @@
         <li data-name="jQuery.visible"><a href="jQuery.html#visible">visible</a></li>
     
         <li data-name="jQuery#animate"><a href="jQuery.html#animate">animate</a></li>
+    
+        <li data-name="jQuery#pause"><a href="jQuery.html#pause">pause</a></li>
+    
+        <li data-name="jQuery#resume"><a href="jQuery.html#resume">resume</a></li>
     
     </ul>
     <ul class="events itemMembers">
@@ -860,6 +870,46 @@
     <li>
         <!-- parameter name -->
         <div>
+            <strong>bounce</strong>
+            
+                (default: <code>[10,10]</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Number</span>
+|
+
+<span class="param-type">Array</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Bounce value of start/end in non-circular mode. If set array value the order is left(up) to right(down) </p></div>
+            <div class="description ko"><p>비순환일 때 시작/마지막 패널의 바운스 값. 배열 형태로 지정시 좌측(상단), 우측(하단) 순서로 지정</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
             <strong>threshold</strong>
             
                 (default: <code>40</code>)
@@ -1175,6 +1225,11 @@
                         </tr>
                         
                         <tr>
+                            <td>Desktop - Edge</td>
+                            <td>latest</td>
+                        </tr>
+                        
+                        <tr>
                             <td>iOS</td>
                             <td>7+</td>
                         </tr>
@@ -1218,6 +1273,315 @@
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="destroy">
+            
+            destroy<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1476">line 1476</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description en">
+        <p>Release resources and events attached</p>
+    </div>
+    
+    
+    <div class="description ko">
+        사용된 리소스와 이벤트를 해제
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="disableInput">
+            
+            disableInput<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.Flicking.html">eg.Flicking</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1466">line 1466</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description en">
+        <p>Disable input events</p>
+    </div>
+    
+    
+    <div class="description ko">
+        입력 이벤트 비활성
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        <a href="eg.Flicking.html">eg.Flicking</a>
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en">instance of itself</div>
+                <div class="ko"><p>자신의 인스턴스</p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="enableInput">
+            
+            enableInput<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.Flicking.html">eg.Flicking</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1456">line 1456</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description en">
+        <p>Enable input events</p>
+    </div>
+    
+    
+    <div class="description ko">
+        입력 이벤트 활성
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        <a href="eg.Flicking.html">eg.Flicking</a>
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en">instance of itself</div>
+                <div class="ko"><p>자신의 인스턴스</p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="getAllElements">
             
             getAllElements<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="jQuery.html">jQuery</a>}</span>
@@ -1225,7 +1589,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1028">line 1028</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1155">line 1155</a>
         </div>
         
     </div>
@@ -1340,7 +1704,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line996">line 996</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1123">line 1123</a>
         </div>
         
     </div>
@@ -1455,7 +1819,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line985">line 985</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1112">line 1112</a>
         </div>
         
     </div>
@@ -1613,7 +1977,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1007">line 1007</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1134">line 1134</a>
         </div>
         
     </div>
@@ -1731,7 +2095,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1017">line 1017</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1144">line 1144</a>
         </div>
         
     </div>
@@ -1885,6 +2249,124 @@
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="getPrevElement">
+            
+            getPrevElement<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="jQuery.html">jQuery</a>|null}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1165">line 1165</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description en">
+        <p>Get previous panel element</p>
+    </div>
+    
+    
+    <div class="description ko">
+        이전 패널 요소의 레퍼런스를 반환한다.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        <a href="jQuery.html">jQuery</a>
+                         | 
+                    
+                        null
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en">Previous element or null if no more element exist </div>
+                <div class="ko"><p>이전 패널 요소. 패널이 없는 경우에는 null</p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="getPrevIndex">
             
             getPrevIndex<span class="signature">(<span class="optional">physical</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Number|null}</span>
@@ -1892,7 +2374,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1048">line 1048</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1175">line 1175</a>
         </div>
         
     </div>
@@ -2053,7 +2535,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1059">line 1059</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1186">line 1186</a>
         </div>
         
     </div>
@@ -2368,7 +2850,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1070">line 1070</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1197">line 1197</a>
         </div>
         
     </div>
@@ -2480,7 +2962,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1143">line 1143</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1270">line 1270</a>
         </div>
         
     </div>
@@ -2671,7 +3153,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1121">line 1121</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1248">line 1248</a>
         </div>
         
     </div>
@@ -3397,7 +3879,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1132">line 1132</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1259">line 1259</a>
         </div>
         
     </div>
@@ -3555,7 +4037,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1222">line 1222</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1345">line 1345</a>
         </div>
         
     </div>
@@ -3687,7 +4169,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1271">line 1271</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line1394">line 1394</a>
         </div>
         
     </div>
@@ -4050,7 +4532,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line756">line 756</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line833">line 833</a>
         </div>
         
     </div>
@@ -4458,7 +4940,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line692">line 692</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line771">line 771</a>
         </div>
         
     </div>
@@ -4866,7 +5348,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line569">line 569</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line648">line 648</a>
         </div>
         
     </div>
@@ -5184,7 +5666,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line785">line 785</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line864">line 864</a>
         </div>
         
     </div>
@@ -5412,7 +5894,7 @@
     
         
         <div class="tag-source">
-            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line727">line 727</a>
+            <a href="flicking.js.html">flicking.js</a>, <a href="flicking.js.html#line806">line 806</a>
         </div>
         
     </div>
@@ -5650,7 +6132,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Mon May 09 2016 14:54:17 GMT+0900 (KST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Wed Jun 08 2016 19:03:58 GMT+0900 (KST)
         </footer>
     </div>
 </div>
