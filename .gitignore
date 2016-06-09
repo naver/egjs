@@ -6,9 +6,6 @@ report
 temp
 *.log
 *.iml
-doc
-.idea/
-dist
 browserstack-run.pid
 config/browertstack.config.json
-_site
+.idea/
