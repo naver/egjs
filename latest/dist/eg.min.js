@@ -7,7 +7,7 @@
 * http://naver.github.io/egjs
 *
 * @version 1.2.0
-* @SHA-1 fd00a4e (1.2.0-rc)
+* @SHA-1 ec78ba4 (1.2.0-rc)
 *
 * For custom build use egjs-cli
 * https://github.com/naver/egjs-cli
