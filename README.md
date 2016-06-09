@@ -24,6 +24,7 @@
 * **persist** : Provide cache interface to handle persisted data among history navigation.
 * **css** : Help to use css properties without browser's vendor prefix.
 * **animate** : Support transform and 3d acceleration extending jQuery's animate.
+* **pause/resume** : Pause and resume jQuery's animate and delay.
 
 #### Events
 * **rotate** : Trigger event detecting device orientation.
