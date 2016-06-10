@@ -593,14 +593,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		_onlayoutComplete: function(e) {
 			var distance = 0;
 			var isAppend = this._isAppendType;
-			var item;
-			var i = 0;
-			while (item = e[i++]) {
-				if (typeof item.oldVisibility !== "undefined") {
-					item.element.style.visibility = item.oldVisibility;
-					delete item.oldVisibility;
-				}
-			}
 
 			// refresh element
 			this._topElement = this.getTopElement();
@@ -653,8 +645,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			var items = this.core.itemize(elements, groupKey);
 			while (item = items[i++]) {
 				item.isAppend = isAppend;
-				item.oldVisibility = item.element.style.visibility;
-				item.element.style.visibility = "hidden";
 			}
 			if (isAppend) {
 				this.core.items = this.core.items.concat(items);

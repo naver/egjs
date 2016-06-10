@@ -65,7 +65,7 @@
 		</div>
 	</div>
 	<!-- infinite grid -->
-	<div id="grid" class="row" style="visibility:hidden"></div>
+	<div id="grid" class="row" style="opacity:0.01"></div>
 </div>
 <script id="items-template" type="text/x-handlebars-template">
 	{{~#each items~}}
@@ -73,7 +73,7 @@
 		<div class="thumbnail">
 			<img class="img-rounded" src="{{imgSrc}}" />
 			<div class="caption">
-				<p><a href="{{href}}">{{desc}}</a></p>
+				<p class="desc"><a href="{{href}}">{{desc}}</a></p>
 			</div>
 		</div>
 	</div>
@@ -93,7 +93,7 @@ var data = {
 				offset: v,
 				imgSrc: "http://naver.github.io/egjs-experiment/infiniteGridService/demo/img/" + ( ( (v + 1) % 60) + 1 ) + ".jpg",
 				href: "http://naver.com/",
-				desc: "Cras justo odio..."
+				desc: "Cras justo odio bla bla bla bla bla bla bla bla"
 			};
 		});
 		return {items: items};
@@ -121,7 +121,7 @@ $(function() {
 			}
 		},
 		"layoutComplete" : function(e) {
-			$grid.css("visibility", "visible");
+			$grid.css("opacity", 1);
 		}
 	});
 

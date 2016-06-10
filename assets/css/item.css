@@ -20,3 +20,17 @@ body {background-color: #f1f2f6;}
     width : 16.66666667%;
   }
 }
+
+p.desc {
+  display: block;
+  display: -moz-box;
+  display: -webkit-box;
+  line-height: 20px;
+  max-height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+  -moz-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+}
