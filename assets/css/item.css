@@ -23,7 +23,10 @@ body {background-color: #f1f2f6;}
 
 p.desc {
   -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
   -webkit-line-clamp:1;
+  -moz-line-clamp:1;
+  display: -moz-box;
   display: -webkit-box;
   overflow: hidden;
 }
