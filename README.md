@@ -24,7 +24,7 @@
 * **eg.Visible** : Check whether elements are within viewport.
   - [API](http://naver.github.io/egjs/latest/doc/eg.Visible.html), [CodePen](http://codepen.io/collection/Ayrabj/)
 * **eg.infiniteGrid** : Make card style UI arranged in grid style in infinite way.
-  - [API](http://naver.github.io/egjs/latest/doc/eg.InfiniteGrid.html), [DEMO](http://naver.github.io/egjs/demo/infiniteGrid/)
+  - [API](http://naver.github.io/egjs/latest/doc/eg.InfiniteGrid.html), [DEMO](http://naver.github.io/egjs/demo/infiniteGrid/), [CodePen](http://codepen.io/collection/DPYEww/)
 
 ### jQuery Extensions
 #### Methods
