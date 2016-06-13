@@ -4,7 +4,7 @@
  * Original Code
  * https://raw.githubusercontent.com/angular/angular.js/master/validate-commit-msg.js
  * Git COMMIT-MSG hook for validating commit message
- * See https://github.com/naver/egjs/wiki/Commit-Guidelines
+ * See https://github.com/naver/egjs/wiki/Commit-Log-Guidelines
  * modified by egjs
  */
 
@@ -95,7 +95,7 @@ var removeInfo = function(buffer) {
 };
 
 
- 
+
 // publish for testing
 exports.validateMessage = validateMessage;
 
