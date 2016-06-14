@@ -444,15 +444,15 @@ test("restore status", function(assert) {
 			var ht = {};
 			var $styles = $(str.split(";"));
 			$styles = $styles.map(function(i,v) {
-	            		return $.trim(v);
+    		return $.trim(v);
 			}).filter(function(i,v) {
 				return !$.isEmptyObject(v);
 			}).each(function(i,v) {
-			    var a =v.split(":");
-			    var val = $.trim(a[1]);
-			    if(!$.isEmptyObject(val)) {
-			        ht[a[0]] = $.trim(a[1]);
-			    }
+		    var a =v.split(":");
+		    var val = $.trim(a[1]);
+		    if(!$.isEmptyObject(val)) {
+		        ht[a[0]] = $.trim(a[1]);
+		    }
 			});
 			return ht;
 		};
@@ -487,7 +487,6 @@ test("restore status", function(assert) {
 		infinite.setStatus(beforeStatus);
 
 		// Then
-		// equal(infinite.core.element.style.cssText, beforeStatus.cssText, "check cssText");
 		deepEqual(parseCssText(infinite.core.element.style.cssText), parseCssText(beforeStatus.cssText), "check cssText");
 		$.each(infinite.core.items, function(i, v) {
 			deepEqual(v.position, beforeStatus.core.items[i].position, "check html and position information");
