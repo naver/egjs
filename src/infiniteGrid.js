@@ -340,7 +340,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			} else {
 				if (this.isRecycling() && this._removedContent > 0) {
 					if ($.isEmptyObject(this._topElement)) {
-						this._topElement = this.getBottomElement();
+						this._topElement = this.getTopElement();
 					}
 					ele = this._topElement;
 					rect = ele.getBoundingClientRect();
