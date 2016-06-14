@@ -315,8 +315,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			var ele;
 			var rect;
 			if (prevScrollTop < scrollTop) {
-				ele = $.isEmptyObject(this._bottomElement) ?
-					this.getBottomElement() : this._bottomElement;
+				if ($.isEmptyObject(this._bottomElement)) {
+					this._bottomElement = this.getBottomElement();
+				}
+				ele = this._bottomElement;
 				rect = ele.getBoundingClientRect();
 				if (rect.top <= this._clientHeight + this.options.threshold) {
 					/**
@@ -337,8 +339,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 				}
 			} else {
 				if (this.isRecycling() && this._removedContent > 0) {
-					ele = $.isEmptyObject(this._topElement) ?
-						this.getTopElement() : this._topElement;
+					if ($.isEmptyObject(this._topElement)) {
+						this._topElement = this.getBottomElement();
+					}
+					ele = this._topElement;
 					rect = ele.getBoundingClientRect();
 					if (rect.bottom >= -this.options.threshold) {
 						/**
