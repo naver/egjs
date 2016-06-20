@@ -207,19 +207,20 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 	 * InfiniteGrid is composed using Outlayer and supports recycle-dom.
 	 * DOM elements are fixed even contents are added infinitely.
 	 * @group egjs
-	 * @ko 그리드 레이아웃을 구성하는 UI 컴포넌트. InfiniteGrid는 Outlayer로 구성되어 있다. 하지만, 이 컴포넌트는 recycle-dom을 지원한다.
-	 * 컨텐츠를 계속 증가하면 할수록 일정한 DOM 개수를 유지할수 있다.
+	 * @ko InfiniteGrid는 무한 그리드 레이아웃 UI 컴포넌트이다. 이 컴포넌트는 크게 2가지 기능을 제공한다.
+	 첫째, 석공이 벽돌을 맞추며 벽을 쌓듯이, 수평방향으로 차곡 차곡 카드를 쌓는 레이아웃 배치를 제공한다.
+	 둘째, 카드의 개수가 계속 증가하더라도, 내부적으로 일정한 DOM의 개수를 유지한다. 이로 인해, 카드가 무한으로 증가하더라도, 최적의 성능을 보장한다.
 	 * @class
 	 * @name eg.InfiniteGrid
 	 * @extends eg.Component
 	 *
 	 * @param {HTMLElement|String|jQuery} element wrapper element <ko>기준 요소</ko>
 	 * @param {Object} [options]
-	 * @param {String} [options.itemSelector] selector string for layout item elements <ko>레이아웃의 아이템으로 사용될 엘리먼트들의 셀렉터</ko>
-	 * @param {Boolean} [options.isEqualSize=false] determine if all item's size are same <ko> 모든 아이템의 사이즈가 동일한지를 지정한다</ko>
-	 * @param {String} [options.defaultGroupKey=null] when encounter item markup during the initialization, then set `defaultGroupKey` as groupKey <ko>초기화할때 마크업에 아이템이 있다면, defalutGroupKey를 groupKey로 지정한다</ko>
-	 * @param {Number} [options.count=30] when count value is greater than 0, grid will maintain same DOM length recycling <ko>count값이 0보다 클 경우, 그리드는 일정한 dom 개수를 유지한다</ko>
-	 * @param {Number} [options.threshold=300] Threshold pixels to determine if grid needs to append or prepend elements<ko>엘리먼트가 append 또는 prepend될지를 결정하는 임계치 픽셀</ko>
+	 * @param {String} [options.itemSelector] selector string for layout item elements <ko>레이아웃 구성시, 구성의 단위로 사용될 엘리먼트들의 셀렉터. 즉, 카드들의 셀렉터.</ko>
+	 * @param {Number} [options.count=30] when count value is greater than 0, grid will maintain same DOM length recycling <ko>내부적으로 유지되는 실제 DOM의 개수. count값이 0보다 클 경우, 일정한 dom 개수를 유지한다. count값이 0보다 작을 경우, DOM의 개수는 카드가 추가되면 될수록 계속 증가한다.</ko>
+	 * @param {String} [options.defaultGroupKey=null] when encounter item markup during the initialization, then set `defaultGroupKey` as groupKey <ko>객체를 초기화할 때 마크업에 존재하는 카드에 부여될 그룹키</ko>
+	 * @param {Boolean} [options.isEqualSize=false] determine if all item's size are same <ko>배치 될 카드의 크기가 모두 동일한 경우, 이 옵션을 true로 설정하면, 레이아웃 배치 성능을 높일 수 있다.</ko>
+	 * @param {Number} [options.threshold=300] Threshold pixels to determine if grid needs to append or prepend elements<ko>뷰포트의 임계치 픽셀 값. InfinteGrid는 window 스크롤의 y값이 '마지막 카드 엘리먼트(getBottomElement)의 top + threshold' 값에 도달하면, append 이벤트가 발생하고, '최상위 카드 엘리먼트(getTopElement)의 bottom - threshold' 값에 도달하면, prepend 이벤트가 발생한다.</ko>
 	 *
 	 * @codepen {"id":"zvrbap", "ko":"InfiniteGrid 데모", "en":"InfiniteGrid example", "collectionId":"DPYEww", "height": 403}
 	 *  @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
@@ -229,28 +230,28 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 	 * @example
 		<!-- HTML -->
 		<ul id="grid">
-			<li class="item">
-			  <div>테스트1</div>
+			<li class="card">
+			  <div>test1</div>
 			</li>
-			<li class="item">
-			  <div>테스트2</div>
+			<li class="card">
+			  <div>test2</div>
 			</li>
-			<li class="item">
-			  <div>테스트3</div>
+			<li class="card">
+			  <div>test3</div>
 			</li>
-			<li class="item">
-			  <div>테스트4</div>
+			<li class="card">
+			  <div>test4</div>
 			</li>
-			<li class="item">
-			  <div>테스트5</div>
+			<li class="card">
+			  <div>test5</div>
 			</li>
-			<li class="item">
-			  <div>테스트6</div>
+			<li class="card">
+			  <div>test6</div>
 			</li>
 		</ul>
 		<script>
 		var some = new eg.InfiniteGrid("#grid", {
-			itemSelector : ".item"
+			itemSelector : ".card"
 		}).on("layoutComplete", function(e) {
 			// ...
 		});
@@ -325,7 +326,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 					 * Occurs when grid needs to append elements.
 					 * in order words, when scroll reaches end of page
 					 *
-					 * @ko 엘리먼트가 append 될 필요가 있을 때 발생하는 이벤트.
+					 * @ko 카드가 append 될 필요가 있을 때 발생하는 이벤트.
 					 * 즉, 스크롤이 페이지 하단에 도달했을 때 발생한다.
 					 * @name eg.InfiniteGrid#append
 					 * @event
@@ -349,8 +350,9 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 						 * Occurs when grid needs to prepend elements
 						 * in order words, when scroll reaches top of page and a count of cropped element is more than zero.
 						 *
-						 * @ko 엘리먼트가 prepend 될 필요가 있을 때 발생하는 이벤트.
-						 * 즉, 스크롤이 페이지 상단에 도달하고, 순환에 의해 잘려진 엘리먼트가 존재할때 발생한다.
+						 * @ko 카드가 prepend 될 필요가 있을 때 발생하는 이벤트.
+						 * 즉, 스크롤이 페이지 상단에 도달했을 때 발생한다.
+						 * 이 이벤트는 isRecycling()의 반환값이 true일 경우에만 발생한다.
 						 * @name eg.InfiniteGrid#prepend
 						 * @event
 						 *
@@ -393,7 +395,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		},
 		/**
 		 * Get current status
-		 * @ko infiniteGrid의 현재상태를 반환한다.
+		 * @ko infiniteGrid의 현재 상태를 반환한다. 반환된 정보는 setStatus에 의해, infiniteGrid의 getStatus 호출시 상태를 복원할 수 있다.
 		 * @method eg.InfiniteGrid#getStatue
 		 * @return {Object} infiniteGrid status Object<ko>infiniteGrid 상태 오브젝트</ko>
 		 */
@@ -414,7 +416,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		},
 		/**
 		 * Set current status
-		 * @ko infiniteGrid의 현재상태를 설정한다.
+		 * @ko infiniteGrid의 현재 상태를 설정한다. getStatus에 의해 반환된 정보를 이용하여, infiniteGrid 의 이전 상태를 복원할 수 있다.
 		 * @method eg.InfiniteGrid#setStatus
 		 * @param {Object} status Object
 		 * @return {eg.InfiniteGrid} instance of itself<ko>자신의 인스턴스</ko>
@@ -433,7 +435,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		},
 		/**
 		 * Check if element is appending or prepending
-		 * @ko append나 prepend가 진행중일 경우 true를 반환한다.
+		 * @ko append나 prepend가 진행 중인 상태를 반환한다. 진행 중일 경우 true를 반환한다.
 		 * @method eg.InfiniteGrid#isProcessing
 		 * @return {Boolean}
 		 */
@@ -442,7 +444,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		},
 		/**
 		 * Check if elements are in recycling mode
-		 * @ko recycle 모드 여부를 반환한다.
+		 * @ko count 옵션이 0보다 크고, 객체 생성 이후, 추가된 총 카드의 개수가 count 옵션의 개수보다 클 경우, true를 반환한다.
+		 * 즉, 일정한 DOM을 유지하는 상태가 되면 true를 반환한다.
 		 * @method eg.InfiniteGrid#isRecycling
 		 * @return {Boolean}
 		 */
@@ -451,7 +454,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		},
 		/**
 		 * Get group keys
-		 * @ko 그룹키들을 반환한다.
+		 * @ko 현재 유지되고 있는 카드들의 그룹키들을 반환한다.
 		 * @method eg.InfiniteGrid#getGroupKeys
 		 * @return {Array} groupKeys
 		 */
@@ -488,10 +491,11 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		},
 		/**
 		 * Append elements
-		 * @ko 엘리먼트를 append 한다.
+		 * @ko 카드 엘리먼트를 append 한다.
+		 * 이 메소드는 isProcessing()의 반환값이 false일 경우에만 사용 가능하다.
 		 * @method eg.InfiniteGrid#append
-		 * @param {Array|String|jQuery} elements to be appended elements <ko>append될 엘리먼트 배열</ko>
-		 * @param {Number|String} [groupKey] to be appended groupkey of elements<ko>append될 엘리먼트의 그룹키</ko>
+		 * @param {Array|String|jQuery} elements to be appended elements <ko>append될 카드 엘리먼트의 배열</ko>
+		 * @param {Number|String} [groupKey] to be appended groupkey of elements<ko>append될 카드 엘리먼트의 그룹키 (생략하면 undefined)</ko>
 		 * @return {Number} length a number of elements
 		 */
 		append: function($elements, groupKey) {
@@ -511,10 +515,11 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		},
 		/**
 		 * Prepend elements
-		 * @ko 엘리먼트를 prepend 한다.
+		 * @ko 카드 엘리먼트를 prepend 한다.
+		 * 이 메소드는 isProcessing()의 반환값이 false이고, isRecycling()의 반환값이 true일 경우에만 사용 가능하다.
 		 * @method eg.InfiniteGrid#prepend
-		 * @param {Array|String|jQuery} elements to be prepended elements <ko>prepend될 엘리먼트 배열</ko>
-		 * @param {Number|String} [groupKey] to be prepended groupkey of elements<ko>prepend될 엘리먼트의 그룹키</ko>
+		 * @param {Array|String|jQuery} elements to be prepended elements <ko>prepend될 카드 엘리먼트 배열</ko>
+		 * @param {Number|String} [groupKey] to be prepended groupkey of elements<ko>prepend될 카드 엘리먼트의 그룹키 (생략하면 undefined)</ko>
 		 * @return {Number} length a number of elements
 		 */
 		prepend: function($elements, groupKey) {
@@ -536,7 +541,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		},
 		/**
 		 * Clear elements and data
-		 * @ko 엘리먼트와 데이터를 지운다.
+		 * @ko 추가된 카드 엘리먼트와 데이터를 모두 지운다.
 		 * @method eg.InfiniteGrid#clear
 		 * @return {eg.InfiniteGrid} instance of itself<ko>자신의 인스턴스</ko>
 		 */
@@ -562,7 +567,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 
 		/**
 		 * Get the first element at the top
-		 * @ko 가장 위에 있는 엘리먼트를 반환한다.
+		 * @ko 가장 상위에 있는 카드 엘리먼트를 반환한다.
 		 * @method eg.InfiniteGrid#getTopElement
 		 *
 		 * @return {HTMLElement} element
@@ -586,7 +591,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 
 		/**
 		 * Get the last element at the bottom
-		 * @ko 가장 아래에 있는 엘리먼트를 반환한다.
+		 * @ko 가장 하위에 있는 카드 엘리먼트를 반환한다.
 		 * @method eg.InfiniteGrid#getBottomElement
 		 *
 		 * @return {HTMLElement} element
@@ -620,15 +625,15 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 
 			/**
 			 * Occurs when layout is completed (after append / after prepend / after layout)
-			 * @ko 레이아웃이 완료 되었을 때 발생하는 이벤트 (append/prepend/layout 메소드 호출 후, 아이템의 배치가 완료되었을때 발생)
+			 * @ko 레이아웃 배치가 완료 되었을 때 발생하는 이벤트 (append/prepend/layout 메소드 호출 후, 카드의 배치가 완료되었을때 발생)
 			 * @name eg.InfiniteGrid#layoutComplete
 			 * @event
 			 *
 			 * @param {Object} param
-			 * @param {Array} param.target target rearranged elements<ko>재배치된 엘리먼트들</ko>
-			 * @param {Boolean} param.isAppend isAppend determine if append or prepend (value is true when call layout method)<ko>아이템이 append로 추가되었는지, prepend로 추가되었는지를 반한환다. (layout호출시에는 true)</ko>
+			 * @param {Array} param.target target rearranged elements<ko>재배치된 카드 엘리먼트들</ko>
+			 * @param {Boolean} param.isAppend isAppend determine if append or prepend (value is true when call layout method)<ko>카드 엘리먼트가 append로 추가되었는지, prepend로 추가되었는지를 반환한다. (layout호출시에는 true 값을 반환한다)</ko>
 			 * @param {Number} param.distance the distance of moved top-element after layoutComplete event is triggered. in order words, prepended distance or height <ko>최상단 엘리먼트가 layoutComplete 이벤트 발생 후,이동되어진 거리. 즉, prepend 되어 늘어난 거리(높이)</ko>
-			 * @param {Number} param.croppedCount the count of removed elements for recycle-dom. <ko>순환 구조에 의해, 삭제된 엘리먼트 개수</ko>
+			 * @param {Number} param.croppedCount the count of removed elements for recycle-dom. <ko>일정한 DOM 개수를 유지하기 위해, 삭제된 카드 엘리먼트들의 개수</ko>
 			 */
 			this.trigger(this._prefix + EVENTS.layoutComplete, {
 				target: e.concat(),
@@ -774,9 +779,9 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 
 		/**
 		 * Remove white space which was removed by append action.
-		 * @ko append에 의해 제거된 빈공간을 제거한다.
+		 * @ko append에 의해 제거된 빈 공간을 제거한다.
 		 * @method eg.InfiniteGrid#fit
-		 * @return {Number} distance if empty space is removed, value is not zero. <ko>빈공간이 제거되면 0이 아닌 값을 반환</ko>
+		 * @return {Number} distance if empty space is removed, value is not zero. <ko>빈 공간이 제거된 실제 길이를 반환</ko>
 		 */
 		fit: function() {
 			var item = this._getTopItem();
