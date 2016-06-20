@@ -45,16 +45,16 @@ Just choose what is more convenient for you.
 #### As jQuery plugin style
 
 ```javascript
-// create flicking ui without option
+// create InfiniteGrid ui without option
 $("#grid").infiniteGrid();
 
-// create flicking ui with options
+// create InfiniteGrid ui with options
 $("#grid").infiniteGrid({
   itemSelector: ".item",
   count: -1
 });
 
-// create flicking ui and get instance of it
+// create InfiniteGrid ui and get instance of it
 var $el = $("#grid").infiniteGrid();
 $el.infiniteGrid("instance");  // return instance
 
@@ -65,17 +65,17 @@ $el.infiniteGrid("layout");
 
 #### As creating instance
 ```javascript
-// create flicking ui without option
-new eg.infiniteGrid("#grid");
+// create InfiniteGrid ui without option
+new eg.InfiniteGrid("#grid");
 
-// create flicking ui with options
-new eg.infiniteGrid("#grid").({
+// create InfiniteGrid ui with options
+new eg.InfiniteGrid("#grid",{
   itemSelector: ".item",
   count: -1
 });
 
-// create flicking ui and get instance of it
-var instance = new eg.Flicking("#grid");
+// create InfiniteGrid ui and get instance of it
+var instance = new eg.InfiniteGrid("#grid");
 
 // call some methods
 instance.getBottomElement();

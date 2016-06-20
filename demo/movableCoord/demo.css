@@ -1,0 +1,31 @@
+#area {
+  position:relative;
+  width:400px; height:400px;
+  -webkit-perspective: 450px;
+  -moz-perspective: 450px;
+  -ms-perspective: 450px;
+  -o-perspective: 450px;
+  perspective: 450px;
+}
+
+#box {
+  position:absolute;
+  left:50%; top:50%;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+  -o-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+
+.face {
+  position:absolute;
+  width:200px; height:200px;
+  color:#fff; font-size:6em; font-weight:bold;
+  text-align:center; line-height:2.5;
+  -webkit-backface-visibility:hidden;
+  -moz-backface-visibility:hidden;
+  -ms-backface-visibility:hidden;
+  -o-backface-visibility:hidden;
+  backface-visibility:hidden;
+}
