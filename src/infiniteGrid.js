@@ -326,7 +326,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 					 * Occurs when grid needs to append elements.
 					 * in order words, when scroll reaches end of page
 					 *
-					 * @ko 카드가 append 될 필요가 있을 때 발생하는 이벤트.
+					 * @ko 카드의 append가 필요할 때 발생하는 이벤트.
 					 * 즉, 스크롤이 페이지 하단에 도달했을 때 발생한다.
 					 * @name eg.InfiniteGrid#append
 					 * @event
@@ -350,7 +350,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 						 * Occurs when grid needs to prepend elements
 						 * in order words, when scroll reaches top of page and a count of cropped element is more than zero.
 						 *
-						 * @ko 카드가 prepend 될 필요가 있을 때 발생하는 이벤트.
+						 * @ko 카드의 prepend가 필요할 때 발생하는 이벤트.
 						 * 즉, 스크롤이 페이지 상단에 도달했을 때 발생한다.
 						 * 이 이벤트는 isRecycling()의 반환값이 true일 경우에만 발생한다.
 						 * @name eg.InfiniteGrid#prepend
