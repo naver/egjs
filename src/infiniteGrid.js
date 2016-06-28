@@ -392,7 +392,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		},
 		/**
 		 * Get current status
-		 * @ko 각각 카드의 위치 정보, 등 현재 상태 정보를 반환한다. 반환된 정보는 저장해두었다가 setStatus() 함수를 통해 복원할 수 있다.
+		 * @ko 각각 카드의 위치 정보 등 현재 상태 정보를 반환한다. 반환된 정보는 저장해두었다가 setStatus() 함수를 통해 복원할 수 있다.
 		 * @method eg.InfiniteGrid#getStatue
 		 * @return {Object} infiniteGrid status Object<ko>infiniteGrid 상태 오브젝트</ko>
 		 */
@@ -451,7 +451,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		},
 		/**
 		 * Get group keys
-		 * @ko 현재 유지되고 있는 카드들의 그룹키 목록을 반환한다. 여러 개의 카드를 하나의 그룹으로 묶어 관리하기 위해 옵션으로 그룹키를 지정할 수 있다. 그룹키를 이용해 여러 개의 카드들을 관리할 수 있다. 기본값은 null 이다.
+		 * @ko 현재 유지되고 있는 카드들의 그룹키 목록을 반환한다. 여러 개의 카드를 하나의 그룹으로 묶어 관리하기 위해 옵션으로 그룹키를 지정할 수 있다. 그룹키를 이용해 여러 개의 카드들을 관리할 수 있다. append 나 prepend 때, 그룹키를 지정하지 않았다면, 반환되는 그룹키는 undefined 이다.
 		 * @method eg.InfiniteGrid#getGroupKeys
 		 * @return {Array} groupKeys
 		 */
