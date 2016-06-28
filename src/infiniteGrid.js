@@ -208,7 +208,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 	 * DOM elements are fixed even contents are added infinitely.
 	 * @group egjs
 	 * @ko InfiniteGrid는 무한 그리드 레이아웃 UI 컴포넌트이다. 이 컴포넌트는 크게 2가지 기능을 제공한다.
-	 첫째, 석공이 벽돌을 맞추며 벽을 쌓듯이, 수평방향으로 차곡 차곡 카드를 쌓는 레이아웃 배치를 제공한다.
+	 첫째, 다양한 크기의 카드를 격자모양으로 배치하는 기능을 제공한다. 동일한 넓이를 가진 카드는 위에서부터 차례대로 수직 공간의 빈 공간에 끼워 맞춰진다.
 	 둘째, 카드의 개수가 계속 증가하더라도, 내부적으로 일정한 DOM의 개수를 유지한다. 이로 인해, 카드가 무한으로 증가하더라도, 최적의 성능을 보장한다.
 	 * @class
 	 * @name eg.InfiniteGrid
@@ -326,8 +326,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 					 * Occurs when grid needs to append elements.
 					 * in order words, when scroll reaches end of page
 					 *
-					 * @ko 카드의 append가 필요할 때 발생하는 이벤트.
-					 * 즉, 스크롤이 페이지 하단에 도달했을 때 발생한다.
+					 * @ko 카드가 append 될 필요가 있을 때 발생하는 이벤트. 사용자가 아래로 스크롤 할 때, 화면상에서 더이상 추가로 볼 카드가 없는 경우에 발생한다.
 					 * @name eg.InfiniteGrid#append
 					 * @event
 					 *
@@ -350,9 +349,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 						 * Occurs when grid needs to prepend elements
 						 * in order words, when scroll reaches top of page and a count of cropped element is more than zero.
 						 *
-						 * @ko 카드의 prepend가 필요할 때 발생하는 이벤트.
-						 * 즉, 스크롤이 페이지 상단에 도달했을 때 발생한다.
-						 * 이 이벤트는 isRecycling()의 반환값이 true일 경우에만 발생한다.
+						 * @ko 카드가 prepend 될 필요가 있을 때 발생하는 이벤트. 실제 추가된 카드는 더 있지만, 일정한 수의 DOM 개수를 유지하기 위해 내부적으로 삭제된다. 이때, 사용자가 위로 스크롤 할 경우, 화면상에서 더이상 추가로 볼 카드가 없는 경우에 prepend 이벤트가 발생된다. 이 이벤트는 isRecycling()의 반환값이 true일 경우에만 발생한다.
 						 * @name eg.InfiniteGrid#prepend
 						 * @event
 						 *
@@ -395,7 +392,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		},
 		/**
 		 * Get current status
-		 * @ko infiniteGrid의 현재 상태를 반환한다. 반환된 정보는 setStatus에 의해, infiniteGrid의 getStatus 호출시 상태를 복원할 수 있다.
+		 * @ko 각각 카드의 위치 정보, 등 현재 상태 정보를 반환한다. 반환된 정보는 저장해두었다가 setStatus() 함수를 통해 복원할 수 있다.
 		 * @method eg.InfiniteGrid#getStatue
 		 * @return {Object} infiniteGrid status Object<ko>infiniteGrid 상태 오브젝트</ko>
 		 */
@@ -416,7 +413,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		},
 		/**
 		 * Set current status
-		 * @ko infiniteGrid의 현재 상태를 설정한다. getStatus에 의해 반환된 정보를 이용하여, infiniteGrid 의 이전 상태를 복원할 수 있다.
+		 * @ko infiniteGrid의 현재 상태를 설정한다. getStatus() 를 통해 반환된 상태 정보로 복원한다.
 		 * @method eg.InfiniteGrid#setStatus
 		 * @param {Object} status Object
 		 * @return {eg.InfiniteGrid} instance of itself<ko>자신의 인스턴스</ko>
@@ -444,7 +441,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		},
 		/**
 		 * Check if elements are in recycling mode
-		 * @ko count 옵션이 0보다 크고, 객체 생성 이후, 추가된 총 카드의 개수가 count 옵션의 개수보다 클 경우, true를 반환한다.
+		 * @ko 추가된 총 카드의 개수가 count 옵션 개수( > 0)보다 클 경우 true 를 반환한다. 이후에는 카드가 추가되더라도 더 이상 DOM 개수가 증가하지 않고 기존 DOM 을 재활용(recycle)한다.
 		 * 즉, 일정한 DOM을 유지하는 상태가 되면 true를 반환한다.
 		 * @method eg.InfiniteGrid#isRecycling
 		 * @return {Boolean}
@@ -454,7 +451,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		},
 		/**
 		 * Get group keys
-		 * @ko 현재 유지되고 있는 카드들의 그룹키들을 반환한다.
+		 * @ko 현재 유지되고 있는 카드들의 그룹키 목록을 반환한다. 여러 개의 카드를 하나의 그룹으로 묶어 관리하기 위해 옵션으로 그룹키를 지정할 수 있다. 그룹키를 이용해 여러 개의 카드들을 관리할 수 있다. 기본값은 null 이다.
 		 * @method eg.InfiniteGrid#getGroupKeys
 		 * @return {Array} groupKeys
 		 */
@@ -779,9 +776,9 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 
 		/**
 		 * Remove white space which was removed by append action.
-		 * @ko append에 의해 제거된 빈 공간을 제거한다.
+		 * @ko append에 의해 생긴 빈공간을 제거한다.
 		 * @method eg.InfiniteGrid#fit
-		 * @return {Number} distance if empty space is removed, value is not zero. <ko>빈 공간이 제거된 실제 길이를 반환</ko>
+		 * @return {Number} distance if empty space is removed, value is not zero. <ko>빈공간이 제거된 실제 길이를 px 단위로 반환</ko>
 		 */
 		fit: function() {
 			var item = this._getTopItem();
