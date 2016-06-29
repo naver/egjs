@@ -30,6 +30,6 @@
     "markdown": {
         "parser": "gfm",
         "hardwrap": true,
-        "tags": ["examples"]
+        "tags": ["examples", "ko"]
     }
 }
