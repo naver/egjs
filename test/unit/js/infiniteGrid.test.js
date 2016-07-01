@@ -423,18 +423,7 @@ test("check object in restore method", function() {
 
 test("restore status", function(assert) {
 	var done = assert.async();
-	var $el,
-		getProperties = function(target) {
-			var data=[];
-			for(var p in target) {
-			    if(target.hasOwnProperty(p) && /^_/.test(p)) {
-			    	if (typeof target[p] !== "function" && !(target[p] instanceof HTMLElement)) {
-			        data.push(p);
-			      }
-			    }
-			}
-			return data;
-		};
+	var $el;
 	// Given
 	this.inst = new eg.InfiniteGrid("#grid", {
 		"count" : 18
@@ -458,7 +447,6 @@ test("restore status", function(assert) {
 			});
 			return ht;
 		};
-		var properties = getProperties(this);
 		var beforeStatus = this.getStatus();
 		var self = this;
 
@@ -475,7 +463,7 @@ test("restore status", function(assert) {
 		deepEqual(beforeStatus.core.columnWidth, this.core.columnWidth, "check columnWidth info");
 		deepEqual(beforeStatus.core.size, this.core.size, "check size info");
 		deepEqual(beforeStatus.core.options, this.core.options, "check options info");
-		$.each(properties, function(i, v) {
+		$.each(beforeStatus.data, function(i, v) {
 			equal(self[v], beforeStatus.data[v], "check infiniteGrid properties " + v);
 		});
 
@@ -504,7 +492,7 @@ test("restore status", function(assert) {
 		deepEqual(infinite.core.columnWidth, beforeStatus.core.columnWidth, "check columnWidth info");
 		deepEqual(infinite.core.size, beforeStatus.core.size, "check size info");
 		deepEqual(infinite.core.options, beforeStatus.core.options, "check options info");
-		$.each(properties, function(i, v) {
+		$.each(beforeStatus.data, function(i, v) {
 			equal(infinite[v], beforeStatus.data[v], "check infiniteGrid properties " + v);
 		});
 		done();
