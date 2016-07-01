@@ -10,6 +10,9 @@ QUnit.config.reorder = false;
 var hooks = {
 	beforeEach: function() {
 		this.$el = $("#box1");
+		this.$el.each(function() {
+			delete this.__aniProps;
+		})
 	},
 	afterEach: function() {
 		this.$el.css({"left": 0});
@@ -17,6 +20,36 @@ var hooks = {
 };
 
 module("Initialization", hooks);
+
+test("stop on non-animated element", function(assert) {
+	// Given
+	// When
+	this.$el.stop();
+
+	// Then
+	ok(true, "stop() is called successfully without script errors.");
+});
+
+test("stop on animated element", function(assert) {
+	var done = assert.async();
+	var duration = 3000;
+	var stopTime = 500;
+
+	// Given
+	this.$el
+		.animate({"left": "100px"}, duration)
+
+	// When
+	setTimeout($.proxy(function() {
+		// Call stop
+		this.$el.stop();
+
+		//Then
+		ok(true, "stop called successfully");
+		done();
+	}, this), stopTime);
+});
+
 test("pause", function(assert) {
 	var done = assert.async();
 
@@ -264,4 +297,20 @@ test("Delay pause/resume test", function(assert) {
 		ok(elapsedT1 > totalDuration, "delay was successfully paused and resumed.");
 		done();
 	}, this), totalDuration + totalDuration * 0.2);
+});
+
+test("delay on non-animated element test", function(assert) {
+	var done = assert.async();
+	var t1 = new Date().getTime();
+	// Given
+	// When
+	this.$el.delay(1000).queue(function(next) {
+		var t2 = new Date().getTime();
+		// Then
+		ok((t2-t1) >= 1000, "delay() successfully");
+		done();
+
+		//MUST call next() to dequeue the next item. otherwise next item will not be dequeue automatically.
+		next();
+	});
 });
