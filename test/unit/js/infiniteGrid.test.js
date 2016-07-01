@@ -428,7 +428,9 @@ test("restore status", function(assert) {
 			var data=[];
 			for(var p in target) {
 			    if(target.hasOwnProperty(p) && /^_/.test(p)) {
+			    	if (typeof target[p] !== "function" && !(target[p] instanceof HTMLElement)) {
 			        data.push(p);
+			      }
 			    }
 			}
 			return data;
