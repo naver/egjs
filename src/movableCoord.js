@@ -13,9 +13,9 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 	/**
 	 * Easily get computed coordinate values according user actions.
 	 * @group egjs
-	 * @ko MovableCoord는 다양한 입력(touch, mouse) 장치를 통해 전달 받은 사용자 액션을 논리적 좌표로 관리 할 수 있는 컴포넌트이다. change 이벤트 등을 통해 좌표의 변화를 감지하고, 이를 이용하여 UI 를 구현하는 방식으로 활용 할 수 있다. 이 컴포넌트의 기능은 다음과 같은 기능을 제공한다.
-	 - 첫째, 논리적 좌표계를 관리한다.
-	 - 둘째, 사용자의 입력이나, API를 통해, 가속도가 적용된 애니메이션 좌표를 제공한다. 예를 들어, 사용자가 빠르게 터치를 하였을 경우, 사용자 액션에 맞게 좌표가 시간순으로 변경된다.
+	 * @ko MovableCoord는 다양한 입력 장치(touch, mouse)를 통해 전달 받은 사용자 액션을 논리적 좌표로 변경한다. 컴포넌트 사용자는 변경된 논리적 좌표를 이용하여 실제 UI(DOM)의 물리적 좌표를 변경할 수 있다.
+또한, MovableCoord는 사용자의 입력 감도에 따라 가속도가 적용된 애니메이션 좌표 정보를 제공한다. 예를 들어, 사용자가 빠르게 터치를 하였을 경우, 사용자 액션에 맞게 시간순으로 변경된 좌표를 제공한다.
+MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 	 * @class
 	 * @name eg.MovableCoord
 	 * @extends eg.Component
@@ -35,7 +35,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 	 * @param {Boolean} [options.bounce.2=10] The bounce bottom range <ko>bottom 바운스 영역</ko>
 	 * @param {Boolean} [options.bounce.3=10] The bounce left range <ko>left 바운스 영역</ko>
 	 *
-	 * @param {Array} options.margin The area can move using user's action. <ko>사용자 액션에 의해, 추가로 이동할 수 있는 영역 : hold 상태에서 움직였을 때 최대로 넘어갈수 있는 좌표. 만약, 좌표 영역을 넘겨 margin 영역까지 좌표를 이동시킨 다음, 터치를 떼게되면 좌표는 좌표영역 범위 안으로 들어오게 된다.
+	 * @param {Array} options.margin The area can move using user's action. <ko>사용자 액션에 의해, 추가로 이동할 수 있는 영역 : hold 상태에서 움직였을 때 최대로 넘어갈수 있는 좌표. 좌표 영역을 넘어 margin 영역까지 이동 후, 터치를 떼면 좌표는 최대 좌표영역 범위 안으로 들어온다.
 	 </ko>
 	 * @param {Boolean} [options.margin.0=0] The margin top range <ko>top 마진 영역</ko>
 	 * @param {Boolean} [options.margin.1=0] The margin right range <ko>right 마진 영역</ko>
@@ -54,10 +54,10 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 	 * @see There is usability issue due to default CSS properties ({@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}) settings from Hammerjs. movableCoord removes that settings to fix.
 	 * <ko>Hammerjs는 인스턴스 생성시 기본적으로 특정 CSS 속성({@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html})을 적용한다. 특정한 상황의 경우, 이 속성으로 인해 사용성 이슈가 발생한다. 따라서, movableCoord는 hammerjs의 기본 CSS 속성을 모두 제거 하였다.</ko>
 	 *
-	 * @codepen {"id":"bdVybg", "ko":"MovableCoord 기본 예제", "en":"MovableCoord basic example", "collectionId":"AKpkGW", "height": 403}
+	 * @codepen {"id":"jPPqeR", "ko":"MovableCoord Cube 예제", "en":"MovableCoord Cube example", "collectionId":"AKpkGW", "height": 403}
 	 *
 	 * @see Easing Functions Cheat Sheet {@link http://easings.net/}
-	 * @see To use other easing functions, import jQuery easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/}) or jQuery UI easing.({@link https://jqueryui.com/easing/})<ko>다른 easing 함수를 사용하고 싶다면, jQuery easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/})이나, jQuery UI easing({@link https://jqueryui.com/easing/}) 라이브러리를 사용 한다.</ko>
+	 * @see To use other Easing functions, import jQuery Easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/}) or jQuery UI Easing.({@link https://jqueryui.com/easing/})<ko>다른 Easing 함수를 사용하고 싶다면, jQuery Easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/})이나, jQuery UI Easing({@link https://jqueryui.com/easing/}) 라이브러리를 사용 한다.</ko>
 	 *
 	 * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
 	 */
@@ -214,7 +214,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		 * Unbind element
 		 * @ko movableCoord을 사용하기 위한 엘리먼트를 해제한다.
 		 * @method eg.MovableCoord#unbind
-		 * @param {HTMLElement|String|jQuery} element The target element.<ko>movableCoord을 사용하기 위해 설정한 엘리먼트</ko>
+		 * @param {HTMLElement|String|jQuery} element The target element.<ko>movableCoord을 해제할 엘리먼트</ko>
 		 * @return {eg.MovableCoord} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		unbind: function(el) {
@@ -290,7 +290,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			this._grab();
 			/**
 			 * When an area was pressed
-			 * @ko 스크린에서 사용자가 손을 대었을 때, 발생하는 이벤트
+			 * @ko 스크린에서 사용자가 손을 대었을 때 발생하는 이벤트
 			 * @name eg.MovableCoord#hold
 			 * @event
 			 * @param {Object} param
