@@ -13,7 +13,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 	/**
 	 * Easily get computed coordinate values according user actions.
 	 * @group egjs
-	 * @ko MovableCoord는 다양한 입력 장치(touch, mouse)를 통해 전달 받은 사용자 액션을 논리적 좌표로 변경한다. 컴포넌트 사용자는 변경된 논리적 좌표를 이용하여 실제 UI(DOM)의 물리적 좌표를 변경할 수 있다.
+	 * @ko MovableCoord는 다양한 입력 장치(touch, mouse)를 통해 전달 받은 사용자 액션을 논리적 좌표로 변경한다. 컴포넌트 사용자는 변경된 논리적 좌표를 이용하여 실제 UI 에 반영할 수 있다.
 또한, MovableCoord는 사용자의 입력 감도에 따라 가속도가 적용된 애니메이션 좌표 정보를 제공한다. 예를 들어, 사용자가 빠르게 터치를 하였을 경우, 사용자 액션에 맞게 시간순으로 변경된 좌표를 제공한다.
 MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 	 * @class
