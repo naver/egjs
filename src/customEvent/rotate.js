@@ -15,7 +15,7 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 	/**
 	 * Add rotate event support in jQuery
 	 *
-	 * @ko 기기가 회전할 때 발생하는 orientationchange이벤트를 다양한 환경에서 사용할 수 있게 만든 jQuery의 커스텀 이벤트(rotate)이다.
+	 * @ko 기기가 회전할 때 발생하는 jQuery의 커스텀 이벤트(rotate)이다.
 	 * @name jQuery#rotate
 	 * @event
 	 * @param {Event} e
@@ -176,7 +176,7 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 
 	/**
 	 * Check if device is in portrait mode
-	 * @ko 기기에서 portait(수직방향)일 경우, true을 반환한다.
+	 * @ko 화면이 수직방향(portrait 모드)일 경우 true 를 반환한다.
 	 * @method eg#isPortrait
 	 * @return {Boolean}
 	 * @example
