@@ -17,7 +17,7 @@ var util = require('util');
 var MAX_TITLE_LENGTH = 50;
 var MAX_LENGTH = 100;
 var PATTERN = /^(?:fixup!\s*)?(\w*)(\(([\w\$\,\.\*/-]*)\))?\: (.*)$/;
-var IGNORED = /^skip\:/;
+var IGNORED = /^skip\:/i;
 var TYPES = {
   feat: true,
   fix: true,
