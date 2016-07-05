@@ -400,7 +400,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			var data = [];
 			var p;
 			for (p in this) {
-				if (this.hasOwnProperty(p) && /^_/.test(p)) {
+				if (this.hasOwnProperty(p) && /^_/.test(p) &&
+					typeof this[p] !== "function" && !(this[p] instanceof HTMLElement)) {
 					data.push(p);
 				}
 			}
