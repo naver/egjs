@@ -41,7 +41,7 @@ MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 	 * @param {Boolean} [options.margin.1=0] The margin right range <ko>right 마진 영역</ko>
 	 * @param {Boolean} [options.margin.2=0] The margin bottom range <ko>bottom 마진 영역</ko>
 	 * @param {Boolean} [options.margin.3=0] The margin left range <ko>left 마진 영역</ko>
-	 * @param {Array} options.circular <ko>영역별 순환 여부 : 해당 방향으로 좌표가 좌표영역 밖으로 넘어가는 상황이 되었을 때, 반대방향에서 나타나게 할 지 여부를 지정하는 옵션이다.</ko>
+	 * @param {Array} options.circular <ko>영역별 순환 여부 : 해당 방향으로 좌표영역 밖으로 넘어가면, 반대방향에서 나타나게 할 지 여부를 지정하는 옵션이다.</ko>
 	 * @param {Boolean} [options.circular.0=false] The circular top range <ko>top 순환 영역</ko>
 	 * @param {Boolean} [options.circular.1=false] The circular right range <ko>right 순환 영역</ko>
 	 * @param {Boolean} [options.circular.2=false] The circular bottom range <ko>bottom 순환 영역</ko>
