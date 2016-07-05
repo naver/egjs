@@ -53,7 +53,7 @@ var validateMessage = function(message, fullMessage) {
   var match = PATTERN.exec(message);
 
   if (!match) {
-    var data = fs.readFileSync(__dirname+'/../../config/commit.template', 'utf8');
+    var data = fs.readFileSync(__dirname+'/commit.template', 'utf8');
     error('\n\r======= Your commit message =======\n\r' + fullMessage + '\n\r' + data);
     return false;
   }
