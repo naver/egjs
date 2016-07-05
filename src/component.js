@@ -11,6 +11,7 @@ eg.module("component", [eg], function(ns) {
 	 * @class
 	 * @group egjs
 	 * @name eg.Component
+	 * @ko 컴포넌트를 만들 때 이벤트와 옵션을 관리할 수 있도록 도와주는 클래스이다.
 	 *
 	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 */
@@ -27,7 +28,7 @@ eg.module("component", [eg], function(ns) {
 		 * @method eg.Component#option
 		 * @param {String} key
 		 * @param {Object} value
-		 * @return {eg.Component|Object} (set)instance of itself or (get)option value <ko>(set)자신의 인스턴스 혹은 (get)option 값</ko>
+		 * @return {eg.Component|Object} (set)instance of itself or (get)option value <ko>set으로 사용한 경우 반환 값이 자신의 인스턴스이며, get으로 사용한 경우 반환 값을 다양하다.</ko>
 		 * @example
 			var Some = eg.Class.extend(eg.Component);
 			var some = new Some({
@@ -65,7 +66,7 @@ eg.module("component", [eg], function(ns) {
 		},
 		/**
 		 * Trigger custom event.
-		 * @ko 커스텀 이벤트를 실행합니다.
+		 * @ko 커스텀 이벤트를 발생시킨다.
 		 * @method eg.Component#trigger
 		 * @param {String} eventName
 		 * @param {Object} customEvent
@@ -113,7 +114,7 @@ eg.module("component", [eg], function(ns) {
 		},
 		/**
 		 * Check whether the event has been registered in component.
-		 * @ko 컴포넌트에 등록된 이벤트를 확인합니다.
+		 * @ko 컴포넌트에 등록된 이벤트를 확인한다.
 		 * @method eg.Component#hasOn
 		 * @param {String} eventName
 		 * @return {Boolean}
@@ -129,7 +130,7 @@ eg.module("component", [eg], function(ns) {
 		},
 		/**
 		 * Attach an event handler function.
-		 * @ko 이벤트를 등록합니다.
+		 * @ko 이벤트를 등록한다.
 		 * @method eg.Component#on
 		 * @param {eventName} eventName
 		 * @param {Function} handlerToAttach
@@ -166,7 +167,7 @@ eg.module("component", [eg], function(ns) {
 		},
 		/**
 		 * Detach an event handler function.
-		 * @ko 이벤트를 해제합니다.
+		 * @ko 이벤트를 해제한다.
 		 * @method eg.Component#off
 		 * @param {eventName} eventName
 		 * @param {Function} handlerToDetach
