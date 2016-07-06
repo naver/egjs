@@ -300,6 +300,11 @@ eg.module("pauseResume", ["jQuery"], function($) {
 		return this.each(function() {
 			var p;
 
+			// When this element was not animated properly, do nothing.
+			if (getStatus(this) === "empty") {
+				return;
+			}
+
 			if (!clearQ) {
 				p = this.__aniProps.shift();
 				p && p.clearEasingFn();
