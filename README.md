@@ -34,7 +34,7 @@
 * **animate** : Support transform and 3d acceleration extending jQuery's animate.
   - [API](http://naver.github.io/egjs/latest/doc/jQuery.html#animate)
 * **pause/resume** : Pause and resume jQuery's animate and delay.
-  - [API](http://naver.github.io/egjs/latest/doc/jQuery.html#pause)
+  - [API](http://naver.github.io/egjs/latest/doc/jQuery.html#pause), [CodePen](http://codepen.io/collection/XOEpOw)
 
 #### Events
 * **rotate** : Trigger event detecting device orientation.
