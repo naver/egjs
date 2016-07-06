@@ -10,9 +10,7 @@ QUnit.config.reorder = false;
 var hooks = {
 	beforeEach: function() {
 		this.$el = $("#box1");
-		this.$el.each(function() {
-			delete this.__aniProps;
-		})
+		delete this.$el[0].__aniProps;
 	},
 	afterEach: function() {
 		this.$el.css({"left": 0});
