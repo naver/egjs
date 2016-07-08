@@ -113,13 +113,13 @@ test("previewPadding - horizontal", function() {
 	var padding = this.inst.options.previewPadding,
 		right = parseInt(this.inst.$wrapper.css("padding-right"), 10),
 		left = parseInt(this.inst.$wrapper.css("padding-left"), 10),
-		wrapperWidth = this.inst.$wrapper.width(),
+		wrapperWidth = this.inst.$wrapper.outerWidth(),
 		panelWidth = this.inst.$container.children().width();
 
 	// When
 	// Then
 	ok(left === padding[0] && right === padding[1], "Preview padding value applied correctly?");
-	equal(wrapperWidth, panelWidth, "Each panel's width should be same as wrapper element's width");
+	equal(wrapperWidth, panelWidth + right + left, "Each panel's width should be same as wrapper element's width");
 });
 
 test("previewPadding - vertical", function() {
@@ -133,13 +133,13 @@ test("previewPadding - vertical", function() {
 	var padding = this.inst.options.previewPadding,
 		top = parseInt(this.inst.$wrapper.css("padding-top"), 10),
 		bottom = parseInt(this.inst.$wrapper.css("padding-bottom"), 10),
-		wrapperHeight = this.inst.$wrapper.height(),
+		wrapperHeight = this.inst.$wrapper.outerHeight(),
 		panelHeight = this.inst.$container.children().height();
 
 	// When
 	// Then
 	ok(top === padding[0] && bottom === padding[1], "Preview padding value applied correctly?");
-	equal(wrapperHeight - (padding[0] + padding[1]), panelHeight, "Each panel's height should be same as wrapper element's height");
+	equal(wrapperHeight, panelHeight + top + bottom, "Each panel's height should be same as wrapper element's height");
 });
 
 test("bounce", function() {

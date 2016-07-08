@@ -248,7 +248,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 
 			// create container element
 			cssValue = "position:relative;z-index:2000;width:100%;height:100%;" +
-				(!horizontal ? "top:" + padding[0] + "px;" : "");
+				(horizontal ? "" : "top:0;");
 
 			this.$container = $children.wrapAll(
 				"<div class='" + prefix + "-container' style='" + cssValue + "' />"
@@ -282,24 +282,27 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		_setPadding: function(padding, build) {
 			var horizontal = this.options.horizontal;
 			var panel = this._conf.panel;
+			var paddingSum = padding[0] + padding[1];
+			var cssValue = {};
 
 			panel.size = this.$wrapper[
-				horizontal ? "outerWidth" : "height"
-			]() - (padding[0] + padding[1]);
+					horizontal ? "outerWidth" : "outerHeight"
+				]() - paddingSum;
 
-			var cssValue = {
-				padding: (horizontal ?
-				"0 " + padding.reverse().join("px 0 ") :
-				padding.join("px 0 ")) + "px"
-			};
+			if (paddingSum || !build) {
+				cssValue.padding = (horizontal ?
+						"0 " + padding.reverse().join("px 0 ") :
+						padding.join("px 0 ")) + "px";
+
+				cssValue[ horizontal ? "width" : "height" ] = panel.size;
+			}
 
 			if (build) {
 				cssValue.overflow = "hidden";
-			} else if (!horizontal) {
-				this.$container.css("top", padding[0]);
 			}
 
-			this.$wrapper.css(cssValue);
+			!$.isEmptyObject(cssValue) &&
+				this.$wrapper.css(cssValue);
 		},
 
 		/**
