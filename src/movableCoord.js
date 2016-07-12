@@ -730,7 +730,7 @@ MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 		 * Set to absolute position
 		 *
 		 * When duration is greater than zero, 'change' event is triggered
-		 * @ko 위치를 설정한다. 만약, duration이 0보다 크다면 duration 시간만큼 애니메이션 된다.
+		 * @ko 위치를 설정한다. 만약, duration이 0보다 크다면 duration동안 애니메이션 된다.
 		 * @method eg.MovableCoord#setTo
 		 * @param {Number} x x-coordinate <ko>이동할 x좌표</ko>
 		 * @param {Number} y y-coordinate <ko>이동할 y좌표</ko>
