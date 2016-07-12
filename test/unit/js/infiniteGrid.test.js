@@ -811,5 +811,40 @@ test("Test prepend event", function(assert) {
 	this.inst.append(getContent("append",200));
 });
 
+
+test("check a clear after scrolling", function(assert) {
+	var done = assert.async();
+	// Given
+	// When
+	var beforeClear = true;
+	var self = this;
+	this.inst = new eg.InfiniteGrid("#grid");
+	this.inst.on("layoutComplete",function(e) {
+		// Then
+		if(beforeClear) {
+			equal(this.isProcessing(), false, "idel in layoutComplete");
+			equal(e.target.length, 6, "a number of elements are 6");
+			equal(this.core.items.length, 6, "a number of elements are 6");
+			equal(this.core.$element.children().length, 6, "a number of DOM are 6");
+			beforeClear = false;
+			this.clear();
+		} else {
+			equal(e.target.length, 0, "a number of elements are 0");
+			equal(this.core.items.length, 0, "a number of elements are 0");
+			equal(this.core.$element.children().length, 0, "a number of DOM are 0");
+			equal(this._addType, null, "addType is null");
+			equal(this._isFitted, true, "isFitted is true");
+			equal(this._isRecycling, false, "_isRecycling is false");
+			equal(this._isAppendType, null, "_isAppendType is null");
+			equal(this._isProcessing, false, "_isProcessing is false");
+			equal(e.croppedCount, 0, "a number of removedContent are 0");
+			self.fakeDoc.body.scrollTop = 100;
+			$(window).trigger("scroll");
+			setTimeout(function() {
+				done();
+			},100);
+		}
+	});
+});
 //@todo add column count test when outlayer.js dropped.
 //outlayer couldn't invoke window properties
