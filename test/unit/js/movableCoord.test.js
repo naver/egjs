@@ -1161,6 +1161,64 @@ test("movement direction test (DIRECTION_VERTICAL)", function(assert) {
     	});
 });
 
+test("cross movement test (vertical movement on DIRECTION_HORIZONTAL)", function(assert) {
+	var done = assert.async();
+	//Given
+	var el = $("#area").get(0);
+
+	/**
+	 * release event must be expired although the direction is not concerned
+	 */
+	this.inst.on({
+		"release" : function(e) {
+			//Then
+			equal(e.destPos[0], 0);
+			equal(e.destPos[1], 0);
+		}
+	});
+	this.inst.bind(el, {
+		direction : eg.MovableCoord.DIRECTION_HORIZONTAL
+	});
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [0, 0],
+            deltaX: 0,
+            deltaY: 10,
+            duration: 1000,
+            easing: "linear"
+	}, done);
+});
+
+test("cross movement test (horizontal movement on DIRECTION_VERTICAL)", function(assert) {
+	var done = assert.async();
+	//Given
+	var el = $("#area").get(0);
+
+	/**
+	 * release event must be expired although the direction is not concerned
+	 */
+	this.inst.on({
+		"release" : function(e) {
+			//Then
+			equal(e.destPos[0], 0);
+			equal(e.destPos[1], 0);
+		}
+	});
+	this.inst.bind(el, {
+		direction : eg.MovableCoord.DIRECTION_VERTICAL
+	});
+
+	// When
+	Simulator.gestures.pan(el, {
+		pos: [0, 0],
+            deltaX: 10,
+            deltaY: 0,
+            duration: 1000,
+            easing: "linear"
+	}, done);
+});
+
 test("_convertInputType (support touch)", function() {
 	// Given
 	var globalWithToucnSupport = {

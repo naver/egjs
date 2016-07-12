@@ -183,6 +183,9 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 						this._subOptions = options;
 						this._status.curHammer = hammer;
 						this._panstart(e);
+					} else if (e.isFinal && !(e.direction & this._subOptions.direction)) {
+						// Although movement is other direction, MC should fire 'release' events.
+						this._panend(e);
 					}
 				}, this))
 				.on("panstart panmove", this._panmove)
