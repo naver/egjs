@@ -703,7 +703,7 @@ MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 			 * @param {Number} param.pos.0 departure x-coordinate <ko>x 좌표</ko>
 			 * @param {Number} param.pos.1 departure y-coordinate <ko>y 좌표</ko>
 			 * @param {Boolean} param.holding If an area was pressed, this value is 'true'. <ko>스크린을 사용자가 누르고 있을 경우 true </ko>
-			 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자 액션에 대한 hammerjs 이벤트 정보로서, API에 의해 호출될 경우, null 을 반환한다.</ko>
+			 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자 액션에 대한 hammerjs 이벤트 정보. setTo() 같은 컴포넌트 메서드를 호출해 이벤트가 발생한 경우에는 null을 반환한다.</ko>
 			 *
 			 */
 			this._pos = pos.concat();
