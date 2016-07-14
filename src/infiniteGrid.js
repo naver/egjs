@@ -93,8 +93,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				this.layout();
 			}
 
-			this._onScroll = this._onScroll.bind(this);
-			this._onResize = this._onResize.bind(this);
+			this._onScroll = $.proxy(this._onScroll, this);
+			this._onResize = $.proxy(this._onResize, this);
 			this.$view.on("scroll", this._onScroll)
 				.on("resize", this._onResize);
 		},
