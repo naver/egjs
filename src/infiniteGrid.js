@@ -34,22 +34,22 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		<!-- HTML -->
 		<ul id="grid">
 			<li class="card">
-			  <div>test1</div>
+				<div>test1</div>
 			</li>
 			<li class="card">
-			  <div>test2</div>
+				<div>test2</div>
 			</li>
 			<li class="card">
-			  <div>test3</div>
+				<div>test3</div>
 			</li>
 			<li class="card">
-			  <div>test4</div>
+				<div>test4</div>
 			</li>
 			<li class="card">
-			  <div>test5</div>
+				<div>test5</div>
 			</li>
 			<li class="card">
-			  <div>test6</div>
+				<div>test6</div>
 			</li>
 		</ul>
 		<script>
@@ -93,8 +93,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				this.layout();
 			}
 
-			this._onScroll = this._onScroll.bind(this);
-			this._onResize = this._onResize.bind(this);
+			this._onScroll = $.proxy(this._onScroll, this);
+			this._onResize = $.proxy(this._onResize, this);
 			this.$view.on("scroll", this._onScroll)
 				.on("resize", this._onResize);
 		},
@@ -200,7 +200,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			var p;
 			for (p in this) {
 				if (this.hasOwnProperty(p) && /^_/.test(p) &&
-					typeof this[p] !== "function" && !(this[p] instanceof HTMLElement)) {
+					typeof this[p] !== "function" && !(this[p] instanceof Element)) {
 					data[p] = this[p];
 				}
 			}
@@ -208,8 +208,9 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				prop: data,
 				options: $.extend({}, this.options),
 				items: this.items.map(function(v) {
-					delete v.el;
-					return v;
+					var clone = $.extend({}, v);
+					delete clone.el;
+					return clone;
 				}),
 				html: this.el.innerHTML,
 				cssText: this.el.style.cssText
@@ -240,7 +241,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		 * Check if element is appending or prepending
 		 * @ko append나 prepend가 진행 중인 상태를 반환한다. 진행 중일 경우 true를 반환한다.
 		 * @method eg.InfiniteGrid#isProcessing
-		 * @return {Boolean
+		 * @return {Boolean}
 		 */
 		isProcessing: function() {
 			return this._isProcessing;
@@ -284,16 +285,14 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			return this;
 		},
 		_layoutItems: function(items) {
-			var self = this;
 			items.map(function(v) {
-				v.position = self._getItemLayoutPosition(v);
-				return v;
-			}).forEach(function(v) {
+				v.position = this._getItemLayoutPosition(v);
 				if (v.el) {
 					v.el.style.left = v.position.x + "px";
 					v.el.style.top = v.position.y + "px";
 				}
-			});
+				return v;
+			}, this);
 		},
 		/**
 		 * Append elements
@@ -312,7 +311,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			// convert jQuery instance
 			$elements = $($elements);
 			this._isProcessing = true;
-			if (!this._isRecycling) {
+			if (!this.isRecycling()) {
 				this._isRecycling =
 				(this.items.length + $elements.length) >= this.options.count;
 			}
@@ -502,12 +501,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				return;
 			}
 			if (isTop) {
-				targets = this.items.slice(0, idx);
-				this.items = this.items.slice(idx);
+				targets = this.items.splice(0, idx);
 				this._isFitted = false;
 			} else {
-				targets = this.items.slice(idx);
-				this.items = this.items.slice(0, idx);
+				targets = this.items.splice(idx, this.items.length - idx);
 			}
 
 			// @todo improve performance
@@ -630,7 +627,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		},
 		_measureColumns: function() {
 			this.el.style.width = null;
-			this._containerWidth = parseFloat(global.getComputedStyle(this.el).width) || 0;
+			this._containerWidth = this.$el.innerWidth();
 			this._columnWidth = this._getColumnWidth() || this._containerWidth;
 			var cols = this._containerWidth / this._columnWidth;
 			var excess = this._columnWidth - this._containerWidth % this._columnWidth;
@@ -659,12 +656,12 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			var el = this.items[0] && this.items[0].el;
 			var width = 0;
 			if (el) {
-				var style = global.getComputedStyle(el);
-				width = parseFloat(style.width) || 0;
+				var $el = $(el);
+				width = $el.innerWidth();
 				if (this.options.isEqualSize) {
 					this._equalItemSize = {
 						width: width,
-						height: parseFloat(style.height) || 0
+						height: $el.innerHeight()
 					};
 				}
 			}
@@ -733,10 +730,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			if (!item.el) {
 				return;
 			}
-			var style = global.getComputedStyle(item.el);
+			var $el = $(item.el);
 			item.size = this._equalItemSize || {
-				width: parseFloat(style.width) || 0,
-				height: parseFloat(style.height) || 0
+				width: $el.innerWidth(),
+				height: $el.innerHeight()
 			};
 			var shortColIndex;
 			var isAppend = item.isAppend;
@@ -778,51 +775,51 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
  * @ko InfiniteGrid in jQuery plugin
  * @method jQuery.infiniteGrid
  * @example
-     <ul id="grid">
-        <li class="item">
-          <div>test1</div>
-        </li>
-        <li class="item">
-          <div>test3</div>
-        </li>
-      </ul>
-    <script>
+		 <ul id="grid">
+				<li class="item">
+					<div>test1</div>
+				</li>
+				<li class="item">
+					<div>test3</div>
+				</li>
+			</ul>
+		<script>
 	// create
 	$("#grid").infiniteGrid({
-        itemSelector : ".item"
-    });
- 	// method
- 	$("#grid").infiniteGrid("option","itemSelector",".selected"); //Set option
- 	$("#grid").infiniteGrid("instance"); // Return infiniteGrid instance
- 	$("#grid").infiniteGrid("getBottomElement"); // Get bottom element
- 	</script>
+				itemSelector : ".item"
+		});
+	// method
+	$("#grid").infiniteGrid("option","itemSelector",".selected"); //Set option
+	$("#grid").infiniteGrid("instance"); // Return infiniteGrid instance
+	$("#grid").infiniteGrid("getBottomElement"); // Get bottom element
+	</script>
  * @see eg.InfiniteGrid
  */
- /**
+/**
  * infiniteGrid:layoutComplete jQuery event plugin
  *
  * @ko infiniteGrid:layoutComplete jQuery event plugin
  * @name jQuery#infiniteGrid:layoutComplete
  * @event
  * @example
-     <ul id="grid">
-        <li class="item">
-          <div>test1</div>
-        </li>
-        <li class="item">
-          <div>test3</div>
-        </li>
-      </ul>
-    <script>
+		 <ul id="grid">
+				<li class="item">
+					<div>test1</div>
+				</li>
+				<li class="item">
+					<div>test3</div>
+				</li>
+			</ul>
+		<script>
 	// create
 	$("#grid").infiniteGrid({
-        itemSelector : ".item"
-    });
- 	// event
- 	$("#grid").on("infiniteGrid:layoutComplete",callback);
- 	$("#grid").off("infiniteGrid:layoutComplete",callback);
- 	$("#grid").trigger("infiniteGrid:layoutComplete",callback);
- 	</script>
+				itemSelector : ".item"
+		});
+	// event
+	$("#grid").on("infiniteGrid:layoutComplete",callback);
+	$("#grid").off("infiniteGrid:layoutComplete",callback);
+	$("#grid").trigger("infiniteGrid:layoutComplete",callback);
+	</script>
  * @see eg.InfiniteGrid#event:layoutComplete
  */
 /**
@@ -832,24 +829,24 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
  * @name jQuery#infiniteGrid:append
  * @event
  * @example
-     <ul id="grid">
-        <li class="item">
-          <div>test1</div>
-        </li>
-        <li class="item">
-          <div>test3</div>
-        </li>
-      </ul>
-    <script>
+		 <ul id="grid">
+				<li class="item">
+					<div>test1</div>
+				</li>
+				<li class="item">
+					<div>test3</div>
+				</li>
+			</ul>
+		<script>
 	// create
 	$("#grid").infiniteGrid({
-        itemSelector : ".item"
-    });
- 	// event
- 	$("#grid").on("infiniteGrid:append",callback);
- 	$("#grid").off("infiniteGrid:append",callback);
- 	$("#grid").trigger("infiniteGrid:append",callback);
- 	</script>
+				itemSelector : ".item"
+		});
+	// event
+	$("#grid").on("infiniteGrid:append",callback);
+	$("#grid").off("infiniteGrid:append",callback);
+	$("#grid").trigger("infiniteGrid:append",callback);
+	</script>
  * @see eg.InfiniteGrid#event:append
  */
 /**
@@ -859,23 +856,23 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
  * @name jQuery#infiniteGrid:prepend
  * @event
  * @example
-     <ul id="grid">
-        <li class="item">
-          <div>test1</div>
-        </li>
-        <li class="item">
-          <div>test3</div>
-        </li>
-      </ul>
-    <script>
+		 <ul id="grid">
+				<li class="item">
+					<div>test1</div>
+				</li>
+				<li class="item">
+					<div>test3</div>
+				</li>
+			</ul>
+		<script>
 	// create
 	$("#grid").infiniteGrid({
-        itemSelector : ".item"
-    });
- 	// event
- 	$("#grid").on("infiniteGrid:prepend",callback);
- 	$("#grid").off("infiniteGrid:prepend",callback);
- 	$("#grid").trigger("infiniteGrid:prepend",callback);
- 	</script>
+				itemSelector : ".item"
+		});
+	// event
+	$("#grid").on("infiniteGrid:prepend",callback);
+	$("#grid").off("infiniteGrid:prepend",callback);
+	$("#grid").trigger("infiniteGrid:prepend",callback);
+	</script>
  * @see eg.InfiniteGrid#event:prepend
  */
