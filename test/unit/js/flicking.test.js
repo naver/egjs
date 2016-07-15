@@ -19,7 +19,6 @@ function create(el, option, customEvt) {
 	el.eventFired = [];
 	el.eventDirection = [];
 	customEvt = customEvt || {};
-
 	var handler;
 
 	if ($.isPlainObject(customEvt)) {
@@ -59,65 +58,77 @@ function simulator(el, option, callback) {
 	}, option), callback);
 }
 
+// hooks for each test
 var hooks = {
-	/*beforeEach: function() {},
-	afterEach: function() {}*/
+	beforeEach: function() {
+		this.inst = [];
+	},
+	afterEach: function() {
+		$.each($.makeArray(this.inst), function(i, v) {
+			v && v.destroy && v.destroy();
+		});
+	}
 };
 
-module("Initialization", hooks);
-test("Check for the initialization", function() {
+QUnit.module("Initialization", hooks);
+QUnit.test("Check for the initialization", function(assert) {
 	// Given
-	var inst = create("#mflick1");
+	var inst = this.inst = create("#mflick1");
 
 	// Then
-	deepEqual(inst.$container.width(), inst.$container.parent().width(), "Then panel container was added and the width is same as wrapper element.");
+	assert.deepEqual(inst.$container.width(), inst.$container.parent().width(), "Then panel container was added and the width is same as wrapper element.");
 });
 
-module("Setting options", hooks);
-test("circular", function() {
+QUnit.module("Setting options", hooks);
+QUnit.test("circular", function(assert) {
 	// Given
-	var inst = create("#mflick1");
+	this.inst = [
+			create("#mflick1"),
+			create("#mflick2", { circular : true }),
+			create("#mflick2-1", { circular : true }),
+			create("#mflick3", { circular : true, horizontal : false })
+		];
+
+	// Given
+	var inst = this.inst[0];
 
 	// When
 	inst.moveTo(inst._conf.panel.origCount - 1,0);
 
 	// Then
-	equal(inst.getElement().next().length, 0, "Is not circular?");
-	inst._mcInst.destroy();
+	assert.equal(inst.getElement().next().length, 0, "Is not circular?");
 
 	// Given
-	inst = create($("#mflick2"), { circular : true });
+	inst = this.inst[1];
 
 	// When
 	inst.moveTo(inst._conf.panel.origCount - 1,0);
 
 	// Then
-	ok(inst.getNextElement(), "Is circular?");
-	inst._mcInst.destroy();
+	assert.ok(inst.getNextElement(), "Is circular?");
 
 	// Given
-	inst = create($("#mflick2-1"), { circular : true });
+	inst = this.inst[2];
 
 	// Then
-	ok(inst._conf.panel.count > inst._conf.panel.origCount, "When panel elements are not enough, should be added cloned elements");
+	assert.ok(inst._conf.panel.count > inst._conf.panel.origCount, "When panel elements are not enough, should be added cloned elements");
 
 	// Given
-	inst = create($("#mflick3"), { circular : true, horizontal : false });
+	inst = this.inst[3];
 
 	// When
 	inst.moveTo(inst._conf.panel.origCount - 1,0);
 
 	// Then
-	ok(inst.getNextElement(), "Is circular?");
-
+	assert.ok(inst.getNextElement(), "Is circular?");
 });
 
-test("previewPadding - horizontal", function() {
+QUnit.test("previewPadding - horizontal", function(assert) {
 	// Given
-	var inst = create($("#mflick3"), {
-		circular : true,
-		previewPadding : [ 50, 70 ]
-	});
+	var inst = this.inst = create($("#mflick3"), {
+			circular : true,
+			previewPadding : [ 50, 70 ]
+		});
 
 	var padding = inst.options.previewPadding;
 	var right = parseInt(inst.$wrapper.css("padding-right"), 10);
@@ -126,17 +137,17 @@ test("previewPadding - horizontal", function() {
 	var panelWidth = inst.$container.children().width();
 
 	// Then
-	ok(left === padding[0] && right === padding[1], "Preview padding value applied correctly?");
-	equal(wrapperWidth, panelWidth, "Each panel's width should be same as wrapper element's width");
+	assert.ok(left === padding[0] && right === padding[1], "Preview padding value applied correctly?");
+	assert.equal(wrapperWidth, panelWidth, "Each panel's width should be same as wrapper element's width");
 });
 
-test("previewPadding - vertical", function() {
+QUnit.test("previewPadding - vertical", function(assert) {
 	// Given
-	var inst = create("#mflick3", {
-		circular : true,
-		horizontal : false,
-		previewPadding : [ 15, 10 ]
-	});
+	var inst = this.inst = create("#mflick3", {
+			circular : true,
+			horizontal : false,
+			previewPadding : [ 15, 10 ]
+		});
 
 	var padding = inst.options.previewPadding;
 	var top = parseInt(inst.$wrapper.css("padding-top"), 10);
@@ -145,62 +156,62 @@ test("previewPadding - vertical", function() {
 	var panelHeight = inst.$container.children().height();
 
 	// Then
-	ok(top === padding[0] && bottom === padding[1], "Preview padding value applied correctly?");
-	equal(wrapperHeight - (padding[0] + padding[1]), panelHeight, "Each panel's height should be same as wrapper element's height");
+	assert.ok(top === padding[0] && bottom === padding[1], "Preview padding value applied correctly?");
+	assert.equal(wrapperHeight - (padding[0] + padding[1]), panelHeight, "Each panel's height should be same as wrapper element's height");
 });
 
-test("bounce", function() {
+QUnit.test("bounce", function(assert) {
 	var bounce = 50;
 
 	// Given
-	var inst = create("#mflick3", { bounce : bounce });
+	var inst = this.inst = create("#mflick3", { bounce : bounce });
 
 	// Then
-	deepEqual(inst.options.bounce, [50, 50], "Bounce value set correctly?");
+	assert.deepEqual(inst.options.bounce, [50, 50], "Bounce value set correctly?");
 
 	// When
 	bounce = [ 15, 20 ];
 	inst = create("#mflick3-1", { bounce : bounce });
 
 	// Then
-	deepEqual(inst.options.bounce, bounce, "Bounce value set correctly?");
+	assert.deepEqual(inst.options.bounce, bounce, "Bounce value set correctly?");
 });
 
-test("bounce - left/up", function(assert) {
+QUnit.test("bounce - left/up", function(assert) {
 	var done1 = assert.async();
 	var done2 = assert.async();
 
-	var el = $("#mflick1")[0];
+	// Given
+	var el1 = $("#mflick1")[0];
+	var el2 = $("#mflick2")[0];
+
 	var bounce = [ 50, 70 ];
 	var depaPos, depaPos2;
 
-	// Given
-	create(el, { bounce : bounce }, {
-		beforeRestore: function(e) {
-			depaPos = e.depaPos[0];
-		}
-	});
+	this.inst = [
+			create(el1, { bounce : bounce }, {
+				beforeRestore: function(e) {
+					depaPos = e.depaPos[0];
+				}
+			}),
+			create(el2, {
+				bounce : bounce,
+				horizontal: false
+			}, {
+				beforeRestore: function(e) {
+					depaPos2 = e.depaPos[1];
+				}
+			})
+		];
 
 	// When
-	simulator(el, {
+	simulator(el1, {
 		pos: [0, 0],
 		deltaX: 250
 	}, function() {
 		// Then
-		ok(depaPos === -bounce[0], "Left bounce distance is correct?");
+		assert.ok(depaPos === -bounce[0], "Left bounce distance is correct?");
 		done1();
-	});
-
-	// Given
-	var el2 = $("#mflick2")[0];
-
-	create(el2, {
-		bounce : bounce,
-		horizontal: false
-	}, {
-		beforeRestore: function(e) {
-			depaPos2 = e.depaPos[1];
-		}
 	});
 
 	// When
@@ -210,86 +221,87 @@ test("bounce - left/up", function(assert) {
 		deltaY: 250
 	}, function() {
 		// Then
-		ok(depaPos2 === -bounce[0], "Left bounce distance is correct?");
+		assert.ok(depaPos2 === -bounce[0], "Left bounce distance is correct?");
 		done2();
 	});
 });
 
 
-test("bounce - right/down", function(assert) {
+QUnit.test("bounce - right/down", function(assert) {
 	var done1 = assert.async();
 	var done2 = assert.async();
 
-	var el = $("#mflick1")[0];
+	// Given
+	var el1 = $("#mflick1")[0];
+	var el2 = $("#mflick2")[0];
+
 	var bounce = [ 50, 70 ];
 	var depaPos, depaPos2;
 
-	// Given
-	var inst = create(el, {
-		bounce : bounce,
-		defaultIndex: 2
-	}, {
-		beforeRestore: function(e) {
-			depaPos = e.depaPos[0];
-		}
-	});
-	var max = inst._mcInst.options.max[0];
+	var inst = this.inst = [
+			create(el1, {
+				bounce : bounce,
+				defaultIndex: 2
+			}, {
+				beforeRestore: function(e) {
+					depaPos = e.depaPos[0];
+				}
+			}),
+			create(el2, {
+				bounce : bounce,
+				defaultIndex: 2,
+				horizontal: false
+			}, {
+				beforeRestore: function(e) {
+					depaPos2 = e.depaPos[1];
+				}
+			})
+		];
 
 	// When
-	simulator(el, {
+	var max1 = inst[0]._mcInst.options.max[0];
+
+	simulator(el1, {
 		pos: [0, 0],
 		deltaX: -250,
 		deltaY: 0
 	}, function() {
 		// Then
-		ok(depaPos === max + bounce[1], "Right bounce distance is correct?");
+		assert.ok(depaPos === max1 + bounce[1], "Right bounce distance is correct?");
 		done1();
 	});
 
-	// Given
-	var el2 = $("#mflick2")[0];
-	var inst2 = create(el2, {
-		bounce : bounce,
-		defaultIndex: 2,
-		horizontal: false
-	}, {
-		beforeRestore: function(e) {
-			depaPos2 = e.depaPos[1];
-		}
-	});
-
-	var max2 = inst2._mcInst.options.max[1];
-
 	// When
+	var max2 = inst[1]._mcInst.options.max[1];
+
 	simulator(el2, {
 		pos: [100, 50],
 		deltaX: 0,
 		deltaY: -250
 	}, function() {
 		// Then
-		ok(depaPos2 === max2 + bounce[1], "Down bounce distance is correct?");
+		assert.ok(depaPos2 === max2 + bounce[1], "Down bounce distance is correct?");
 		done2();
 	});
 });
 
-test("threshold #1 - (horizontal) when moved more than threshold pixels", function(assert) {
+QUnit.test("threshold #1 - (horizontal) when moved more than threshold pixels", function(assert) {
 	var done = assert.async();
 
 	// Given
 	var el = $("#mflick2")[0];
 	var changedPanelNo = 0;
-	var panelNo;
 
-	var inst = create(el, {
+	var inst = this.inst = create(el, {
 		circular : true,
 		threshold : 80
 	}, {
 		flickEnd : function(e) {
 			changedPanelNo = e.no;
 		}
-	})
+	});
 
-	panelNo = inst._conf.panel.no;
+	var panelNo = inst._conf.panel.no;
 
 	// When
 	simulator(el, {
@@ -299,21 +311,20 @@ test("threshold #1 - (horizontal) when moved more than threshold pixels", functi
 	}, function() {
 		// Then
 		setTimeout(function() {
-			deepEqual(panelNo + 1, changedPanelNo, "Moved to next panel?");
+			assert.deepEqual(panelNo + 1, changedPanelNo, "Moved to next panel?");
 			done();
 		}, 500);
     });
 });
 
-test("threshold #2 - (vertical) when moved more than threshold pixels", function(assert) {
+QUnit.test("threshold #2 - (vertical) when moved more than threshold pixels", function(assert) {
 	var done = assert.async();
 
 	// Given
 	var el = $("#mflick2")[0];
 	var changedPanelNo = 0;
-	var panelNo;
 
-	var inst = create(el, {
+	var inst = this.inst = create(el, {
 		circular : true,
 		horizontal : false,
 		threshold : 20
@@ -323,7 +334,7 @@ test("threshold #2 - (vertical) when moved more than threshold pixels", function
 		}
 	});
 
-	panelNo = inst._conf.panel.no;
+	var panelNo = inst._conf.panel.no;
 
 	// When
 	simulator(el, {
@@ -333,29 +344,27 @@ test("threshold #2 - (vertical) when moved more than threshold pixels", function
 	}, function() {
 		// Then
 		setTimeout(function() {
-			deepEqual(panelNo + 1, changedPanelNo, "Moved to next panel?");
+			assert.deepEqual(panelNo + 1, changedPanelNo, "Moved to next panel?");
 			done();
 		},500);
     });
 });
 
-test("threshold #3 - (horizontal) when moved less than threshold pixels", function(assert) {
+QUnit.test("threshold #3 - (horizontal) when moved less than threshold pixels", function(assert) {
 	var done = assert.async();
 
 	// Given
-	var el = $("#mflick2").get(0);
-	var changedPanelNo;
-
-	var inst = create(el, {
+	var el = $("#mflick2")[0];
+	var inst = this.inst = create(el, {
 		circular : true,
 		threshold : 80
 	}, {
 		flickEnd : function(e) {
-			changedPanelNo = e.no;
+			panelNo = e.no;
 		}
 	});
 
-	changedPanelNo = panelNo = inst._conf.panel.no;
+	var panelNo = inst._conf.panel.no;
 
 	// When
 	simulator(el, {
@@ -364,29 +373,27 @@ test("threshold #3 - (horizontal) when moved less than threshold pixels", functi
 		deltaY: 0
 	}, function() {
 		// Then
-		deepEqual(panelNo, changedPanelNo, "Not moved to next panel?");
+		assert.deepEqual(inst._conf.panel.no, panelNo, "Not moved to next panel?");
 		done();
     });
 });
 
-test("threshold #4 - (vertical) when moved less than threshold pixels", function(assert) {
+QUnit.test("threshold #4 - (vertical) when moved less than threshold pixels", function(assert) {
 	var done = assert.async();
 
 	// Given
-	var el = $("#mflick2").get(0);
-	var changedPanelNo;
-
-	var inst = create(el, {
+	var el = $("#mflick2")[0];
+	var inst = this.inst = create(el, {
 		circular : true,
 		horizontal : false,
 		threshold : 20
 	}, {
 		flickEnd : function(e) {
-			changedPanelNo = e.no;
+			panelNo = e.no;
 		}
 	});
 
-	changedPanelNo = panelNo = inst._conf.panel.no;
+	var panelNo = inst._conf.panel.no;
 
 	// When
 	simulator(el, {
@@ -395,26 +402,26 @@ test("threshold #4 - (vertical) when moved less than threshold pixels", function
 		deltaY: -10
 	}, function() {
 		// Then
-		deepEqual(panelNo, changedPanelNo, "Not moved to next panel?");
+		assert.deepEqual(inst._conf.panel.no, panelNo, "Not moved to next panel?");
 		done();
     });
 });
 
-test("defaultIndex", function () {
+QUnit.test("defaultIndex", function(assert) {
 	// Given
 	var defaultIndex = 3;
-	var inst = create("#mflick3", {
+	var inst = this.inst = create("#mflick3", {
 		circular : true,
 		defaultIndex : defaultIndex
 	});
 
 	// Then
-	equal(inst._conf.panel.no, defaultIndex, "The initial panel number should be "+ defaultIndex);
+	assert.equal(inst._conf.panel.no, defaultIndex, "The initial panel number should be "+ defaultIndex);
 });
 
-test("hwAccelerable", function () {
+QUnit.test("hwAccelerable", function(assert) {
 	// Given
-	var inst = create("#mflick3", {
+	var inst = this.inst = create("#mflick3", {
 		hwAccelerable: true,
 		defaultIndex: 1
 	});
@@ -423,147 +430,155 @@ test("hwAccelerable", function () {
 	var panel = inst._conf.panel.$list[0];
 
 	// Then
-	ok($.css(container[0], "willChange") === "transform" || $getTransformValue(container).indexOf("3d") >= 0, "HW Acceleration css property is prensent in container element?");
-	ok($.css(panel, "willChange") === "transform" || $getTransformValue(panel).indexOf("3d") >= 0, "HW Acceleration css property is prensent in panel element?");
+	assert.ok($.css(container[0], "willChange") === "transform" || $getTransformValue(container).indexOf("3d") >= 0, "HW Acceleration css property is prensent in container element?");
+	assert.ok($.css(panel, "willChange") === "transform" || $getTransformValue(panel).indexOf("3d") >= 0, "HW Acceleration css property is prensent in panel element?");
 });
 
 
-module("Methods call", hooks);
-test("getIndex()", function() {
+QUnit.module("Methods call", hooks);
+QUnit.test("getIndex()", function(assert) {
 	// Given
 	var defaultIndex = 3;
-	var inst = create("#mflick3", {
+	var inst = this.inst = create("#mflick3", {
 		circular : true,
 		defaultIndex : defaultIndex
 	});
 
 	// Then
-	equal(defaultIndex, inst.getIndex(), "Get current logical panel number");
-	notEqual(inst.getIndex(true), inst.getIndex(), "Physical and logical panel number are different");
-	deepEqual(inst._conf.panel.$list[inst.getIndex(true)], inst.getElement()[0], "Get current panel using physical panel number");
+	assert.equal(defaultIndex, inst.getIndex(), "Get current logical panel number");
+	assert.notEqual(inst.getIndex(true), inst.getIndex(), "Physical and logical panel number are different");
+	assert.deepEqual(inst._conf.panel.$list[inst.getIndex(true)], inst.getElement()[0], "Get current panel using physical panel number");
 });
 
-test("getElement()", function() {
+QUnit.test("getElement()", function(assert) {
 	// Given
-	var inst = create("#mflick2", { circular : true });
+	var inst = this.inst = create("#mflick2", { circular : true });
 	var element = inst.getElement();
 	var value = (inst._getBasePositionIndex() * 100) +"%";
 
 	// Then
-	ok(element.length, "The element was invoked correctly?");
-	deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
+	assert.ok(element.length, "The element was invoked correctly?");
+	assert.deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
 });
 
-test("getNextElement()", function() {
+QUnit.test("getNextElement()", function(assert) {
 	// Given
-	var inst = create("#mflick2", { circular : true });
+	var inst = this.inst = create("#mflick2", { circular : true });
 	var element = inst.getNextElement();
 	var currentTransform = $getTransformValue(inst.getElement(), true);
 	var nextTransform = $getTransformValue(element, true);
 
 	// Then
-	ok(element, "The element was invoked correctly?");
-	ok(currentTransform < nextTransform, "Invoked element is placed next to the current element?");
+	assert.ok(element, "The element was invoked correctly?");
+	assert.ok(currentTransform < nextTransform, "Invoked element is placed next to the current element?");
 });
 
-test("getNextIndex()", function() {
+QUnit.test("getNextIndex()", function(assert) {
 	// Given
-	var inst = create("#mflick3", { circular : true });
+	var inst = this.inst = create("#mflick3", { circular : true });
 	var index = inst.getNextIndex();
 
 	// Then
-	deepEqual(typeof index, "number", "Returned number?");
-	deepEqual(index, inst.getIndex() + 1, "Is the next index of current?");
+	assert.deepEqual(typeof index, "number", "Returned number?");
+	assert.deepEqual(index, inst.getIndex() + 1, "Is the next index of current?");
 
 	// When
 	inst.moveTo(inst._conf.panel.count - 1,0);  // move to last
 	index = inst.getNextIndex();
 
 	// Then
-	deepEqual(index, 0, "Next index of last, should be '0'");
+	assert.deepEqual(index, 0, "Next index of last, should be '0'");
 
 	// When
 	index = inst.getNextIndex(true);
 
 	// Then
-	ok(index > 0, "Next physical index of last, should be great than 0");
+	assert.ok(index > 0, "Next physical index of last, should be great than 0");
 });
 
-test("getPrevElement()", function() {
+QUnit.test("getPrevElement()", function(assert) {
 	// Given
-	var inst = create("#mflick2", { circular : true });
+	var inst = this.inst = create("#mflick2", { circular : true });
 	var element = inst.getPrevElement();
 	var currentTransform = $getTransformValue(inst.getElement(), true);
 	var prevTransform = $getTransformValue(element, true);
 
 	// Then
-	ok(element, "The element was invoked correctly?");
-	ok(currentTransform > prevTransform, "Invoked element is placed previous to the current element?");
+	assert.ok(element, "The element was invoked correctly?");
+	assert.ok(currentTransform > prevTransform, "Invoked element is placed previous to the current element?");
 });
 
-test("getPrevIndex()", function() {
+QUnit.test("getPrevIndex()", function(assert) {
 	// Given
-	var inst = create("#mflick3", { circular : true });
+	var inst = this.inst = create("#mflick3", { circular : true });
 	var index = inst.getPrevIndex();
 
 	// Then
-	deepEqual(typeof index, "number", "Returned number?");
-	deepEqual(index, inst._conf.panel.count - 1, "Previous index of first, should be "+ (inst._conf.panel.count - 1));
+	assert.deepEqual(typeof index, "number", "Returned number?");
+	assert.deepEqual(index, inst._conf.panel.count - 1, "Previous index of first, should be "+ (inst._conf.panel.count - 1));
 
 	// When
 	inst.moveTo(2,0);  // move to second
 	index = inst.getPrevIndex();
 
 	// Then
-	deepEqual(index, inst.getIndex() - 1, "Is the previous index of current?");
+	assert.deepEqual(index, inst.getIndex() - 1, "Is the previous index of current?");
 
 	// When
 	inst.moveTo(0,0);  // move to the first
 	index = inst.getPrevIndex(true);
 
 	// Then
-	ok(inst.getPrevIndex() > index, "Previous physical index, should be less than logical index");
+	assert.ok(inst.getPrevIndex() > index, "Previous physical index, should be less than logical index");
 });
 
-test("getAllElements()", function() {
+QUnit.test("getAllElements()", function(assert) {
 	// Given
-	var inst = create("#mflick2", { circular : true });
+	var inst = this.inst = create("#mflick2", { circular : true });
 	var elements = inst.getAllElements();
 
 	// Then
-	deepEqual(elements.length, inst.$container.children().length, "Returned all panel elements?");
+	assert.deepEqual(elements.length, inst.$container.children().length, "Returned all panel elements?");
 });
 
-test("getTotalCount()", function() {
+QUnit.test("getTotalCount()", function(assert) {
 	// Given
-	var inst = create("#mflick1");
+	this.inst = [
+			create("#mflick1"),
+			create("#mflick2-1", { circular : true })
+		];
+
+	var inst = this.inst[0];
+
+	// When
 	var counts = inst.getTotalCount();
 
 	// Then
-	deepEqual(counts, inst.$container.children().length, "Return total panel elements count?");
-	inst._mcInst.destroy();
+	assert.deepEqual(counts, inst.$container.children().length, "Return total panel elements count?");
+
+	// Given
+	inst = this.inst[1];
 
 	// When
-	inst = create("#mflick2-1", { circular : true });
 	counts = inst.getTotalCount();
 
 	// Then
-	ok(counts < inst.$container.children().length, "When circular options is set, the elements count is less than physical elements count");
+	assert.ok(counts < inst.$container.children().length, "When circular options is set, the elements count is less than physical elements count");
 
 	// When
 	counts = inst.getTotalCount(true);
-	deepEqual(counts, inst.$container.children().length, "Returned physical elements total count?");
+	assert.deepEqual(counts, inst.$container.children().length, "Returned physical elements total count?");
 });
 
-test("isPlaying()", function(assert) {
+QUnit.test("isPlaying()", function(assert) {
 	var done = assert.async();
 
 	// Given
 	var el = $("#mflick3").get(0);
-	var inst = create(el);
+	var inst = this.inst = create(el);
 
 	// Then
-	ok(!inst.isPlaying(), "Must return 'false' when not animating");
+	assert.ok(!inst.isPlaying(), "Must return 'false' when not animating");
 
 	// When
 	simulator(el, {
@@ -573,14 +588,14 @@ test("isPlaying()", function(assert) {
 		duration: 1000
 	}, function() {
 		// Then
-		ok(inst.isPlaying(), "During the animation must return 'true'");
+		assert.ok(inst.isPlaying(), "During the animation must return 'true'");
 		done();
     });
 });
 
-test("next()", function() {
+QUnit.test("next()", function(assert) {
 	// Given
-	var inst = create("#mflick2-1", { circular : true });
+	var inst = this.inst = create("#mflick2-1", { circular : true });
 	var nextElement = inst.getNextElement();
 
 	// When
@@ -589,13 +604,13 @@ test("next()", function() {
 	var value = (inst._getBasePositionIndex() * 100) +"%";
 
 	// Then
-	deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to next panel correctly?");
-	deepEqual(element[0], nextElement[0], "The next element is what expected?");
+	assert.deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to next panel correctly?");
+	assert.deepEqual(element[0], nextElement[0], "The next element is what expected?");
 });
 
-test("prev()", function() {
+QUnit.test("prev()", function(assert) {
 	// Given
-	var inst = create("#mflick2-1", { circular : true });
+	var inst = this.inst = create("#mflick2-1", { circular : true });
 	var prevElement = inst.getPrevElement();
 
 	// When
@@ -604,11 +619,11 @@ test("prev()", function() {
 	var value = (inst._getBasePositionIndex() * 100) +"%";
 
 	// Then
-	deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to previous panel correctly?");
-	deepEqual(element.html(), prevElement.html(), "The previous element is what expected?");
+	assert.deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to previous panel correctly?");
+	assert.deepEqual(element.html(), prevElement.html(), "The previous element is what expected?");
 });
 
-test("prev() / next() - Animation", function (assert) {
+QUnit.test("prev() / next() - Animation", function(assert) {
 	var done = assert.async();
 
 	// Given
@@ -621,29 +636,31 @@ test("prev() / next() - Animation", function (assert) {
 			nextElement.shift().html() : prevElement.shift().html();
 
 		// Then
-		deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to next panel correctly?");
-		deepEqual(html, targetHtml, "The previous/next element is what expected?");
+		assert.deepEqual($getTransformValue(element).match(RegExp(value)) + "", value, "Moved to next panel correctly?");
+		assert.deepEqual(html, targetHtml, "The previous/next element is what expected?");
 
 		!prevElement.length && done();
 	};
 
-	var inst1 = create("#mflick1", { circular : true }, { flickEnd: handler });
-	var inst2 = create("#mflick2", { circular : true }, { flickEnd: handler });
-	var inst3 = create("#mflick2-1", { circular : true }, { flickEnd: handler });
-	var inst4 = create("#mflick3-1", { circular : true }, { flickEnd: handler });
+	var inst = this.inst = [
+			create("#mflick1", { circular : true }, { flickEnd: handler }),
+			create("#mflick2", { circular : true }, { flickEnd: handler }),
+			create("#mflick2-1", { circular : true }, { flickEnd: handler }),
+			create("#mflick3-1", { circular : true }, { flickEnd: handler })
+		];
 
-	var nextElement = [ inst1.getNextElement(), inst2.getNextElement() ];
-	var prevElement = [ inst3.getPrevElement(), inst4.getPrevElement() ];
+	var nextElement = [ inst[0].getNextElement(), inst[1].getNextElement() ];
+	var prevElement = [ inst[2].getPrevElement(), inst[3].getPrevElement() ];
 
 	// When
-	inst1.next();
-	inst2.next(100);
+	inst[0].next();
+	inst[1].next(100);
 
-	inst3.prev();
-	inst4.prev(300);
+	inst[2].prev();
+	inst[3].prev(300);
 });
 
-test("enableInput() / disableInput()", function(assert) {
+QUnit.test("enableInput() / disableInput()", function(assert) {
 	var done1 = assert.async();
 	var done2 = assert.async();
 
@@ -651,7 +668,7 @@ test("enableInput() / disableInput()", function(assert) {
 	var el = $("#mflick1")[0];
 	var isEventFired = false;
 
-	var inst = create(el, null, function(e) {
+	var inst = this.inst = create(el, null, function(e) {
 		isEventFired = true;
 	});
 
@@ -661,7 +678,7 @@ test("enableInput() / disableInput()", function(assert) {
 	simulator(el, {
 		deltaX: -70
 	}, function() {
-		ok(!isEventFired, "Input action should be disabled.");
+		assert.ok(!isEventFired, "Input action should be disabled.");
 		done1();
 
 		// When
@@ -670,13 +687,13 @@ test("enableInput() / disableInput()", function(assert) {
 		simulator(el, {
 			deltaX: -70
 		}, function() {
-			ok(isEventFired, "Input action should be enabled.");
+			assert.ok(isEventFired, "Input action should be enabled.");
 			done2();
 		});
 	});
 });
 
-test("destroy()", function(assert) {
+QUnit.test("destroy()", function(assert) {
 	var done = assert.async();
 
 	// Given
@@ -698,11 +715,11 @@ test("destroy()", function(assert) {
 	};
 
 	var inst = create($el, {
-		defaultIndex: 2,
-		circular: true
-	}, function(e) {
-		isEventFired = true;
-	});
+			defaultIndex: 2,
+			circular: true
+		}, function(e) {
+			isEventFired = true;
+		});
 
 	var containerClassName = inst.$container.attr("class");
 
@@ -712,22 +729,22 @@ test("destroy()", function(assert) {
 	simulator($el[0], {
 		deltaX: -70
 	}, function() {
-		ok(!isEventFired, "Input action should be disabled.");
-		ok($el.find("."+ containerClassName).length === 0, "Container element was removed?");
+		assert.ok(!isEventFired, "Input action should be disabled.");
+		assert.ok($el.find("."+ containerClassName).length === 0, "Container element was removed?");
 
-		ok($el.attr("class") === origPanelStyle.wrapper.className, "Wrapper element class has been restored?");
-		ok($el.attr("style") === origPanelStyle.wrapper.style, "Wrapper element style has been restored?");
+		assert.ok($el.attr("class") === origPanelStyle.wrapper.className, "Wrapper element class has been restored?");
+		assert.ok($el.attr("style") === origPanelStyle.wrapper.style, "Wrapper element style has been restored?");
 
 		$panel.each(function(i, v) {
 			var $panelEl = $(v);
 
-			ok($panelEl.attr("class") === origPanelStyle.list[i].className, "Panel element class has been restored?");
-			ok($panelEl.attr("style") === origPanelStyle.list[i].style, "Panel element style has been restored?");
+			assert.ok($panelEl.attr("class") === origPanelStyle.list[i].className, "Panel element class has been restored?");
+			assert.ok($panelEl.attr("style") === origPanelStyle.list[i].style, "Panel element style has been restored?");
 		});
 
 		// check for the resources release
 		for(var x in inst) {
-			equal(inst[x], null, "'" + x + "' is released?");
+			assert.equal(inst[x], null, "'" + x + "' is released?");
 		}
 
 		done();
@@ -745,31 +762,41 @@ test("destroy()", function(assert) {
 	inst2.destroy();
 
 	// Then
-	equal(panelCount, $el2.children().length, "Removed cloned panel elements?");
+	assert.equal(panelCount, $el2.children().length, "Removed cloned panel elements?");
 });
 
 
-module("moveTo() method", hooks);
-test("Check for functionality", function() {
+QUnit.module("moveTo() method", hooks);
+QUnit.test("Check for functionality", function(assert) {
 	// Given
 	var eventOrder = [ "beforeFlickStart", "flick", "flickEnd" ];
 
 	var setCondition = function(no, duration) {
+		el = inst.$wrapper[0];
 		el.eventFired = [];
 		inst.moveTo(no, duration);
 	};
 
 	var runTest = function(no, value) {
-		equal(inst._conf.panel.no, no, "Panel number indicate correct panel number?");
-		equal($getTransformValue(inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
-		ok(inst.getElement().html().indexOf("Layer "+ no), "Moved correctly?");
-		deepEqual(el.eventFired, eventOrder, "Custom events are fired?");
+		assert.equal(inst._conf.panel.no, no, "Panel number indicate correct panel number?");
+		assert.equal($getTransformValue(inst.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
+		assert.ok(inst.getElement().html().indexOf("Layer "+ no), "Moved correctly?");
+		assert.deepEqual(el.eventFired, eventOrder, "Custom events are fired?");
 	};
 
-	// Given - test #1
-	var el = $("#mflick1").get(0);
-	var inst = create(el);
+	var el;
+	this.inst = [
+			create("#mflick1"),
+			create("#mflick2", { defaultIndex: 1 }),
+			create("#mflick3", {
+				circular : true,
+				defaultIndex: 3
+			}),
+			create("#mflick3-1", { circular : true })
+		];
 
+	// Given - test #1
+	var inst = this.inst[0];
 	var count = inst._conf.panel.count;
 	var value = (count - 1) * 100;
 
@@ -779,7 +806,6 @@ test("Check for functionality", function() {
    	// Then
 	runTest(count - 1, value);
 
-
 	// When
 	setCondition(0, 0);  // move to first
 
@@ -788,8 +814,7 @@ test("Check for functionality", function() {
 
 
 	// Given - test #2
-	el = $("#mflick2").get(0);
-	inst = create(el, { defaultIndex: 1 });
+	inst = this.inst[1];
 
 	// When
 	setCondition(2,0);
@@ -803,15 +828,8 @@ test("Check for functionality", function() {
 	// Then
 	runTest(0,"0%");
 
-	inst._mcInst.destroy();
-
 	// Given - test #3
-	el = $("#mflick3").get(0);
-	inst = create(el, {
-		circular : true,
-		defaultIndex: 3
-	});
-
+	inst = this.inst[2];
 	count = inst._conf.panel.count;
 
 	// When
@@ -836,9 +854,7 @@ test("Check for functionality", function() {
 	runTest("2",value);
 
 	// Given - test #4
-	el = $("#mflick3-1").get(0);
-	inst = create(el, { circular : true });
-
+	inst = this.inst[3];
 	value = (inst._getBasePositionIndex() * 100) +"%";
 
 	// When
@@ -854,7 +870,7 @@ test("Check for functionality", function() {
 	runTest(1,value);
 });
 
-test("Animation #1 - Default duration value", function(assert) {
+QUnit.test("Animation #1 - Default duration value", function(assert) {
 	var done = assert.async();
 
 	// Given
@@ -863,33 +879,35 @@ test("Animation #1 - Default duration value", function(assert) {
 			var id = this.$wrapper.attr("id");
 
 			// Then
-			equal($getTransformValue(this.getElement()).match(RegExp(value)) + "", value, "Moved to last panel?");
+			assert.equal($getTransformValue(this.getElement()).match(RegExp(value)) + "", value, "Moved to last panel?");
 
 			id === "mflick2" && done();
 		}
 	};
 
-	var inst1 = create("#mflick1", null, customEvt);
-	var inst2 = create("#mflick2", null, customEvt);
+	var inst = this.inst = [
+			create("#mflick1", null, customEvt),
+			create("#mflick2", null, customEvt)
+		];
 
-	var count = inst1._conf.panel.count;
+	var count = inst[0]._conf.panel.count;
 	var value = (count - 1) * 100;
 
 	// When
-	inst1.moveTo(count - 1);  // move to last
-	inst2.moveTo(count - 1, 500);  // move to last
+	inst[0].moveTo(count - 1);  // move to last
+	inst[1].moveTo(count - 1, 500);  // move to last
 });
 
-test("Animation #2 - Moving to last panel", function (assert) {
+QUnit.test("Animation #2 - Moving to last panel", function(assert) {
 	var done = assert.async();
 
 	// Given
-	var inst = create("#mflick3", { circular : true }, {
+	var inst = this.inst = create("#mflick3", { circular : true }, {
 		flickEnd: function() {
 			// Then
-			equal(count - 1, this._conf.panel.no, "Panel number indicate last panel number?");
-			deepEqual($getTransformValue(this.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
-			ok(this.getElement().html().indexOf("Layer " + (count - 1)), "Moved correctly?");
+			assert.equal(count - 1, this._conf.panel.no, "Panel number indicate last panel number?");
+			assert.deepEqual($getTransformValue(this.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
+			assert.ok(this.getElement().html().indexOf("Layer " + (count - 1)), "Moved correctly?");
 
 			done();
 		}
@@ -903,17 +921,17 @@ test("Animation #2 - Moving to last panel", function (assert) {
 	inst.moveTo(index, 300);  // move to last
 });
 
-test("Animation #3 - moving to next panel", function (assert) {
+QUnit.test("Animation #3 - moving to next panel", function(assert) {
 	var done = assert.async();
 
 	// Given
-	var inst = create("#mflick3", { circular : true }, {
+	var inst = this.inst = create("#mflick3", { circular : true }, {
 		flickEnd: function() {
 			// Then
-			equal(panelToMove, indexToMove, "The index value to move From current panel is "+ indexToMove +"?");
-			equal(this._conf.panel.no, panelToMove, "Panel number indicate 'panel "+ indexToMove +"'?");
-			deepEqual($getTransformValue(this.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
-			ok(this.getElement().html().indexOf("Layer 2"), "Moved correctly?");
+		assert.equal(panelToMove, indexToMove, "The index value to move From current panel is "+ indexToMove +"?");
+		assert.equal(this._conf.panel.no, panelToMove, "Panel number indicate 'panel "+ indexToMove +"'?");
+		assert.deepEqual($getTransformValue(this.getElement()).match(RegExp(value)) + "", value, "Invoked element is placed in right position?");
+		assert.ok(this.getElement().html().indexOf("Layer 2"), "Moved correctly?");
 
 			done();
 		}
@@ -928,12 +946,12 @@ test("Animation #3 - moving to next panel", function (assert) {
 });
 
 
-module("resize() method", hooks);
-test("Check for panel resize", function() {
+QUnit.module("resize() method", hooks);
+QUnit.test("Check for panel resize", function(assert) {
 	// Given
 	var el = $("#mflick1");
 	var width = el.width();
-	var inst = create(el, { defaultIndex: 2 });
+	var inst = this.inst = create(el, { defaultIndex: 2 });
 
 	var panel = inst._conf.panel;
 	var oldCoordMax = inst._mcInst.options.max;
@@ -942,23 +960,23 @@ test("Check for panel resize", function() {
 	el.width(width + 50);
 
 	// Then
-	notDeepEqual(panel.size, el.width(), "The panel width is less than the current wrapper size");
+	assert.notDeepEqual(panel.size, el.width(), "The panel width is less than the current wrapper size");
 
 	// When
 	inst.resize();
 	var maxPosX = panel.size * ( panel.count - 1 );
 
 	// Then
-	equal($getTransformValue(inst.$container, true), maxPosX, "Current container element is in right position?");
-	deepEqual(maxPosX, inst._mcInst.options.max[0], "Max coord value has been set correctly?");
-	deepEqual(panel.size, el.width(), "The panel width should be same as current wrapper element");
-	deepEqual(inst.$container.width(), panel.count * panel.size, "The panel container width should be same as current panels element total width");
-	notDeepEqual(oldCoordMax, inst._mcInst.options.max, "Should be updated MovableCoord's 'max' options value");
+	assert.equal($getTransformValue(inst.$container, true), maxPosX, "Current container element is in right position?");
+	assert.deepEqual(maxPosX, inst._mcInst.options.max[0], "Max coord value has been set correctly?");
+	assert.deepEqual(panel.size, el.width(), "The panel width should be same as current wrapper element");
+	assert.deepEqual(inst.$container.width(), panel.count * panel.size, "The panel container width should be same as current panels element total width");
+	assert.notDeepEqual(oldCoordMax, inst._mcInst.options.max, "Should be updated MovableCoord's 'max' options value");
 });
 
-test("When change padding option", function() {
+QUnit.test("When change padding option", function(assert) {
 	// Given
-	var inst = create("#mflick1", {
+	var inst = this.inst = create("#mflick1", {
 		circular: true,
 		previewPadding: [10,10]
 	});
@@ -984,7 +1002,7 @@ test("When change padding option", function() {
 	};
 
 	var runTest = function(val, horizontal) {
-		deepEqual(padding, val, "Padding value changed?");
+		assert.deepEqual(padding, val, "Padding value changed?");
 
 		var max, panelSize, coord, top;
 
@@ -999,10 +1017,11 @@ test("When change padding option", function() {
 			top = parseInt(inst.$container.css("top"), 10);
 		}
 
-		equal(max, panel.size * (panel.count - 1), "Max coord value has been set correctly?");
-		equal(panelSize, panel.size, "The panel width should be same as current wrapper element");
-		equal(coord, panel.size * panel.index, "Current MovableCoord's value has been set correctly?");
-		top && equal(val[0], top, "Container's top value has been set correctly?");
+		assert.equal(max, panel.size * (panel.count - 1), "Max coord value has been set correctly?");
+		assert.equal(panelSize, panel.size, "The panel width should be same as current wrapper element");
+		assert.equal(coord, panel.size * panel.index, "Current MovableCoord's value has been set correctly?");
+
+		top &&assert.equal(val[0], top, "Container's top value has been set correctly?");
 	};
 
 	// When
@@ -1016,9 +1035,10 @@ test("When change padding option", function() {
 
 	// Then
 	runTest([20,30], true);
+	inst.destroy();
 
 	// Given
-	inst = create("#mflick2", {
+	inst = this.inst = create("#mflick2", {
 		circular: true,
 		previewPadding: [10, 10],
 		horizontal: false
@@ -1039,14 +1059,14 @@ test("When change padding option", function() {
 });
 
 
-module("restore() method", hooks);
-test("Check for basic functionality", function (assert) {
+QUnit.module("restore() method", hooks);
+QUnit.test("Check for basic functionality", function(assert) {
 	var done = assert.async();
 
 	// Given
 	var el = $("#mflick1").get(0);
 	var eventOrder = ["beforeRestore", "flick", "restore"];
-	var inst = create(el, {
+	var inst = this.inst = create(el, {
 		duration : 200,
 		hwAccelerable : true,
 		threshold : 70,
@@ -1072,12 +1092,12 @@ test("Check for basic functionality", function (assert) {
 	};
 
 	var runTest = function() {
-		var currPos = inst._mcInst.get()[0];
-		var panel = inst._conf.panel;
+	var currPos = inst._mcInst.get()[0];
+	var panel = inst._conf.panel;
 
-		ok(currPos % panel.size === 0 && currPos === panel.currIndex * panel.size, "Restored in right position?");
-		ok(panelIndex.no === inst.getIndex() && panelIndex.index === inst.getIndex(true), "Restored to previous panel number?");
-		deepEqual(el.eventFired, eventOrder, "Custom events are fired correctly?");
+	assert.ok(currPos % panel.size === 0 && currPos === panel.currIndex * panel.size, "Restored in right position?");
+	assert.ok(panelIndex.no === inst.getIndex() && panelIndex.index === inst.getIndex(true), "Restored to previous panel number?");
+	assert.deepEqual(el.eventFired, eventOrder, "Custom events are fired correctly?");
 
 		el.eventFired = [];
 	};
@@ -1105,7 +1125,7 @@ test("Check for basic functionality", function (assert) {
 
 	// When
 	inst.restore(100);
-	ok(inst.isPlaying(), "Is animating?");
+	assert.ok(inst.isPlaying(), "Is animating?");
 
 	setTimeout(function() {
 		runTest();
@@ -1113,11 +1133,11 @@ test("Check for basic functionality", function (assert) {
 	}, 200);
 });
 
-test("When restoring after event stop", function () {
+QUnit.test("When restoring after event stop", function(assert) {
 	// Given
 	var el = $("#mflick1").get(0);
 
-	var inst = create(el, {
+	var inst = this.inst = create(el, {
 		duration : 100,
 		hwAccelerable : true,
 		threshold : 70,
@@ -1137,9 +1157,9 @@ test("When restoring after event stop", function () {
 	};
 
 	var runTest = function() {
-		ok(inst._mcInst.get()[0] % inst._conf.panel.size === 0, "Panel is in right position?");
-		ok(panelIndex.no === inst.getIndex() && panelIndex.index === inst.getIndex(true), "Restored to previous panel number?");
-		ok(!el.eventFired.length, "Events are not fired?");
+		assert.ok(inst._mcInst.get()[0] % inst._conf.panel.size === 0, "Panel is in right position?");
+		assert.ok(panelIndex.no === inst.getIndex() && panelIndex.index === inst.getIndex(true), "Restored to previous panel number?");
+		assert.ok(!el.eventFired.length, "Events are not fired?");
 	};
 
 	// Given
@@ -1186,10 +1206,12 @@ test("When restoring after event stop", function () {
 });
 
 
-module("Custom events", hooks);
-test("When changes panel normally", function(assert) {
+QUnit.module("Custom events", hooks);
+QUnit.test("When changes panel normally", function(assert) {
 	var done1 = assert.async();
 	var done2 = assert.async();
+
+	var inst = this.inst;
 
 	// Given
 	var eventOrder = ["beforeFlickStart", "flick", "flickEnd"],
@@ -1220,21 +1242,22 @@ test("When changes panel normally", function(assert) {
 		};
 
 	var setCondition = function(el, option) {
-		var inst;
+		var f = create(el, option, handler);
+		inst.push(f);
 
 		data[el.id] = {
 			eventFired: [],
 			panel: {},
-			inst: inst = create(el, option, handler),
+			inst: f,
 			currentPanel: {
-				index: inst._conf.panel.currIndex,
-				no: inst._conf.panel.currNo,
-				getElement: inst.getElement(),
-				getIndex: inst.getIndex(),
-				getNextElement: inst.getNextElement(),
-				getPrevElement: inst.getPrevElement(),
-				getNextIndex: inst.getNextIndex(),
-				getPrevIndex: inst.getPrevIndex()
+				index: f._conf.panel.currIndex,
+				no: f._conf.panel.currNo,
+				getElement: f.getElement(),
+				getIndex: f.getIndex(),
+				getNextElement: f.getNextElement(),
+				getPrevElement: f.getPrevElement(),
+				getNextIndex: f.getNextIndex(),
+				getPrevIndex: f.getPrevIndex()
 			}
 		};
 	};
@@ -1243,7 +1266,6 @@ test("When changes panel normally", function(assert) {
 		simulator(el, {
 			deltaX: -70
 		}, function() {
-
 			var eventFired = data[el.id].eventFired;
 			var inst = data[el.id].inst;
 			var panel = data[el.id].panel;
@@ -1251,7 +1273,7 @@ test("When changes panel normally", function(assert) {
 
 			// Then
 			setTimeout(function() {
-				deepEqual(eventOrder, eventFired, "Custom events are fired in correct order");
+			assert.deepEqual(eventOrder, eventFired, "Custom events are fired in correct order");
 
 				var isCircular = inst.options.circular;
 
@@ -1279,7 +1301,7 @@ test("When changes panel normally", function(assert) {
 									value += 1;
 								}
 
-								equal(oPanel[x], value, "Panel "+ x +" should be changed on '"+ i +"' event.");
+							assert.equal(oPanel[x], value, "Panel "+ x +" should be changed on '"+ i +"' event.");
 
 							} else {
 								value = condition[x];
@@ -1288,13 +1310,13 @@ test("When changes panel normally", function(assert) {
 									value = currentPanel[ value ];
 								}
 
-								deepEqual(oPanel[x], value, "The value from '"+ x +"', should be equals with previous '"+ condition[x] +"' changed on "+ i +" event.");
+							assert.deepEqual(oPanel[x], value, "The value from '"+ x +"', should be equals with previous '"+ condition[x] +"' changed on "+ i +" event.");
 							}
 						});
 
 					} else {
 						$.each(oPanel, function(x) {
-							deepEqual(oPanel[x], currentPanel[x], "The value from '"+ x +"', shouldn't be changed during '"+ i +"' event.");
+						assert.deepEqual(oPanel[x], currentPanel[x], "The value from '"+ x +"', shouldn't be changed during '"+ i +"' event.");
 						});
 					}
 				});
@@ -1313,14 +1335,14 @@ test("When changes panel normally", function(assert) {
 	runTest(el, done2);
 });
 
-test("When stop event on beforeRestore", function(assert) {
+QUnit.test("When stop event on beforeRestore", function(assert) {
 	var done = assert.async();
 
 	// Given
 	var el = $("#mflick1").get(0);
 	var called = false;
 
-	create(el, { threshold : 100 }, {
+	this.inst = create(el, { threshold : 100 }, {
 		beforeRestore : function(e) {
 			e.stop();
 		},
@@ -1335,19 +1357,19 @@ test("When stop event on beforeRestore", function(assert) {
 		deltaX: -70
 	}, function() {
 		// Then
-		ok(!called, "restore event should not be triggered");
+		assert.ok(!called, "restore event should not be triggered");
 		done();
     });
 });
 
-test("When stop on flick event", function (assert) {
+QUnit.test("When stop on flick event", function(assert) {
 	var done = assert.async();
 
 	// Given
 	var el = $("#mflick1").get(0);
 	var translate = "";
 
-	var inst = create(el, null, {
+	var inst = this.inst = create(el, null, {
 			flick : function(e) {
 				e.stop();
 				translate = $getTransformValue(inst.$container, true);
@@ -1362,19 +1384,19 @@ test("When stop on flick event", function (assert) {
 	}, function() {
 		// Then
 		setTimeout(function() {
-			notEqual(translate, $getTransformValue(inst.$container, true), "The panel should not be moved during change");
+			assert.notEqual(translate, $getTransformValue(inst.$container, true), "The panel should not be moved during change");
 			done();
 		}, 500);
     });
 });
 
-test("When stop on beforeFlickStart event", function (assert) {
+QUnit.test("When stop on beforeFlickStart event", function(assert) {
 	var done = assert.async();
 
 	// Given
 	var el = $("#mflick1").get(0);
 	var translate = "";
-	var inst = create(el, null, {
+	var inst = this.inst = create(el, null, {
 			beforeFlickStart: function (e) {
 				e.stop();
 				el.eventFired = [];
@@ -1396,29 +1418,30 @@ test("When stop on beforeFlickStart event", function (assert) {
 	}, function () {
 		// Then
 		var currPos = inst._getDataByDirection(inst._mcInst.get())[0];
-		ok(currPos % inst._conf.panel.size, "The panel stopped to move and is not positioned well?");
+		assert.ok(currPos % inst._conf.panel.size, "The panel stopped to move and is not positioned well?");
 
 		// When
 		inst.restore(0);
 		currPos = inst._getDataByDirection(inst._mcInst.get())[0];
 
 		// Then
-		ok(currPos % inst._conf.panel.size === 0, "The panel restored in its original position?");
+		assert.ok(currPos % inst._conf.panel.size === 0, "The panel restored in its original position?");
 
-		deepEqual(panelIndex, {
-			no: inst._conf.panel.no,
-			index: inst._conf.panel.index
-		}, "Restored panel index value?");
+		assert.deepEqual(panelIndex, {
+				no: inst._conf.panel.no,
+				index: inst._conf.panel.index
+			}, "Restored panel index value?");
 
-		deepEqual(el.eventFired, [ "beforeRestore", "flick", "restore" ], "Restore events are fired correctly?");
+		assert.deepEqual(el.eventFired, [ "beforeRestore", "flick", "restore" ], "Restore events are fired correctly?");
 
 		var direction = $.unique(el.eventDirection);
-		ok(direction.length === 1 && direction[0] === eg.MovableCoord.DIRECTION_RIGHT, "Direction value of restore event are right?");
+		assert.ok(direction.length === 1 && direction[0] === eg.MovableCoord.DIRECTION_RIGHT, "Direction value of restore event are right?");
 		done();
 	});
 });
 
-test("Events fired on move API call when duration is 0", function () {
+QUnit.test("Events fired on move API call when duration is 0", function(assert) {
+	// Given
 	var el = $("#mflick1").get(0);
 	var eventOrder = ["beforeFlickStart", "flick", "flickEnd"];
 	var panel = {};
@@ -1437,7 +1460,7 @@ test("Events fired on move API call when duration is 0", function () {
 			}
 		};
 
-	var inst = create(el, { circular: true }, {
+	var inst = this.inst = create(el, { circular: true }, {
 			beforeFlickStart: handler,
 			flick: handler,
 			flickEnd: handler
@@ -1457,9 +1480,9 @@ test("Events fired on move API call when duration is 0", function () {
 				var oPanel = panel[i];
 
 				if (i === "flickEnd") {
-					ok(oPanel.no === currentPanel.no + 1 || oPanel.no === currentPanel.no - 1, "Panel no should be change on 'flickEnd' event.");
+				assert.ok(oPanel.no === currentPanel.no + 1 || oPanel.no === currentPanel.no - 1, "Panel no should be change on 'flickEnd' event.");
 				} else {
-					equal(oPanel.no, currentPanel.no, "Panel no shouldn't be changed before 'flickEnd' event.");
+				assert.equal(oPanel.no, currentPanel.no, "Panel no shouldn't be changed before 'flickEnd' event.");
 				}
 			});
 		};
@@ -1469,7 +1492,7 @@ test("Events fired on move API call when duration is 0", function () {
 	inst.next(0);
 
 	// Then
-	deepEqual(el.eventFired, eventOrder, "Events are fired in correct order, after calling next()?");
+	assert.deepEqual(el.eventFired, eventOrder, "Events are fired in correct order, after calling next()?");
 	runTest();
 
 	// When
@@ -1477,7 +1500,7 @@ test("Events fired on move API call when duration is 0", function () {
 	inst.prev(0);
 
 	// Then
-	deepEqual(el.eventFired, eventOrder, "Events are fired in correct order, after calling prev()?");
+	assert.deepEqual(el.eventFired, eventOrder, "Events are fired in correct order, after calling prev()?");
 	runTest();
 
 	// When
@@ -1485,13 +1508,14 @@ test("Events fired on move API call when duration is 0", function () {
 	inst.moveTo(1,0);
 
 	// Then
-	deepEqual(el.eventFired, eventOrder, "Events are fired in correct order, after calling moveTo()?");
+	assert.deepEqual(el.eventFired, eventOrder, "Events are fired in correct order, after calling moveTo()?");
 	runTest();
 });
 
-test("Events fired on move API call when duration is greater than 0", function (assert) {
+QUnit.test("Events fired on move API call when duration is greater than 0", function(assert) {
 	var done = assert.async();
 
+	// Given
 	var el = $("#mflick1").get(0);
 	var eventOrder = ["beforeFlickStart", "flick", "flickEnd"];
 	var method = "";
@@ -1510,7 +1534,7 @@ test("Events fired on move API call when duration is greater than 0", function (
 			}
 		};
 
-	var inst = create(el, { circular: true }, {
+	var inst = this.inst = create(el, { circular: true }, {
 			beforeFlickStart: handler,
 			flick: handler,
 			flickEnd: handler
@@ -1536,13 +1560,13 @@ test("Events fired on move API call when duration is greater than 0", function (
 
 	setTimeout(function() {
 		for(var x in eventFired) {
-			deepEqual(eventFired[x], eventOrder, "Events are fired in correct order, after calling "+ x +"()?");
+			assert.deepEqual(eventFired[x], eventOrder, "Events are fired in correct order, after calling "+ x +"()?");
 		}
 		done();
 	}, 1000);
 });
 
-test("Check for continuous action: 1)restore, 2)flick ", function(assert) {
+QUnit.test("Check for continuous action: 1)restore, 2)flick ", function(assert) {
 	var done1 = assert.async();
 	var done2 = assert.async();
 
@@ -1550,8 +1574,7 @@ test("Check for continuous action: 1)restore, 2)flick ", function(assert) {
 	var el1 = $("#mflick1").get(0);
 	var el2 = $("#mflick2").get(0);
 
-	create(el1);
-	create(el2);
+	this.inst = [ create(el1), create(el2) ];
 
 	// When
 	simulator(el1, {
@@ -1560,7 +1583,7 @@ test("Check for continuous action: 1)restore, 2)flick ", function(assert) {
 	}, function() {
 		// Then
 		setTimeout(function() {
-			deepEqual(el1.eventFired, [ "flick", "beforeRestore", "flick", "restore" ], "Custom events for restoring are fired in correct order");
+			assert.deepEqual(el1.eventFired, [ "flick", "beforeRestore", "flick", "restore" ], "Custom events for restoring are fired in correct order");
 			done1();
 		},500);
 	});
@@ -1571,22 +1594,23 @@ test("Check for continuous action: 1)restore, 2)flick ", function(assert) {
 	}, function() {
 		// Then
 		setTimeout(function() {
-			deepEqual(el2.eventFired, [ "flick", "beforeFlickStart", "flick", "flickEnd" ], "Custom events for normal moves are fired in correct order");
+			assert.deepEqual(el2.eventFired, [ "flick", "beforeFlickStart", "flick", "flickEnd" ], "Custom events for normal moves are fired in correct order");
 			done2();
 		},500);
 	});
 });
 
-test("Check for direction during hold and unhold on flick event", function(assert) {
+QUnit.test("Check for direction during hold and unhold on flick event", function(assert) {
 	var done1 = assert.async();
 	var done2 = assert.async();
 	var done3 = assert.async();
 	var done4 = assert.async();
 
 	// Given
-	var directionHold = {},
-		directionUnhold = {},
-		handler = function(e) {
+	var inst = this.inst;
+	var directionHold = {};
+	var directionUnhold = {};
+	var handler = function(e) {
 			var id = this.$wrapper[0].id;
 
 			if (!directionHold[id]) {
@@ -1600,10 +1624,10 @@ test("Check for direction during hold and unhold on flick event", function(asser
 		};
 
 	var setCondition = function(elem, options) {
-		create(elem, options || { circular: true }, {
+		inst.push(create(elem, options || { circular: true }, {
 			flick: handler,
 			circular: true
-		});
+		}));
 	};
 
 	var check = function(arr, val) {
@@ -1618,8 +1642,8 @@ test("Check for direction during hold and unhold on flick event", function(asser
 		var id = el.id;
 
 		// Then
-		ok(check(directionHold[id], eg.MovableCoord.DIRECTION_LEFT), "Is left during touch hold?");
-		ok(check(directionUnhold[id], eg.MovableCoord.DIRECTION_LEFT), "Is left during touch unhold?");
+		assert.ok(check(directionHold[id], eg.MovableCoord.DIRECTION_LEFT), "Is left during touch hold?");
+		assert.ok(check(directionUnhold[id], eg.MovableCoord.DIRECTION_LEFT), "Is left during touch unhold?");
 		done1();
 	});
 
@@ -1632,8 +1656,8 @@ test("Check for direction during hold and unhold on flick event", function(asser
 		var id = el2.id;
 
 		// Then
-		ok(check(directionHold[id], eg.MovableCoord.DIRECTION_RIGHT), "Is right during touch hold?");
-		ok(check(directionUnhold[id], eg.MovableCoord.DIRECTION_RIGHT), "Is right during touch unhold?");
+		assert.ok(check(directionHold[id], eg.MovableCoord.DIRECTION_RIGHT), "Is right during touch hold?");
+		assert.ok(check(directionUnhold[id], eg.MovableCoord.DIRECTION_RIGHT), "Is right during touch unhold?");
 		done2();
 	});
 
@@ -1649,8 +1673,8 @@ test("Check for direction during hold and unhold on flick event", function(asser
 		var id = el3.id;
 
 		// Then
-		ok(check(directionHold[id], eg.MovableCoord.DIRECTION_UP), "Is up during touch hold?");
-		ok(check(directionUnhold[id], eg.MovableCoord.DIRECTION_UP), "Is up during touch unhold?");
+		assert.ok(check(directionHold[id], eg.MovableCoord.DIRECTION_UP), "Is up during touch hold?");
+		assert.ok(check(directionUnhold[id], eg.MovableCoord.DIRECTION_UP), "Is up during touch unhold?");
 		done3();
 	});
 
@@ -1666,15 +1690,15 @@ test("Check for direction during hold and unhold on flick event", function(asser
 		var id = el4.id;
 
 		// Then
-		ok(check(directionHold[id], eg.MovableCoord.DIRECTION_DOWN), "Is down during touch hold?");
-		ok(check(directionUnhold[id], eg.MovableCoord.DIRECTION_DOWN), "Is down during touch unhold?");
+		assert.ok(check(directionHold[id], eg.MovableCoord.DIRECTION_DOWN), "Is down during touch hold?");
+		assert.ok(check(directionUnhold[id], eg.MovableCoord.DIRECTION_DOWN), "Is down during touch unhold?");
 		done4();
 	});
 });
 
 
-module("Miscellaneous", hooks);
-test("Workaround for buggy link highlighting on android 2.x", function () {
+QUnit.module("Miscellaneous", hooks);
+QUnit.test("Workaround for buggy link highlighting on android 2.x", function(assert) {
 	// Given
 	eg.hook.agent = function () {
 		return {
@@ -1697,24 +1721,24 @@ test("Workaround for buggy link highlighting on android 2.x", function () {
 	eg.invoke("flicking",[null, eg]);
 
 	// When
-	var inst = create("#mflick1");
+	var inst = this.inst = create("#mflick1");
 	var $dummyAnchor = $(inst.$wrapper).find("> a:last-child")[0];
 	var leftValue;
 
 	// Then
-	ok($dummyAnchor.tagName === "A" && !$dummyAnchor.innerHTML, "Dummy anchor element should be added.");
+	assert.ok($dummyAnchor.tagName === "A" && !$dummyAnchor.innerHTML, "Dummy anchor element should be added.");
 
 	// When
 	inst.next(0);
 	leftValue = $.css(inst.getElement()[0], "left");
 
 	// Then
-	ok(leftValue && parseInt(leftValue, 10) > 0, "Panel should be moved using left property instead of translate.");
+	assert.ok(leftValue && parseInt(leftValue, 10) > 0, "Panel should be moved using left property instead of translate.");
 });
 
-test("Check public methods return", function () {
-	var inst = create("#mflick1", { circular: true });
-	var instance = [
+QUnit.test("Check public methods return", function (assert) {
+	var inst = this.inst = create("#mflick1", { circular: true });
+	var instances = [
 		{ method: "next()", data: inst.next(0) },
 		{ method: "prev()", data: inst.prev(0) },
 		{ method: "moveTo()", data: inst.moveTo(1,0) },
@@ -1722,18 +1746,18 @@ test("Check public methods return", function () {
 		{ method: "restore()", data: inst.restore(0) }
 	];
 
-	instance.forEach(function(v,i) {
-		deepEqual(v.data, inst, v.method + " is returning instance it self?");
+	$.each(instances, function(i, v) {
+		assert.deepEqual(v.data, inst, v.method + " is returning instance it self?");
 	});
 });
 
-test("Check panel move method, depending existence of css transform property", function () {
+QUnit.test("Check panel move method, depending existence of css transform property", function(assert) {
 	// when
-	var inst = create("#mflick1", { circular: true });
+	var inst = this.inst = create("#mflick1", { circular: true });
 	inst.next(0);
 
 	// Then
-	ok($getTransformValue(inst.$container).indexOf("translate") >= 0, "When support transform, should use translate to move.");
+	assert.ok($getTransformValue(inst.$container).indexOf("translate") >= 0, "When support transform, should use translate to move.");
 
 	// When
 	var fakeDoc = {
@@ -1745,14 +1769,14 @@ test("Check panel move method, depending existence of css transform property", f
 	inst2.next(0);
 
 	// Then
-	ok(inst2.$container[0].style.left.length > 0, "When doesn't support transform, should use left/top to move.");
+	assert.ok(inst2.$container[0].style.left.length > 0, "When doesn't support transform, should use left/top to move.");
 });
 
-test("When intent to initialize with non-existent element, should throw error.", function (assert) {
+QUnit.test("When intent to initialize with non-existent element, should throw error.", function(assert) {
 	assert.throws(function() {
 		// When
 		new eg.Flicking("#NO-ELEMENT");
-	}, function( err ) {
+	}, function() {
 		// Then
 		return true;
 	});
@@ -1763,13 +1787,13 @@ test("When intent to initialize with non-existent element, should throw error.",
 	assert.throws(function() {
 		// When
 		new eg.Flicking("#no-child");
-	}, function( err ) {
+	}, function() {
 		// Then
 		return true;
 	});
 });
 
-test("Custom event name with prefix: to handle jQuery plugin style", function () {
+QUnit.test("Custom event name with prefix: to handle jQuery plugin style", function(assert) {
 	// When
 	var events = [
 			"flicking:beforeFlickStart",
@@ -1783,7 +1807,7 @@ test("Custom event name with prefix: to handle jQuery plugin style", function ()
 			eventFired.push(e.eventType);
 		};
 
-	var inst = new eg.Flicking("#mflick1",{ circular: true }, "flicking:").on({
+	var inst = this.inst = new eg.Flicking("#mflick1",{ circular: true }, "flicking:").on({
 		"flicking:beforeFlickStart": handler,
 		"flicking:flick": handler,
 		"flicking:flickEnd": handler,
@@ -1795,5 +1819,5 @@ test("Custom event name with prefix: to handle jQuery plugin style", function ()
 	inst.trigger("flicking:beforeRestore");
 	inst.trigger("flicking:restore");
 
-	deepEqual(events, eventFired, "Events did fired correctly?");
+	assert.deepEqual(events, eventFired, "Events did fired correctly?");
 });
