@@ -183,14 +183,12 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 						this._subOptions = options;
 						this._status.curHammer = hammer;
 						this._panstart(e);
-					} else if (e.isFinal && e.direction !== MC.DIRECTION_NONE &&
-						!(e.direction & this._subOptions.direction)) {
-						// Although direction of movement is different from options.direction, MC should fire 'release' event.
+					} else if (e.isFinal) {
+						// substitute .on("panend tap", this._panend); Because it(tap, panend) cannot catch vertical(horizontal) movement on HORIZONTAL(VERTICAL) mode.
 						this._panend(e);
 					}
 				}, this))
-				.on("panstart panmove", this._panmove)
-				.on("panend tap", this._panend);
+				.on("panstart panmove", this._panmove);
 		},
 
 		_detachHammerEvents: function(hammer) {
@@ -415,7 +413,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			}
 
 			// Abort the animating post process when "tap" occurs
-			if (e.type === "tap") {
+			if (e.distance === 0 /*e.type === "tap"*/) {
 				this._setInterrupt(false);
 				this.trigger("release", {
 					depaPos: pos.concat(),
