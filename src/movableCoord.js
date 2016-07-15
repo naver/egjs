@@ -10,13 +10,12 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 	var SUPPORT_TOUCH = "ontouchstart" in global;
 
 	// jscs:enable maximumLineLength
-	// It is scheduled to be removed in case of build process.
-	// ns.__checkLibrary__( !("Hammer" in window), "You must download Hammerjs. (http://hammerjs.github.io/)\n\ne.g. bower install hammerjs");
-	// ns.__checkLibrary__( !("easeOutQuint" in $.easing), "You must download jQuery Easing Plugin(http://gsgd.co.uk/sandbox/jquery/easing/)\n\ne.g. bower install jquery.easing");
 	/**
 	 * Easily get computed coordinate values according user actions.
 	 * @group egjs
-	 * @ko MovableCoord는 사용자 행동에 의해, 좌표계를 제어할 수 있다.
+	 * @ko MovableCoord는 다양한 입력 장치(touch, mouse)를 통해 전달 받은 사용자 액션을 논리적 좌표로 변경한다. 컴포넌트 사용자는 변경된 논리적 좌표를 이용하여 실제 UI 에 반영할 수 있다.
+또한, MovableCoord는 사용자의 입력 감도에 따라 가속도가 적용된 애니메이션 좌표 정보를 제공한다. 예를 들어, 사용자가 빠르게 터치를 하였을 경우, 사용자 액션에 맞게 시간순으로 변경된 좌표를 제공한다.
+MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 	 * @class
 	 * @name eg.MovableCoord
 	 * @extends eg.Component
@@ -30,34 +29,35 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 	 * @param {Number} [options.max.0=100] The maximum x-coordinate <ko>최대 X좌표</ko>
 	 * @param {Number} [options.max.1=100] The maximum y-coordinate <ko>최대 Y좌표</ko>
 	 *
-	 * @param {Array} options.bounce The area can move using animation. <ko>바운스: 애니메이션에 의해 이동할 수 있는 영역 </ko>
-	 * @param {Boolean} [options.bounce.0=10] The bounce top range <ko>top 바우스 영역</ko>
-	 * @param {Boolean} [options.bounce.1=10] The bounce right range <ko>right 바우스 영역</ko>
-	 * @param {Boolean} [options.bounce.2=10] The bounce bottom range <ko>bottom 바우스 영역</ko>
-	 * @param {Boolean} [options.bounce.3=10] The bounce left range <ko>left 바우스 영역</ko>
+	 * @param {Array} options.bounce The area can move using animation. <ko>바운스 영역 : 바운스 효과로 인해서 좌표가 어느 범위까지 넘어갈 수 있는지를 의미한다. 만약, 사용자가 빠른 터치 동작 직후 손을 놓게 되어, 가속도가 발생한 경우라면, 좌표가 좌표영역 밖으로 나가게 된다. 이때, 좌표는 bounce 영역 범위까지 넘어가게 되며, 바운스 효과가 적용되어 다시 좌표영역 범위 안으로 들어오게 된다.</ko>
+	 * @param {Boolean} [options.bounce.0=10] The bounce top range <ko>top 바운스 영역. bounce가 1</ko>
+	 * @param {Boolean} [options.bounce.1=10] The bounce right range <ko>right 바운스 영역</ko>
+	 * @param {Boolean} [options.bounce.2=10] The bounce bottom range <ko>bottom 바운스 영역</ko>
+	 * @param {Boolean} [options.bounce.3=10] The bounce left range <ko>left 바운스 영역</ko>
 	 *
-	 * @param {Array} options.margin The area can move using user's action. <ko>영역별 마진 영역: 사용자의 액션에 의해, 추가로 이동할수 있는 영역</ko>
+	 * @param {Array} options.margin The area can move using user's action. <ko>사용자 액션에 의해, 추가로 이동할 수 있는 영역 : hold 상태에서 움직였을 때 최대로 넘어갈수 있는 좌표. 좌표 영역을 넘어 margin 영역까지 이동 후, 터치를 떼면 좌표는 최대 좌표영역 범위 안으로 들어온다.
+	 </ko>
 	 * @param {Boolean} [options.margin.0=0] The margin top range <ko>top 마진 영역</ko>
 	 * @param {Boolean} [options.margin.1=0] The margin right range <ko>right 마진 영역</ko>
 	 * @param {Boolean} [options.margin.2=0] The margin bottom range <ko>bottom 마진 영역</ko>
 	 * @param {Boolean} [options.margin.3=0] The margin left range <ko>left 마진 영역</ko>
-	 * @param {Array} options.circular <ko>영역별 순환 여부</ko>
+	 * @param {Array} options.circular <ko>영역별 순환 여부 : 해당 방향으로 좌표영역 밖으로 넘어가면, 반대방향에서 나타나게 할 지 여부를 지정하는 옵션이다.</ko>
 	 * @param {Boolean} [options.circular.0=false] The circular top range <ko>top 순환 영역</ko>
 	 * @param {Boolean} [options.circular.1=false] The circular right range <ko>right 순환 영역</ko>
 	 * @param {Boolean} [options.circular.2=false] The circular bottom range <ko>bottom 순환 영역</ko>
 	 * @param {Boolean} [options.circular.3=false] The circular left range <ko>left 순환 영역</ko>
 	 *
-	 * @param {Function} [options.easing=easing.easeOutCubic] Function of the Easing (jQuery UI Easing, jQuery Easing Plugin). <ko>Easing 함수</ko>
-	 * @param {Number} [options.maximumDuration=Infinity] The maximum duration. <ko>최대 좌표 이동 시간</ko>
-	 * @param {Number} [options.deceleration=0.0006] deceleration This value can be altered to change the momentum animation duration. higher numbers make the animation shorter. <ko>감속계수. 높을값이 주어질수록 애니메이션의 동작 시간이 짧아진다.</ko>
+	 * @param {Function} [options.easing=easing.easeOutCubic] Function of the Easing (jQuery UI Easing, jQuery Easing Plugin). <ko>가속도에 의해 애니메이션이 동작할 때의 Easing 함수</ko>
+	 * @param {Number} [options.maximumDuration=Infinity] The maximum duration. <ko>가속도에 의해 애니메이션이 동작할 때의 최대 좌표 이동 시간</ko>
+	 * @param {Number} [options.deceleration=0.0006] deceleration This value can be altered to change the momentum animation duration. higher numbers make the animation shorter. <ko>가속도에 의해 애니메이션이 동작할 때의 감속계수. 높은 값이 주어질수록 애니메이션의 동작 시간이 짧아진다.</ko>
 	 * @see Hammerjs {@link http://hammerjs.github.io}
 	 * @see There is usability issue due to default CSS properties ({@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}) settings from Hammerjs. movableCoord removes that settings to fix.
-	 * <ko>Hammerjs의 기본 CSS 속성({@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}) 으로 인해 사용성 이슈가 있다. 따라서, movableCoord는 hammerjs의 기본 CSS 속성을 제거하였다.</ko>
+	 * <ko>Hammerjs는 인스턴스 생성시 기본적으로 특정 CSS 속성({@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html})을 적용한다. 특정한 상황의 경우, 이 속성으로 인해 사용성 이슈가 발생한다. 따라서, movableCoord는 hammerjs의 기본 CSS 속성을 모두 제거 하였다.</ko>
 	 *
-	 * @codepen {"id":"bdVybg", "ko":"MovableCoord 기본 예제", "en":"MovableCoord basic example", "collectionId":"AKpkGW", "height": 403}
+	 * @codepen {"id":"jPPqeR", "ko":"MovableCoord Cube 예제", "en":"MovableCoord Cube example", "collectionId":"AKpkGW", "height": 403}
 	 *
 	 * @see Easing Functions Cheat Sheet {@link http://easings.net/}
-	 * @see To use other easing functions, import jQuery easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/}) or jQuery UI easing.({@link https://jqueryui.com/easing/})<ko>다른 easing 함수를 사용하고 싶다면, jQuery easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/})이나, jQuery UI easing({@link https://jqueryui.com/easing/}) 라이브러리를 삽입해야 한다.</ko>
+	 * @see To use other Easing functions, import jQuery Easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/}) or jQuery UI Easing.({@link https://jqueryui.com/easing/})<ko>다른 Easing 함수를 사용하고 싶다면, jQuery Easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/})이나, jQuery UI Easing({@link https://jqueryui.com/easing/}) 라이브러리를 사용 한다.</ko>
 	 *
 	 * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
 	 */
@@ -94,15 +94,18 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		 * Bind element
 		 * @ko movableCoord을 사용하기 위한 엘리먼트를 등록한다.
 		 * @method eg.MovableCoord#bind
-		 * @param {HTMLElement|String|jQuery} element  A target element. <ko>movableCoord을 사용하기 위한 엘리먼트</ko>
+		 * @param {HTMLElement|String|jQuery} element A target element. <ko>movableCoord을 사용하기 위한 엘리먼트</ko>
 		 * @param {Object} options
-		 * @param {Number} [options.direction=eg.MovableCoord.DIRECTION_ALL] The controllable directions. <ko>움직일수 있는 방향</ko>
-		 * @param {Array} options.scale The moving scale. <ko>이동 배율</ko>
+		 * @param {Number} [options.direction=eg.MovableCoord.DIRECTION_ALL] The controllable directions. <ko>사용자 액션에 의해 움직일 수 있는 좌표의 방향.
+		 - eg.MovableCoord.DIRECTION_ALL은 모든 방향으로 움직일 수 있다.
+		 - eg.MovableCoord.DIRECTION_HORIZONTAL은 가로 방향으로만 움직일 수 있다.
+		 - eg.MovableCoord.DIRECTION_VERTICAL은 세로 방향으로만 움직일 수 있다.</ko>
+		 * @param {Array} options.scale The moving scale. <ko>사용자 액션에 의해 이동하는 좌표의 배율</ko>
 		 * @param {Number} [options.scale.0=1] x-scale <ko>x축 배율</ko>
 		 * @param {Number} [options.scale.1=1] y-scale <ko>y축 배율</ko>
 		 * @param {Number} [options.thresholdAngle=45] The threshold angle about direction which range is 0~90 <ko>방향에 대한 임계각 (0~90)</ko>
-		 * @param {Number} [options.interruptable=true] interruptable This value can be enabled to interrupt cycle of the animation event. <ko>이 값이  true이면, 애니메이션의 이벤트 사이클을 중단할수 있다.</ko>
-		 * @param {Array} [options.inputType] inputType you can control input type. a kind of inputs are "touch", "mouse".  default value is ["touch", "mouse"] <ko>입력 타입을 지정할수 있다. 입력타입은 "touch", "mouse" 가 있으며, 배열로 입력할 수 있다. (기본값은 ["touch", "mouse"] 이다)</ko>
+		 * @param {Number} [options.interruptable=true] interruptable This value can be enabled to interrupt cycle of the animation event. <ko>가속에 의해 애니메이션이 발생 하였을 때, 이 값이 true이면, 사용자 액션이나 API에 의해 애니메이션을 중지할 수 있다. 하지만, 이 값이 false이면, 애니메이션이 진행 중에는 사용자 액션이나 API가 동작하지 않는다.</ko>
+		 * @param {Array} [options.inputType] inputType you can control input type. a kind of inputs are "touch", "mouse".  default value is ["touch", "mouse"] <ko>사용자 입력 타입을 지정할수 있다. 입력타입은 "touch", "mouse" 가 있으며, 배열로 입력할 수 있다. (기본값은 ["touch", "mouse"] 이다)</ko>
 		 *
 		 * @return {eg.MovableCoord} instance of itself<ko>자신의 인스턴스</ko>
 		 */
@@ -211,7 +214,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		 * Unbind element
 		 * @ko movableCoord을 사용하기 위한 엘리먼트를 해제한다.
 		 * @method eg.MovableCoord#unbind
-		 * @param {HTMLElement|String|jQuery} element The target element.<ko>movableCoord을 사용하기 위한 설정한 엘리먼트</ko>
+		 * @param {HTMLElement|String|jQuery} element The target element.<ko>movableCoord을 해제할 엘리먼트</ko>
 		 * @return {eg.MovableCoord} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		unbind: function(el) {
@@ -287,14 +290,14 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			this._grab();
 			/**
 			 * When an area was pressed
-			 * @ko 스크린에서 사용자가 손을 대었을 때
+			 * @ko 스크린에서 사용자가 손을 대었을 때 발생하는 이벤트
 			 * @name eg.MovableCoord#hold
 			 * @event
 			 * @param {Object} param
 			 * @param {Array} param.pos coordinate <ko>좌표 정보</ko>
 			 * @param {Number} param.pos.0 x-coordinate <ko>x 좌표</ko>
 			 * @param {Number} param.pos.1 y-coordinate <ko>y 좌표</ko>
-			 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자의 액션에 대한 hammerjs 이벤트 정보 (API에 의해 호출될 경우, null 을 반환)</ko>
+			 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자 액션에 대한 hammerjs 이벤트 정보로서, API에 의해 호출될 경우, null 을 반환한다.</ko>
 			 *
 			 */
 			this.trigger("hold", {
@@ -435,7 +438,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 				destPos = this._getPointOfIntersection(pos, destPos);
 				/**
 				 * When an area was released
-				 * @ko 스크린에서 사용자가 손을 떼었을 때
+				 * @ko 스크린에서 사용자가 손을 떼었을 때, 발생하는 이벤트
 				 * @name eg.MovableCoord#release
 				 * @event
 				 *
@@ -446,7 +449,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 				 * @param {Array} param.destPos destination coordinate <ko>애니메이션에 의해 이동할 좌표</ko>
 				 * @param {Number} param.destPos.0 destination x-coordinate <ko>x 좌표</ko>
 				 * @param {Number} param.destPos.1 destination y-coordinate <ko>y 좌표</ko>
-				 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자의 액션에 대한 hammerjs 이벤트 정보 (API에 의해 호출될 경우, null 을 반환)</ko>
+				 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자 액션에 대한 hammerjs 이벤트 정보로서, API에 의해 호출될 경우, null 을 반환한다.</ko>
 				 *
 				 */
 				this.trigger("release", {
@@ -691,7 +694,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		_triggerChange: function(pos, holding, e) {
 			/**
 			 * When coordinate was changed
-			 * @ko 좌표가 변경됐을 때 발생한다.
+			 * @ko 좌표가 변경됐을 때 발생하는 이벤트
 			 * @name eg.MovableCoord#change
 			 * @event
 			 *
@@ -700,7 +703,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			 * @param {Number} param.pos.0 departure x-coordinate <ko>x 좌표</ko>
 			 * @param {Number} param.pos.1 departure y-coordinate <ko>y 좌표</ko>
 			 * @param {Boolean} param.holding If an area was pressed, this value is 'true'. <ko>스크린을 사용자가 누르고 있을 경우 true </ko>
-			 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자의 액션에 대한 hammerjs 이벤트 정보 (API에 의해 호출될 경우, null 을 반환)</ko>
+			 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자 액션에 대한 hammerjs 이벤트 정보. setTo() 혹은 setBy() 컴포넌트 메서드를 호출해 이벤트가 발생한 경우에는 null을 반환한다.</ko>
 			 *
 			 */
 			this._pos = pos.concat();
@@ -715,9 +718,9 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		 * Get current position
 		 * @ko 현재 위치를 반환한다.
 		 * @method eg.MovableCoord#get
-		 * @return {Array} pos
-		 * @return {Number} pos.0 x position
-		 * @return {Number} pos.1 y position
+		 * @return {Array} pos <ko>좌표</ko>
+		 * @return {Number} pos.0 x position <ko>x 좌표</ko>
+		 * @return {Number} pos.1 y position <ko>y 좌표</ko>
 		 */
 		get: function() {
 			return this._pos.concat();
@@ -727,7 +730,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		 * Set to absolute position
 		 *
 		 * When duration is greater than zero, 'change' event is triggered
-		 * @ko 위치를 설정한다. 만약, duration이 0보다 크다면 'change' 이벤트가 발생한다.
+		 * @ko 위치를 설정한다. 만약, duration이 0보다 크다면 duration동안 애니메이션 된다.
 		 * @method eg.MovableCoord#setTo
 		 * @param {Number} x x-coordinate <ko>이동할 x좌표</ko>
 		 * @param {Number} y y-coordinate <ko>이동할 y좌표</ko>
