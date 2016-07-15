@@ -286,7 +286,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var cssValue = {};
 
 			panel.size = this.$wrapper[
-					horizontal ? "outerWidth" : "outerHeight"
+					horizontal ? "innerWidth" : "innerHeight"
 				]() - paddingSum;
 
 			if (paddingSum || !build) {

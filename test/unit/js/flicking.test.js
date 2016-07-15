@@ -113,7 +113,7 @@ test("previewPadding - horizontal", function() {
 	var padding = this.inst.options.previewPadding,
 		right = parseInt(this.inst.$wrapper.css("padding-right"), 10),
 		left = parseInt(this.inst.$wrapper.css("padding-left"), 10),
-		wrapperWidth = this.inst.$wrapper.outerWidth(),
+		wrapperWidth = this.inst.$wrapper.innerWidth(),
 		panelWidth = this.inst.$container.children().width();
 
 	// When
@@ -133,7 +133,7 @@ test("previewPadding - vertical", function() {
 	var padding = this.inst.options.previewPadding,
 		top = parseInt(this.inst.$wrapper.css("padding-top"), 10),
 		bottom = parseInt(this.inst.$wrapper.css("padding-bottom"), 10),
-		wrapperHeight = this.inst.$wrapper.outerHeight(),
+		wrapperHeight = this.inst.$wrapper.innerHeight(),
 		panelHeight = this.inst.$container.children().height();
 
 	// When
