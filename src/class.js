@@ -17,7 +17,7 @@ eg.module("class", [eg], function(ns) {
 	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 * @param {Object} def Class definition of object literal type. <ko>클래스 정의부로 Object 의 <a href="https://en.wikipedia.org/wiki/Literal_(computer_programming)">리터럴 규칙</a>을 따른다. 단, "construct" 는 생성자 함수를 위해 예약된 키 값이다. </ko>
 	 * @param {Function} def.construct constructor of class. <ko>클래스 생성자 함수 (Optional)</ko>
-	 * 
+	 *
 	 * @example
 	 	var Some = eg.Class({
 	 		//Class initialize
