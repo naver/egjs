@@ -174,3 +174,8 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+
+/dist
+/doc
+/report

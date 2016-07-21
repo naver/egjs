@@ -2,9 +2,10 @@
 IE 10+ (possibly 9 also), latest of Chrome/FF/Safari, iOS 7+ and Android 2.3+ (except 3.x)
 
 ### Quick steps to use:
+
 #### Load files
 
-```javascript
+``` html
 <!-- 1) Load jQuery -->
 <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 
@@ -14,7 +15,7 @@ IE 10+ (possibly 9 also), latest of Chrome/FF/Safari, iOS 7+ and Android 2.3+ (e
 
 #### Set up your HTML
 
-```markup
+``` html
 <!-- wrapper ---->
 <div id="wrapper">
   <!-- panels ---->
@@ -36,7 +37,7 @@ Just choose what is more convenient for you.
 
 #### As jQuery plugin style
 
-```javascript
+``` javascript
 // create flicking ui without option
 $("#wrapper").flicking();
 
@@ -57,7 +58,7 @@ $el.flicking("prev", 500);
 ```
 
 #### As creating instance
-```javascript
+``` javascript
 // create flicking ui without option
 new eg.Flicking("#wrapper");
 
