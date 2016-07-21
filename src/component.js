@@ -27,8 +27,8 @@ eg.module("component", [eg], function(ns) {
 		 * @ko 옵션을 관리한다.
 		 * @method eg.Component#option
 		 * @param {String} key
-		 * @param {Object} value
-		 * @return {eg.Component|Object} (set)instance of itself or (get)option value <ko>반환 값은 set으로 사용한 경우 자신의 인스턴스이고, get으로 사용한 경우 set에서 등록한 key의 value값이다.</ko>
+		 * @param {Object} [value]
+		 * @return {eg.Component|Object} (set)instance of itself or (get)option value <ko>옵션을 설정할 경우 인스턴스 자신을 반환하며, 옵션 값을 요청한 경우 해당 key에 저장된 값을 반환한다.</ko>
 		 * @example
 			var Some = eg.Class.extend(eg.Component);
 			var some = new Some({
