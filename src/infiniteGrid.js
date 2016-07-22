@@ -200,7 +200,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			var p;
 			for (p in this) {
 				if (this.hasOwnProperty(p) && /^_/.test(p) &&
-					typeof this[p] !== "function" && !(this[p] instanceof HTMLElement)) {
+					typeof this[p] !== "function" && !(this[p] instanceof Element)) {
 					data[p] = this[p];
 				}
 			}
