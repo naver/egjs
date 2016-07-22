@@ -9,14 +9,14 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 
 	// jscs:eable maximumLineLength
 	/**
-	* Add scrollEnd event support in jQuery
-	* @ko jQuery custom scrollEnd 이벤트 지원
+	* Bind a event handler to the "scrollEnd" jQuery custom event. It triggered when end of scroll the page.
+	* @ko "scrollEnd" jQuery custom 이벤트를 바인드한다. 이 이벤트는 스크롤이 끝날 때 발생한다.
 	* @name jQuery#scrollEnd
 	* @event
 	* @param {Event} e
 	* @param {Object} info
-	* @param {Number} info.top top position <ko>상단(top) 위치 값</ko>
-	* @param {Number} info.left left position <ko>왼쪽(left) 위치 값</ko>
+	* @param {Number} info.top The number of pixels that the document has already been scrolled vertically.<ko>세로로 스크롤된 픽셀</ko>
+	* @param {Number} info.left The number of pixels that the document has already been scrolled horizontally.<ko>가로로 스크롤된 픽셀</ko>
 	* @support {"ie": "9+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	* @example
 	* $(window).on("scrollend",function(e, info){
