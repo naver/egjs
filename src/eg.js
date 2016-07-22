@@ -67,8 +67,8 @@ eg.module("eg", ["jQuery", eg, window], function($, ns, global) {
 		// agent : null
 	};
 	/**
-	* Get the value of user-agent information the browser. Return value is cached.
-	* @ko 브라우저의 user-agent 정보를 반환한다. 반환 값을 캐시한다.
+	* Get the value of user-agent information the browser.
+	* @ko 브라우저의 user-agent 정보를 반환한다.
 	* @method eg#agent
 	* @return {Object} agent
 	* @return {Object} agent.os os infomation <ko>os 정보</ko>
@@ -354,9 +354,9 @@ if(agent.os.name === "naver") {
 	};
 
 	/**
-	 * Get the string containing css 'translate' method syntax.
+	 * Get the string containing css 'translate' syntax.
 	 *
-	 * @ko CSS translate 메서드 구문을 반환한다.
+	 * @ko CSS translate 구문을 반환한다.
 	 * @method eg#translate
 	 * @param {String} x x-axis <ko>x축</ko>
 	 * @param {String} y y-axis <ko>y축</ko>
@@ -374,9 +374,9 @@ eg.translate('10px', '200%', true);  // translate3d(10px,200%,0);
 	};
 
 	/**
-	 * Check to see if the hardware acceleration is supported. Return value is cached.
+	 * Check to see if the hardware acceleration is suitable to use.
 	 *
-	 * @ko 하드웨어 가속을 지원하는지 확인한다. 반환 값을 캐쉬한다.
+	 * @ko 하드웨어 가속을 사용하는 것이 적합한지 확인한다.
 	 * @method eg#isHWAccelerable
 	 * @return {Boolean}
 	 * @example
@@ -422,9 +422,9 @@ return defaultVal;
 	};
 
 	/**
-	 * Check to see CSS transition is supported. Return value is cached.
+	 * Check to see CSS transition is suitable to use.
 	 *
-	 * @ko CSS transtion을 지원하는지 확인한다. 반환 값을 캐쉬한다.
+	 * @ko CSS transtion을 사용하는 것이 적합한지 확인한다.
 	 * @method eg#isTransitional
 	 * @return {Boolean}
 	 * @example
