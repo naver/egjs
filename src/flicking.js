@@ -8,9 +8,9 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 
 	// jscs:enable validateLineBreaks, maximumLineLength
 	/**
-	 * Component to build flickable carousel UI
+	 * Component to build flickable carousel UI - Make UI placing panel elements like carousel style which can be moved by touch flicks.
 	 * @group egjs
-	 * @ko 캐로셀 플리킹 UI 구성 컴포넌트
+	 * @ko 캐로셀 형태의 플리킹 UI 구성 컴포넌트 - 회전목마처럼 패널 요소들을 배치하고, 터치를 통해 밀어 넘김(flick) 형태로 이동하는 UI를 만들 수 있다.
 	 * @class
 	 * @name eg.Flicking
 	 * @extends eg.Component
