@@ -15,8 +15,8 @@ eg.module("class", [eg], function(ns) {
 	 * @name eg.Class
 	 *
 	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
-	 * @param {Object} def Class definition of object literal type. <ko>클래스 정의부로 Object 의 <a href="https://en.wikipedia.org/wiki/Literal_(computer_programming)">리터럴 규칙</a>을 따른다. 단, "construct" 는 생성자 함수를 위해 예약된 키 값이다. </ko>
-	 * @param {Function} def.construct constructor of class. <ko>클래스 생성자 함수 (Optional)</ko>
+	 * @param {Object} def Class definition of object literal type. <ko>Class 정의부로 Object 의 <a href="https://en.wikipedia.org/wiki/Literal_(computer_programming)">리터럴 규칙</a>을 따른다. 단, "construct" 는 생성자 함수를 위해 예약된 키 값이다. </ko>
+	 * @param {Function} def.construct constructor of class. <ko>Class 생성자 함수 (Optional)</ko>
 	 *
 	 * @example
 	 	var Some = eg.Class({
@@ -59,10 +59,10 @@ eg.module("class", [eg], function(ns) {
 	 * @ko extend는 Class를 상속할 때 사용한다.
 	 * @static
 	 * @method eg.Class.extend
-	 * @param {eg.Class} oSuperClass Super class. <ko>상속하려는 클래스</ko>
-	 * @param {Object} def Class definition of object literal type. <ko>클래스 정의부로 Object 의 <a href="https://en.wikipedia.org/wiki/Literal_(computer_programming)">리터럴 규칙</a>을 따른다. 단, "construct" 는 생성자 함수를 위해 예약된 키 값이다.</ko>
-	 * @param {Function} def.construct <ko>클래스 생성자 함수 (Optional)</ko>
-	 * @return {eg.Class} instance of new eg.Class <ko>새로 생성된 eg.Class 인스턴스</ko>
+	 * @param {eg.Class} oSuperClass Super class. <ko>상속하려는 Class</ko>
+	 * @param {Object} def Class definition of object literal type. <ko>Class 정의부로 Object 의 <a href="https://en.wikipedia.org/wiki/Literal_(computer_programming)">리터럴 규칙</a>을 따른다. 단, "construct" 는 생성자 함수를 위해 예약된 키 값이다.</ko>
+	 * @param {Function} def.construct <ko>Class 생성자 함수 (Optional)</ko>
+	 * @return {eg.Class} instance of new eg.Class <ko>새로 생성된 Class 인스턴스</ko>
 	 * @example
 	 	var Some = eg.Class.extend(eg.Component,{
 			"some" : function(){}
