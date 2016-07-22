@@ -78,7 +78,7 @@ button:focus {
 .r_more_load {
 		text-align: center;
 }
-/* 이 부분은 로그를 위한 영역입니다. */
+/* logging */
 
 #debug {
 		height: 40px;
@@ -86,7 +86,7 @@ button:focus {
 		background-color: rgba(255, 255, 255, .6);
 		text-align: center;
 }
-/* 하이라이트 방지를 위한 CSS */
+/* prevent tap highlight */
 
 .NO_TAP_HIGHLIGHT {
 		-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -105,104 +105,114 @@ button:focus {
 </head>
 <body>
 		<section id="newsLoader1">
-				<ul id="newsLoader1_listContainer">
+				<ul class="listContainer">
 						<li class="row">
-								<p><a href="http://me2.do/FF0C3V8H">'수요' 못 읽은 현대차… 판매량 줄며 매출·영업익 감소(종합)</a></p>
+								<p><a href="http://www.bbc.com/news/world-europe-35088276">French far right National Front 'routed' in key vote</a></p>
 								<p></p>
 						</li>
 						<li class="row">
-								<p><a href="http://me2.do/FF0C3V8H">中 최대전자상가 가보니 \"갤S6 없어 못판다\"</a></p>
+								<p><a href="http://www.bbc.com/news/business-35019718">China football revolution can be a financial game changer</a></p>
 								<p></p>
 						</li>
 						<li class="row">
-								<p><a href="http://me2.do/FF0C3V8H">단말기 지원금 대신 요금할인 20%, 내일부터 적용</a></p>
+								<p><a href="http://www.bbc.com/news/magazine-35039105">The dogs that protect Little Penguins</a></p>
+								<p></p>
+						</li>
+						<li class="row">
+								<p><a href="http://www.bbc.com/news/magazine-34935220">'If I became an informer the chemotherapy could continue'</a></p>
+								<p></p>
+						</li>
+						<li class="row">
+								<p><a href="http://www.bbc.com/news/magazine-34797017">The employees shut inside coffins</a></p>
 								<p></p>
 						</li>
 				</ul>
-				<button id="newsLoader1_more">더보기1</button>
+				<button>load more 1</button>
 		</section>
 		<section id="newsLoader2">
-				<ul id="newsLoader2_listContainer">
+				<ul class="listContainer">
 						<li class="row">
-								<p><a href="http://me2.do/FF0C3V8H">중국 車업계 자체 기술로 전기차 개발…'고급·저가'로 승부</a></p>
+								<p><a href="http://www.bbc.com/news/world-europe-35088276">French far right National Front 'routed' in key vote</a></p>
 								<p></p>
 						</li>
 						<li class="row">
-								<p><a href="http://me2.do/FF0C3V8H">글로벌 \'환율전쟁\' 희생양 된 현대차</a></p>
+								<p><a href="http://www.bbc.com/news/business-35019718">China football revolution can be a financial game changer</a></p>
 								<p></p>
 						</li>
 						<li class="row">
-								<p><a href="http://me2.do/FF0C3V8H">아이폰7에 대하여 알아야 할 10가지</a></p>
+								<p><a href="http://www.bbc.com/news/magazine-35039105">The dogs that protect Little Penguins</a></p>
+								<p></p>
+						</li>
+						<li class="row">
+								<p><a href="http://www.bbc.com/news/magazine-34935220">'If I became an informer the chemotherapy could continue'</a></p>
+								<p></p>
+						</li>
+						<li class="row">
+								<p><a href="http://www.bbc.com/news/magazine-34797017">The employees shut inside coffins</a></p>
 								<p></p>
 						</li>
 				</ul>
-				<button id="newsLoader2_more">더보기2</button>
+				<button>load more 2</button>
 		</section>
 <script>
 var newsData = [
-	"김무성 \"文 특검 주장 환영…별도 특검법은 정치적 의도\"",
-	"현대차 1분기 영업이익 1조5천880억…4년여만에 최저치",
-	"軍 혹한기 훈련에 군의관 집단불참···기강 해이 논란",
-	"[뉴스줌인] 구글의 '프로젝트 파이', 왜 MVNO 진출일까?",
-	"중국 車업계 자체 기술로 전기차 개발…'고급·저가'로 승부",
-	"'수요' 못 읽은 현대차… 판매량 줄며 매출·영업익 감소(종합)",
-	"中 최대전자상가 가보니 \"갤S6 없어 못판다\"",
-	"단말기 지원금 대신 요금할인 20%, 내일부터 적용",
-	"글로벌 \'환율전쟁\' 희생양 된 현대차",
-	"아이폰7에 대하여 알아야 할 10가지",
+	"French far right National Front 'routed' in key vote",
+	"China football revolution can be a financial game changer",
+	"The dogs that protect Little Penguins",
+	"'If I became an informer the chemotherapy could continue'",
+	"The employees shut inside coffins"
 ];
 
 var newsAddUnit = 5;
 
+
 function NewsLoader(baseElId) {
 	this.baseId = baseElId;
 	this.$baseEl = $("#" + this.baseId);
-	this.$ListContainer = $("#" + this.baseId + "_listContainer");
-	this.$LoadBtn = $("#" + this.baseId + "_more");
-	// 더보기 버튼을 눌러 더 많은 코멘트 보여주기
-	this.$LoadBtn.on("click", $.proxy(this._appendNews,this));
+	this.$ListContainer = $(".listContainer", this.$baseEl);
+	this.$LoadBtn= $("button", this.$baseEl);
 
-	// delegate 사용시, delegate영역이 클릭시 하이라이트 되는 이슈 대응 코드
+	this.$LoadBtn.on("click", this._appendNews.bind(this));
+
+// Prevent unintended block highlighting when using delegation
 	this.$ListContainer.addClass("NO_TAP_HIGHLIGHT");
 
-	// 페이지 이동이 되는 대상의 부모를 delegate으로 지정
-	this.$ListContainer.on("click", "a", $.proxy(function(e){
-	    /*
-	     * @todo 서비스 개발자 : persist메소드를 통해 화면 복원에 필요한 데이터를 저장한다.
-	     * 복원에 필요한 정보 scroll 위치, javascript 객체, HTML String 등을 저장한다.
-	     */
-	    	// 스크롤 포지션 저장 (글로벌 영역에)
-		$.persist({
-			"scrollPos" : document.body.scrollTop
-		});
+	this.$ListContainer.on("click", "a", function(e){
+    /*
+     * @todo : Restore component state
+     */
+		var data = $.persist(this.baseId);
+		data.scrollPos = document.body.scrollTop;
+		$.persist(this.baseId, data);
 
-	},this));
+	}.bind(this));
 
 	var data = $.persist(this.baseId);
-	data && this.$ListContainer.html(data);
+	data && data.html && this.$ListContainer.html(data.html);
 }
 
 NewsLoader.prototype._appendNews = function() {
 	var newsHtml = "";
 	for(var i = 0 ; i < newsAddUnit ; i++){
-		var randomNews = newsData[Math.floor(Math.random()*10)];
+		var randomNews = newsData[Math.floor(Math.random()*newsData.length)];
 		newsHtml += "<li class='row'><p><a href='http://me2.do/FF0C3V8H'>"+randomNews+"</a><p></li>";
 	}
 	this.$ListContainer.append($(newsHtml));
 
     /*
-     * @todo 서비스 개발자 : persist메소드를 통해 화면 복원에 필요한 데이터를 저장한다.
-     * 복원에 필요한 정보 scroll 위치, javascript 객체, HTML String 등을 저장한다.
+     * @todo : use Persist method to save data for restoring component state
      */
-    	$.persist(this.baseId, this.$ListContainer.html());
+		var data = $.persist(this.baseId) || {};
+		data.html = this.$ListContainer.html();
+		$.persist(this.baseId, data);
 };
 
 new NewsLoader("newsLoader1");
 new NewsLoader("newsLoader2");
-// 스크롤 포지션 복원
-var data = $.persist();
-data && window.scrollTo(0, data.scrollPos);
 
+// Restore scroll position
+var data = $.persist(this.baseId);
+data && window.scrollTo(0, data.scrollPos);
 
 </script>
 </body>
