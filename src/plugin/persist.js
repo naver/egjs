@@ -184,7 +184,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	*/
 	/**
 	* Return stored state in global namespace as object
-	* @ko 글로벌 네임스페이스에 직렬화되어 저장된 상태를 객체로 반환한다. 
+	* @ko 글로벌 네임스페이스에 직렬화되어 저장된 상태를 객체로 반환한다.
 	* @method jQuery.persist
 	* @deprecated since version 1.2.0
 	* @return {Object}
@@ -197,10 +197,10 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	*/
 	/**
 	* Serialize given state as JSON and save paired with given key.
-	* @ko 받은 상태를 JSON 으로 직렬화하여 주어진 키와 짝지어 저장한다. 
+	* @ko 받은 상태를 JSON 으로 직렬화하여 주어진 키와 짝지어 저장한다.
 	* @method jQuery.persist
     * @param {String} key A string containing the name of the key you want to store. <ko>저장하려는 키의 이름을 나타내는 문자열</ko>
-    * @param {Object} state The value you want to give the key you are storing.<ko>키와 짝지어 저장하고자 하는 값</ko> 
+    * @param {Object} state The value you want to give the key you are storing.<ko>키와 짝지어 저장하고자 하는 값</ko>
 	* @example
 	$("a").on("click",function(e){
 		e.preventdefault();
@@ -210,7 +210,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	*/
 	/**
 	* Return the state stored with given key.
-	* @ko 주어진 키와 짝지어 저장된 상태를 반환한다. 
+	* @ko 주어진 키와 짝지어 저장된 상태를 반환한다.
 	* @method jQuery.persist
 	* @param {String} key A string containing the name of the key you want to retrieve the value of. <ko>값을 읽으려는 키의 이름에 해당하는 문자열</ko>
 	* @return {Object}
