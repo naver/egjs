@@ -114,7 +114,7 @@ eg.module("component", [eg], function(ns) {
 		},
 		/**
 		 * Check whether the event has been registered in component.
-		 * @ko 컴포넌트에 등록된 이벤트를 확인한다.
+		 * @ko 컴포넌트에 이벤트 등록 여부를 확인한다.
 		 * @method eg.Component#hasOn
 		 * @param {String} eventName
 		 * @return {Boolean}
