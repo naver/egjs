@@ -71,6 +71,8 @@ var hooks = {
 		$.each($.makeArray(this.inst), function(i, v) {
 			v && v.destroy && v.destroy();
 		});
+
+		this.inst = null;
 	}
 };
 
