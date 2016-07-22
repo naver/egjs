@@ -15,8 +15,8 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 	* @event
 	* @param {Event} e
 	* @param {Object} info
-	* @param {Number} info.top The position that the document has already been scrolled vertically.<ko>세로로 스크롤된 위치</ko>
-	* @param {Number} info.left The position that the document has already been scrolled horizontally.<ko>가로로 스크롤된 위치</ko>
+	* @param {Number} info.top The number of pixels that the document has already been scrolled vertically.<ko>문서의 세로 스크롤 px</ko>
+	* @param {Number} info.left The number of pixels that the document has already been scrolled horizontally.<ko>문서의 가로 스크롤 px</ko>
 	* @support {"ie": "9+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	* @example
 	* $(window).on("scrollend",function(e, info){
