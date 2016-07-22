@@ -3,9 +3,8 @@ node_modules
 config
 assets
 report
-*.json
+jsdoc.json
 tc
-src
 test
 *.js
 *.txt
