@@ -71,7 +71,7 @@ $ bower install egjs
 ### with NPM
 
 ```bash
-# then intall egjs using npm
+# intall egjs using npm
 $ npm install egjs
 ```
 
