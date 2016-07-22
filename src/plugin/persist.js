@@ -169,12 +169,12 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	}
 
 	/**
-	* Save current state.
-	* @ko 인자로 넘긴 현재 상태정보를 저장한다.
+	* Serialize given state as JSON and save in global namespace.
+	* @ko 받은 상태를 글로벌 네임스페이스에 JSON 으로 직렬화하여 저장한다
 	* @method jQuery.persist
 	* @deprecated since version 1.2.0
 	* @support {"ie": "9+", "ch" : "latest", "ff" : "1.5+",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.2+ (except 3.x)"}
-	* @param {Object} state State object to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체</ko>
+	* @param {Object} state A state information defined as JSON object <ko>JSON 객체로 정의한 상태 정보</ko>
 	* @example
 	$("a").on("click",function(e){
 		e.preventdefault();
@@ -183,11 +183,11 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	});
 	*/
 	/**
-	* Return current state
-	* @ko 인자로 넘긴 현재 상태정보를 반환한다.
+	* Return stored state in global namespace as object
+	* @ko 글로벌 네임스페이스에 직렬화되어 저장된 상태를 객체로 반환한다. 
 	* @method jQuery.persist
 	* @deprecated since version 1.2.0
-	* @return {Object} state Stored state object <ko>복원을 위해 저장되어있는 상태 객체</ko>
+	* @return {Object}
 	* @example
 	$("a").on("click",function(e){
 		e.preventdefault();
@@ -196,12 +196,11 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	});
 	*/
 	/**
-	* Save current state
-	* @ko 인자로 넘긴 현재 상태정보를 저장한다.
+	* Serialize given state as JSON and save paired with given key.
+	* @ko 받은 상태를 JSON 으로 직렬화하여 주어진 키와 짝지어 저장한다. 
 	* @method jQuery.persist
-    * @param {String} key State key to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체의 키</ko>
-    * @param {String} state State object to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체</ko>
-	* @return {Object} state Stored state object <ko>복원을 위해 저장되어있는 상태 객체</ko>
+    * @param {String} key A string containing the name of the key you want to store. <ko>저장하려는 키의 이름을 나타내는 문자열</ko>
+    * @param {Object} state The value you want to give the key you are storing.<ko>키와 짝지어 저장하고자 하는 값</ko> 
 	* @example
 	$("a").on("click",function(e){
 		e.preventdefault();
@@ -210,11 +209,11 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	});
 	*/
 	/**
-	* Return current state
-	* @ko 인자로 넘긴 현재 상태정보를 반환한다.
+	* Return the state stored with given key.
+	* @ko 주어진 키와 짝지어 저장된 상태를 반환한다. 
 	* @method jQuery.persist
-	* @param {String} key State key to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체의 키</ko>
-	* @return {Object} state Stored state object <ko>복원을 위해 저장되어있는 상태 객체</ko>
+	* @param {String} key A string containing the name of the key you want to retrieve the value of. <ko>값을 읽으려는 키의 이름에 해당하는 문자열</ko>
+	* @return {Object}
 	* @example
 	$("a").on("click",function(e){
 		e.preventdefault();
@@ -237,8 +236,8 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	};
 
 	/**
-	* Return persist needs by checking bfCache support
-	* @ko Persist 동작 필요여부를 반환한다.
+	* Return whether you need "Persist" module by checking the bfCache support of the current browser
+	* @ko 현재 브라우저의 bfCache 지원여부에 따라 persist 모듈의 필요여부를 반환한다.
 	* @method $.persist.isApplicable
 	* @example
 	$.persist.isApplicable();
