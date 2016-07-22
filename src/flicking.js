@@ -1192,7 +1192,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 
 		/**
 		 * Return either panel is animating or not
-		 * @ko 현재 애니메이션 중인지 여부를 리턴한다.
+		 * @ko 현재 애니메이션 중인지 여부를 반환한다.
 		 * @method eg.Flicking#isPlaying
 		 * @return {Boolean}
 		 */
@@ -1451,7 +1451,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 
 		/**
 		 * Enable input events
-		 * @ko 입력 이벤트를 활성한다.
+		 * @ko 입력 이벤트를 활성화한다.
 		 * @method eg.Flicking#enableInput
 		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
 		 */
@@ -1461,7 +1461,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 
 		/**
 		 * Disable input events
-		 * @ko 입력 이벤트를 비활성 한다.
+		 * @ko 입력 이벤트를 비활성화 한다.
 		 * @method eg.Flicking#disableInput
 		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
 		 */
