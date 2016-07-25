@@ -147,17 +147,10 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 				var hammer = new HM.Manager(el, {
 						recognizers: [
 							[
-								HM.Tap, {
-
-									// for long tap
-									time: 30000
-								}
-							],
-							[
 								HM.Pan, {
 									direction: subOptions.direction,
 									threshold: 0
-								}, ["tap"]
+								}
 							]
 						],
 
