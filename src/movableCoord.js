@@ -185,7 +185,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		},
 
 		_detachHammerEvents: function(hammer) {
-			hammer.off("hammer.input panstart panmove panend tap");
+			hammer.off("hammer.input panstart panmove panend");
 		},
 
 		_convertInputType: function(inputType) {
