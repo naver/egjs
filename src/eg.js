@@ -57,8 +57,8 @@ eg.module("eg", ["jQuery", eg, window], function($, ns, global) {
 
 	/**
 	 * @name eg.VERSION
-	 * @description version infomation
-	 * @ko 버전 정보
+	 * @description A string containing the egjs version number.
+	 * @ko egjs 버전
 	 */
 	ns.VERSION = "#__VERSION__#";
 	ns.hook =  {
@@ -67,18 +67,17 @@ eg.module("eg", ["jQuery", eg, window], function($, ns, global) {
 		// agent : null
 	};
 	/**
-	* Get browser agent information
-	*
-	* @ko Agent 정보를 반환한다. 값은 캐싱된다.
+	* Get the value of user-agent information the browser.
+	* @ko 브라우저의 user-agent 정보를 반환한다.
 	* @method eg#agent
 	* @return {Object} agent
-	* @return {String} agent.os os infomation <ko>os 정보 객체</ko>
+	* @return {Object} agent.os os infomation <ko>os 정보</ko>
 	* @return {String} agent.os.name os name (android, ios, window, mac) <ko>os 이름 (android, ios, window, mac)</ko>
 	* @return {String} agent.os.version os version <ko>os 버전</ko>
-	* @return {String} agent.browser browser information <ko>브라우저 정보 객체</ko>
+	* @return {String} agent.browser browser information <ko>브라우저 정보</ko>
 	* @return {String} agent.browser.name browser name (default, safari, chrome, sbrowser, ie, firefox) <ko>브라우저 이름 (default, safari, chrome, sbrowser, ie, firefox)</ko>
-	* @return {String} agent.browser.version browser version <ko>브라우저 버전 정보</ko>
-	* @return {String} agent.browser.webview check whether browser is webview <ko>웹뷰 브라우저 여부</ko>
+	* @return {String} agent.browser.version browser version <ko>브라우저 버전 </ko>
+	* @return {String} agent.browser.webview check to see if the browser is a webview<ko>웹뷰 브라우저 여부</ko>
 	* @example
 eg.agent();
 // {
@@ -355,12 +354,12 @@ if(agent.os.name === "naver") {
 	};
 
 	/**
-	 * Get a translate string
+	 * Get the string containing css 'translate' syntax.
 	 *
-	 * @ko translate 문자를 반환한다.
+	 * @ko CSS translate 구문을 반환한다.
 	 * @method eg#translate
-	 * @param {String} x x-coordinate <ko>x 좌표</ko>
-	 * @param {String} y y-coordinate <ko>y 좌표</ko>
+	 * @param {String} x x-axis <ko>x축</ko>
+	 * @param {String} y y-axis <ko>y축</ko>
 	 * @param {Boolean} [isHA] isHWAccelerable <ko>하드웨어 가속 여부</ko>
 	 * @return {String}
 	 * @example
@@ -375,13 +374,13 @@ eg.translate('10px', '200%', true);  // translate3d(10px,200%,0);
 	};
 
 	/**
-	 * Check hardware acceleration support
+	 * Check to see if the hardware acceleration is suitable to use.
 	 *
-	 * @ko 해당 기기에서 하드웨어 가속을 할 수 있다면 true을 반환하며, 값은 캐싱된다.
+	 * @ko 하드웨어 가속을 사용하는 것이 적합한지 확인한다.
 	 * @method eg#isHWAccelerable
 	 * @return {Boolean}
 	 * @example
-eg.isHWAccelerable();  // Returns 'true' when supports hardware acceleration
+eg.isHWAccelerable();  // Returns 'true' when hardware acceleration is supported
 
 // also, you can control return value
 eg.hook.isHWAccelerable = function(defalutVal,agent) {
@@ -423,13 +422,13 @@ return defaultVal;
 	};
 
 	/**
-	 * Check CSS transition support
+	 * Check to see CSS transition is suitable to use.
 	 *
-	 * @ko 해당 기기에서 css transtion을 할 수 있다면 true을 반환하며, 값은 캐싱된다.
+	 * @ko CSS transtion을 사용하는 것이 적합한지 확인한다.
 	 * @method eg#isTransitional
 	 * @return {Boolean}
 	 * @example
-eg.isTransitional();  // Returns 'true' when supports CSS transition
+eg.isTransitional();  // Returns 'true' when CSS transition is supported.
 
 // also, you can control return value
 eg.hook.isTransitional = function(defaultVal, agent) {
@@ -479,8 +478,8 @@ return defaultVal;
 		return resultCache(this, "_hasClickBug", [result, agent], result);
 	};
 
-	/*
-	* requestAnimationFrame polyfill
+	/**
+	* The polyfill for 'requestAnimationFrame'
 	* @ko requestAnimationFrame 폴리필
 	* @method eg#requestAnimationFrame
 	* @param {Function} timer function
@@ -494,8 +493,8 @@ return defaultVal;
 	ns.requestAnimationFrame = function(fp) {
 		return raf(fp);
 	};
-	/*
-	* cancelAnimationFrame polyfill
+	/**
+	* The polyfill for 'cancelAnimationFrame'
 	* @ko cancelAnimationFrame 폴리필
 	* @method eg#cancelAnimationFrame
 	* @param {Number} key
