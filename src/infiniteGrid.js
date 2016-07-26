@@ -619,8 +619,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				$(e.target).off("load error");
 				checkCount <= 0 && callback && callback();
 			};
+			var $el;
 			needCheck.forEach(function(v) {
-				$(v).on("load error", onCheck);
+				$el = $(v);
+				$el.attr("src", $el.attr("src")).on("load error", onCheck);
 			});
 		},
 		_measureColumns: function() {
