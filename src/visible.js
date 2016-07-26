@@ -175,7 +175,7 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 				}
 			}
 			/**
-			 * Triggered then the visibility status is changed compared with the status from when last check metod called.
+			 * Event is triggered when visible and hidden elements changes are detected, compared with last visibility status.
 			 * @ko 마지막으로 확인한 결과와 비교하여 보이는 엘리먼트와 사라진 엘리먼트가 변경된 경우 발생하는 이벤트
 			 * @name eg.Visible#change
 			 * @event
