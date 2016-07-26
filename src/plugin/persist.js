@@ -197,7 +197,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	*/
 	/**
 	* Serialize given state as JSON and save paired with given key.
-	* @ko 상태를 JSON 으로 키에 저장한다.
+	* @ko 상태를 키에 JSON 으로 저장한다.
 	* @method jQuery.persist
     * @param {String} key A string containing the name of the key you want to store. <ko>저장하려는 키의 이름을 나타내는 문자열</ko>
     * @param {Object} state The value you want to give the key you are storing.<ko>키와 짝지어 저장하고자 하는 값</ko>
