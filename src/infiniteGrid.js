@@ -208,8 +208,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				prop: data,
 				options: $.extend({}, this.options),
 				items: this.items.map(function(v) {
-					delete v.el;
-					return v;
+					return $.extend({}, v);
 				}),
 				html: this.el.innerHTML,
 				cssText: this.el.style.cssText
