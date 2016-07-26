@@ -169,8 +169,8 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	}
 
 	/**
-	* Serialize given state as JSON and save in global namespace.
-	* @ko 받은 상태를 글로벌 네임스페이스에 JSON 으로 직렬화하여 저장한다
+	* Save state as JSON in global namespace.
+	* @ko 상태값을 글로벌 네임스페이스에 JSON 으로 저장한다
 	* @method jQuery.persist
 	* @deprecated since version 1.2.0
 	* @support {"ie": "9+", "ch" : "latest", "ff" : "1.5+",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.2+ (except 3.x)"}
