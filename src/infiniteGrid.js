@@ -824,8 +824,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 				$(e.target).off("load error");
 				checkCount <= 0 && callback && self.core && callback.apply(self);
 			};
+			var $el;
 			$.each(needCheck, function(k, v) {
-				$(v).on("load error", onCheck);
+				$el = $(v);
+				$el.attr("src", $el.attr("src")).on("load error", onCheck);
 			});
 		},
 		/**
