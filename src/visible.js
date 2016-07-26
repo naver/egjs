@@ -14,12 +14,12 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 	 * @extends eg.Component
 	 * @group egjs
 	 *
-	 * @param {HTMLElement|String|jQuery} [element=document] The parent element that to check targets (wrapper is only one.) <ko>확인할 영역의 상위 엘리먼트</ko>
+	 * @param {HTMLElement|String|jQuery} [element=document] The viewport element that has scroll bars. <ko>스크롤바 를 가진 viewport 엘리먼트</ko>
 	 * @param {Object} options
 	 * @param {String} [options.targetClass="check_visible"] A class name of targets <ko>확인할 엘리먼트가 가진 클래스명</ko>
-	 * @param {Number} [options.expandSize=0] expand size of the wrapper.
-	 * e.g. If a wrapper size is 100 x 100 and 'expandSize' option is 20, visible range is 120 x 120
-	 * <ko> 상위 엘리먼트 기준으로 추가적인 영역을 확인하도록 지정</ko>
+	 * @param {Number} [options.expandSize=0] expand size as pixel from the border of the viewport.
+	 * e.g. If a viewport size is 100px x 100px and 'expandSize' option is 20, then effective visible range will be 120px x 120px
+	 * <ko>Viewport 경계로 부터 추가적으로 확인할 영역의 크기의 픽셀 값. 음수라면 확인할 영역이 viewport 보다 작아진다.</ko>
 	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 *
 	 * @codepen {"id":"WbWzqq", "ko":"Visible 기본 예제", "en":"Visible basic example", "collectionId":"Ayrabj", "height" : 403}
@@ -64,14 +64,14 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 			this.refresh();
 		},
 		/**
-		 * Update targets
-		 * @ko target들을 갱신한다.
+		 * Update internal target list
+		 * @ko Visibility 를 검사 할 엘리먼트 목록을 갱신한다.
 		 * @method eg.Visible#refresh
 		 * @return {eg.Visible} instance of itself<ko>자신의 인스턴스</ko>
 		 *
 		 * @remark
-		 * If targets was added or removed, must be called to refresh
-		 * <ko> 확인 대상이 영역 안에 추가 된 경우, 또는 확인 대상이 영역 안에서 삭제 된 경우, 영역 내의 확인 대상을 이 메소드를 호출하여 갱신해야한다. <ko>
+		 * If targets was added or removed from DOM tree, must call refresh method to update internal target list.
+		 * <ko>확인 대상이 영역 안에 추가되거나 삭제된 경우, 모듈내부에서 사용하는 확인 대상 목록을 이 메소드를 호출하여 갱신해야한다.<ko>
 		 */
 		refresh: function() {
 			if (this._supportElementsByClassName) {
@@ -91,8 +91,9 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 			return this.refresh();
 		},
 		/**
-		 * Checks if the target elements has been changed.
-		 * @ko target들이 변경했는지 확인한다.
+		 * Checks if the target elements' visibility has been changed.
+		 * "change" event will be triggered if there is a change.
+		 * @ko 대상 엘리먼트 목록의 visibility 가 변경되었는지 확인한다. 변경이 존재할 경우 "change" 이벤트가 발생한다.
 		 * @method eg.Visible#check
 		 * @param {Number} [delay=-1] Delay time in milliseconds <ko>호출 후, 일정 시간이 지난 후에 확인하고자 할때 사용한다.</ko>
 		 * @return {eg.Visible} instance of itself<ko>자신의 인스턴스</ko>
@@ -174,8 +175,8 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 				}
 			}
 			/**
-			 * Trigger when the target elements are visible or hidden based on the base area.
-			 * @ko 기준 영역을 기준으로 보이는 엘리먼트와 사라진 엘리먼트가 변경된 경우 발생하는 이벤트
+			 * Event is triggered when visible and hidden elements changes are detected, compared with last visibility status.
+			 * @ko 마지막으로 확인한 결과와 비교하여 보이는 엘리먼트와 사라진 엘리먼트가 변경된 경우 발생하는 이벤트
 			 * @name eg.Visible#change
 			 * @event
 			 * @param {Array} visible The visible elements (the element type is `HTMLElement`) <ko>보여지게 된 엘리먼트들 </ko>
