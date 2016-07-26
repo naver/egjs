@@ -65,12 +65,12 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 		},
 		/**
 		 * Update internal target list
-		 * @ko 내부 target 리스트를 갱신한다.
+		 * @ko Visibility 검사 대상 엘리먼트 목록을 갱신한다.
 		 * @method eg.Visible#refresh
 		 * @return {eg.Visible} instance of itself<ko>자신의 인스턴스</ko>
 		 *
 		 * @remark
-		 * If targets was added or removed from dom tree, must call refresh method to update internal target list.
+		 * If targets was added or removed from DOM tree, must call refresh method to update internal target list.
 		 * <ko>확인 대상이 영역 안에 추가되거나 삭제된 경우, 모듈내부에서 사용하는 확인 대상 목록을 이 메소드를 호출하여 갱신해야한다.<ko>
 		 */
 		refresh: function() {
@@ -93,7 +93,7 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 		/**
 		 * Checks if the target elements' visibility has been changed.
 		 * "change" event will be triggered if there is a change.
-		 * @ko target들의 visibility 가 변경되었는지 확인한다. 변경이 존재할 경우 "change" 이벤트가 발생한다.
+		 * @ko 대상 엘리먼트 목록의 visibility 가 변경되었는지 확인한다. 변경이 존재할 경우 "change" 이벤트가 발생한다.
 		 * @method eg.Visible#check
 		 * @param {Number} [delay=-1] Delay time in milliseconds <ko>호출 후, 일정 시간이 지난 후에 확인하고자 할때 사용한다.</ko>
 		 * @return {eg.Visible} instance of itself<ko>자신의 인스턴스</ko>
@@ -176,7 +176,7 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 			}
 			/**
 			 * Triggered then the visibility status is changed compared with the status from when last check metod called.
-			 * @ko check 를 통해 마지막으로 확인한 결과와 비교하여 보이는 엘리먼트와 사라진 엘리먼트가 변경된 경우 발생하는 이벤트
+			 * @ko 마지막으로 확인한 결과와 비교하여 보이는 엘리먼트와 사라진 엘리먼트가 변경된 경우 발생하는 이벤트
 			 * @name eg.Visible#change
 			 * @event
 			 * @param {Array} visible The visible elements (the element type is `HTMLElement`) <ko>보여지게 된 엘리먼트들 </ko>
