@@ -65,7 +65,7 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 		},
 		/**
 		 * Update internal target list
-		 * @ko Visibility 검사 대상 엘리먼트 목록을 갱신한다.
+		 * @ko Visibility 를 검사 할 엘리먼트 목록을 갱신한다.
 		 * @method eg.Visible#refresh
 		 * @return {eg.Visible} instance of itself<ko>자신의 인스턴스</ko>
 		 *
