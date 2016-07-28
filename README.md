@@ -18,7 +18,8 @@
 * **eg.Component** : Base class utility to help develop modules in component.
   - [API](http://naver.github.io/egjs/latest/doc/eg.Component.html)
 * **eg.MovableCoord** : Easily get computed coordinate values according user actions.
-  - [API](http://naver.github.io/egjs/latest/doc/eg.MovableCoord.html), [CodePen](http://codepen.io/collection/AKpkGW/)
+  - [API](http://naver.github.io/egjs/latest/doc/eg.MovableCoord.html),
+  [DEMO](http://naver.github.io/egjs/demo/movableCoord/), [CodePen](http://codepen.io/collection/AKpkGW/)
 * **eg.Flicking** : Implement flicking interaction UI.
   - [API](http://naver.github.io/egjs/latest/doc/eg.Flicking.html), [DEMO](http://naver.github.io/egjs/demo/flicking/), [CodePen](http://codepen.io/collection/ArxyLK/)
 * **eg.Visible** : Check whether elements are within viewport.
@@ -67,6 +68,12 @@ $ npm install bower -g
 $ bower install egjs
 ```
 
+### with NPM
+
+```bash
+# intall egjs using npm
+$ npm install egjs
+```
 
 ## Browser support
 
@@ -79,9 +86,9 @@ $ bower install egjs
 
 egjs has following dependencies.
 
-|[jQuery](https://jquery.com/)|[Hammer.js](http://hammerjs.github.io/)|[Outlayer](https://github.com/metafizzy/outlayer/)|
-|---|---|---|---|
-|1.7.0+ |2.0.4+|1.4.1+|
+|[jQuery](https://jquery.com/)|[Hammer.js](http://hammerjs.github.io/)|
+|---|---|---|
+|1.7.0+ |2.0.4+|
 - Except `jQuery`, others are not mandatory. Required dependencies may differ according components.
 
 
@@ -92,12 +99,12 @@ Load jQuery first, then load egjs (also available on [cdnjs](https://cdnjs.com/l
 <!-- load jQuery -->
 <script src="bower_components/jquery/jquery.js"></script>
 
-<!-- load egjs packaged with all dependencies (Hammer.js and Outlayer) -->
+<!-- load egjs packaged with all dependencies (Hammer.js) -->
 <!-- load from your local installation -->
 <script src="bower_components/egjs/dist/pkgd/eg.pkgd.min.js"></script>
 
 <!-- or load from CDN -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/egjs/1.1.0/pkgd/eg.pkgd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/egjs/1.2.0/pkgd/eg.pkgd.min.js"></script>
 ```
 
 > NOTE: For more details on separate dependency file inclusion, check out [Download and Using egjs](https://github.com/naver/egjs/wiki/Download-and-Using-egjs#how-to-use) wiki page.

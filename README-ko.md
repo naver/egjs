@@ -12,23 +12,35 @@ egjs는 jQuery기반의 UI 인터렉션, 이펙트, 유틸리티로 구성된 �
 
 ### Component
 * **eg** : eg에서 사용하는 base 유틸리티
+  - [API](http://naver.github.io/egjs/latest/doc/eg.html)
 * **eg.Class** : 객체 지향 스타일의 Class를 개발할 수 있도록 한다.
+  - [API](http://naver.github.io/egjs/latest/doc/eg.Class.html)
 * **eg.Component** : 컴포넌트 개발에 필요한 공통적 기능을 가진 클래스
+  - [API](http://naver.github.io/egjs/latest/doc/eg.Component.html)
 * **eg.MovableCoord** : 사용자 행동에 따른 좌표를 계산하는 컴포넌트
+  - [API](http://naver.github.io/egjs/latest/doc/eg.MovableCoord.html), [DEMO](http://naver.github.io/egjs/demo/movableCoord/), [CodePen](http://codepen.io/collection/AKpkGW/)
 * **eg.Flicking** : 플리킹 인터랙션을 구현하는 컴포넌트
+  - [API](http://naver.github.io/egjs/latest/doc/eg.Flicking.html), [DEMO](http://naver.github.io/egjs/demo/flicking/), [CodePen](http://codepen.io/collection/ArxyLK/)
 * **eg.Visible** : 요소가 뷰포트상에 위치해 있는지 확인하는 컴포넌트
+  - [API](http://naver.github.io/egjs/latest/doc/eg.Visible.html), [CodePen](http://codepen.io/collection/Ayrabj/)
 * **eg.infiniteGrid** : 카드 격자형 컨텐츠를 무한 배치하는 컴포넌트
+  - [API](http://naver.github.io/egjs/latest/doc/eg.InfiniteGrid.html), [DEMO](http://naver.github.io/egjs/demo/infiniteGrid/), [CodePen](http://codepen.io/collection/DPYEww/)
 
 ### jQuery Extensions
 #### methods
 * **persist** : 히스토리 네비게이션시 데이터를 저장/복원할 수 있는 캐시 인터페이스
+  - [API](http://naver.github.io/egjs/latest/doc/jQuery.html#persist), [CodePen](http://codepen.io/collection/XOLpog/)
 * **css** : jQuery버전에서 자동으로 vendor prefix를 지원하지 않는 경우 prefix없이 사용하게 하는 확장기능
 * **animate** : jQuery animate 확장해 transform 및 3d 가속 지원
+  - [API](http://naver.github.io/egjs/latest/doc/jQuery.html#animate)
 * **pause/resume** : jQuery animate, delay 를 일시정지, 재개하는 기능 지원
+  - [API](http://naver.github.io/egjs/latest/doc/jQuery.html#pause), [CodePen](http://codepen.io/collection/XOEpOw)
 
 #### events
 * **rotate** : 디바이스의 회전을 감지하는 이벤트
+  - [API](http://naver.github.io/egjs/latest/doc/jQuery.html#event:rotate), [CodePen](http://codepen.io/collection/nLYYqP/)
 * **scrollend** : 스크롤의 마지막 시점을 알려주는 이벤트
+  - [API](http://naver.github.io/egjs/latest/doc/jQuery.html#event:scrollEnd), [CodePen](http://codepen.io/collection/Dxeemo/)
 
 
 ## Download
@@ -56,6 +68,12 @@ $ npm install bower -g
 $ bower install egjs
 ```
 
+### with NPM
+
+```bash
+# npm을 이용해 egjs 설치
+$ npm install egjs
+```
 
 ## Browser Support
 |Internet Explorer|Chrome|FireFox|Safari|iOS|Android|
@@ -66,9 +84,9 @@ $ bower install egjs
 ## 의존성
 egjs는 다음의 라이브러리들에 대한 의존성을 가지고 있다.
 
-|[jQuery](https://jquery.com/)|[Hammer.js](http://hammerjs.github.io/)|[Outlayer](https://github.com/metafizzy/outlayer/)|
-|---|---|---|---|
-|1.7.0+ |2.0.4+|1.4.2+|
+|[jQuery](https://jquery.com/)|[Hammer.js](http://hammerjs.github.io/)|
+|---|---|---|
+|1.7.0+ |2.0.4+|
 
 - jQuery를 제외한 나머지는 반드시 필요하진 않으며, 컴포넌트에 따라 의존성은 다를 수 있다.
 
@@ -80,12 +98,12 @@ jQuery를 먼저 로딩 후, egjs를 로딩한다. (CDN 서비스인 [cdnjs](htt
 <!-- jQuery 로딩 -->
 <script src="bower_components/jquery/jquery.js"></script>
 
-<!-- 모든 의존성(Hammer.js와 Outlayer) 파일들이 패키징된 egjs를 로딩 -->
+<!-- 모든 의존성(Hammer.js) 파일들이 패키징된 egjs를 로딩 -->
 <!-- 로컬에 설치된 파일을 로딩 -->
 <script src="bower_components/egjs/dist/pkgd/eg.pkgd.min.js"></script>
 
 <!-- 또는 CDN 에서 로딩 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/egjs/1.1.0/pkgd/eg.pkgd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/egjs/1.2.0/pkgd/eg.pkgd.min.js"></script>
 
 ```
 
