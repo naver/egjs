@@ -311,7 +311,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			// convert jQuery instance
 			$elements = $($elements);
 			this._isProcessing = true;
-			if (!this._isRecycling) {
+			if (!this.isRecycling()) {
 				this._isRecycling =
 				(this.items.length + $elements.length) >= this.options.count;
 			}
