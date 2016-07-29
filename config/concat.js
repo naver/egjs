@@ -23,7 +23,7 @@ module.exports = {
 			banner : "<%=banner.common %><%=banner.pkgd('egjs') %><%=concat.pkgd_eg.src.join('\\n* ')%>\n*/\n",
 			process: changeSrc
 		},
-		src : dependency.hammer.concat(dependency.outlayer, dependency.egCore, dependency.egExtend, ["src/visible.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js"]),
+		src : dependency.hammer.concat(dependency.egCore, dependency.egExtend, ["src/visible.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js"]),
 		dest : "dist/pkgd/<%=pkg.outputname%>.pkgd.js"
 	},
 	pkgd_flicking: {
@@ -39,7 +39,7 @@ module.exports = {
 			banner : "<%=banner.common %><%=banner.pkgd('eg.infiniteGrid') %><%=concat.pkgd_infiniteGrid.src.join('\\n* ')%>\n*/",
 			process: changeSrc
 		},
-		src : dependency.outlayer.concat(dependency.egCore, ["src/customEvent/scrollEnd.js", "src/plugin/persist.js", "src/infiniteGrid.js"]),
+		src : dependency.egCore.concat(["src/plugin/persist.js", "src/infiniteGrid.js"]),
 		dest : "dist/pkgd/infiniteGrid.pkgd.js"
 	}
 };
