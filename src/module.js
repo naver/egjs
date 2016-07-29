@@ -20,9 +20,6 @@
 		},
 		"Hammer": {
 			"url": "http://hammerjs.github.io/"
-		},
-		"Outlayer": {
-			"url": "https://github.com/metafizzy/outlayer/"
 		}
 	};
 
