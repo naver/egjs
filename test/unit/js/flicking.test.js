@@ -137,12 +137,12 @@ QUnit.test("previewPadding - horizontal", function(assert) {
 	var padding = inst.options.previewPadding;
 	var right = parseInt(inst.$wrapper.css("padding-right"), 10);
 	var left = parseInt(inst.$wrapper.css("padding-left"), 10);
-	var wrapperWidth = inst.$wrapper.innerWidth();
+	var wrapperWidth = inst.$wrapper.width();
 	var panelWidth = inst.$container.children().width();
 
 	// Then
 	assert.ok(left === padding[0] && right === padding[1], "Preview padding value applied correctly?");
-	assert.equal(wrapperWidth, panelWidth + right + left, "Each panel's width should be same as wrapper element's width");
+	assert.equal(wrapperWidth, panelWidth, "Each panel's width should be same as wrapper element's width");
 });
 
 QUnit.test("previewPadding - vertical", function(assert) {
@@ -156,12 +156,12 @@ QUnit.test("previewPadding - vertical", function(assert) {
 	var padding = inst.options.previewPadding;
 	var top = parseInt(inst.$wrapper.css("padding-top"), 10);
 	var bottom = parseInt(inst.$wrapper.css("padding-bottom"), 10);
-	var wrapperHeight = inst.$wrapper.innerHeight();
+	var wrapperHeight = inst.$wrapper.height();
 	var panelHeight = inst.$container.children().height();
 
 	// Then
 	assert.ok(top === padding[0] && bottom === padding[1], "Preview padding value applied correctly?");
-	assert.equal(wrapperHeight, panelHeight + top + bottom, "Each panel's height should be same as wrapper element's height");
+	assert.equal(wrapperHeight - (padding[0] + padding[1]), panelHeight, "Each panel's height should be same as wrapper element's height");
 });
 
 QUnit.test("bounce", function(assert) {

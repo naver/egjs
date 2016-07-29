@@ -5,7 +5,7 @@
 
 /**
  * Extends jQuery animate in order to use 'transform' property
- * @ko jQuery animate 사용시 transform을 사용할 수 있도록 확장한 animate 메소드
+ * @ko <a href="http://api.jquery.com/animate/">jQuery animate 메서드</a>를 확장해 transform 속성 사용이 가능하다. 사용 방법은 jQuery animate 메서드와 동일하다.
  * @name jQuery#animate
  * @method
  * @param {Object} properties An object of CSS properties and values that the animation will move toward. <ko>애니메이션 할 CSS 속성과 값으로 구성된 오브젝트</ko>

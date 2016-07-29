@@ -8,7 +8,7 @@ eg.module("cssPrefix", ["jQuery", document], function($, doc) {
 
 	/**
 	 * Apply css prefix cssHooks
-	 * @ko css prefix cssHooks 적용
+	 * @ko 자동으로 css prefix가 적용되지 않는 jQuery 1.4.3 ~ 1.8.x에서 css prefix을 자동으로 등록하는 cssHooks이다.
 	 *
 	 * @name jQuery#cssPrefix
 	 * @method
