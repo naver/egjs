@@ -15,7 +15,7 @@ module.exports = {
 			banner: "<%=banner.common %>\"use strict\";\n",
 			process: changeSrc
 		},
-		src: dependency.egCore.concat(dependency.egExtend, ["src/visible.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js"]),
+		src: dependency.eg.concat(["src/agent.js"], dependency.egCore, dependency.egExtend, ["src/visible.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js"]),
 		dest: "dist/<%=pkg.outputname%>.js"
 	},
 	pkgd_eg: {
@@ -23,7 +23,7 @@ module.exports = {
 			banner : "<%=banner.common %><%=banner.pkgd('egjs') %><%=concat.pkgd_eg.src.join('\\n* ')%>\n*/\n",
 			process: changeSrc
 		},
-		src : dependency.hammer.concat(dependency.egCore, dependency.egExtend, ["src/visible.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js"]),
+		src : dependency.hammer.concat(dependency.eg, ["src/agent.js"], dependency.egCore, dependency.egExtend, ["src/visible.js", "src/movableCoord.js", "src/flicking.js",  "src/infiniteGrid.js"]),
 		dest : "dist/pkgd/<%=pkg.outputname%>.pkgd.js"
 	},
 	pkgd_flicking: {
@@ -31,7 +31,7 @@ module.exports = {
 			banner : "<%=banner.common %><%=banner.pkgd('eg.flicking') %><%=concat.pkgd_flicking.src.join('\\n* ')%>\n*/\n",
 			process: changeSrc
 		},
-		src : dependency.hammer.concat(dependency.egCore, ["src/hook/cssPrefix.js", "src/movableCoord.js", "src/flicking.js"]),
+		src : dependency.hammer.concat(dependency.eg, ["src/agent.js"], dependency.egCore, ["src/hook/cssPrefix.js", "src/movableCoord.js", "src/flicking.js"]),
 		dest : "dist/pkgd/flicking.pkgd.js"
 	},
 	pkgd_infiniteGrid: {
@@ -39,7 +39,7 @@ module.exports = {
 			banner : "<%=banner.common %><%=banner.pkgd('eg.infiniteGrid') %><%=concat.pkgd_infiniteGrid.src.join('\\n* ')%>\n*/",
 			process: changeSrc
 		},
-		src : dependency.egCore.concat(["src/plugin/persist.js", "src/infiniteGrid.js"]),
+		src : dependency.eg.concat(dependency.egCore, ["src/plugin/persist.js", "src/infiniteGrid.js"]),
 		dest : "dist/pkgd/infiniteGrid.pkgd.js"
 	}
 };

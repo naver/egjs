@@ -165,7 +165,8 @@
 		var special;
 		var componentMethodNames;
 
-		if (!(eg[upperCamelCase] && eg[upperCamelCase].prototype._events)) {
+		if (!(eg[upperCamelCase] && eg[upperCamelCase].prototype &&
+			eg[upperCamelCase].prototype._events)) {
 			return false;
 		}
 
@@ -252,7 +253,6 @@
 	if (!eg.module) {
 		eg.module = function(name, di, fp) {
 			var result = checkDependency(name, di);
-
 			if (result[1].length) {
 				warn(result[1].join("\r\n"));
 			} else {
