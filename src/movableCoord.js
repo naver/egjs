@@ -150,17 +150,10 @@ MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 				var hammer = new HM.Manager(el, {
 						recognizers: [
 							[
-								HM.Tap, {
-
-									// for long tap
-									time: 30000
-								}
-							],
-							[
 								HM.Pan, {
 									direction: subOptions.direction,
 									threshold: 0
-								}, ["tap"]
+								}
 							]
 						],
 
@@ -186,14 +179,16 @@ MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 						this._subOptions = options;
 						this._status.curHammer = hammer;
 						this._panstart(e);
+					} else if (e.isFinal) {
+						// substitute .on("panend tap", this._panend); Because it(tap, panend) cannot catch vertical(horizontal) movement on HORIZONTAL(VERTICAL) mode.
+						this._panend(e);
 					}
 				}, this))
-				.on("panstart panmove", this._panmove)
-				.on("panend tap", this._panend);
+				.on("panstart panmove", this._panmove);
 		},
 
 		_detachHammerEvents: function(hammer) {
-			hammer.off("hammer.input panstart panmove panend tap");
+			hammer.off("hammer.input panstart panmove panend");
 		},
 
 		_convertInputType: function(inputType) {
@@ -414,7 +409,7 @@ MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 			}
 
 			// Abort the animating post process when "tap" occurs
-			if (e.type === "tap") {
+			if (e.distance === 0 /*e.type === "tap"*/) {
 				this._setInterrupt(false);
 				this.trigger("release", {
 					depaPos: pos.concat(),
