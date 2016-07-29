@@ -285,24 +285,21 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var paddingSum = padding[0] + padding[1];
 			var cssValue = {};
 
-			panel.size = this.$wrapper[
-					horizontal ? "innerWidth" : "innerHeight"
-				]() - paddingSum;
-
 			if (paddingSum || !build) {
 				cssValue.padding = (horizontal ?
-						"0 " + padding.reverse().join("px 0 ") :
-						padding.join("px 0 ")) + "px";
-
-				cssValue[ horizontal ? "width" : "height" ] = panel.size;
+					"0 " + padding.reverse().join("px 0 ") :
+					padding.join("px 0 ")) + "px";
 			}
 
 			if (build) {
 				cssValue.overflow = "hidden";
+				cssValue.boxSizing = "border-box";
 			}
 
 			!$.isEmptyObject(cssValue) &&
 				this.$wrapper.css(cssValue);
+
+			panel.size = this.$wrapper[ horizontal ? "width" : "height" ]();
 		},
 
 		/**
@@ -976,12 +973,6 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @param {Array} coords coordinate x,y value
 		 */
 		_setTranslate: function (coords) {
-			var options = this.options;
-
-			if (!SUPPORT_TRANSFORM && !options.horizontal) {
-				coords[0] += options.previewPadding[0];
-			}
-
 			coords = this._getCoordsValue(coords);
 			this._setMoveStyle(this.$container, [ coords.x, coords.y ]);
 		},
