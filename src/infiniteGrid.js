@@ -71,7 +71,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		},
 		construct: function(el, options, _prefix) {
 			this.options = $.extend({
-				itemSelector: null,
 				isEqualSize: false,
 				defaultGroupKey: null,
 				count: 30,
@@ -573,12 +572,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			return true;
 		},
 
-		/**
-		 * Remove white space which was removed by append action.
-		 * @ko append에 의해 생긴 빈공간을 제거한다.
-		 * @method eg.InfiniteGrid#fit
-		 * @return {Number} distance if empty space is removed, value is not zero. <ko>빈공간이 제거된 실제 길이를 px 단위로 반환</ko>
-		 */
 		fit: function() {
 			var item = this._getTopItem();
 			var distance = item ? item.position.y : 0;
