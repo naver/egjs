@@ -651,8 +651,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			 * @event
 			 * @param {Object} param
 			 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
-			 * @param {Number} param.index Current panel physical index <ko>현재 패널의 물리적 인덱스</ko>
-			 * @param {Number} param.no Current panel logical position <ko>현재 패널의 논리적 인덱스</ko>
+			 * @param {Number} param.no Current panel logical position <ko>패널 인덱스 번호</ko>
 			 * @param {Number} param.direction Direction of the panel move (see eg.MovableCoord.DIRECTION_* constant) <ko>플리킹 방향 (eg.MovableCoord.DIRECTION_* constant 확인)</ko>
 			 * @param {Array} param.pos Departure coordinate <ko>출발점 좌표</ko>
 			 * @param {Number} param.pos.0 Departure x-coordinate <ko>x 좌표</ko>
@@ -775,8 +774,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			 * @event
 			 * @param {Object} param
 			 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
-			 * @param {Number} param.index Current panel physical index <ko>현재 패널의 물리적 인덱스</ko>
-			 * @param {Number} param.no Current panel logical position <ko>현재 패널의 논리적 인덱스</ko>
+			 * @param {Number} param.no Current panel logical position <ko>패널 인덱스 번호</ko>
 			 * @param {Number} param.direction Direction of the panel move (see eg.MovableCoord.DIRECTION_* constant) <ko>플리킹 방향 (eg.MovableCoord.DIRECTION_* constant 확인)</ko>
 			 * @param {Array} param.depaPos Departure coordinate <ko>출발점 좌표</ko>
 			 * @param {Number} param.depaPos.0 Departure x-coordinate <ko>x 좌표</ko>
@@ -809,8 +807,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			 * @event
 			 * @param {Object} param
 			 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
-			 * @param {Number} param.index Current panel physical index <ko>현재 패널의 물리적 인덱스</ko>
-			 * @param {Number} param.no Current panel logical position <ko>현재 패널의 논리적 인덱스</ko>
+			 * @param {Number} param.no Current panel logical position <ko>패널 인덱스 번호</ko>
 			 * @param {Number} param.direction Direction of the panel move (see eg.MovableCoord.DIRECTION_* constant) <ko>플리킹 방향 (eg.MovableCoord.DIRECTION_* constant 확인)</ko>
 			 */
 			customEvent.restore && this._triggerEvent(EVENTS.restore);
@@ -835,8 +832,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				 * @event
 				 * @param {Object} param
 				 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
-				 * @param {Number} param.index Current panel physical index <ko>현재 패널의 물리적 인덱스</ko>
-				 * @param {Number} param.no Current panel logical position <ko>현재 패널의 논리적 인덱스</ko>
+				 * @param {Number} param.no Current panel logical position <ko>패널 인덱스 번호</ko>
 				 * @param {Number} param.direction Direction of the panel move (see eg.MovableCoord.DIRECTION_* constant) <ko>플리킹 방향 (eg.MovableCoord.DIRECTION_* constant 확인)</ko>
 				 * @param {Array} param.depaPos Departure coordinate <ko>출발점 좌표</ko>
 				 * @param {Number} param.depaPos.0 Departure x-coordinate <ko>x 좌표</ko>
@@ -865,8 +861,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				 * @event
 				 * @param {Object} param
 				 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
-				 * @param {Number} param.index Current panel physical index <ko>현재 패널의 물리적 인덱스</ko>
-				 * @param {Number} param.no Current panel logical position <ko>현재 패널의 논리적 인덱스</ko>
+				 * @param {Number} param.no Current panel logical position <ko>패널 인덱스 번호</ko>
 				 * @param {Number} param.direction Direction of the panel move (see eg.MovableCoord.DIRECTION_* constant) <ko>플리킹 방향 (eg.MovableCoord.DIRECTION_* constant 확인)</ko>
 				 */
 				panel.changed && this._triggerEvent(EVENTS.flickEnd);
