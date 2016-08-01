@@ -63,7 +63,7 @@ MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 	 */
 	var MC = ns.MovableCoord = ns.Class.extend(ns.Component, {
 		construct: function(options) {
-			this.options = {
+			$.extend(this.options = {
 				min: [0, 0],
 				max: [100, 100],
 				bounce: [10, 10, 10, 10],
@@ -72,8 +72,8 @@ MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 				easing: $.easing.easeOutCubic,
 				maximumDuration: Infinity,
 				deceleration: 0.0006
-			};
-			this._reviseOptions(options);
+			}, options);
+			this._reviseOptions();
 			this._status = {
 				grabOutside: false,		// check whether user's action started on outside
 				curHammer: null,		// current hammer instance
@@ -667,22 +667,22 @@ MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 		},
 
 		// set up 'css' expression
-		_reviseOptions: function(options) {
+		_reviseOptions: function() {
 			var key;
+			var self = this;
 			$.each(["bounce", "margin", "circular"], function(i, v) {
-				key = options[v];
+				key = self.options[v];
 				if (key != null) {
 					if ($.isArray(key)) {
-						options[v] = key.length === 2 ?
+						self.options[v] = key.length === 2 ?
 							key.concat(key) : key.concat();
 					} else if (/string|number|boolean/.test(typeof key)) {
-						options[v] = [ key, key, key, key ];
+						self.options[v] = [ key, key, key, key ];
 					} else {
-						options[v] = null;
+						self.options[v] = null;
 					}
 				}
 			});
-			$.extend(this.options, options);
 		},
 
 		// trigger 'change' event
