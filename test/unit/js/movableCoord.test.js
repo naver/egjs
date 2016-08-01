@@ -3,17 +3,27 @@
 * egjs projects are licensed under the MIT license
 */
 
-module("movableCoord init Test", {
-	setup : function() {
+QUnit.module("movableCoord init Test", {
+	beforeEach : function() {
 		this.inst = null;
 	},
-	teardown : function() {
-		this.inst.destroy();
-		this.inst = null;
+	afterEach : function() {
+		if(this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
 	}
 });
 
-test("check a initialization position value", function() {
+QUnit.test("check a initialization empty value", function(assert) {
+	// Given
+	// When
+	this.inst = new eg.MovableCoord();
+	// Then
+	assert.ok(true, "movableCoord does not crash");
+});
+
+QUnit.test("check a initialization position value", function(assert) {
 	// Given
 	// When
 	this.inst = new eg.MovableCoord( {
@@ -21,10 +31,10 @@ test("check a initialization position value", function() {
 		max : [ 300, 400 ]
 	});
 	// Then
-	deepEqual(this.inst._pos, [-100, 0], "set up an initialization position");
+	assert.deepEqual(this.inst._pos, [-100, 0], "set up an initialization position");
 });
 
-test("check initialization status", function() {
+QUnit.test("check initialization status", function(assert) {
 	// Given
 	// When
 	this.inst = new eg.MovableCoord( {
@@ -33,9 +43,9 @@ test("check initialization status", function() {
 		circular : [ true, false , true, false ]
 	});
 	// Then
-	deepEqual(this.inst.options.bounce, [100, 200, 50, 30], "bounce : check css expression");
-	deepEqual(this.inst.options.margin, [0, 100, 0, 100], "margin : check css expression");
-	deepEqual(this.inst.options.circular, [true, false, true, false], "circular : check css expression");
+	assert.deepEqual(this.inst.options.bounce, [100, 200, 50, 30], "bounce : check css expression");
+	assert.deepEqual(this.inst.options.margin, [0, 100, 0, 100], "margin : check css expression");
+	assert.deepEqual(this.inst.options.circular, [true, false, true, false], "circular : check css expression");
 
 	// When
 	this.inst = new eg.MovableCoord( {
@@ -44,9 +54,9 @@ test("check initialization status", function() {
 		circular : [ true, false ]
 	});
 	// Then
-	deepEqual(this.inst.options.bounce, [100, 200, 100, 200], "bounce : check css expression");
-	deepEqual(this.inst.options.margin, [0, 100, 0, 100], "margin : check css expression");
-	deepEqual(this.inst.options.circular, [true, false, true, false], "circular : check css expression");
+	assert.deepEqual(this.inst.options.bounce, [100, 200, 100, 200], "bounce : check css expression");
+	assert.deepEqual(this.inst.options.margin, [0, 100, 0, 100], "margin : check css expression");
+	assert.deepEqual(this.inst.options.circular, [true, false, true, false], "circular : check css expression");
 
 	// When
 	this.inst = new eg.MovableCoord( {
@@ -55,13 +65,13 @@ test("check initialization status", function() {
 		circular : false
 	});
 	// Then
-	deepEqual(this.inst.options.bounce, [50, 50, 50, 50], "bounce : check css expression");
-	deepEqual(this.inst.options.margin, [10, 10, 10, 10], "margin : check css expression");
-	deepEqual(this.inst.options.circular, [false, false, false, false], "circular : check css expression");
+	assert.deepEqual(this.inst.options.bounce, [50, 50, 50, 50], "bounce : check css expression");
+	assert.deepEqual(this.inst.options.margin, [10, 10, 10, 10], "margin : check css expression");
+	assert.deepEqual(this.inst.options.circular, [false, false, false, false], "circular : check css expression");
 });
 
-module("movableCoord bind/unbind Test", {
-	setup : function() {
+QUnit.module("movableCoord bind/unbind Test", {
+	beforeEach : function() {
 		this.inst = new eg.MovableCoord( {
 			min : [ 0, 0 ],
 			max : [ 300, 400 ],
@@ -70,13 +80,13 @@ module("movableCoord bind/unbind Test", {
 			circular : false
 		});
 	},
-	teardown : function() {
+	afterEach : function() {
 		this.inst.destroy();
 		this.inst = null;
 	}
 });
 
-test("bind", function() {
+QUnit.test("bind", function(assert) {
 	// Given
 	var $el = jQuery("#area");
 	var before = $el.data(eg.MovableCoord._KEY);
@@ -89,12 +99,12 @@ test("bind", function() {
 
 	// Then
 	var key = $el.data(eg.MovableCoord._KEY);
-	equal(before, undefined, "key data value is 'undefined'' before call bind method" );
-	notEqual(key, undefined, "key data value is something after call bind method" );
-	equal(beforeHammerCount+1, Object.keys(this.inst._hammers).length, "added hammer instance after call bind method" );
+	assert.equal(before, undefined, "key data value is 'undefined'' before call bind method" );
+	assert.notEqual(key, undefined, "key data value is something after call bind method" );
+	assert.equal(beforeHammerCount+1, Object.keys(this.inst._hammers).length, "added hammer instance after call bind method" );
 });
 
-test("bind with inputType", function() {
+QUnit.test("bind with inputType", function(assert) {
 	// Given
 	var $el = jQuery("#area");
 	var before = $el.data(eg.MovableCoord._KEY);
@@ -108,13 +118,13 @@ test("bind with inputType", function() {
 
 	// Then
 	var key = $el.data(eg.MovableCoord._KEY);
-	equal(returnVal, this.inst, "return instance" );
-	equal(before, undefined, "key data value is 'undefined'' before call bind method" );
-	equal(key, undefined, "key data value is 'undefined' after call bind method" );
-	equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "nothing" );
+	assert.equal(returnVal, this.inst, "return instance" );
+	assert.equal(before, undefined, "key data value is 'undefined'' before call bind method" );
+	assert.equal(key, undefined, "key data value is 'undefined' after call bind method" );
+	assert.equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "nothing" );
 });
 
-test("unbind", function() {
+QUnit.test("unbind", function(assert) {
 	// Given
 	var $el = jQuery("#area");
 	this.inst.bind($el, {
@@ -127,13 +137,13 @@ test("unbind", function() {
 	var returnVal = this.inst.unbind($el);
 	// Then
 	var key = $el.data(eg.MovableCoord._KEY);
-	equal(returnVal, this.inst, "return instance" );
-	notEqual(before, key, "key data value was changed after call 'unbind' method" );
-	equal(key, undefined, "key data value is 'undefined'' after call bind method" );
-	equal(beforeHammerCount-1, Object.keys(this.inst._hammers).length, "removed hammer instance after call bind method" );
+	assert.equal(returnVal, this.inst, "return instance" );
+	assert.notEqual(before, key, "key data value was changed after call 'unbind' method" );
+	assert.equal(key, undefined, "key data value is 'undefined'' after call bind method" );
+	assert.equal(beforeHammerCount-1, Object.keys(this.inst._hammers).length, "removed hammer instance after call bind method" );
 });
 
-test("unbind with inputType", function() {
+QUnit.test("unbind with inputType", function(assert) {
 	// Given
 	var $el = jQuery("#area");
 	this.inst.bind($el, {
@@ -148,12 +158,12 @@ test("unbind with inputType", function() {
 
 	// Then
 	var key = $el.data(eg.MovableCoord._KEY);
-	equal(before, undefined, "key data value is 'undefined'' after call 'unbind' method" );
-	equal(key, undefined, "key data value is 'undefined'' after call bind method" );
-	equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "nothing" );
+	assert.equal(before, undefined, "key data value is 'undefined'' after call 'unbind' method" );
+	assert.equal(key, undefined, "key data value is 'undefined'' after call bind method" );
+	assert.equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "nothing" );
 });
 
-test("one element, double bind", function() {
+QUnit.test("one element, double bind", function(assert) {
 	// Given
 	var $el = jQuery("#area");
 	this.inst.bind($el, {
@@ -170,13 +180,13 @@ test("one element, double bind", function() {
 
 	// Then
 	var key = $el.data(eg.MovableCoord._KEY);
-	equal(before, key, "key data value is same" );
-	notDeepEqual(beforeHammerObject.inst, this.inst._hammers[key].inst, "recreate hammer instance" );
-	equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "hammer instance count is same" );
+	assert.equal(before, key, "key data value is same" );
+	assert.notDeepEqual(beforeHammerObject.inst, this.inst._hammers[key].inst, "recreate hammer instance" );
+	assert.equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "hammer instance count is same" );
 });
 
-module("movableCoord methods Test", {
-	setup : function() {
+QUnit.module("movableCoord methods Test", {
+	beforeEach : function() {
 		this.inst = new eg.MovableCoord( {
 			min : [ 0, 0 ],
 			max : [ 300, 400 ],
@@ -185,92 +195,92 @@ module("movableCoord methods Test", {
 			circular : false
 		});
 	},
-	teardown : function() {
+	afterEach : function() {
 		this.inst.destroy();
 		this.inst = null;
 	}
 });
 
-test("get", function() {
+QUnit.test("get", function(assert) {
 	// Given
 	// When
 	var pos1 = this.inst.get();
 	var pos2 = this.inst.get();
 	// Then
 	notStrictEqual(pos1, pos2, "postion references are not equal.");
-	deepEqual(pos1, pos2, "postion values are equal.")
+	assert.deepEqual(pos1, pos2, "postion values are equal.")
 });
 
-test("setTo", function() {
+QUnit.test("setTo", function(assert) {
 	// Given
 
 	// When
 	this.inst.setTo(0, 200);
 	// Then
-	deepEqual(this.inst.get(), [0, 200], "set to position 0,200");
+	assert.deepEqual(this.inst.get(), [0, 200], "set to position 0,200");
 
 	// When
 	this.inst.setTo(-200, 500);
 	// Then
-	deepEqual(this.inst.get(), [0, 400], "if position parameters was out of range, set to position min or max values.");
+	assert.deepEqual(this.inst.get(), [0, 400], "if position parameters was out of range, set to position min or max values.");
 
 	// When
 	this.inst.setTo(600, -900);
 	// Then
-	deepEqual(this.inst.get(), [300, 0], "if position parameters was out of range, set to position min or max values.");
+	assert.deepEqual(this.inst.get(), [300, 0], "if position parameters was out of range, set to position min or max values.");
 });
 
-test("setTo : check 'change' event", function(assert) {
+QUnit.test("setTo : check 'change' event", function(assert) {
 	var done = assert.async();
 	// Given
 	this.inst.on("change", function(e) {
 		// Then
-		deepEqual(e.pos, [0, 200], "set to position 0,200");
+		assert.deepEqual(e.pos, [0, 200], "set to position 0,200");
 		done();
 	});
 	// When
 	this.inst.setTo(0, 200, 0);
 });
 
-test("setBy", function() {
+QUnit.test("setBy", function(assert) {
 
 	// Given
 	// When
 	var resultVal = this.inst.setBy(20, 20);
 	// Then
-	equal(resultVal, this.inst, "return instance");
-	deepEqual(this.inst.get(), [20, 20], "set to position 20,20 relatively");
+	assert.equal(resultVal, this.inst, "return instance");
+	assert.deepEqual(this.inst.get(), [20, 20], "set to position 20,20 relatively");
 	// When
 	resultVal = this.inst.setBy(-10, -10);
 	// Then
-	equal(resultVal, this.inst, "return instance");
-	deepEqual(this.inst.get(), [10, 10], "set to position -10,-10 relatively");
+	assert.equal(resultVal, this.inst, "return instance");
+	assert.deepEqual(this.inst.get(), [10, 10], "set to position -10,-10 relatively");
 	// When
 	resultVal = this.inst.setBy(-1000, -1000);
 	// Then
-	equal(resultVal, this.inst, "return instance");
-	deepEqual(this.inst.get(), [0, 0], "if position parameters was out of range, set to position min or max values.");
+	assert.equal(resultVal, this.inst, "return instance");
+	assert.deepEqual(this.inst.get(), [0, 0], "if position parameters was out of range, set to position min or max values.");
 	// When
 	resultVal = this.inst.setBy(1000, 1000);
 	// Then
-	equal(resultVal, this.inst, "return instance");
-	deepEqual(this.inst.get(), [300, 400], "if position parameters was out of range, set to position min or max values.");
+	assert.equal(resultVal, this.inst, "return instance");
+	assert.deepEqual(this.inst.get(), [300, 400], "if position parameters was out of range, set to position min or max values.");
 });
 
-test("setBy : check a 'change' event", function(assert) {
+QUnit.test("setBy : check a 'change' event", function(assert) {
 	var done = assert.async();
 	// Given
 	this.inst.setBy(20, 20);
 	this.inst.on("change", function(e) {
 		// Then
-		deepEqual(e.pos, [10, 10], "set to position -10,-10 relatively");
+		assert.deepEqual(e.pos, [10, 10], "set to position -10,-10 relatively");
 		done();
 	});
 	// When
 	this.inst.setBy(-10, -10);
 });
 
-test("_grap : when position was not changed", function(assert) {
+QUnit.test("_grap : when position was not changed", function(assert) {
 	// Given
 	var done = assert.async();
 	var firedChanged = false;
@@ -284,13 +294,13 @@ test("_grap : when position was not changed", function(assert) {
 	// Then
 	this.inst._grab();
 	setTimeout(function() {
-		equal(firedChanged, false, "must not fire 'change' event");
+		assert.equal(firedChanged, false, "must not fire 'change' event");
 		done();
 	},100);
 });
 
-module("movableCoord methods Test when inputType is []", {
-	setup : function() {
+QUnit.module("movableCoord methods Test when inputType is []", {
+	beforeEach : function() {
 		this.inst = new eg.MovableCoord( {
 			min : [ 0, 0 ],
 			max : [ 300, 400 ],
@@ -300,37 +310,37 @@ module("movableCoord methods Test when inputType is []", {
 			inputType : []
 		});
 	},
-	teardown : function() {
+	afterEach : function() {
 		this.inst.destroy();
 		this.inst = null;
 	}
 });
 
-test("setTo when inputType is []", function() {
+QUnit.test("setTo when inputType is []", function(assert) {
 	// Given
 
 	// When
 	this.inst.setTo(0, 200);
 	// Then
-	deepEqual(this.inst.get(), [0, 200], "set to position 0,200");
+	assert.deepEqual(this.inst.get(), [0, 200], "set to position 0,200");
 
 	// When
 	this.inst.setTo(-200, 500);
 	// Then
-	deepEqual(this.inst.get(), [0, 400], "if position parameters was out of range, set to position min or max values.");
+	assert.deepEqual(this.inst.get(), [0, 400], "if position parameters was out of range, set to position min or max values.");
 
 	// When
 	this.inst.setTo(600, -900);
 	// Then
-	deepEqual(this.inst.get(), [300, 0], "if position parameters was out of range, set to position min or max values.");
+	assert.deepEqual(this.inst.get(), [300, 0], "if position parameters was out of range, set to position min or max values.");
 });
 
-test("setTo when inputType is [] : check 'change' event", function(assert) {
+QUnit.test("setTo when inputType is [] : check 'change' event", function(assert) {
 	var done = assert.async();
 	// Given
 	this.inst.on("change", function(e) {
 		// Then
-		deepEqual(e.pos, [0, 200], "set to position 0,200");
+		assert.deepEqual(e.pos, [0, 200], "set to position 0,200");
 		done();
 	})
 	// When
@@ -338,28 +348,28 @@ test("setTo when inputType is [] : check 'change' event", function(assert) {
 });
 
 
-test("setBy when inputType is []", function() {
+QUnit.test("setBy when inputType is []", function(assert) {
 	// Given
 	// When
 	this.inst.setBy(20, 20);
 	// Then
-	deepEqual(this.inst.get(), [20, 20], "set to position 20,20 relatively");
+	assert.deepEqual(this.inst.get(), [20, 20], "set to position 20,20 relatively");
 	// When
 	this.inst.setBy(-10, -10);
 	// Then
-	deepEqual(this.inst.get(), [10, 10], "set to position -10,-10 relatively");
+	assert.deepEqual(this.inst.get(), [10, 10], "set to position -10,-10 relatively");
 	// When
 	this.inst.setBy(-1000, -1000);
 	// Then
-	deepEqual(this.inst.get(), [0, 0], "if position parameters was out of range, set to position min or max values.");
+	assert.deepEqual(this.inst.get(), [0, 0], "if position parameters was out of range, set to position min or max values.");
 	// When
 	this.inst.setBy(1000, 1000);
 	// Then
-	deepEqual(this.inst.get(), [300, 400], "if position parameters was out of range, set to position min or max values.");
+	assert.deepEqual(this.inst.get(), [300, 400], "if position parameters was out of range, set to position min or max values.");
 });
 
-module("movableCoord setTo duration Test", {
-	setup : function() {
+QUnit.module("movableCoord setTo duration Test", {
+	beforeEach : function() {
 		var self=this;
 		this.firedChangeEvent = false;
 		this.firedAnimationStartEvent = 0;
@@ -385,13 +395,13 @@ module("movableCoord setTo duration Test", {
 		});
 
 	},
-	teardown : function() {
+	afterEach : function() {
 		this.inst.destroy();
 		this.inst = null;
 	}
 });
 
-test("setTo : check event flow when maximumDuration(200ms) is bigger than a duration of setTo", function(assert) {
+QUnit.test("setTo : check event flow when maximumDuration(200ms) is bigger than a duration of setTo", function(assert) {
 	var done = assert.async();
 	// Given
 	var self = this;
@@ -401,13 +411,13 @@ test("setTo : check event flow when maximumDuration(200ms) is bigger than a dura
 	// Then
 	setTimeout(function() {
 		ok(self.firedChangeEvent, "fired 'change' event");
-		equal(self.firedAnimationStartEvent, 1, "fired 'animationStart' event");
-		equal(self.firedAnimationEndEvent, 1, "fired 'animationEnd' event");
+		assert.equal(self.firedAnimationStartEvent, 1, "fired 'animationStart' event");
+		assert.equal(self.firedAnimationEndEvent, 1, "fired 'animationEnd' event");
 		done();
 	},150);
 });
 
-test("setTo : check event flow when a duration of setTo is bigger than maximumDuration(200ms)", function(assert) {
+QUnit.test("setTo : check event flow when a duration of setTo is bigger than maximumDuration(200ms)", function(assert) {
 	var done = assert.async();
 	// Given
 	var self = this;
@@ -418,13 +428,13 @@ test("setTo : check event flow when a duration of setTo is bigger than maximumDu
 	// Then
 	setTimeout(function() {
 		ok(self.firedChangeEvent, "fired 'change' event");
-		equal(self.firedAnimationStartEvent, 1, "fired 'animationStart' event");
-		equal(self.firedAnimationEndEvent, 1, "fired 'animationEnd' event");
+		assert.equal(self.firedAnimationStartEvent, 1, "fired 'animationStart' event");
+		assert.equal(self.firedAnimationEndEvent, 1, "fired 'animationEnd' event");
 		done();
 	},250);
 });
 
-test("setTo : check event flow when a duration of setTo is '0'", function(assert) {
+QUnit.test("setTo : check event flow when a duration of setTo is '0'", function(assert) {
 	var done = assert.async();
 	// Given
 	var self = this;
@@ -434,13 +444,13 @@ test("setTo : check event flow when a duration of setTo is '0'", function(assert
 
 	// Then
 	ok(self.firedChangeEvent, "fired 'change' event");
-	equal(self.firedAnimationStartEvent, 0, "not fired 'animationStart' event");
-	equal(self.firedAnimationEndEvent, 0, "not fired 'animationEnd' event");
+	assert.equal(self.firedAnimationStartEvent, 0, "not fired 'animationStart' event");
+	assert.equal(self.firedAnimationEndEvent, 0, "not fired 'animationEnd' event");
 	done();
 });
 
-module("movableCoord event Test", {
-	setup : function() {
+QUnit.module("movableCoord event Test", {
+	beforeEach : function() {
 		this.inst = new eg.MovableCoord( {
 			min : [ 0, 0 ],
 			max : [ 300, 400 ],
@@ -449,13 +459,13 @@ module("movableCoord event Test", {
 			circular : false
 		});
 	},
-	teardown : function() {
+	afterEach : function() {
 		this.inst.destroy();
 		this.inst = null;
 	}
 });
 
-test("slow movement test (no-velocity)", function(assert) {
+QUnit.test("slow movement test (no-velocity)", function(assert) {
 	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
@@ -466,18 +476,18 @@ test("slow movement test (no-velocity)", function(assert) {
 	this.inst.on( {
 		"hold" : function(e) {
 			firedHold++;
-			deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
-			equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			assert.deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
+			assert.equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
+			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"change" : function(e) {
-			equal(e.holding, true, "holding value is 'true' before animationStart event");
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			assert.equal(e.holding, true, "holding value is 'true' before animationStart event");
+			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"release" : function(e) {
 			firedRelease++;
 			ok(true, "fire 'release' event");
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"animationStart" : function(e) {
 			ok(false, "must not fired 'animationStart' event");
@@ -499,15 +509,15 @@ test("slow movement test (no-velocity)", function(assert) {
 		// Then
 		// for test custom event
 		setTimeout(function() {
-			equal(firedHold, 1, "fired 'hold' event");
-			equal(firedRelease, 1,"fired 'release' event");
-			// equal(firedAnimationEnd, 1, "fired 'animationEnd' event");
+			assert.equal(firedHold, 1, "fired 'hold' event");
+			assert.equal(firedRelease, 1,"fired 'release' event");
+			// assert.equal(firedAnimationEnd, 1, "fired 'animationEnd' event");
 			done();
 		},1000);
     	});
 });
 
-test("slow movement test (no-velocity), release outside", function(assert) {
+QUnit.test("slow movement test (no-velocity), release outside", function(assert) {
 	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
@@ -519,32 +529,32 @@ test("slow movement test (no-velocity), release outside", function(assert) {
 	this.inst.on( {
 		"hold" : function(e) {
 			firedHold++;
-			deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
-			equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			assert.deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
+			assert.equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
+			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"change" : function(e) {
 			if(firedAnimationStart === 0) {
-				equal(e.holding, true, "holding value is 'true' before animationStart event");
+				assert.equal(e.holding, true, "holding value is 'true' before animationStart event");
 			} else {
-				equal(e.holding, false, "holding value is 'false' after animationStart event");
+				assert.equal(e.holding, false, "holding value is 'false' after animationStart event");
 			}
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"release" : function(e) {
 			firedRelease++;
 			ok(true, "fire 'release' event");
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"animationStart" : function(e) {
 			firedAnimationStart++;
 			ok(true, "must fired 'animationStart' event");
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"animationEnd" : function(e) {
 			firedAnimationEnd++;
 			ok(true, "fire 'animationEnd' event");
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		}
 	});
 	this.inst.bind(el);
@@ -560,16 +570,16 @@ test("slow movement test (no-velocity), release outside", function(assert) {
 		// Then
 		// for test custom event
 		setTimeout(function() {
-			equal(firedHold, 1, "fired 'hold' event");
-			equal(firedRelease, 1,"fired 'release' event");
-			equal(firedAnimationStart, 1, "fired 'animationStrt' event");
-			equal(firedAnimationEnd, 1, "fired 'animationEnd' event");
+			assert.equal(firedHold, 1, "fired 'hold' event");
+			assert.equal(firedRelease, 1,"fired 'release' event");
+			assert.equal(firedAnimationStart, 1, "fired 'animationStrt' event");
+			assert.equal(firedAnimationEnd, 1, "fired 'animationEnd' event");
 			done();
 		},1000);
     	});
 });
 
-test("fast movement test (velocity)", function(assert) {
+QUnit.test("fast movement test (velocity)", function(assert) {
 	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
@@ -581,34 +591,34 @@ test("fast movement test (velocity)", function(assert) {
 	this.inst.on( {
 		"hold" : function(e) {
 			firedHold++;
-			deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
-			equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			assert.deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
+			assert.equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
+			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"change" : function(e) {
 			if(firedAnimationStart) {
-				equal(e.holding, false, "holding value was 'false' before animationStart event");
+				assert.equal(e.holding, false, "holding value was 'false' before animationStart event");
 			} else {
-				equal(e.holding, true, "holding value was 'true' after animationStart event");
+				assert.equal(e.holding, true, "holding value was 'true' after animationStart event");
 			}
-			equal(this._pos[0], e.pos[0], "event x-pos must equal x-pos of the object");
-			equal(this._pos[1], e.pos[1], "event y-pos must equal y-pos of the object");
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			assert.equal(this._pos[0], e.pos[0], "event x-pos must equal x-pos of the object");
+			assert.equal(this._pos[1], e.pos[1], "event y-pos must equal y-pos of the object");
+			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"release" : function(e) {
 			firedRelease++;
 			ok(true, "fire 'release' event");
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"animationStart" : function(e) {
 			firedAnimationStart++;
 			ok(true, "fire 'animationStart' event");
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"animationEnd" : function(e) {
 			firedAnimationEnd++;
 			ok(true, "fire 'animationEnd' event");
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		}
 	});
 	this.inst.bind(el);
@@ -624,16 +634,16 @@ test("fast movement test (velocity)", function(assert) {
 		// Then
 		// for test custom event
 		setTimeout(function() {
-			equal(firedHold, 1,"fired 'hold' event");
-			equal(firedRelease,1,"fired 'release' event");
-			equal(firedAnimationStart, 1,"fired 'animationStart' event");
-			equal(firedAnimationEnd, 1,"fired 'animationEnd' event");
+			assert.equal(firedHold, 1,"fired 'hold' event");
+			assert.equal(firedRelease,1,"fired 'release' event");
+			assert.equal(firedAnimationStart, 1,"fired 'animationStart' event");
+			assert.equal(firedAnimationEnd, 1,"fired 'animationEnd' event");
 			done();
 		},1000);
     	});
 });
 
-test("movement test when stop method was called in 'animationStart' event", function(assert) {
+QUnit.test("movement test when stop method was called in 'animationStart' event", function(assert) {
 	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
@@ -645,16 +655,16 @@ test("movement test when stop method was called in 'animationStart' event", func
 	this.inst.on( {
 		"change" : function(e) {
 			if(firedAnimationStart) {
-				equal(e.holding, false, "holding value was 'false' before animationStart event");
+				assert.equal(e.holding, false, "holding value was 'false' before animationStart event");
 			} else {
-				equal(e.holding, true, "holding value was 'true' after animationStart event");
+				assert.equal(e.holding, true, "holding value was 'true' after animationStart event");
 			}
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"release" : function(e) {
 			firedRelease++;
 			ok(true, "fire 'release' event");
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"animationStart" : function(e) {
 			firedAnimationStart++;
@@ -664,12 +674,12 @@ test("movement test when stop method was called in 'animationStart' event", func
 				e.done();
 			}, e.duration);
 			ok(true, "fire 'animationStart' event");
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"animationEnd" : function(e) {
 			firedAnimationEnd++;
 			ok(true, "fire 'animationEnd' event");
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		}
 	});
 	this.inst.bind(el);
@@ -685,17 +695,17 @@ test("movement test when stop method was called in 'animationStart' event", func
 		// Then
 		// for test custom event
 		setTimeout(function() {
-			equal(firedRelease,1,"fired 'release' event");
-			equal(firedAnimationStart, 1,"fired 'animationStart' event");
-			equal(firedAnimationEnd, 1,"fired 'animationEnd' event");
+			assert.equal(firedRelease,1,"fired 'release' event");
+			assert.equal(firedAnimationStart, 1,"fired 'animationStart' event");
+			assert.equal(firedAnimationEnd, 1,"fired 'animationEnd' event");
 			done();
 		},1000);
     	});
 });
 
 
-module("movableCoord interrupt Test", {
-	setup : function() {
+QUnit.module("movableCoord interrupt Test", {
+	beforeEach : function() {
 		this.inst = new eg.MovableCoord( {
 			min : [ 0, 0 ],
 			max : [ 300, 400 ],
@@ -704,14 +714,14 @@ module("movableCoord interrupt Test", {
 			circular : false
 		});
 	},
-	teardown : function() {
+	afterEach : function() {
 		this.inst.destroy();
 		this.inst = null;
 	}
 });
 
 
-test("interrupt test when user's action is fast", function(assert) {
+QUnit.test("interrupt test when user's action is fast", function(assert) {
 	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
@@ -719,38 +729,38 @@ test("interrupt test when user's action is fast", function(assert) {
 	var firedRelease = 0;
 	var firedAnimationStart = 0;
 	var firedAnimationEnd = 0;
-	equal(this.inst._status.prevented, false, "init value is 'false'");
+	assert.equal(this.inst._status.prevented, false, "init value is 'false'");
 	this.inst.on( {
 		"hold" : function(e) {
 			firedHold++;
-			deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
-			equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
-			equal(this._status.prevented, true, "prevented property is 'true'");
+			assert.deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
+			assert.equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
+			assert.equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"change" : function(e) {
 			if(firedAnimationStart) {
-				equal(e.holding, false, "holding value was 'false' before animation event");
+				assert.equal(e.holding, false, "holding value was 'false' before animation event");
 			} else {
-				equal(e.holding, true, "holding value was 'true' after animation event");
+				assert.equal(e.holding, true, "holding value was 'true' after animation event");
 			}
-			equal(this._pos[0], e.pos[0], "event x-pos must equal x-pos of the object");
-			equal(this._pos[1], e.pos[1], "event y-pos must equal y-pos of the object");
-			equal(this._status.prevented, true, "prevented property is 'true'");
+			assert.equal(this._pos[0], e.pos[0], "event x-pos must equal x-pos of the object");
+			assert.equal(this._pos[1], e.pos[1], "event y-pos must equal y-pos of the object");
+			assert.equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"release" : function(e) {
 			firedRelease++;
 			ok(true, "fire 'release' event");
-			equal(this._status.prevented, true, "prevented property is 'true'");
+			assert.equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"animationStart" : function(e) {
 			firedAnimationStart++;
 			ok(true, "fire 'animationStart' event");
-			equal(this._status.prevented, true, "prevented property is 'true'");
+			assert.equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"animationEnd" : function(e) {
 			firedAnimationEnd++;
 			ok(true, "fire 'animationEnd' event");
-			equal(this._status.prevented, false, "prevented property is 'false'");
+			assert.equal(this._status.prevented, false, "prevented property is 'false'");
 		}
 	});
 	this.inst.bind(el, {
@@ -768,16 +778,16 @@ test("interrupt test when user's action is fast", function(assert) {
 		// Then
 		// for test custom event
 		setTimeout(function() {
-			equal(firedHold, 1,"fired 'hold' event");
-			equal(firedRelease,1,"fired 'release' event");
-			equal(firedAnimationStart, 1,"fired 'animationStart' event");
-			equal(firedAnimationEnd, 1,"fired 'animationEnd' event");
+			assert.equal(firedHold, 1,"fired 'hold' event");
+			assert.equal(firedRelease,1,"fired 'release' event");
+			assert.equal(firedAnimationStart, 1,"fired 'animationStart' event");
+			assert.equal(firedAnimationEnd, 1,"fired 'animationEnd' event");
 			done();
 		},1000);
     	});
 });
 
-test("interrupt test when stop method was called in 'animationStart' event", function(assert) {
+QUnit.test("interrupt test when stop method was called in 'animationStart' event", function(assert) {
 	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
@@ -785,20 +795,20 @@ test("interrupt test when stop method was called in 'animationStart' event", fun
 	var firedRelease = 0;
 	var firedAnimationStart = 0;
 	var firedAnimationEnd = 0;
-	equal(this.inst._status.prevented, false, "init value is 'false'");
+	assert.equal(this.inst._status.prevented, false, "init value is 'false'");
 	this.inst.on( {
 		"change" : function(e) {
 			if(firedAnimationStart) {
-				equal(e.holding, false, "holding value was 'false' before animation event");
+				assert.equal(e.holding, false, "holding value was 'false' before animation event");
 			} else {
-				equal(e.holding, true, "holding value was 'true' after animation event");
+				assert.equal(e.holding, true, "holding value was 'true' after animation event");
 			}
-			equal(this._status.prevented, true, "prevented property is 'true'");
+			assert.equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"release" : function(e) {
 			firedRelease++;
 			ok(true, "fire 'release' event");
-			equal(this._status.prevented, true, "prevented property is 'true'");
+			assert.equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"animationStart" : function(e) {
 			firedAnimationStart++;
@@ -808,12 +818,12 @@ test("interrupt test when stop method was called in 'animationStart' event", fun
 				e.done();
 			}, e.duration);
 			ok(true, "fire 'animation' event");
-			equal(this._status.prevented, true, "prevented property is 'true'");
+			assert.equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"animationEnd" : function(e) {
 			firedAnimationEnd++;
 			ok(true, "fire 'animationEnd' event");
-			equal(this._status.prevented, false, "prevented property is 'false'");
+			assert.equal(this._status.prevented, false, "prevented property is 'false'");
 		}
 	});
 	this.inst.bind(el, {
@@ -831,21 +841,21 @@ test("interrupt test when stop method was called in 'animationStart' event", fun
 		// Then
 		// for test custom event
 		setTimeout(function() {
-			equal(firedRelease,1,"fired 'release' event");
-			equal(firedAnimationStart, 1,"fired 'animationStart' event");
-			equal(firedAnimationEnd, 1,"fired 'animationEnd' event");
+			assert.equal(firedRelease,1,"fired 'release' event");
+			assert.equal(firedAnimationStart, 1,"fired 'animationStart' event");
+			assert.equal(firedAnimationEnd, 1,"fired 'animationEnd' event");
 			done();
 		},1000);
     	});
 });
 
-test("interrupt test when 'setTo' method is called : duration = 0", function() {
+QUnit.test("interrupt test when 'setTo' method is called : duration = 0", function(assert) {
 	//Given
 	var el = $("#area").get(0);
-	equal(this.inst._status.prevented, false, "init value is 'false'");
+	assert.equal(this.inst._status.prevented, false, "init value is 'false'");
 	this.inst.on( {
 		"change" : function(e) {
-			equal(this._status.prevented, true, "prevented property is 'true'");
+			assert.equal(this._status.prevented, true, "prevented property is 'true'");
 		}
 	});
 	this.inst.bind(el, {
@@ -856,30 +866,30 @@ test("interrupt test when 'setTo' method is called : duration = 0", function() {
 	this.inst.setTo(200,200);
 
 	// Then
-	equal(this.inst._status.prevented, false, "prevented property is 'false'");
+	assert.equal(this.inst._status.prevented, false, "prevented property is 'false'");
 
 	// When
 	this.inst.setTo(100,100);
 
 	// Then
-	equal(this.inst._status.prevented, false, "prevented property is 'false'");
+	assert.equal(this.inst._status.prevented, false, "prevented property is 'false'");
 });
 
 
-test("interrupt test when 'setTo' method is called : duration = 100", function(assert) {
+QUnit.test("interrupt test when 'setTo' method is called : duration = 100", function(assert) {
 	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
-	equal(this.inst._status.prevented, false, "init value is 'false'");
+	assert.equal(this.inst._status.prevented, false, "init value is 'false'");
 	this.inst.on( {
 		"change" : function(e) {
-			equal(this._status.prevented, true, "prevented property is 'true'");
+			assert.equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"animationStart" : function(e) {
-			equal(this._status.prevented, true, "prevented property is 'true'");
+			assert.equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"animationEnd" : function(e) {
-			equal(this._status.prevented, false, "prevented property is 'false'");
+			assert.equal(this._status.prevented, false, "prevented property is 'false'");
 		}
 	});
 	this.inst.bind(el, {
@@ -891,30 +901,30 @@ test("interrupt test when 'setTo' method is called : duration = 100", function(a
 	this.inst.setTo(200,200,100);
 	setTimeout(function() {
 		// Then
-		equal(self.inst._status.prevented, false, "prevented property is 'false'");
+		assert.equal(self.inst._status.prevented, false, "prevented property is 'false'");
 		self.inst.setTo(100,0,100);
 		setTimeout(function() {
 			// Then
-			equal(self.inst._status.prevented, false, "prevented property is 'false'");
+			assert.equal(self.inst._status.prevented, false, "prevented property is 'false'");
 			done();
 		},150);
 	},150);
 });
 
-test("interrupt test after 'setTo' method is called : move to same position", function(assert) {
+QUnit.test("interrupt test after 'setTo' method is called : move to same position", function(assert) {
 	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
-	equal(this.inst._status.prevented, false, "init value is 'false'");
+	assert.equal(this.inst._status.prevented, false, "init value is 'false'");
 	this.inst.on( {
 		"change" : function(e) {
-			equal(this._status.prevented, true, "prevented property is 'true'");
+			assert.equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"animationStart" : function(e) {
-			equal(this._status.prevented, true, "prevented property is 'true'");
+			assert.equal(this._status.prevented, true, "prevented property is 'true'");
 		},
 		"animationEnd" : function(e) {
-			equal(this._status.prevented, false, "prevented property is 'false'");
+			assert.equal(this._status.prevented, false, "prevented property is 'false'");
 		}
 	});
 	this.inst.bind(el, {
@@ -926,19 +936,19 @@ test("interrupt test after 'setTo' method is called : move to same position", fu
 	this.inst.setTo(200,200,100);
 	setTimeout(function() {
 		// Then
-		equal(self.inst._status.prevented, false, "prevented property is 'false'");
+		assert.equal(self.inst._status.prevented, false, "prevented property is 'false'");
 		// move to same position
 		self.inst.setTo(200,200,100);
 		setTimeout(function() {
 			// Then
-			equal(self.inst._status.prevented, false, "prevented property is 'false'");
+			assert.equal(self.inst._status.prevented, false, "prevented property is 'false'");
 			done();
 		},150);
 	},150);
 });
 
 
-test("interrupt test after tap gesture", function(assert) {
+QUnit.test("interrupt test after tap gesture", function(assert) {
 	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
@@ -948,9 +958,9 @@ test("interrupt test after tap gesture", function(assert) {
 	this.inst.on( {
 		"hold" : function(e) {
 			firedHold++;
-			deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
-			equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
-			equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
+			assert.deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
+			assert.equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
+			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
 		},
 		"change" : function(e) {
 			ok(false, "must not fired 'change' event");
@@ -958,7 +968,7 @@ test("interrupt test after tap gesture", function(assert) {
 		"release" : function(e) {
 			firedRelease++;
 			ok(true, "fire 'release' event");
-			equal(this._isInterrupting(), false, "_isInterrupting is 'false'");
+			assert.equal(this._isInterrupting(), false, "_isInterrupting is 'false'");
 		},
 		"animationStart" : function(e) {
 			ok(false, "must not fired 'animationStart' event");
@@ -978,14 +988,14 @@ test("interrupt test after tap gesture", function(assert) {
 		// Then
 		// for test custom event
 		setTimeout(function() {
-			equal(firedHold,1,"fired 'hold' event");
-			equal(firedRelease,1,"fired 'release' event");
+			assert.equal(firedHold,1,"fired 'hold' event");
+			assert.equal(firedRelease,1,"fired 'release' event");
 			done();
 		},1000);
     	});
 });
 
-test("interrupt test. Second 'MovableCoord move' can be available after 'no move' by first MovableCoord move", function(assert) {
+QUnit.test("interrupt test. Second 'MovableCoord move' can be available after 'no move' by first MovableCoord move", function(assert) {
 	var EXPECTED_RELEASE_COUNT = 2;
 	var releaseCount = 0;
 	var done = assert.async();
@@ -1019,15 +1029,15 @@ test("interrupt test. Second 'MovableCoord move' can be available after 'no move
             duration: 1000,
             easing: "linear"
 		}, function() {
-			equal(releaseCount, EXPECTED_RELEASE_COUNT,
+			assert.equal(releaseCount, EXPECTED_RELEASE_COUNT,
 				"Second 'MovableCoord move' can be available after 'No move' by first MovableCoord move")
 			done();
 		});
     });
 });
 
-module("movableCoord event Test", {
-	setup : function() {
+QUnit.module("movableCoord event Test", {
+	beforeEach : function() {
 		this.inst = new eg.MovableCoord( {
 			min : [ 0, 0 ],
 			max : [ 300, 400 ],
@@ -1036,53 +1046,53 @@ module("movableCoord event Test", {
 			circular : false
 		});
 	},
-	teardown : function() {
+	afterEach : function() {
 		this.inst.destroy();
 		this.inst = null;
 	}
 });
 
-test("check user's direction", function() {
+QUnit.test("check user's direction", function(assert) {
 	//Given
 	// When
 	this.inst._subOptions.thresholdAngle = 45;
 
 	// Then
-	equal(this.inst._getDirection(0), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal")
-	equal(this.inst._getDirection(20), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal")
-	equal(this.inst._getDirection(45), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a directgion is horizontal");
-	equal(this.inst._getDirection(100), eg.MovableCoord.DIRECTION_VERTICAL, "check if a direction is vertical");
-	equal(this.inst._getDirection(134), eg.MovableCoord.DIRECTION_VERTICAL, "check if a direction is vertical");
-	equal(this.inst._getDirection(135), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
-	equal(this.inst._getDirection(136), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
-	equal(this.inst._getDirection(180), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	assert.equal(this.inst._getDirection(0), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal")
+	assert.equal(this.inst._getDirection(20), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal")
+	assert.equal(this.inst._getDirection(45), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a directgion is horizontal");
+	assert.equal(this.inst._getDirection(100), eg.MovableCoord.DIRECTION_VERTICAL, "check if a direction is vertical");
+	assert.equal(this.inst._getDirection(134), eg.MovableCoord.DIRECTION_VERTICAL, "check if a direction is vertical");
+	assert.equal(this.inst._getDirection(135), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	assert.equal(this.inst._getDirection(136), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	assert.equal(this.inst._getDirection(180), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
 
 	// When
 	this.inst._subOptions.thresholdAngle = 20;
 
 	// Then
-	equal(this.inst._getDirection(0), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal")
-	equal(this.inst._getDirection(10), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
-	equal(this.inst._getDirection(20), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
-	equal(this.inst._getDirection(30), eg.MovableCoord.DIRECTION_VERTICAL, "check if a direction is vertical");
-	equal(this.inst._getDirection(50), eg.MovableCoord.DIRECTION_VERTICAL, "check if a direction is vertical");
-	equal(this.inst._getDirection(160), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
-	equal(this.inst._getDirection(161), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
-	equal(this.inst._getDirection(180), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	assert.equal(this.inst._getDirection(0), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal")
+	assert.equal(this.inst._getDirection(10), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	assert.equal(this.inst._getDirection(20), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	assert.equal(this.inst._getDirection(30), eg.MovableCoord.DIRECTION_VERTICAL, "check if a direction is vertical");
+	assert.equal(this.inst._getDirection(50), eg.MovableCoord.DIRECTION_VERTICAL, "check if a direction is vertical");
+	assert.equal(this.inst._getDirection(160), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	assert.equal(this.inst._getDirection(161), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
+	assert.equal(this.inst._getDirection(180), eg.MovableCoord.DIRECTION_HORIZONTAL, "check if a direction is horizontal");
 });
 
 
-test("movement direction test (DIRECTION_ALL)", function(assert) {
+QUnit.test("movement direction test (DIRECTION_ALL)", function(assert) {
 	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
 
 	this.inst.on( {
 		"release" : function(e) {
-			equal(e.depaPos[0], 10)
-			equal(e.depaPos[1], 10)
-			equal(this._pos[0], 10)
-			equal(this._pos[1], 10)
+			assert.equal(e.depaPos[0], 10)
+			assert.equal(e.depaPos[1], 10)
+			assert.equal(this._pos[0], 10)
+			assert.equal(this._pos[1], 10)
 		}
 	});
 	this.inst.bind(el, {
@@ -1102,17 +1112,17 @@ test("movement direction test (DIRECTION_ALL)", function(assert) {
 });
 
 
-test("movement direction test (DIRECTION_HORIZONTAL)", function(assert) {
+QUnit.test("movement direction test (DIRECTION_HORIZONTAL)", function(assert) {
 	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
 
 	this.inst.on( {
 		"release" : function(e) {
-			equal(e.depaPos[0], 10)
-			equal(e.depaPos[1], 0)
-			equal(this._pos[0], 10)
-			equal(this._pos[1], 0)
+			assert.equal(e.depaPos[0], 10)
+			assert.equal(e.depaPos[1], 0)
+			assert.equal(this._pos[0], 10)
+			assert.equal(this._pos[1], 0)
 		}
 	});
 	this.inst.bind(el, {
@@ -1132,17 +1142,17 @@ test("movement direction test (DIRECTION_HORIZONTAL)", function(assert) {
 });
 
 
-test("movement direction test (DIRECTION_VERTICAL)", function(assert) {
+QUnit.test("movement direction test (DIRECTION_VERTICAL)", function(assert) {
 	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
 
 	this.inst.on( {
 		"release" : function(e) {
-			equal(e.depaPos[0], 0)
-			equal(e.depaPos[1], 10)
-			equal(this._pos[0], 0)
-			equal(this._pos[1], 10)
+			assert.equal(e.depaPos[0], 0)
+			assert.equal(e.depaPos[1], 10)
+			assert.equal(this._pos[0], 0)
+			assert.equal(this._pos[1], 10)
 		}
 	});
 	this.inst.bind(el, {
@@ -1161,7 +1171,7 @@ test("movement direction test (DIRECTION_VERTICAL)", function(assert) {
     	});
 });
 
-test("cross movement test (vertical movement on DIRECTION_HORIZONTAL)", function(assert) {
+QUnit.test("cross movement test (vertical movement on DIRECTION_HORIZONTAL)", function(assert) {
 	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
@@ -1172,8 +1182,8 @@ test("cross movement test (vertical movement on DIRECTION_HORIZONTAL)", function
 	this.inst.on({
 		"release" : function(e) {
 			//Then
-			equal(e.destPos[0], 0);
-			equal(e.destPos[1], 0);
+			assert.equal(e.destPos[0], 0);
+			assert.equal(e.destPos[1], 0);
 		}
 	});
 	this.inst.bind(el, {
@@ -1190,7 +1200,7 @@ test("cross movement test (vertical movement on DIRECTION_HORIZONTAL)", function
 	}, done);
 });
 
-test("cross movement test (horizontal movement on DIRECTION_VERTICAL)", function(assert) {
+QUnit.test("cross movement test (horizontal movement on DIRECTION_VERTICAL)", function(assert) {
 	var done = assert.async();
 	//Given
 	var el = $("#area").get(0);
@@ -1201,8 +1211,8 @@ test("cross movement test (horizontal movement on DIRECTION_VERTICAL)", function
 	this.inst.on({
 		"release" : function(e) {
 			//Then
-			equal(e.destPos[0], 0);
-			equal(e.destPos[1], 0);
+			assert.equal(e.destPos[0], 0);
+			assert.equal(e.destPos[1], 0);
 		}
 	});
 	this.inst.bind(el, {
@@ -1219,7 +1229,7 @@ test("cross movement test (horizontal movement on DIRECTION_VERTICAL)", function
 	}, done);
 });
 
-test("_convertInputType (support touch)", function() {
+QUnit.test("_convertInputType (support touch)", function(assert) {
 	// Given
 	var globalWithToucnSupport = {
 		"ontouchstart": {}
@@ -1238,25 +1248,25 @@ test("_convertInputType (support touch)", function() {
 	// When
 	var inputType = [ "touch", "mouse" ];
 	// Then
-	equal(inst._convertInputType(inputType), Hammer.TouchInput, "check TouchInput");
+	assert.equal(inst._convertInputType(inputType), Hammer.TouchInput, "check TouchInput");
 
 	// When
 	inputType = [ "touch" ];
 	// Then
-	equal(inst._convertInputType(inputType), Hammer.TouchInput, "check TouchInput");
+	assert.equal(inst._convertInputType(inputType), Hammer.TouchInput, "check TouchInput");
 
 	// When
 	inputType = [ "mouse" ];
 	// Then
-	equal(inst._convertInputType(inputType), Hammer.MouseInput, "check MouseInput");
+	assert.equal(inst._convertInputType(inputType), Hammer.MouseInput, "check MouseInput");
 
 	// When
 	inputType = [ ];
 	// Then
-	equal(inst._convertInputType(inputType), null, "type is null");
+	assert.equal(inst._convertInputType(inputType), null, "type is null");
 });
 
-test("_convertInputType (not support touch)", function() {
+QUnit.test("_convertInputType (not support touch)", function(assert) {
 	// Given
 	var globalWithoutToucnSupport = {};
 	var method = eg.invoke("movableCoord", [jQuery, eg, globalWithoutToucnSupport, Hammer]);
@@ -1273,20 +1283,20 @@ test("_convertInputType (not support touch)", function() {
 	// When
 	var inputType = [ "touch", "mouse" ];
 	// Then
-	equal(inst._convertInputType(inputType), Hammer.MouseInput, "check TouchInput(not supporting touch)");
+	assert.equal(inst._convertInputType(inputType), Hammer.MouseInput, "check TouchInput(not supporting touch)");
 
 	// When
 	inputType = [ "touch" ];
 	// Then
-	equal(inst._convertInputType(inputType), null, "check TouchInput(not supporting touch)");
+	assert.equal(inst._convertInputType(inputType), null, "check TouchInput(not supporting touch)");
 
 	// When
 	inputType = [ "mouse" ];
 	// Then
-	equal(inst._convertInputType(inputType), Hammer.MouseInput, "check MouseInput(not supporting touch)");
+	assert.equal(inst._convertInputType(inputType), Hammer.MouseInput, "check MouseInput(not supporting touch)");
 
 	// When
 	inputType = [ ];
 	// Then
-	equal(inst._convertInputType(inputType), null, "type is null(not supporting touch)");
+	assert.equal(inst._convertInputType(inputType), null, "type is null(not supporting touch)");
 });
