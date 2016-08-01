@@ -28,7 +28,7 @@ eg.module("cssPrefix", ["jQuery", document], function($, doc) {
 
 	// run in jQuery 1.8.x below
 	var matchTest = ($.fn.jquery.match(/^\d\.\d+/) || [])[0];
-	if (!matchTest || +matchTest.replace(/\D/, "", 10) >= 18) {
+	if (!matchTest || +matchTest.replace(/\D/, "") >= 18) {
 		return;
 	}
 
