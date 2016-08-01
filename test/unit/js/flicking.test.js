@@ -79,10 +79,20 @@ var hooks = {
 QUnit.module("Initialization", hooks);
 QUnit.test("Check for the initialization", function(assert) {
 	// Given
-	var inst = this.create("#mflick1");
+	var inst1 = this.create("#mflick1");
+	var inst2 = this.create("#mflick2", { horizontal: false });
 
 	// Then
-	assert.deepEqual(inst.$container.width(), inst.$container.parent().width(), "Then panel container was added and the width is same as wrapper element.");
+	assert.deepEqual(inst1.$container.width(), inst1.$container.parent().width(), "Then panel container was added and the width is same as wrapper element.");
+	assert.deepEqual(inst2.$container.height(), inst1.$container.parent().height(), "Then panel container was added and the height is same as wrapper element.");
+
+	// Given
+	inst1._conf.panel.$list.css("padding", "0 20px");
+	inst2._conf.panel.$list.css("padding", "20px 0");
+
+	// Then
+	assert.equal(inst1._conf.panel.size, inst1._conf.panel.$list.outerWidth(), "The panel should maintain same width as wrapper element.");
+	assert.equal(inst2._conf.panel.size, inst2._conf.panel.$list.outerHeight(), "The panel should maintain same height as wrapper element.");
 });
 
 QUnit.module("Setting options", hooks);
