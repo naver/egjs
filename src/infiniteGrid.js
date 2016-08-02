@@ -84,6 +84,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			this.el.style.position = "relative";
 			this._prefix = _prefix || "";
 			this._isIos = /iPhone|iPad/.test(global.navigator.userAgent);
+			this._isIE10lower = !!(doc.documentMode && doc.documentMode < 10);
 			this._appendCols = this._prependCols = [];
 			this.$view = $(global);
 			this._reset();
@@ -287,12 +288,13 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		_layoutItems: function(items) {
 			items.map(function(v) {
 				v.position = this._getItemLayoutPosition(v);
+				return v;
+			}, this).forEach(function(v) {
 				if (v.el) {
 					v.el.style.left = v.position.x + "px";
 					v.el.style.top = v.position.y + "px";
 				}
-				return v;
-			}, this);
+			});
 		},
 		/**
 		 * Append elements
@@ -475,7 +477,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			this.layout(items, false);
 		},
 		_waitResource: function(items, isRefresh) {
-			var needCheck = this._checkImageLoaded(items);
+			var needCheck = this._checkImageLoaded();
 			var self = this;
 			var callback = function() {
 				if (self._isProcessing) {
@@ -598,19 +600,12 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			this._resetCols(this._appendCols.length || 0);
 			this.items = [];
 		},
-		_checkImageLoaded: function(items) {
-			var needCheck = [];
-			items.forEach(function(v) {
-				if (v.el.nodeName === "IMG") {
-					!v.el.complete && needCheck.push(v);
-				} else if (v.el.nodeType &&
-					([1,9,11].indexOf(v.el.nodeType) !== -1)) {	// ELEMENT_NODE, DOCUMENT_NODE, DOCUMENT_FRAGMENT_NODE
-					needCheck = needCheck.concat($(v.el).find("img").filter(function(fk, fv) {
-						return !fv.complete;
-					}).toArray());
+		_checkImageLoaded: function() {
+			return this.$el.find("img").filter(function(k, v) {
+				if (v.nodeType && ([1,9,11].indexOf(v.nodeType) !== -1)) {
+					return !v.complete;
 				}
-			});
-			return needCheck;
+			}).toArray();
 		},
 		_waitImageLoaded: function(needCheck, callback) {
 			var checkCount = needCheck.length;
@@ -622,8 +617,9 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			var $el;
 			needCheck.forEach(function(v) {
 				$el = $(v);
-				$el.attr("src", $el.attr("src")).on("load error", onCheck);
-			});
+				this._isIE10lower && $el.attr("src", $el.attr("src"));
+				$el.on("load error", onCheck);
+			}, this);
 		},
 		_measureColumns: function() {
 			this.el.style.width = null;
