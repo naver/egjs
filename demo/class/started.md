@@ -14,10 +14,10 @@ IE 7+, latest of Chrome/FF/Safari, iOS 7+ and Android 2.3+ (except 3.x)
 <script src="http://naver.github.io/egjs/latest/dist/pkgd/eg.pkgd.min.js"></script>
 ```
 
-#### Use Component
+#### Use Class
 
 ``` javascript
-var Some = eg.Class.extend({
+var Some = eg.Class({
 	//Class initialize
 	"construct": function(val){
 		this.val = val;
@@ -27,7 +27,23 @@ var Some = eg.Class.extend({
 	}
 });
 
-// Make an instance using Class.
+// Make an instance
 var some = new Some(5);
 some.sumVal(5);//10
+```
+
+#### Extend Class
+
+``` javascript
+//Extend "Some" class
+var What = eg.Class.extends(Some, {
+	"subVal": function(val) {
+		return this.val - val;
+	}
+});
+
+// Make an instance
+var what = new What(5);
+what.sumVal(5);//10
+what.subVal(3);//7
 ```
