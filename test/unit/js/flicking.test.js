@@ -1279,7 +1279,7 @@ QUnit.test("When changes panel normally", function(assert) {
 									value += 1;
 								}
 
-							assert.equal(oPanel[x], value, "Panel "+ x +" should be changed on '"+ i +"' event.");
+								assert.equal(oPanel[x], value, "Panel "+ x +" should be changed on '"+ i +"' event.");
 
 							} else {
 								value = condition[x];
@@ -1288,7 +1288,7 @@ QUnit.test("When changes panel normally", function(assert) {
 									value = currentPanel[ value ];
 								}
 
-							assert.deepEqual(oPanel[x], value, "The value from '"+ x +"', should be equals with previous '"+ condition[x] +"' changed on "+ i +" event.");
+								assert.deepEqual(oPanel[x], value, "The value from '"+ x +"', should be equals with previous '"+ condition[x] +"' changed on "+ i +" event.");
 							}
 						});
 
@@ -1672,6 +1672,49 @@ QUnit.test("Check for direction during hold and unhold on flick event", function
 		assert.ok(check(directionUnhold[id], eg.MovableCoord.DIRECTION_DOWN), "Is down during touch unhold?");
 		done4();
 	});
+});
+
+QUnit.test("Distance value during flick event", function(assert) {
+	var done = [];
+
+	// Given
+	var self = this;
+
+	var runTest = function(id, options, pos, isPositive) {
+		done.push(assert.async());
+
+		var el = $(id)[0];
+		var distance = [];
+		var index = 0;
+
+		var inst = self.create(el, options, {
+			flick: function(e) {
+				distance.push(e.distance);
+			},
+			flickEnd: function(e) {
+				distance = [];
+
+				if (index === 0) {
+					simulator(el, pos, function () {
+						assert.equal($.map(distance, function(v) {
+							return (isPositive ? v >= 0 : v <= 0) ? v : null;
+						}).length, distance.length, "");
+
+						done.shift()();
+					});
+				}
+
+				index++;
+			}
+		});
+
+		inst[ isPositive ? "next" : "prev" ]();
+	};
+
+	runTest("#mflick1", { circular: true }, { deltaX: -100, deltaY: 0 }, true);
+	runTest("#mflick2", { circular: true }, { deltaX: 100, deltaY: 0 }, false);
+	runTest("#mflick2-1", { circular: true, horizontal: false },  { deltaX: 0, deltaY: -100 }, true);
+	runTest("#mflick3-1", { circular: true, horizontal: false },  { deltaX: 0, deltaY: 100 }, false);
 });
 
 

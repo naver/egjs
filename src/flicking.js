@@ -637,7 +637,9 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		_changeHandler: function (e) {
 			var conf = this._conf;
 			var touch = conf.touch;
-			var pos = e.pos;
+			var posIndex = +!this.options.horizontal;
+			var pos = e.pos[posIndex];
+			var holdPos = touch.holdPos[posIndex];
 			var direction;
 			var eventRes = null;
 			var movedPx;
@@ -656,7 +658,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			 * @param {Array} param.pos Departure coordinate <ko>출발점 좌표</ko>
 			 * @param {Number} param.pos.0 Departure x-coordinate <ko>x 좌표</ko>
 			 * @param {Number} param.pos.1 Departure y-coordinate <ko>y 좌표</ko>
-			 * @param {Boolean} param.holding Holding if an area is pressed, this value is 'true'. <ko>스크린을 사용자가 누르고 있을 경우 true </ko>
+			 * @param {Boolean} param.holding Boolean value of holding(staying in touch) screen<ko>스크린 누름(터치 유지 상태) 상태 불리언 값</ko>
+			 * @param {Number} param.distance Distance moved from then starting point. According the move direction, positive on eg.MovableCoord.DIRECTION_LEFT/UP and negative on eg.MovableCoord.DIRECTION_RIGHT/DOWN <ko>시작점부터 이동된 거리의 값. 이동 방향에 따라 eg.MovableCoord.DIRECTION_LEFT/UP의 경우 양수를 eg.MovableCoord.DIRECTION_RIGHT/DOWN의 경우는 음수를 반환</ko>
 			 */
 			if (e.hammerEvent) {
 				direction = e.hammerEvent.direction;
@@ -676,12 +679,11 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			conf.customEvent.flick && (eventRes = this._triggerEvent(EVENTS.flick, {
 				pos: e.pos,
 				holding: e.holding,
-				direction: direction || touch.direction
+				direction: direction || touch.direction,
+				distance: pos - (holdPos || (touch.holdPos[posIndex] = pos))
 			}));
 
-			(eventRes || eventRes === null) && this._setTranslate([
-				-pos[+!this.options.horizontal], 0
-			]);
+			(eventRes || eventRes === null) && this._setTranslate([ -pos, 0 ]);
 		},
 
 		/**
