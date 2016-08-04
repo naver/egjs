@@ -21,7 +21,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 	 *
 	 * @param {HTMLElement|String|jQuery} element wrapper element <ko>기준 요소</ko>
 	 * @param {Object} [options]
-	 * @param {String} [options.itemSelector] selector string for layout item elements <ko>레이아웃 구성시, 구성의 단위로 사용될 엘리먼트들의 셀렉터. 즉, 카드들의 셀렉터.</ko>
+	 * @param {String} [options.itemSelector] selector string for layout item elements. (@deprecated since 1.3.0)<ko>레이아웃 구성시, 구성의 단위로 사용될 엘리먼트들의 셀렉터. 즉, 카드들의 셀렉터. (@deprecated since 1.3.0)</ko>
 	 * @param {Number} [options.count=30] when count value is greater than 0, grid will maintain same DOM length recycling <ko>내부적으로 유지되는 실제 DOM의 개수. count값이 0보다 클 경우, 일정한 dom 개수를 유지한다. count값이 0보다 작을 경우, DOM의 개수는 카드가 추가되면 될수록 계속 증가한다.</ko>
 	 * @param {String} [options.defaultGroupKey=null] when encounter item markup during the initialization, then set `defaultGroupKey` as groupKey <ko>객체를 초기화할 때 마크업에 존재하는 카드에 부여될 그룹키</ko>
 	 * @param {Boolean} [options.isEqualSize=false] determine if all item's size are same <ko>배치 될 카드의 크기가 모두 동일한 경우, 이 옵션을 true로 설정하면, 레이아웃 배치 성능을 높일 수 있다.</ko>
@@ -53,9 +53,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			</li>
 		</ul>
 		<script>
-		var some = new eg.InfiniteGrid("#grid", {
-			itemSelector : ".card"
-		}).on("layoutComplete", function(e) {
+		var some = new eg.InfiniteGrid("#grid").on("layoutComplete", function(e) {
 			// ...
 		});
 		</script>
@@ -71,7 +69,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		},
 		construct: function(el, options, _prefix) {
 			this.options = $.extend({
-				itemSelector: null,
 				isEqualSize: false,
 				defaultGroupKey: null,
 				count: 30,
@@ -576,11 +573,12 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		},
 
 		/**
-		 * Remove white space which was removed by append action.
-		 * @ko append에 의해 생긴 빈공간을 제거한다.
-		 * @method eg.InfiniteGrid#fit
-		 * @return {Number} distance if empty space is removed, value is not zero. <ko>빈공간이 제거된 실제 길이를 px 단위로 반환</ko>
-		 */
+		* Remove white space which was removed by append action.
+		* @ko append에 의해 생긴 빈공간을 제거한다.
+		* @method eg.InfiniteGrid#fit
+		* @deprecated since version 1.3.0
+		* @return {Number} distance if empty space is removed, value is not zero. <ko>빈공간이 제거된 실제 길이를 px 단위로 반환</ko>
+		*/
 		fit: function() {
 			var item = this._getTopItem();
 			var distance = item ? item.position.y : 0;
@@ -781,11 +779,9 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			</ul>
 		<script>
 	// create
-	$("#grid").infiniteGrid({
-				itemSelector : ".item"
-		});
+	$("#grid").infiniteGrid();
 	// method
-	$("#grid").infiniteGrid("option","itemSelector",".selected"); //Set option
+	$("#grid").infiniteGrid("option","count","60"); //Set option
 	$("#grid").infiniteGrid("instance"); // Return infiniteGrid instance
 	$("#grid").infiniteGrid("getBottomElement"); // Get bottom element
 	</script>
@@ -808,9 +804,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			</ul>
 		<script>
 	// create
-	$("#grid").infiniteGrid({
-				itemSelector : ".item"
-		});
+	$("#grid").infiniteGrid();
 	// event
 	$("#grid").on("infiniteGrid:layoutComplete",callback);
 	$("#grid").off("infiniteGrid:layoutComplete",callback);
@@ -835,9 +829,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			</ul>
 		<script>
 	// create
-	$("#grid").infiniteGrid({
-				itemSelector : ".item"
-		});
+	$("#grid").infiniteGrid();
 	// event
 	$("#grid").on("infiniteGrid:append",callback);
 	$("#grid").off("infiniteGrid:append",callback);
@@ -862,9 +854,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			</ul>
 		<script>
 	// create
-	$("#grid").infiniteGrid({
-				itemSelector : ".item"
-		});
+	$("#grid").infiniteGrid();
 	// event
 	$("#grid").on("infiniteGrid:prepend",callback);
 	$("#grid").off("infiniteGrid:prepend",callback);
