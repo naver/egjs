@@ -1842,3 +1842,24 @@ QUnit.test("Custom event name with prefix: to handle jQuery plugin style", funct
 
 	assert.deepEqual(events, eventFired, "Events did fired correctly?");
 });
+
+QUnit.test("Disallow API move calls during touch hold", function(assert) {
+	var done = assert.async();
+
+	// Given
+	var el = $("#mflick1")[0];
+	var inst = this.create(el, { circular: true });
+	var index = [];
+
+	var interval = setInterval(function() {
+			index.push(inst.getIndex());
+			inst.next(100);
+		}, 200);
+
+	simulator(el, { pos: [ 200, 50], deltaX: -200, deltaY: 0, duration: 1000 }, function() {
+		clearInterval(interval);
+		assert.equal(index.length, index.filter(function(v) { return v === 0; }).length, "Panel shouldn't have to moved during touch hold.");
+
+		done();
+	});
+});
