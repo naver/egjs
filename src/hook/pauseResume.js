@@ -51,6 +51,12 @@ eg.module("pauseResume", ["jQuery"], function($) {
 			var markIndex;
 			var sign;
 
+			// DO NOT SUPPORT TRANSFORM YET
+			// TODO: convert from relative value to absolute value on transform
+			if (propName === "transform") {
+				continue;
+			}
+
 			//If it has a absoulte value.
 			if (typeof propValue !== "string" ||
 				(markIndex = propValue.search(/[+|-]=/)) < 0) {
