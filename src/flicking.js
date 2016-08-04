@@ -184,7 +184,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 					destPos: [0, 0],	// destination x,y coordinate
 					distance: 0,		// touch distance pixel of start to end touch
 					direction: null,	// touch direction
-					lastPos: 0			// to determine move on holding
+					lastPos: 0,			// to determine move on holding
+					holding: false
 				},
 				customEvent: {			// for custom events value
 					flick: true,
@@ -625,8 +626,11 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * 'hold' event handler
 		 */
 		_holdHandler: function (e) {
-			this._conf.touch.holdPos = e.pos;
-			this._conf.panel.changed = false;
+			var conf = this._conf;
+
+			conf.touch.holdPos = e.pos;
+			conf.touch.holding = true;
+			conf.panel.changed = false;
 
 			this._adjustContainerCss("start", e.pos);
 		},
@@ -710,6 +714,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				pos[posIndex] = Math.round(pos[posIndex] / panelSize) * panelSize;
 
 			touch.distance === 0 && this._adjustContainerCss("end");
+			touch.holding = false;
 
 			this._setPointerEvents();  // for "click" bug
 		},
@@ -1185,10 +1190,11 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @param {Number} duration
 		 */
 		_movePanel: function (next, duration) {
-			var panel = this._conf.panel;
+			var conf = this._conf;
+			var panel = conf.panel;
 			var options = this.options;
 
-			if (panel.animating) {
+			if (panel.animating || conf.touch.holding) {
 				return;
 			}
 
@@ -1251,7 +1257,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
 		 */
 		moveTo: function (no, duration) {
-			var panel = this._conf.panel;
+			var conf = this._conf;
+			var panel = conf.panel;
 			var circular = this.options.circular;
 			var currentIndex = panel.index;
 			var indexToMove;
@@ -1259,7 +1266,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 
 			no = this._getNumValue(no, -1);
 
-			if (no < 0 || no >= panel.origCount || no === panel.no || panel.animating) {
+			if (no < 0 || no >= panel.origCount || no === panel.no ||
+				panel.animating || conf.touch.holding) {
 				return this;
 			}
 
