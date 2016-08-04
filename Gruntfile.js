@@ -17,6 +17,7 @@ module.exports = function(grunt) {
 		"clean": getConfig("clean"),
 		"gitinfo": grunt.task.run("exec:gitinfo"),
 		"banner": getConfig("banner"),
+		"browserSync": getConfig("browserSync"),
 		"exec": getConfig("exec"),
 		"concat": getConfig("concat"),
 		"copy": getConfig("copy"),
