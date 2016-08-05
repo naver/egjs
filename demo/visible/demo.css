@@ -1,0 +1,115 @@
+.wrap {
+  position: relative;
+}
+.control{
+  float: left;
+  position: relaative;
+    width: 360px;
+    padding: 30px 20px 0 20px;
+    
+}
+#effeciveViewportIndicator {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background: red;
+  opacity: .3;
+  z-index: 100;
+}
+
+.highlighter-rouge {
+    clear: both;
+    padding-top: 34px;
+}
+
+.scroller {
+  position: relative;
+  float: left;
+  height: 500px;
+  width: 380px;
+  background: #eee;
+  padding: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  z-index: 10;
+}
+
+.item {
+    display: block;
+    background-color: #ccc;
+    width: 300px;
+    height: 60px;
+    border-radius: 5px;
+    margin: 30px auto;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+
+}
+/* The fast way */
+
+.card {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    position: relative;
+    border-radius: 5px;
+    -webkit-transform: translateY(0);
+    -webkit-transition: all .3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: all .3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    1z-index:100;
+}
+
+.card:after {
+    content: "";
+    border-radius: 5px;
+    position: absolute;
+    background-color: #fff;
+
+  top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 8px 17px 0 rgba(0,0,0,0.15),0 6px 20px 0 rgba(0,0,0,0.16);
+
+  1box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    opacity: 0;
+  -webkit-transition: all 1.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: all 1.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.card.focus {
+    1margin: 30px auto;
+    -webkit-transform: scale(1.15, 1.15);
+    transform: scale(1.15, 1.15);
+}
+/* Transition to showing the bigger shadow on hover */
+.card.focus::after {
+  opacity: 1;
+}
+
+input#expandSizeInput {
+    width: 300px;
+    height: 30px;
+    vertical-align: middle;
+    margin-top: -2px;
+}
+
+label {
+    font-weight: 300;
+    font-size: 16px;
+    height: 30px;
+    line-height: 30px;
+    padding-right: 10px;
+    display: inline-block;
+    width: 130px;
+    text-align: right;
+}
+
+#log {
+    height: 288px;
+    overflow-y: scroll;
+    background-color: #eee;
+    margin-top: 30px;
+    padding-left: 10px;
+}
+#log .red {
+	color: red;
+}
