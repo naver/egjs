@@ -555,6 +555,33 @@ QUnit.test("getAllElements()", function(assert) {
 	assert.deepEqual(elements.length, inst.$container.children().length, "Returned all panel elements?");
 });
 
+QUnit.test("getTotalCount()", function(assert) {
+	// Given
+	this.create("#mflick1");
+	this.create("#mflick2-1", { circular : true });
+
+	var inst = this.inst[0];
+
+	// When
+	var counts = inst.getTotalCount();
+
+	// Then
+	assert.deepEqual(counts, inst.$container.children().length, "Return total panel elements count?");
+
+	// Given
+	inst = this.inst[1];
+
+	// When
+	counts = inst.getTotalCount();
+
+	// Then
+	assert.ok(counts < inst.$container.children().length, "When circular options is set, the elements count is less than physical elements count");
+
+	// When
+	counts = inst.getTotalCount(true);
+	assert.deepEqual(counts, inst.$container.children().length, "Returned physical elements total count?");
+});
+
 QUnit.test("isPlaying()", function(assert) {
 	var done = assert.async();
 
@@ -1209,6 +1236,7 @@ QUnit.test("When changes panel normally", function(assert) {
 					eventFired.push(type);
 
 					panel[type] = {
+						index: e.index,
 						no: e.no,
 						getElement: this.getElement(),
 						getIndex: this.getIndex(),
@@ -1229,6 +1257,7 @@ QUnit.test("When changes panel normally", function(assert) {
 			panel: {},
 			inst: f,
 			currentPanel: {
+				index: f._conf.panel.currIndex,
 				no: f._conf.panel.currNo,
 				getElement: f.getElement(),
 				getIndex: f.getIndex(),
