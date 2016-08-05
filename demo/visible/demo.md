@@ -32,7 +32,7 @@
 <div class="control">
 <div id="effeciveViewportIndicator"></div>
 <label for="expandSize">expandSize : <span id="expandSize_value">0</span></label>
-<input id="expandSizeInput" type="range" name="expandSize" min="-230" max="30" step="1" value="0"></input><br>
+<input id="expandSizeInput" type="range" name="expandSize" min="-230" max="30" step="1" value="0"><br>
 <label for="effeciveViewportIndicator">Show Effective Viewport Area</label>
 <input id="effeciveViewportToggle" type="checkbox" name="effeciveViewportIndicator">
   <div id="log"></div>
