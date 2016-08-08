@@ -164,7 +164,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var options = this.options;
 			var padding = options.previewPadding;
 
-			if ($children.length === 1 && $children.hasClass(options.prefix +"-container")) {
+			if ($children.eq(0).hasClass(options.prefix + "-container")) {
 				this.$container = $children;
 				$children = $children.children();
 			}
