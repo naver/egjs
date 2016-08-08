@@ -82,9 +82,14 @@ QUnit.test("Check for the initialization", function(assert) {
 	var inst1 = this.create("#mflick1");
 	var inst2 = this.create("#mflick2", { horizontal: false });
 
+	// https://github.com/naver/egjs/issues/216
+	var $container = $("#mflick1-1 > :first-child").attr("id", "container");
+	var inst3 = this.create("#mflick1-1");
+
 	// Then
 	assert.deepEqual(inst1.$container.width(), inst1.$container.parent().width(), "Then panel container was added and the width is same as wrapper element.");
-	assert.deepEqual(inst2.$container.height(), inst1.$container.parent().height(), "Then panel container was added and the height is same as wrapper element.");
+	assert.deepEqual(inst2.$container.height(), inst2.$container.parent().height(), "Then panel container was added and the height is same as wrapper element.");
+	assert.deepEqual(inst3.$container.width(), inst3.$container.parent().width(), "Then panel container was added and the width is same as wrapper element.");
 
 	// Given
 	inst1._conf.panel.$list.css("padding", "0 20px");
@@ -93,6 +98,8 @@ QUnit.test("Check for the initialization", function(assert) {
 	// Then
 	assert.equal(inst1._conf.panel.size, inst1._conf.panel.$list.outerWidth(), "The panel should maintain same width as wrapper element.");
 	assert.equal(inst2._conf.panel.size, inst2._conf.panel.$list.outerHeight(), "The panel should maintain same height as wrapper element.");
+
+	assert.equal($container.attr("id"), inst3.$container.attr("id"), "The given DOM is used as container element?");
 });
 
 QUnit.module("Setting options", hooks);
