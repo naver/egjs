@@ -164,6 +164,11 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var options = this.options;
 			var padding = options.previewPadding;
 
+			if ($children.length === 1 && $children.hasClass(options.prefix +"-container")) {
+				this.$container = $children;
+				$children = $children.children();
+			}
+
 			// config value
 			this._conf = {
 				panel: {
@@ -241,18 +246,23 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			cssValue = "position:relative;z-index:2000;width:100%;height:100%;" +
 				(horizontal ? "" : "top:0;");
 
-			this.$container = $children.wrapAll(
-				"<div class='" + prefix + "-container' style='" + cssValue + "' />"
+			if (this.$container) {
+				this.$container.attr("style", cssValue);
+			} else {
+				this.$container = $children.wrapAll(
+					"<div class='" + prefix + "-container' style='" + cssValue + "'>"
+				).parent();
+			}
 
 			// panels' css values
-			).addClass(prefix + "-panel").css({
+			$children.addClass(prefix + "-panel").css({
 				position: "absolute",
 				width: sizeValue[0],
 				height: sizeValue[1],
 				boxSizing: "border-box",
 				top: 0,
 				left: 0
-			}).parent();
+			});
 
 			if (this._addClonePanels()) {
 				panelCount = panel.count = (
