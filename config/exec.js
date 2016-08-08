@@ -8,12 +8,15 @@ module.exports = {
 			after = after || this.template.date(date.setMonth(date.getMonth() - 1), 'yyyy-mm-dd');  // default: a month ago
 			before = before || this.template.today("yyyy-mm-dd");  // default: today
 
-			console.log("Creating CHANGELOG.md of period:", after, "~", before);
+			console.log("------------------------------------------------------------");
+			console.log(" Creating 'CHANGELOG.md' of period:", after, "~", before);
+			console.log("------------------------------------------------------------");
 
 			return [
                 "git log",
                 "--grep=feat",
                 "--grep=fix",
+				"--grep=refactor",
 				"--grep=test",
                 "-i",
                 "--after={" + after + "}",
@@ -31,8 +34,17 @@ module.exports = {
 			var logdata = {
 					feat: {},
 					fix: {},
+					refactor: {},
 					test: {}
 				};
+
+			// define category title
+			var categoryTitle = {
+				"feat": "Features",
+				"fix": "Bug Fixes",
+				"refactor": "Refactorings",
+				"test": "Test Codes"
+			};
 
 			// check for duplication
 			var isDuplicated = function(data, val) {
@@ -120,8 +132,12 @@ module.exports = {
 				}});
 
 			for (var x in logdata) {
+				if (Object.keys(logdata[x]).length === 0) {
+					continue;
+				}
+
 				markdown += grunt.template.process(template.category, { data: {
-					category: x === "feat" && "Features" || x === "fix" && "Bug Fixes" || x === "test" && "Test Codes" || ""
+					category: x in categoryTitle ? categoryTitle[x] : ""
 				}});
 
 				for (var z in logdata[x]) {
