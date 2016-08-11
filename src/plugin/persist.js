@@ -108,7 +108,7 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 			state = JSON.parse(stateStr);
 
 			// like '[ ... ]', '1', '1.234', '"123"' is also not valid
-			isValidType = !(jQuery.type(state) !== "object" || state instanceof Array);
+			isValidType = !($.type(state) !== "object" || state instanceof Array);
 
 			if (!isValidStateStr || !isValidType) {
 				throw new Error();
