@@ -3,8 +3,6 @@
 * egjs projects are licensed under the MIT license
 */
 
-function noop() {};
-
 module("persist: mock", {
 	setup: function() {
 		console.oldWarn = console.warn;
@@ -364,7 +362,6 @@ test("Test for browsers which don't have JSON object", function() {
 });
 
 var ua = [
-
 	{
 		"device":  "Android 4.3.0",
 		"ua": "Mozilla/5.0 (Linux; Android 4.3.0; SM-G900S Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.108 Mobile Safari/537.36",
@@ -388,7 +385,10 @@ module("extend Agent Test", {
 			location: {
 				href: ""
 			},
-			history: window.history,
+			history: $.extend({
+				replaceState: $.noop,
+				state: {}
+			}, window.history),
 			JSON: JSON,
 			performance : {
 					navigation : {
@@ -412,10 +412,8 @@ module("extend Agent Test", {
 			},
 			navigator: {}
 		};
-		this.agent = eg.agent;
 	},
 	teardown : function() {
-		eg.agent = this.agent;
 	}
 });
 
@@ -423,12 +421,7 @@ $.each(ua, function(i, v) {
 	test("$.persist.isNeeded : "+ v.device, function() {
 		// Given
 		this.fakeWindow.navigator.userAgent = v.ua;
-		// eg.invoke("eg",[null, this.fakeWindow]);
 		eg.invoke("persist", [null, this.fakeWindow]);
-		// var isNeeded;
-		// When
-		// isNeeded = this.isNeeded();
-		//Then
-		equal($.persist.isNeeded(), v.isNeeded);
+		equal($.persist.isNeeded(), v.isNeeded, "isNeeded");
 	});
 });

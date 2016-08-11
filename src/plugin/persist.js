@@ -52,7 +52,6 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 			return false;
 		}
 	}
-
 	if (!isSupportState && !storage) {
 		return;
 	}
@@ -85,7 +84,6 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 	function reset() {
 		setState(null);
 	}
-
 	/*
 	 * Get state value
 	 */
@@ -138,7 +136,6 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 		}
 		return result;
 	}
-
 	/*
 	 * Set state value
 	 */
@@ -172,7 +169,6 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 		beforeData[key] = data;
 		setState(beforeData);
 	}
-
 	/**
 	* Save state as JSON in global namespace.
 	* @ko 상태를 디폴트 키에 JSON 으로 저장한다
@@ -262,7 +258,6 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 			$global.off("pageshow", onPageshow);
 		},
 		trigger: function(e) {
-
 			//If you use 'persist' event, you can get global-key only!
 			e.state = getStateByKey(GLOBAL_KEY);
 		}
