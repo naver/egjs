@@ -48,7 +48,7 @@ module("persist: mock", {
 		};
 		this.fakeEvent = {};
 		this.storage = {};
-		
+
 		/*
 		 *	 Mock History Object
 		*/
@@ -58,9 +58,9 @@ module("persist: mock", {
 
 		History.prototype.replaceState = function(state) {
 			this.state = state;
-		};	
-		
-		this.method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
+		};
+
+		this.method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 		this.GLOBALKEY = this.method.GLOBALKEY;
 	},
 	teardown: function() {
@@ -78,13 +78,13 @@ test("reset", function() {
 
 test("persist : save state data, get state data", function() {
 	// When
-	var state = this.method.persist();
-	
+	var state = $.persist();
+
 	// Then
 	equal(state, null);
 
 	// When
-	var clonedState = this.method.persist(this.data);
+	var clonedState = $.persist(this.data);
 	// Then
 	notEqual(clonedState, this.data);
 	deepEqual(clonedState, this.data);
@@ -92,13 +92,13 @@ test("persist : save state data, get state data", function() {
 
 test("persist : save state data by key, get state data by key", function() {
 	// When
-	var state = this.method.persist("TESTKEY");
+	var state = $.persist("TESTKEY");
 
 	// Then
 	equal(state, null);
 
 	// When
-	var clonedState = this.method.persist("TESTKEY", this.data);
+	var clonedState = $.persist("TESTKEY", this.data);
 
 	// Then
 	notEqual(clonedState, this.data);
@@ -110,10 +110,10 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 	var ht = {};
 	ht[this.GLOBALKEY] = this.data;
 	this.fakeWindow.performance.navigation.type = 2;	// navigation
-	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
-	method.persist(this.data)
-	deepEqual(method.persist(), this.data);
-	
+	eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
+	$.persist(this.data)
+	deepEqual($.persist(), this.data);
+
 	// When
 	$(this.fakeWindow).trigger({
 		type: "pageshow",
@@ -123,15 +123,15 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 	});
 
 	// Then
-	deepEqual(method.persist(), this.data);
+	deepEqual($.persist(), this.data);
 
 	// When
 	this.fakeWindow.performance.navigation.type = 0;	// enter url...
 	this.fakeWindow.history.state = JSON.stringify(ht);
-	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
+	eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 
 	// Then
-	equal(method.persist(), null);	// must reset
+	equal($.persist(), null);	// must reset
 
 	// When
 	$(this.fakeWindow).trigger({
@@ -142,15 +142,15 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 	});
 
 	// Then
-	equal(method.persist(), null);
+	equal($.persist(), null);
 
 	// When
 	this.fakeWindow.performance.navigation.type = 1;
 	this.fakeWindow.history.state = JSON.stringify(ht);
-	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
+	eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 
 	// Then
-	equal(method.persist(), null);
+	equal($.persist(), null);
 
 	// When
 	$(this.fakeWindow).trigger({
@@ -161,7 +161,7 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 	});
 
 	// Then
-	equal(method.persist(), null);
+	equal($.persist(), null);
 
 });
 
@@ -185,13 +185,13 @@ test("onPageshow : when bfCache miss and BF navigated, persist event must be tri
 		TYPE_RESERVED: 255
 	};
 	this.fakeWindow.performance.navigation.type = 2;
-	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
+	eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 
 	var restoredState = null;
 	$(this.fakeWindow).on("persist", function(e) {
 		restoredState = e.state;
 	});
-	var clonedData = method.persist(this.data);
+	var clonedData = $.persist(this.data);
 
 	// When
 	$(this.fakeWindow).trigger({
@@ -204,14 +204,14 @@ test("onPageshow : when bfCache miss and BF navigated, persist event must be tri
 	// Then
 	deepEqual(restoredState, clonedData);
 });
- 
+
 test("Test not throwing error for legacy browsers", function() {
 	// Given
 	this.fakeWindow.history = {};
 	delete this.fakeWindow.sessionStorage;
 
 	// When
-	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
+	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 
 	// Then
 	ok(!method, "If browser don't have history.state neither web storage, persist shouldn't be defined.");
@@ -227,7 +227,7 @@ test("Test for browsers which don't have JSON object", function() {
 	}
 
 	// When
-	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
+	var method = eg.invoke("persist",[null, this.fakeWindow, this.fakeDocument]);
 
 	// Then
 	ok(!method, "If browser don't have JSON object, persist shouldn't be defined.");
@@ -241,7 +241,7 @@ module("persist: native", {
 		this.data = {
 			"scrollTop": 100
 		};
-		this.method = eg.invoke("persist",[null, eg, window, document]);
+		this.method = eg.invoke("persist",[null, window, document]);
 		this.GLOBALKEY = this.method.GLOBALKEY;
 	},
 	teardown: function() {
@@ -259,14 +259,14 @@ test("reset", function() {
 
 test("persist : save state data, get state data", function() {
 	// When
-	var state = this.method.persist();
-	
+	var state = $.persist();
+
 	// Then
 	equal(state, null);
 
 	// When
-	var clonedState = this.method.persist(this.data);
-	
+	var clonedState = $.persist(this.data);
+
 	// Then
 	notEqual(clonedState, this.data);
 	deepEqual(clonedState, this.data);
@@ -274,13 +274,13 @@ test("persist : save state data, get state data", function() {
 
 test("persist : save state data by key, get state data by key", function() {
 	// When
-	var state = this.method.persist("TESTKEY");
+	var state = $.persist("TESTKEY");
 
 	// Then
 	equal(state, null);
 
 	// When
-	var clonedState = this.method.persist("TESTKEY", this.data);
+	var clonedState = $.persist("TESTKEY", this.data);
 
 	// Then
 	notEqual(clonedState, this.data);
@@ -288,36 +288,36 @@ test("persist : save state data by key, get state data by key", function() {
 });
 
 $.each(['{', '[ 1,2,3 ]', '1', '1.234', '"123"'], function(i, v) {
-	test("show warning message for storage polloution with value that can be parsed: "+ v, function() {	
-		// Given		
+	test("show warning message for storage polloution with value that can be parsed: "+ v, function() {
+		// Given
 		var callCount = 0;
 		console.warn = function(msg){
 			callCount++;
 		};
-		var clonedState = this.method.persist(this.data);
-		
-		var isSupportState = "replaceState" in history && "state" in history;	
-		var isSupportStorage = "sessionStorage" in window || "localStorage" in window;	
+		var clonedState = $.persist(this.data);
+
+		var isSupportState = "replaceState" in history && "state" in history;
+		var isSupportStorage = "sessionStorage" in window || "localStorage" in window;
 
 		var isNoExceptionThrown = true;
 		if(isSupportStorage) {
 			sessionStorage.setItem(location.href + "___persist___", v);
 			localStorage.setItem(location.href + "___persist___", v);
 		} else if(isSupportState) {
-			history.replaceState(v, document.title, location.href);	
+			history.replaceState(v, document.title, location.href);
 		}
-	
-		// When	
+
+		// When
 		try {
-			this.method.persist();
+			$.persist();
 		} catch (e) {
 			isNoExceptionThrown = false;
 		}
-	
-		// Then	
+
+		// Then
 		equal(callCount, (isSupportStorage || isSupportState) ? 1 : 0);
 		ok(isNoExceptionThrown)
-	
+
 		console.warn = console.oldWarn;
 	});
 });
@@ -334,13 +334,13 @@ test("getState, setState: getter, setter of state", function() {
 test("Test not throwing error for legacy browsers", function() {
 	// Given
 	var isPersistAvailable = ("replaceState" in history && "state" in history) ||
-	"sessionStorage" in window || "localStorage" in window;	
+	"sessionStorage" in window || "localStorage" in window;
 
 	// When
-	var persist = eg.invoke("persist",[null, eg, window, document]);
-	
+	var persist = eg.invoke("persist",[null, window, document]);
+
 	// Then
-	ok(isPersistAvailable ? persist : !persist, 
+	ok(isPersistAvailable ? persist : !persist,
 		"If browser don't have history.state neither web storage, persist shouldn't be defined.");
 });
 
@@ -354,7 +354,7 @@ test("Test for browsers which don't have JSON object", function() {
 	}
 
 	// When
-	var persist = eg.invoke("persist",[null, eg, window, document]);
+	var persist = eg.invoke("persist",[null, window, document]);
 
 	// Then
 	ok(isSupportJSON ? persist : !persist, "If browser don't have JSON object, persist shouldn't be defined.");
@@ -423,12 +423,12 @@ $.each(ua, function(i, v) {
 	test("$.persist.isNeeded : "+ v.device, function() {
 		// Given
 		this.fakeWindow.navigator.userAgent = v.ua;
-		eg.invoke("eg",[null, null, this.fakeWindow]);
-		this.isNeeded = eg.invoke("persist").isNeeded;
-		var isNeeded;
+		// eg.invoke("eg",[null, this.fakeWindow]);
+		eg.invoke("persist", [null, this.fakeWindow]);
+		// var isNeeded;
 		// When
-		isNeeded = this.isNeeded();
+		// isNeeded = this.isNeeded();
 		//Then
-		equal(isNeeded, v.isNeeded);
+		equal($.persist.isNeeded(), v.isNeeded);
 	});
 });

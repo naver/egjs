@@ -4,13 +4,18 @@
 */
 
 // jscs:disable maximumLineLength
-eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, doc) {
+eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 	"use strict";
 
 	// jscs:enable maximumLineLength
 	var wp = global.performance;
 	var history = global.history;
-	var userAgent = global.navigator.userAgent;
+	var isNeeded = (function() {
+		var ua = global.navigator.userAgent;
+		var version = ua ? ua.match(/Android\s([^\;]*)/i) : null;
+		return !(/iPhone|iPad/.test(ua) || (version ? parseFloat(version.pop()) < 4.4 : true));
+	})();
+
 	var JSON = global.JSON;
 	var CONST_PERSIST = "___persist___";
 	var GLOBAL_KEY = "KEY" + CONST_PERSIST;
@@ -243,15 +248,6 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	$.persist.isApplicable();
 	*/
 	$.persist.isNeeded = function() {
-		var agentOs = ns.agent(userAgent).os;
-		var isNeeded = true;
-		if (agentOs.name === "ios" ||
-				(agentOs.name === "android" && parseFloat(agentOs.version) < 4.4)) {
-			isNeeded = false;
-		}
-		$.persist.isNeeded = function() {
-			return isNeeded;
-		};
 		return isNeeded;
 	};
 
@@ -277,8 +273,6 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 		"reset": reset,
 		"getState": getState,
 		"setState": setState,
-		"persist": $.persist,
-		"isNeeded": $.persist.isNeeded,
 		"GLOBALKEY": GLOBAL_KEY
 	};
 });
