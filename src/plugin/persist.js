@@ -13,6 +13,13 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 	var isNeeded = (function() {
 		var ua = global.navigator.userAgent;
 		var version = ua ? ua.match(/Android\s([^\;]*)/i) : null;
+
+		/*
+		* a isNeeded value is
+		*  - iOS: false,
+		*  - Android 4.4+: true
+		*  - Android 4.4 and less: false
+		*/
 		return !(/iPhone|iPad/.test(ua) || (version ? parseFloat(version.pop()) < 4.4 : true));
 	})();
 
