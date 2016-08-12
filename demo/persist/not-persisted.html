@@ -1,0 +1,91 @@
+<!DOCTYPE>
+<html>
+	<head>
+		<style>
+		body {
+			margin: 0;
+		}
+		.content {
+			font-family: sans-serif;
+			margin: 5px;
+			padding: 1px 15px;
+			background-color: rgba(0,0,0,.07);
+			border-radius: 3px;
+		}
+		.content h1 {
+			font-size: 20px;
+		}
+		.content p {
+			font-size: 14px;
+		}
+		.comment {
+			
+		}
+		
+		.loadCmtBtn {
+			border: none;
+		    background: rgba(0,0,0,0.05);
+		    width: 100%;
+		    height: 36px;
+		    line-height: 36px;
+		    vertical-align: middle;
+		    font-family: sans-serif;
+		    outline: none;
+		}
+		.avatar {
+		    background-image: url(./img/user.png);
+		    width: 40px;
+		    height: 40px;
+		    border-radius: 46px;
+		    background-repeat: no-repeat;
+		    background-size: cover;
+		    background-position: center center;
+		    background-color: rgba(0,0,0,.2);
+		    color: black;
+		    float: left;
+		    margin-top: 15px;
+		    margin-right: 15px;
+		}
+		
+		.link {
+			display: block;
+			color: gray;
+			border: none;
+		    background: rgba(0,0,0,0.05);
+		    width: 100%;
+		    height: 36px;
+		    margin-top: 5px;
+		    margin-bottom: 5px;
+		    line-height: 36px;
+		    vertical-align: middle;
+		    font-family: sans-serif;
+		    outline: none;
+		    text-align: center;
+		}
+		</style>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	</head>
+	<body>
+		<div class="content">
+			<h1>Without Persist</h1>
+
+			<p>This page's content should persisted when navigating with browser back, forward button. but should not persisted  
+when refresh this page.</p>
+		</div>
+		<div class="commentContainer">
+			<div class="content comment">
+				<div class="avatar" style="background-image: url(./img/user.png)"></div>
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tincidunt</p>
+			</div>
+		</div>
+
+		<button class="loadCmtBtn">Load more comments</button>
+		<a class="link" href="end-page.html">Or goto the end page.</a>
+		<script>
+			$(".loadCmtBtn").on("click", function() {
+				// Make change to the component. (append comments) 
+				$(".commentContainer").append("<div class=\"content comment\"><div class=\"avatar\" style=\"background-image: url(./img/user.png)\"></div><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tincidunt</p></div>");
+			});
+		</script>
+	</body>
+</html>

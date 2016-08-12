@@ -1,0 +1,115 @@
+.deviceContainer {
+    /* position: absolute; */
+    background-image: url(./img/Nexus_5_Front_View.png);
+    background-color: #FFF;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 332px;
+    height: 642px;
+    display: inline-block;
+    /* float: left; */
+    /* transform: scale(.5); */
+    vertical-align: middle;
+}
+
+.screen {
+    position: relative;
+    width: 276px;
+    height: 556px;
+    /* background: aqua; */
+    padding-top: 63px;
+    left: 29px;
+}
+
+.viewport {
+  position: relative;
+  width: 100%;
+    height: 443px;
+}
+
+.addressbar {
+  position: relative;
+  background: rgba(0,0,0,.1);
+  width: 100%;
+  height: 50px; 
+  user-select: none;
+      box-shadow: 0 1px 2px 0 rgba(0,0,0,.2);
+}
+
+.progress-indicator {
+	position: absolute;
+	top:0;
+	left:0;
+	height: 100%;
+	background: rgba(0,0,0,.1);
+	z-index: -1;
+	transition: width .2s linear;
+	width: 0%;	
+}
+.progress-indicator.mid {
+	width: 30%;	
+}
+.progress-indicator.end {
+	width: 100%;		
+}
+.backBtn {
+    background-image: url(./img/back.png);
+}
+.forwardBtn {
+    background-image: url(./img/forward.png);
+}
+.refreshBtn {
+    background-image: url(./img/refresh.png);
+}
+
+.addressbar .button {
+	display: inline-block;
+	border: none;
+	height: 30px;
+	width: 30px;
+	line-height: 30px;
+	font-family: sans-serif;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    padding: 0;
+    font-size: 0;
+    margin-top: 10px;
+
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none; }
+
+.label {
+	color: black;
+    border-radius: 3px;
+    1text-overflow: ellipsis;
+    overflow: hidden;
+    -webkit-box-shadow: 0 1px 2px 0 rgba(0,0,0,.2);
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,.2);		
+}
+
+.addressbar .label {
+    position: absolute;
+    background: white;
+    width: 164px;
+    height: 30px;
+    top: 10px;
+    left: 104px;
+    line-height: 30px;
+    vertical-align: middle;
+    padding-left: 6px;
+    box-sizing: border-box;
+    font-size: 10px;
+    font-family: sans-serif;
+
+}
+
+
+.viewport iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}  
