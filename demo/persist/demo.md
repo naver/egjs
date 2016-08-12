@@ -2,7 +2,9 @@
 1. Click "load comments" button and load more comments.
 2. Click link to the end page.
 3. Go back with browser back button on mobile phone.
-4. Check loaded comments are still there.
+4. **Check loaded comments are still there.**
+5. Click refresh button on mobile phone.
+6. **Check loaded comments are gone.**
 
 <div class="deviceContainer persistDemo">
   <div class="screen">
@@ -19,9 +21,7 @@
   </div>
   </div>
 </div>
-<div class="deviceContainer">
-<img src="./img/withoutpersist.gif"/>
-</div>
+
 
 ```javascript
 $(".loadCmtBtn").on("click", function() {
