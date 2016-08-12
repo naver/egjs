@@ -15,7 +15,7 @@ function FakeChrome(deviceContainer) {
 
 	self.browserFrame.addEventListener("load", function() {
 		$(self.deviceContainer).find(".addressbar .label").html(getAddress(self.window));
-		if(getAddress(self.window) === "/demo/persist/end-page.html") {
+		if(getAddress(self.window).indexOf("/end-page.html") !== -1) {
 			beenThere = true;
 			$(self.backBtn).css("opacity", 1);
 			$(self.forwardBtn).css("opacity", .2);
@@ -65,7 +65,7 @@ function FakeChrome(deviceContainer) {
 	
 	$(self.backBtn).on("click", function(){
 		
-		if(self.window.location.href.indexOf("/demo/persist/persisted.html") === -1) {
+		if(self.window.location.href.indexOf("persisted.html") === -1) {
 			console.log(self.window.location.pathname)
 			self.window.history.back();
 			$(self.deviceContainer).find(".addressbar .label").html(getAddress(self.window));
@@ -80,16 +80,16 @@ function FakeChrome(deviceContainer) {
 	});
 	
 	$(self.forwardBtn).on("click", function(){
-		if(self.window.location.href.indexOf("/demo/persist/end-page.html") === -1 && beenThere === true) {
+		if(self.window.location.href.indexOf("end-page.html") === -1 && beenThere === true) {
 			console.log(self.window.location.pathname)
 			self.window.history.forward();
 			$(self.deviceContainer).find(".addressbar .label").html(getAddress(self.window));
 			showLoadingEffect(self.progressBar);
 			$(this).css("opacity", .2);
 			return;
-		} else if(self.window.location.href.indexOf("/demo/persist/end-page.html") !== -1) {
+		} else if(self.window.location.href.indexOf("end-page.html") !== -1) {
 			return;	
-		} else if(self.window.location.href.indexOf("/demo/persist/end-page.html") === -1 && beenThere === false) {
+		} else if(self.window.location.href.indexOf("end-page.html") === -1 && beenThere === false) {
 			return;	
 		}
 			
