@@ -1,3 +1,11 @@
+// Filtering types
+var filterType = {
+	feat: "Features",
+	fix: "Bug Fixes",
+	refactor: "Refactorings",
+	test: "Test Codes"
+};
+
 module.exports = {
 	// create changelog
 	changelog: {
@@ -8,16 +16,13 @@ module.exports = {
 			after = after || this.template.date(date.setMonth(date.getMonth() - 1), 'yyyy-mm-dd');  // default: a month ago
 			before = before || this.template.today("yyyy-mm-dd");  // default: today
 
-			console.log("------------------------------------------------------------");
-			console.log(" Creating 'CHANGELOG.md' of period:", after, "~", before);
-			console.log("------------------------------------------------------------");
+			console.log("---------------------------------------------------------------");
+			console.log(" [CHANGELOG] Creating for period of =>", after, "~", before);
+			console.log("---------------------------------------------------------------");
 
 			return [
                 "git log",
-                "--grep=feat",
-                "--grep=fix",
-				"--grep=refactor",
-				"--grep=test",
+				[,].concat(Object.keys(filterType)).join(" --grep="),
                 "-i",
                 "--after={" + after + "}",
                 "--before={" + before + "}",
@@ -31,20 +36,8 @@ module.exports = {
 			var parser = new xml2js.Parser();
 
 			// define log data structure
-			var logdata = {
-					feat: {},
-					fix: {},
-					refactor: {},
-					test: {}
-				};
-
-			// define category title
-			var categoryTitle = {
-				"feat": "Features",
-				"fix": "Bug Fixes",
-				"refactor": "Refactorings",
-				"test": "Test Codes"
-			};
+			var logdata = {};
+			Object.keys(filterType).forEach(v => logdata[v] = {});
 
 			// check for duplication
 			var isDuplicated = function(data, val) {
@@ -59,9 +52,7 @@ module.exports = {
 				return false;
 			};
 
-			var capitalize = function(val) {
-				return val.charAt(0).toUpperCase() + val.substr(1);
-			};
+			var capitalize = val => val.charAt(0).toUpperCase() + val.substr(1);
 
 			// get sorted module name
 			var getModuleName = function(val) {
@@ -70,21 +61,19 @@ module.exports = {
 				}
 
 				val = val.trim().replace(/\s*,\s*/g, ",").split(",");
-				val.forEach(function(v, i) {
-					val[i] = capitalize(v);
-				});
+				val.forEach((v, i) => val[i] = capitalize(v));
 
 				return val.sort().join(", ");
 			};
 
-			parser.parseString("<logs>" + stdout + "</logs>", function(err, result) {
+			parser.parseString(`<logs>${ stdout }</logs>`, function(err, result) {
 				if (!result || !result.logs) {
 					return;
 				}
 
 				var rxNewline = /\r?\n/g;
-				var rxBody = /(?:ref|fix)\s([egy#]|gh)-?([0-9]+)/i;
-				var rxSubject = /^(fix|feat|test)\s?\((\w+)\)\s*:\s*(.*)/i;
+				var rxBody = /(?:ref|fix|close)\s([egy#]|gh)-?([0-9]+)/i;
+				var rxSubject = new RegExp(`^(${ Object.keys(filterType).join("|") })\\s?\\(([a-z-_,\\s]+)\\)\\s*:\\s*(.*)`, "i");
 				var issue, subject, category, module;
 
 				for (var i = 0, el; el = result.logs.item[i]; i++) {
@@ -137,7 +126,7 @@ module.exports = {
 				}
 
 				markdown += grunt.template.process(template.category, { data: {
-					category: x in categoryTitle ? categoryTitle[x] : ""
+					category: filterType[x] || ""
 				}});
 
 				for (var z in logdata[x]) {
@@ -157,6 +146,7 @@ module.exports = {
 			}
 
 			grunt.file.write("CHANGELOG.md", markdown, { encoding: "UTF-8" });
+			console.log("Done, check out 'CHANGELOG.md' file.");
 		},
 		stdout: false
 	},
