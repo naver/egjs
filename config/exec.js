@@ -37,7 +37,9 @@ module.exports = {
 
 			// define log data structure
 			var logdata = {};
-			Object.keys(filterType).forEach(v => logdata[v] = {});
+			Object.keys(filterType).forEach(function(v) {
+				logdata[v] = {}
+			});
 
 			// check for duplication
 			var isDuplicated = function(data, val) {
@@ -52,7 +54,9 @@ module.exports = {
 				return false;
 			};
 
-			var capitalize = val => val.charAt(0).toUpperCase() + val.substr(1);
+			var capitalize = function(val) {
+				return val.charAt(0).toUpperCase() + val.substr(1);
+			};
 
 			// get sorted module name
 			var getModuleName = function(val) {
@@ -61,12 +65,14 @@ module.exports = {
 				}
 
 				val = val.trim().replace(/\s*,\s*/g, ",").split(",");
-				val.forEach((v, i) => val[i] = capitalize(v));
+				val.forEach(function(v, i) {
+					val[i] = capitalize(v)
+				});
 
 				return val.sort().join(", ");
 			};
 
-			parser.parseString(`<logs>${ stdout }</logs>`, function(err, result) {
+			parser.parseString("<logs>"+ stdout +"</logs>", function(err, result) {
 				if (!result || !result.logs) {
 					return;
 				}
