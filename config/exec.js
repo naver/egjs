@@ -79,7 +79,7 @@ module.exports = {
 
 				var rxNewline = /\r?\n/g;
 				var rxBody = /(?:ref|fix|close)\s([egy#]|gh)-?([0-9]+)/i;
-				var rxSubject = new RegExp(`^(${ Object.keys(filterType).join("|") })\\s?\\(([a-z-_,\\s]+)\\)\\s*:\\s*(.*)`, "i");
+				var rxSubject = new RegExp("^("+ Object.keys(filterType).join("|") +")\\s?\\(([a-z-_,\\s]+)\\)\\s*:\\s*(.*)", "i");
 				var issue, subject, category, module;
 
 				for (var i = 0, el; el = result.logs.item[i]; i++) {
