@@ -1,9 +1,12 @@
-// Filtering types
+// Commit log tag filtering types for changelog
 var filterType = {
 	feat: "Features",
 	fix: "Bug Fixes",
+	docs: "Documents",
+	style: "Code Styles",
 	refactor: "Refactorings",
-	test: "Test Codes"
+	test: "Test Codes",
+	chore: "Chore tasks"
 };
 
 module.exports = {
@@ -79,7 +82,7 @@ module.exports = {
 
 				var rxNewline = /\r?\n/g;
 				var rxBody = /(?:ref|fix|close)\s([egy#]|gh)-?([0-9]+)/i;
-				var rxSubject = new RegExp("^("+ Object.keys(filterType).join("|") +")\\s?\\(([a-z-_,\\s]+)\\)\\s*:\\s*(.*)", "i");
+				var rxSubject = new RegExp("^("+ Object.keys(filterType).join("|") +")\\s?\\(([\\w-,\\s]+)\\)\\s*:\\s*(.*)", "i");
 				var issue, subject, category, module;
 
 				for (var i = 0, el; el = result.logs.item[i]; i++) {
