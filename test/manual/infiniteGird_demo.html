@@ -75,9 +75,9 @@
 var template = Handlebars.compile($("#items-template").html());
 var data = {
 	getItems: function(groupNo) {
-		groupNo *= 1000;
+		groupNo *= 30;
 		var items = [];
-		for(var i=0; i<1000; i++) {
+		for(var i=0; i<30; i++) {
 			items.push(groupNo + i);
 		}
 		items = $.map(items, function(v) {
@@ -100,19 +100,19 @@ $(function() {
 		defaultGroupKey : 0
 	})
 	.on({
-	// 	"append" : function(e) {
-	// 		var gk = this.getGroupKeys();
-	// 		var lastGk = gk[gk.length-1];
-	// 		lastGk++;
-	// 		ig.append(template(data.getItems(lastGk)), lastGk);
-	// 	},
-	// 	"prepend" : function(e) {
-	// 		var firstGk = this.getGroupKeys()[0];
-	// 		firstGk--;
-	// 		if(firstGk >= 0) {
-	// 			ig.prepend(template(data.getItems(firstGk)), firstGk);
-	// 		}
-	// 	},
+		"append" : function(e) {
+			var gk = this.getGroupKeys();
+			var lastGk = gk[gk.length-1];
+			lastGk++;
+			ig.append(template(data.getItems(lastGk)), lastGk);
+		},
+		"prepend" : function(e) {
+			var firstGk = this.getGroupKeys()[0];
+			firstGk--;
+			if(firstGk >= 0) {
+				ig.prepend(template(data.getItems(firstGk)), firstGk);
+			}
+		},
 		"layoutComplete" : function(e) {
 			$grid.css("opacity", 1);
 		}
