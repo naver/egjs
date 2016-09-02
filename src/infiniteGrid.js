@@ -229,6 +229,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			this.el.style.cssText = status.cssText;
 			this.el.innerHTML = status.html;
 			$.extend(this, status.prop);
+			this._topElement = this._bottomElement = null;
 			this.items = $.map(this.el.children, function(v, i) {
 				status.items[i].el = v;
 				return status.items[i];
