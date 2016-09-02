@@ -87,7 +87,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			this._reset();
 			this._refreshViewport();
 			if (this.el.children.length > 0) {
-				this.items = this._itemize([].slice.apply(this.el.children), this.options.defaultGroupKey, true);
+				this.items = this._itemize($.makeArray(this.el.children), this.options.defaultGroupKey, true);
 				this.layout(this.items, true);
 			}
 
@@ -205,7 +205,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			return {
 				prop: data,
 				options: $.extend({}, this.options),
-				items: this.items.map(function(v) {
+				items: $.map(this.items, function(v) {
 					var clone = $.extend({}, v);
 					delete clone.el;
 					return clone;
@@ -229,7 +229,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			this.el.style.cssText = status.cssText;
 			this.el.innerHTML = status.html;
 			$.extend(this, status.prop);
-			this.items = [].slice.apply(this.el.children).map(function(v, i) {
+			this.items = $.map(this.el.children, function(v, i) {
 				status.items[i].el = v;
 				return status.items[i];
 			});
@@ -261,7 +261,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		 * @return {Array} groupKeys
 		 */
 		getGroupKeys: function() {
-			return this.items.map(function(v) {
+			return $.map(this.items, function(v) {
 				return v.groupKey;
 			});
 		},
@@ -275,7 +275,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			items = items || this.items;
 			isRefresh = typeof isRefresh === "undefined" ? true : isRefresh;
 			this._isProcessing = true;
-			isRefresh && (items = items.map(function(v) {
+			isRefresh && (items = $.map(items, function(v) {
 				v.isAppend = true;
 				return v;
 			}));
@@ -283,16 +283,21 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			return this;
 		},
 		_layoutItems: function(items) {
-			items.map(function(v) {
-				v.position = this._getItemLayoutPosition(v);
-				return v;
-			}, this).forEach(function(v) {
-				if (v.el) {
-					var style = v.el.style;
-					style.left = v.position.x + "px";
-					style.top = v.position.y + "px";
-				}
-			});
+			var self = this;
+
+			// for performance
+			$.each(
+				$.map(items, function(v) {
+					v.position = self._getItemLayoutPosition(v);
+					return v;
+				}),
+				function(i, v) {
+					if (v.el) {
+						var style = v.el.style;
+						style.left = v.position.x + "px";
+						style.top = v.position.y + "px";
+					}
+				});
 		},
 		/**
 		 * Append elements
@@ -360,7 +365,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		_getTopItem: function() {
 			var item = null;
 			var min = Infinity;
-			this._getColItems(false).forEach(function(v) {
+			$.each(this._getColItems(false), function(i, v) {
 				if (v && v.position.y < min) {
 					min = v.position.y;
 					item = v;
@@ -384,7 +389,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		_getBottomItem: function() {
 			var item = null;
 			var max = -Infinity;
-			this._getColItems(true).forEach(function(v) {
+			$.each(this._getColItems(true), function(i, v) {
 				if (v && v.position.y + v.size.height > max) {
 					max = v.position.y + v.size.height;
 					item = v;
@@ -462,7 +467,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			var elements = $elements.toArray();
 			var $cloneElements = $(elements);
 			var dummy = -this._clientHeight + "px";
-			elements.map(function(v) {
+			$.each(elements, function(i, v) {
 				v.style.position = "absolute";
 				v.style.top = dummy;
 			});
@@ -476,7 +481,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			this.isRecycling() && this._adjustRange(isAppend, $cloneElements);
 
 			this.$el[isAppend ? "append" : "prepend"]($cloneElements);
-
 			this.layout(items, false);
 		},
 		_waitResource: function(items, isRefresh) {
@@ -485,7 +489,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			var callback = function() {
 				if (self._isProcessing) {
 					if (isRefresh || !self._appendCols.length) {
-						items.forEach(function(v) {
+						$.each(items, function(i, v) {
 							v.el.style.position = "absolute";
 						});
 						self._measureColumns();
@@ -518,7 +522,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			}
 
 			// @todo improve performance
-			targets.forEach(function(v) {
+			$.each(targets, function(i, v) {
 				idx = $elements.index(v.el);
 				if (idx !== -1) {
 					$elements.splice(idx, 1);
@@ -572,7 +576,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				return false;
 			}
 			var y = this._updateCols();	// for prepend
-			this.items.forEach(function(v) {
+			$.each(this.items, function(i, v) {
 				v.position.y -= y;
 				applyDom && (v.el.style.top = v.position.y + "px");
 			});
@@ -611,7 +615,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		},
 		_checkImageLoaded: function() {
 			return this.$el.find("img").filter(function(k, v) {
-				if (v.nodeType && ([1,9,11].indexOf(v.nodeType) !== -1)) {
+				if (v.nodeType && ($.inArray(v.nodeType, [1,9,11]) !== -1)) {
 					return !v.complete;
 				}
 			}).toArray();
@@ -624,11 +628,18 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				checkCount <= 0 && callback && callback();
 			};
 			var $el;
-			needCheck.forEach(function(v) {
+			var self = this;
+			$.each(needCheck, function(i, v) {
 				$el = $(v);
-				this._isIE10lower && $el.attr("src", $el.attr("src"));
+
+				// for IE10 lower
+				if (self._isIE10lower) {
+					var url = v.getAttribute("src");
+					v.setAttribute("src", "");
+					v.setAttribute("src", url);
+				}
 				$el.on("load error", onCheck);
-			}, this);
+			});
 		},
 		_measureColumns: function() {
 			this.el.style.width = null;
@@ -645,9 +656,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		},
 		_resetCols: function(count) {
 			count = typeof count === "undefined" ? 0 : count;
-			var arr = Array.apply(null, new Array(count)).map(function() {
-				return 0;
-			});
+			var arr = [];
+			while (count--) {
+				arr.push(0);
+			}
 			this._appendCols = arr.concat();
 			this._prependCols = arr.concat();
 		},
@@ -689,7 +701,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			return base;
 		},
 		_getMinY: function(items) {
-			return Math.min.apply(Math, items.map(function(v) {
+			return Math.min.apply(Math, $.map(items, function(v) {
 				return v ? v.position.y : 0;
 			}));
 		},
@@ -716,7 +728,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			return colItems;
 		},
 		_itemize: function(elements, groupKey, isAppend) {
-			return elements.map(function(v) {
+			return $.map(elements, function(v) {
 				return {
 					el: v,
 					position: {
@@ -742,7 +754,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			var y = Math[isAppend ? "min" : "max"].apply(Math, cols);
 			var shortColIndex;
 			if (isAppend) {
-				shortColIndex = cols.indexOf(y);
+				shortColIndex = $.inArray(y, cols);
 			} else {
 				var i = cols.length;
 				while (i-- >= 0) {
