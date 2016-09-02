@@ -72,18 +72,16 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 		var osVersion = parseInt(osInfo.version, 10);
 		var browserInfo = agent.browser;
 
-		// Browsers that trigger scroll event like scrollstop : SCROLLBASE
-		if (osInfo.name === "ios") {
+		// webview : TIMERBASE
+		if (!browserInfo.webview) {
 
-			// webview : TIMERBASE
-			if (browserInfo.webview === true) {
-				retValue = TIMERBASE;
-			} else if (osVersion <= 7) {
+			// Browsers that trigger scroll event like scrollstop : SCROLLBASE
+			if (osInfo.name === "ios" && osVersion <= 7) {
 				retValue = SCROLLBASE;
-			}
-		} else if (osInfo.name === "android") {
-			if (browserInfo.name === "default" && osVersion <= 2.3) {
-				retValue = SCROLLBASE;
+			} else if (osInfo.name === "android") {
+				if (browserInfo.name === "default" && osVersion <= 2.3) {
+					retValue = SCROLLBASE;
+				}
 			}
 		}
 		return retValue;
