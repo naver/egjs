@@ -84,7 +84,7 @@ var data = {
 			return {
 				offset: v,
 				imgSrc: "http://naver.github.io/egjs-experiment/infiniteGridService/demo/img/" + ( ( (v + 1) % 60) + 1 ) + ".jpg",
-				href: "http://naver.com/",
+				href: "http://www.google.com/",
 				desc: "Cras justo odio bla bla bla bla bla bla bla bla"
 			};
 		});
@@ -93,7 +93,6 @@ var data = {
 };
 $(function() {
 	var $grid = $("#grid");
-	$grid.append(template(data.getItems(0)));
 
 	var ig = new eg.InfiniteGrid("#grid", {
 		count : 60,
@@ -120,22 +119,22 @@ $(function() {
 
 	// for persist logic
 	// if($.persist.isNeeded()) {
-	// 	if ("scrollRestoration" in history) {
-	// 		history.scrollRestoration = "manual";
-	// 	}
-	// 	$grid.on("click", "a", function(e) {
-	// 		$.persist("GRID_PERSIST", {
-	// 			"scrollPos": $(document).scrollTop(),
-	// 			"grid": ig.getStatus()
-	// 		});
-	// 	});
-	// 	var persistData = $.persist("GRID_PERSIST");
-	// 	if($.isEmptyObject(persistData)) {
-	// 		ig.append(template(data.getItems(0)), 0);
-	// 	} else {
-	// 		ig.setStatus(persistData.grid);
-	// 		window.scrollTo(0, persistData.scrollPos);
-	// 	}
+		if ("scrollRestoration" in history) {
+			history.scrollRestoration = "manual";
+		}
+		$grid.on("click", "a", function(e) {
+			$.persist("GRID_PERSIST", {
+				"scrollPos": $(document).scrollTop(),
+				"grid": ig.getStatus()
+			});
+		});
+		var persistData = $.persist("GRID_PERSIST");
+		if($.isEmptyObject(persistData)) {
+			ig.append(template(data.getItems(0)), 0);
+		} else {
+			ig.setStatus(persistData.grid);
+			window.scrollTo(0, persistData.scrollPos);
+		}
 	// } else {
 	// 	ig.append(template(data.getItems(0)), 0);
 	// }
