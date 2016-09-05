@@ -180,7 +180,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			var self = this;
 			this._resizeTimeout = setTimeout(function() {
 				self._refreshViewport();
-				self.layout(self.items, true);
+				(self.$el.innerWidth() !== self._containerWidth) && self.layout(self.items, true);
 				self._resizeTimeout = null;
 			}, 100);
 		},
