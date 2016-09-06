@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<url>
+  <loc>https://naver.github.io/egjs/</loc>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://naver.github.io/egjs/latest/doc/</loc>
+  <priority>0.90</priority>
+</url>
+<url>
+  <loc>https://naver.github.io/egjs/demo/eg/</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://naver.github.io/egjs/demo/class/</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://naver.github.io/egjs/demo/component/</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://naver.github.io/egjs/demo/movableCoord/</loc>
+  <priority>0.88</priority>
+</url>
+<url>
+  <loc>https://naver.github.io/egjs/demo/flicking/</loc>
+  <priority>0.88</priority>
+</url>
+
+<url>
+  <loc>https://naver.github.io/egjs/demo/visible/</loc>
+  <priority>0.88</priority>
+</url>
+<url>
+  <loc>https://naver.github.io/egjs/demo/infiniteGrid/</loc>
+  <priority>0.88</priority>
+</url>
+
+<url>
+  <loc>https://naver.github.io/egjs/demo/persist/</loc>
+  <priority>0.88</priority>
+</url>
+<url>
+  <loc>https://naver.github.io/egjs/demo/cssPrefix/</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://naver.github.io/egjs/demo/pauseResume/</loc>
+  <priority>0.88</priority>
+</url>
+<url>
+  <loc>https://naver.github.io/egjs/demo/transform/</loc>
+  <priority>0.80</priority>
+</url>
+
+<url>
+  <loc>https://naver.github.io/egjs/demo/rotate/</loc>
+  <priority>0.88</priority>
+</url>
+
+<url>
+  <loc>https://naver.github.io/egjs/demo/scrollEnd/</loc>
+  <priority>0.88</priority>
+</url>
+</urlset>
