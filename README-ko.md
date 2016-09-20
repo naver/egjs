@@ -14,14 +14,14 @@ egjs는 jQuery를 기반으로 하는 JavaScript 라이브러리로, UI 인터�
 egjs가 제공하는 컴포넌트는 다음과 같다.
 
 * eg: egjs에서 사용하는 기본 유틸리티 모듈. egjs의 기본 네임스페이스다.
-  - [모듈 사용 예](http://naver.github.io/egjs/demo/eg/) 
   - [API 문서](http://naver.github.io/egjs/latest/doc/eg.html)
+  - [모듈 사용 예](http://naver.github.io/egjs/demo/eg/) 
 * eg.Class: 객체지향 프로그래밍 방식으로 클래스를 개발할 수 있게 하는 모듈
-  - [모듈 사용 예](http://naver.github.io/egjs/demo/class/) 
   - [API 문서](http://naver.github.io/egjs/latest/doc/eg.Class.html)
+  - [모듈 사용 예](http://naver.github.io/egjs/demo/class/) 
 * eg.Component: 모듈의 이벤트와 옵션을 관리할 수 있게 하는 클래스
-  - [모듈 사용 예](http://naver.github.io/egjs/demo/component/) 
   - [API 문서](http://naver.github.io/egjs/latest/doc/eg.Component.html)
+  - [모듈 사용 예](http://naver.github.io/egjs/demo/component/) 
 * eg.MovableCoord: 사용자의 동작을 가상 좌표계의 논리적 좌표로 변경하는 모듈
   - [API 문서](http://naver.github.io/egjs/latest/doc/eg.MovableCoord.html)
   - [모듈 사용 예](http://naver.github.io/egjs/demo/movableCoord/), [모듈 사용 예(CodePen)](http://codepen.io/collection/AKpkGW/)
