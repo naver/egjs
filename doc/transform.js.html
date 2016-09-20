@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Source: hook/transform.js | egjs - API</title>
+    
+    <meta name="description" content="egjs is a jQuery-based JavaScript library consisting of UI interactions, effects, and utilities, which brings easiest and fastest way to build a web application in your way." />
+    
+        <meta name="keywords" content="jQuery, UI Component, egjs" />
+        <meta name="keyword" content="jQuery, UI Component, egjs" />
+    
+    
+    
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    <link rel="canonical" href="http://naver.github.io/egjs/latest/doc/"/>
+    
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"egjs","disqus":"egjs","googleAnalytics":"","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"egjs - API","description":"egjs is a jQuery-based JavaScript library consisting of UI interactions, effects, and utilities, which brings easiest and fastest way to build a web application in your way.","keyword":"jQuery, UI Component, egjs"},"linenums":true,"link":{"canonical":"http://naver.github.io/egjs/latest/doc/"}};
+    </script>
+    
+
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName"><a href="index.html">egjs</a></h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+    
+    
+        <!-- Grouping Version -->
+        <ul class="group">
+        <span>egjs</span>
+        
+            
+<li class="item" data-name="eg">
+    <span class="title">
+        <a href="eg.html">eg</a>
+        
+        <span class="static">static</span>
+        
+    </span>
+    <ul class="members itemMembers">
+    
+    <span class="subtitle">Members</span>
+    
+        <li data-name="eg.VERSION"><a href="eg.html#VERSION">VERSION</a></li>
+    
+    </ul>
+    <ul class="typedefs itemMembers">
+    
+    </ul>
+    <ul class="methods itemMembers">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg#agent"><a href="eg.html#agent">agent</a></li>
+    
+        <li data-name="eg#cancelAnimationFrame"><a href="eg.html#cancelAnimationFrame">cancelAnimationFrame</a></li>
+    
+        <li data-name="eg#isHWAccelerable"><a href="eg.html#isHWAccelerable">isHWAccelerable</a></li>
+    
+        <li data-name="eg#isPortrait"><a href="eg.html#isPortrait">isPortrait</a></li>
+    
+        <li data-name="eg#isTransitional"><a href="eg.html#isTransitional">isTransitional</a></li>
+    
+        <li data-name="eg#requestAnimationFrame"><a href="eg.html#requestAnimationFrame">requestAnimationFrame</a></li>
+    
+        <li data-name="eg#translate"><a href="eg.html#translate">translate</a></li>
+    
+    </ul>
+    <ul class="events itemMembers">
+    
+    </ul>
+
+    
+
+</li>
+
+        
+            
+<li class="item" data-name="eg.Class">
+    <span class="title">
+        <a href="eg.Class.html">eg.Class</a>
+        
+    </span>
+    <ul class="members itemMembers">
+    
+    </ul>
+    <ul class="typedefs itemMembers">
+    
+    </ul>
+    <ul class="methods itemMembers">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.Class.extend"><a href="eg.Class.html#extend">extend</a></li>
+    
+        <li data-name="eg.Class#instance"><a href="eg.Class.html#instance">instance</a></li>
+    
+    </ul>
+    <ul class="events itemMembers">
+    
+    </ul>
+
+    
+
+</li>
+
+        
+            
+<li class="item" data-name="eg.Component">
+    <span class="title">
+        <a href="eg.Component.html">eg.Component</a>
+        
+    </span>
+    <ul class="members itemMembers">
+    
+    </ul>
+    <ul class="typedefs itemMembers">
+    
+    </ul>
+    <ul class="methods itemMembers">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.Component#hasOn"><a href="eg.Component.html#hasOn">hasOn</a></li>
+    
+        <li data-name="eg.Component#off"><a href="eg.Component.html#off">off</a></li>
+    
+        <li data-name="eg.Component#on"><a href="eg.Component.html#on">on</a></li>
+    
+        <li data-name="eg.Component#option"><a href="eg.Component.html#option">option</a></li>
+    
+        <li data-name="eg.Component#trigger"><a href="eg.Component.html#trigger">trigger</a></li>
+    
+    </ul>
+    <ul class="events itemMembers">
+    
+    </ul>
+
+    
+
+</li>
+
+        
+            
+<li class="item" data-name="eg.Flicking">
+    <span class="title">
+        <a href="eg.Flicking.html">eg.Flicking</a>
+        
+    </span>
+    <ul class="members itemMembers">
+    
+    </ul>
+    <ul class="typedefs itemMembers">
+    
+    </ul>
+    <ul class="methods itemMembers">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.Flicking#destroy"><a href="eg.Flicking.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.Flicking#disableInput"><a href="eg.Flicking.html#disableInput">disableInput</a></li>
+    
+        <li data-name="eg.Flicking#enableInput"><a href="eg.Flicking.html#enableInput">enableInput</a></li>
+    
+        <li data-name="eg.Flicking#getAllElements"><a href="eg.Flicking.html#getAllElements">getAllElements</a></li>
+    
+        <li data-name="eg.Flicking#getElement"><a href="eg.Flicking.html#getElement">getElement</a></li>
+    
+        <li data-name="eg.Flicking#getIndex"><a href="eg.Flicking.html#getIndex">getIndex</a></li>
+    
+        <li data-name="eg.Flicking#getNextElement"><a href="eg.Flicking.html#getNextElement">getNextElement</a></li>
+    
+        <li data-name="eg.Flicking#getNextIndex"><a href="eg.Flicking.html#getNextIndex">getNextIndex</a></li>
+    
+        <li data-name="eg.Flicking#getPrevElement"><a href="eg.Flicking.html#getPrevElement">getPrevElement</a></li>
+    
+        <li data-name="eg.Flicking#getPrevIndex"><a href="eg.Flicking.html#getPrevIndex">getPrevIndex</a></li>
+    
+        <li data-name="eg.Flicking#getTotalCount"><a href="eg.Flicking.html#getTotalCount">getTotalCount</a></li>
+    
+        <li data-name="eg.Flicking#hasOn"><a href="eg.Flicking.html#hasOn">hasOn</a></li>
+    
+        <li data-name="eg.Flicking#isPlaying"><a href="eg.Flicking.html#isPlaying">isPlaying</a></li>
+    
+        <li data-name="eg.Flicking#moveTo"><a href="eg.Flicking.html#moveTo">moveTo</a></li>
+    
+        <li data-name="eg.Flicking#next"><a href="eg.Flicking.html#next">next</a></li>
+    
+        <li data-name="eg.Flicking#off"><a href="eg.Flicking.html#off">off</a></li>
+    
+        <li data-name="eg.Flicking#on"><a href="eg.Flicking.html#on">on</a></li>
+    
+        <li data-name="eg.Flicking#option"><a href="eg.Flicking.html#option">option</a></li>
+    
+        <li data-name="eg.Flicking#prev"><a href="eg.Flicking.html#prev">prev</a></li>
+    
+        <li data-name="eg.Flicking#resize"><a href="eg.Flicking.html#resize">resize</a></li>
+    
+        <li data-name="eg.Flicking#restore"><a href="eg.Flicking.html#restore">restore</a></li>
+    
+        <li data-name="eg.Flicking#trigger"><a href="eg.Flicking.html#trigger">trigger</a></li>
+    
+    </ul>
+    <ul class="events itemMembers">
+    
+    <span class="subtitle">Events</span>
+    
+        <li data-name="eg.Flicking#event:beforeFlickStart"><a href="eg.Flicking.html#event:beforeFlickStart">beforeFlickStart</a></li>
+    
+        <li data-name="eg.Flicking#event:beforeRestore"><a href="eg.Flicking.html#event:beforeRestore">beforeRestore</a></li>
+    
+        <li data-name="eg.Flicking#event:flick"><a href="eg.Flicking.html#event:flick">flick</a></li>
+    
+        <li data-name="eg.Flicking#event:flickEnd"><a href="eg.Flicking.html#event:flickEnd">flickEnd</a></li>
+    
+        <li data-name="eg.Flicking#event:restore"><a href="eg.Flicking.html#event:restore">restore</a></li>
+    
+    </ul>
+
+    
+
+</li>
+
+        
+            
+<li class="item" data-name="eg.InfiniteGrid">
+    <span class="title">
+        <a href="eg.InfiniteGrid.html">eg.InfiniteGrid</a>
+        
+    </span>
+    <ul class="members itemMembers">
+    
+    </ul>
+    <ul class="typedefs itemMembers">
+    
+    </ul>
+    <ul class="methods itemMembers">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid#append"><a href="eg.InfiniteGrid.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid#clear"><a href="eg.InfiniteGrid.html#clear">clear</a></li>
+    
+        <li data-name="eg.InfiniteGrid#destroy"><a href="eg.InfiniteGrid.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.InfiniteGrid#fit"><a href="eg.InfiniteGrid.html#fit">fit</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getBottomElement"><a href="eg.InfiniteGrid.html#getBottomElement">getBottomElement</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getGroupKeys"><a href="eg.InfiniteGrid.html#getGroupKeys">getGroupKeys</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getStatue"><a href="eg.InfiniteGrid.html#getStatue">getStatue</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getTopElement"><a href="eg.InfiniteGrid.html#getTopElement">getTopElement</a></li>
+    
+        <li data-name="eg.InfiniteGrid#hasOn"><a href="eg.InfiniteGrid.html#hasOn">hasOn</a></li>
+    
+        <li data-name="eg.InfiniteGrid#isProcessing"><a href="eg.InfiniteGrid.html#isProcessing">isProcessing</a></li>
+    
+        <li data-name="eg.InfiniteGrid#isRecycling"><a href="eg.InfiniteGrid.html#isRecycling">isRecycling</a></li>
+    
+        <li data-name="eg.InfiniteGrid#layout"><a href="eg.InfiniteGrid.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid#off"><a href="eg.InfiniteGrid.html#off">off</a></li>
+    
+        <li data-name="eg.InfiniteGrid#on"><a href="eg.InfiniteGrid.html#on">on</a></li>
+    
+        <li data-name="eg.InfiniteGrid#option"><a href="eg.InfiniteGrid.html#option">option</a></li>
+    
+        <li data-name="eg.InfiniteGrid#prepend"><a href="eg.InfiniteGrid.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid#setStatus"><a href="eg.InfiniteGrid.html#setStatus">setStatus</a></li>
+    
+        <li data-name="eg.InfiniteGrid#trigger"><a href="eg.InfiniteGrid.html#trigger">trigger</a></li>
+    
+    </ul>
+    <ul class="events itemMembers">
+    
+    <span class="subtitle">Events</span>
+    
+        <li data-name="eg.InfiniteGrid#event:append"><a href="eg.InfiniteGrid.html#event:append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid#event:layoutComplete"><a href="eg.InfiniteGrid.html#event:layoutComplete">layoutComplete</a></li>
+    
+        <li data-name="eg.InfiniteGrid#event:prepend"><a href="eg.InfiniteGrid.html#event:prepend">prepend</a></li>
+    
+    </ul>
+
+    
+
+</li>
+
+        
+            
+<li class="item" data-name="eg.MovableCoord">
+    <span class="title">
+        <a href="eg.MovableCoord.html">eg.MovableCoord</a>
+        
+    </span>
+    <ul class="members itemMembers">
+    
+    <span class="subtitle">Members</span>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_ALL"><a href="eg.MovableCoord.html#DIRECTION_ALL">DIRECTION_ALL</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_DOWN"><a href="eg.MovableCoord.html#DIRECTION_DOWN">DIRECTION_DOWN</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_HORIZONTAL"><a href="eg.MovableCoord.html#DIRECTION_HORIZONTAL">DIRECTION_HORIZONTAL</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_LEFT"><a href="eg.MovableCoord.html#DIRECTION_LEFT">DIRECTION_LEFT</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_NONE"><a href="eg.MovableCoord.html#DIRECTION_NONE">DIRECTION_NONE</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_RIGHT"><a href="eg.MovableCoord.html#DIRECTION_RIGHT">DIRECTION_RIGHT</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_UP"><a href="eg.MovableCoord.html#DIRECTION_UP">DIRECTION_UP</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_VERTICAL"><a href="eg.MovableCoord.html#DIRECTION_VERTICAL">DIRECTION_VERTICAL</a></li>
+    
+    </ul>
+    <ul class="typedefs itemMembers">
+    
+    </ul>
+    <ul class="methods itemMembers">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.MovableCoord#bind"><a href="eg.MovableCoord.html#bind">bind</a></li>
+    
+        <li data-name="eg.MovableCoord#destroy"><a href="eg.MovableCoord.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.MovableCoord#get"><a href="eg.MovableCoord.html#get">get</a></li>
+    
+        <li data-name="eg.MovableCoord#hasOn"><a href="eg.MovableCoord.html#hasOn">hasOn</a></li>
+    
+        <li data-name="eg.MovableCoord#off"><a href="eg.MovableCoord.html#off">off</a></li>
+    
+        <li data-name="eg.MovableCoord#on"><a href="eg.MovableCoord.html#on">on</a></li>
+    
+        <li data-name="eg.MovableCoord#option"><a href="eg.MovableCoord.html#option">option</a></li>
+    
+        <li data-name="eg.MovableCoord#setBy"><a href="eg.MovableCoord.html#setBy">setBy</a></li>
+    
+        <li data-name="eg.MovableCoord#setTo"><a href="eg.MovableCoord.html#setTo">setTo</a></li>
+    
+        <li data-name="eg.MovableCoord#trigger"><a href="eg.MovableCoord.html#trigger">trigger</a></li>
+    
+        <li data-name="eg.MovableCoord#unbind"><a href="eg.MovableCoord.html#unbind">unbind</a></li>
+    
+    </ul>
+    <ul class="events itemMembers">
+    
+    <span class="subtitle">Events</span>
+    
+        <li data-name="eg.MovableCoord#event:animationEnd"><a href="eg.MovableCoord.html#event:animationEnd">animationEnd</a></li>
+    
+        <li data-name="eg.MovableCoord#event:change"><a href="eg.MovableCoord.html#event:change">change</a></li>
+    
+        <li data-name="eg.MovableCoord#event:hold"><a href="eg.MovableCoord.html#event:hold">hold</a></li>
+    
+        <li data-name="eg.MovableCoord#event:release"><a href="eg.MovableCoord.html#event:release">release</a></li>
+    
+    </ul>
+
+    
+
+</li>
+
+        
+            
+<li class="item" data-name="eg.Visible">
+    <span class="title">
+        <a href="eg.Visible.html">eg.Visible</a>
+        
+    </span>
+    <ul class="members itemMembers">
+    
+    </ul>
+    <ul class="typedefs itemMembers">
+    
+    </ul>
+    <ul class="methods itemMembers">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.Visible#check"><a href="eg.Visible.html#check">check</a></li>
+    
+        <li data-name="eg.Visible#hasOn"><a href="eg.Visible.html#hasOn">hasOn</a></li>
+    
+        <li data-name="eg.Visible#off"><a href="eg.Visible.html#off">off</a></li>
+    
+        <li data-name="eg.Visible#on"><a href="eg.Visible.html#on">on</a></li>
+    
+        <li data-name="eg.Visible#option"><a href="eg.Visible.html#option">option</a></li>
+    
+        <li data-name="eg.Visible#refresh"><a href="eg.Visible.html#refresh">refresh</a></li>
+    
+        <li data-name="eg.Visible#trigger"><a href="eg.Visible.html#trigger">trigger</a></li>
+    
+    </ul>
+    <ul class="events itemMembers">
+    
+    <span class="subtitle">Events</span>
+    
+        <li data-name="eg.Visible#event:change"><a href="eg.Visible.html#event:change">change</a></li>
+    
+    </ul>
+
+    
+
+</li>
+
+        
+        </ul>
+    
+        <!-- Grouping Version -->
+        <ul class="group">
+        <span>jQuery Extension</span>
+        
+            
+<li class="item" data-name="jQuery">
+    <span class="title">
+        <a href="jQuery.html">jQuery</a>
+        
+        <span class="static">static</span>
+        
+    </span>
+    <ul class="members itemMembers">
+    
+    </ul>
+    <ul class="typedefs itemMembers">
+    
+    </ul>
+    <ul class="methods itemMembers">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="jQuery.flicking"><a href="jQuery.html#flicking">flicking</a></li>
+    
+        <li data-name="jQuery.infiniteGrid"><a href="jQuery.html#infiniteGrid">infiniteGrid</a></li>
+    
+        <li data-name="jQuery.persist"><a href="jQuery.html#persist">persist</a></li>
+    
+        <li data-name="jQuery.persist"><a href="jQuery.html#persist">persist</a></li>
+    
+        <li data-name="jQuery.persist"><a href="jQuery.html#persist">persist</a></li>
+    
+        <li data-name="jQuery.visible"><a href="jQuery.html#visible">visible</a></li>
+    
+        <li data-name="jQuery#animate"><a href="jQuery.html#animate">animate</a></li>
+    
+        <li data-name="jQuery#pause"><a href="jQuery.html#pause">pause</a></li>
+    
+        <li data-name="jQuery#resume"><a href="jQuery.html#resume">resume</a></li>
+    
+    </ul>
+    <ul class="events itemMembers">
+    
+    <span class="subtitle">Events</span>
+    
+        <li data-name="jQuery#event:rotate"><a href="jQuery.html#event:rotate">rotate</a></li>
+    
+        <li data-name="jQuery#event:scrollEnd"><a href="jQuery.html#event:scrollEnd">scrollEnd</a></li>
+    
+        <li data-name="jQuery#flicking:beforeFlickStart"><a href="jQuery.html#event:flicking:beforeFlickStart">flicking:beforeFlickStart</a></li>
+    
+        <li data-name="jQuery#flicking:beforeRestore"><a href="jQuery.html#event:flicking:beforeRestore">flicking:beforeRestore</a></li>
+    
+        <li data-name="jQuery#flicking:flick"><a href="jQuery.html#event:flicking:flick">flicking:flick</a></li>
+    
+        <li data-name="jQuery#flicking:flickEnd"><a href="jQuery.html#event:flicking:flickEnd">flicking:flickEnd</a></li>
+    
+        <li data-name="jQuery#flicking:restore"><a href="jQuery.html#event:flicking:restore">flicking:restore</a></li>
+    
+        <li data-name="jQuery#infiniteGrid:append"><a href="jQuery.html#event:infiniteGrid:append">infiniteGrid:append</a></li>
+    
+        <li data-name="jQuery#infiniteGrid:layoutComplete"><a href="jQuery.html#event:infiniteGrid:layoutComplete">infiniteGrid:layoutComplete</a></li>
+    
+        <li data-name="jQuery#infiniteGrid:prepend"><a href="jQuery.html#event:infiniteGrid:prepend">infiniteGrid:prepend</a></li>
+    
+        <li data-name="jQuery#visible:change"><a href="jQuery.html#event:visible:change">visible:change</a></li>
+    
+    </ul>
+
+    
+
+</li>
+
+        
+        </ul>
+    
+    </ul>
+</div>
+
+    <div class="main">
+        <h1 class="page-title" data-filename="transform.js.html">Source: hook/transform.js</h1>
+        
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+* Copyright (c) 2015 NAVER Corp.
+* egjs projects are licensed under the MIT license
+*/
+
+/**
+ * A method that extends the &lt;a href=http://api.jquery.com/animate/>.animate()&lt;/a> method provided by jQuery. With this method, you can use the transform property and 3D acceleration
+ * @ko jQuery의&lt;a href=http://api.jquery.com/animate/>animate() 메서드&lt;/a>를 확장한 메서드. CSS의 transform 속성과 3D 가속을 사용할 수 있다.
+ * @name jQuery#animate
+ * @method
+ * @param {Object} properties An object composed of the CSS property and value which will be applied to an animation&lt;ko>애니메이션을 적용할 CSS 속성과 값으로 구성된 객체&lt;/ko>
+ * @param {Number|String} [duration=4000] Duration of the animation (unit: ms)&lt;ko>애니메이션 진행 시간(단위: ms)&lt;/ko>
+ * @param {String} [easing="swing"] The easing function to apply to an animation&lt;ko>애니메이션에 적용할 easing 함수&lt;/ko>
+ * @param {Function} [complete] A function that is called once the animation is complete.&lt;ko>애니메이션을 완료한 다음 호출할 함수&lt;/ko>
+ *
+ * @example
+ * $("#box")
+ * 		.animate({"transform" : "translate3d(150px, 100px, 0px) rotate(20deg) scaleX(1)"} , 3000)
+ * 		.animate({"transform" : "+=translate3d(150px, 10%, -20px) rotate(20deg) scale3d(2, 4.2, 1)"} , 3000);
+ * @see {@link http://api.jquery.com/animate/}
+ *
+ * @support {"ie": "10+", "ch" : "latest", "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
+ */
+eg.module("transform", ["jQuery", window], function($) {
+	"use strict";
+
+	/**
+	 * Get a 'px' converted value if it has a %.
+	 * Otherwise it returns value appened with 'px'.
+	 */
+	function getConverted(val, base) {
+		var ret = val;
+		var num = val.match(/((-|\+)*[0-9]+)%/);
+
+		if (num && num.length >= 1) {
+			ret = base * (parseFloat(num[1]) / 100) + "px";
+		} else if (val.indexOf("px") === -1) {
+			ret = val + "px";
+		}
+
+		return ret;
+	}
+
+	function correctUnit(transform, width, height) {
+		var m;
+		var ret = "";
+		var arr = transform.split(")");
+
+		for (var i = 0, len = arr.length - 1; i &lt; len; i++) {
+			var name = arr[i];
+
+			// '%' is only meaningful on translate.
+			if ((m = name.match(/(translate([XYZ]|3d)?|rotate)\(([^)]*)/)) && m.length > 1) {
+				if (m[1] === "rotate") {
+					if (m[3].indexOf("deg") === -1) {
+						name = m[1] + "(" + m[3] + "deg";
+					}
+				} else {
+					switch (m[2]) {
+					case "X":
+						name = m[1] + "(" + getConverted(m[3], width);
+						break;
+					case "Y":
+						name = m[1] + "(" +  getConverted(m[3], height);
+						break;
+					case "Z":
+
+						//Meaningless. Do nothing
+						break;
+					default://2d, 3d
+						var nums = m[3].split(",");
+						var bases = [width, height, 100];
+
+						for (var k = 0, l = nums.length; k &lt; l; k++) {
+							nums[k] = getConverted(nums[k], bases[k]);
+						}
+						name = m[1] + "(" + nums.join(",");
+						break;
+					}
+				}
+			}
+
+			name = " " + name + ")";
+			ret += name;
+		}
+
+		//Remove wrong '%'s and '+=' because it cannot be translated to a matrix.
+		ret = ret.replace("%", "").replace("+=", "");
+		return ret;
+	}
+
+	/**
+	 * Parse a transform atom value.
+	 *
+	 * "30px" --> {num: 30, unit: "px"}
+	 *
+	 * Because calculation of string number is heavy,
+	 * In advance, convert a string number to a float number with an unit for the use of transformByPos,
+	 * which is called very frequently.
+	 */
+	function toParsedFloat(val) {
+		var m = val.match(/((-|\+)*[\d|\.]+)(px|deg|rad)*/);
+		if (m && m.length >= 1) {
+			return {"num": parseFloat(m[1]), "unit": m[3]};
+		}
+	}
+
+	function getTransformGenerateFunction(transform) {
+		var splitted = transform.split(")");
+		var list = [];
+
+		//Make parsed transform list.
+		for (var i = 0, len = splitted.length - 1; i &lt; len; i++) {
+			var parsed = parseStyle(splitted[i]);
+
+			parsed[1] = $.map(parsed[1], toParsedFloat);
+			list.push(parsed);
+		}
+
+		return function transformByPos(pos) {
+			var transform = "";
+			var defaultVal = 0;
+
+			$.each(list, function(i) {
+				if (list[i][0].indexOf("scale") >= 0) {
+					defaultVal = 1;
+				} else {
+					defaultVal = 0;
+				}
+
+				var valStr = $.map(list[i][1], function(value) {
+					var val = value.num;
+					defaultVal === 1 && (val = val - 1);
+					return (defaultVal + val * pos) + (value.unit || "");
+				}).join(",");
+
+				transform += list[i][0] + "(" + valStr + ") ";
+			});
+
+			return transform;
+		};
+	}
+
+	function rateFn(element, startTf, endTf) {
+		var isRelative = endTf.indexOf("+=") >= 0;
+		var start;
+		var end;
+		var basePos;
+
+		// Convert translate unit to 'px'.
+		endTf = correctUnit(endTf,
+					parseFloat($.css(element, "width")) || 0,
+					parseFloat($.css(element, "height")) || 0);
+
+		if (isRelative) {
+			start = (!startTf || startTf === "none") ?
+						"matrix(1, 0, 0, 1, 0, 0)" : startTf;
+			end = getTransformGenerateFunction(endTf);
+		} else {
+			start = toMatrixArray(startTf);
+			basePos = toMatrixArray("none");//transform base-position
+
+			//If the type of matrix is not equal, then match to matrix3d
+			if (start[1].length &lt; basePos[1].length) {
+				start = toMatrix3d(start);
+			} else if (start[1].length > basePos[1].length) {
+				basePos = toMatrix3d(basePos);
+			}
+
+			end = getTransformGenerateFunction(endTf);
+		}
+
+		return function(pos) {
+			var result = [];
+			var ret = "";//matrix for interpolated value from current to base(1, 0, 0, 1, 0, 0)
+
+			if (isRelative) {
+				// This means a muliply between a matrix and a transform.
+				return start + end(pos);
+			}
+
+			if (pos === 1) {
+				ret = data2String(basePos);
+			} else {
+				for (var i = 0, s, e, l = start[1].length; i &lt; l; i++) {
+					s = parseFloat(start[1][i]);
+					e = parseFloat(basePos[1][i]);
+
+					result.push(s + (e - s) * pos);
+				}
+
+				ret = data2String([start[0], result]);
+			}
+
+			return ret + end(pos);
+		};
+	}
+
+	/**
+	 * ["translate", [100, 0]] --> translate(100px, 0)
+	 * {translate : [100, 0]} --> translate(100px, 0)
+	 * {matrix : [1, 0, 1, 0, 100, 0]} --> matrix(1, 0, 1, 0, 100, 0)
+	 */
+	function data2String(property) {
+		var name;
+		var tmp = [];
+
+		if ($.isArray(property)) {
+			name = property[0];
+			return name + "(" + property[1].join(unit(name) + ",") + unit(name) + ")";
+		} else {
+			for (name in property) {
+				tmp.push(name);
+			}
+
+			return $.map(tmp, function(v) {
+				return v + "(" +  property[v] + unit(v) + ")";
+			}).join(" ");
+		}
+	}
+
+	function unit(name) {
+		return name.indexOf("translate") >= 0 ?
+				"px" : name.indexOf("rotate") >= 0 ? "deg" : "";
+	}
+
+	// ["translate" , ["10", "20"]]
+	function parseStyle(property) {
+		var m = property.match(/(\b\w+?)\((\s*[^\)]+)/);
+		var name;
+		var value;
+		var result = ["",""];
+
+		if (m && m.length > 2) {
+			name = m[1];
+			value = m[2].split(",");
+			value = $.map(value, function(v) {
+				return $.trim(v);
+			});
+			result = [ $.trim(name), value ];
+		}
+		return result;
+	}
+
+	/**
+	 * Convert matrix string to array type.
+	 *
+	 * eg. matrix(1, 0, 0, 1, 0, 0) ==>  ["matrix", [1, 0, 0, 1, 0, 0]]
+	 * matrix3d(1,0,0,0,0,1,-2.44929e-16,0,0,2.44929e-16,1,0,0,0,0,1)
+	 */
+	function toMatrixArray(matrixStr) {
+		var matched;
+
+		if (!matrixStr || matrixStr === "none") {
+			return ["matrix", [ "1", "0", "0", "1", "0", "0"] ];
+		}
+
+		matrixStr = matrixStr.replace(/\s/g, "");
+		matched = matrixStr.match(/(matrix)(3d)*\((.*)\)/);
+
+		return [matched[1] + (matched[2] || ""), matched[3].split(",")];
+	}
+
+	function toMatrix3d(matrix) {
+		var name = matrix[0];
+		var val = matrix[1];
+
+		if (name === "matrix3d") {
+			return matrix;
+		}
+
+		// matrix(a, b, c, d, tx, ty) is a shorthand for matrix3d(a, b, 0, 0, c, d, 0, 0, 0, 0, 1, 0, tx, ty, 0, 1)
+		return [
+			name + "3d", [val[0], val[1], "0", "0",
+						val[2], val[3], "0", "0",
+						"0", "0", "1", "0",
+						val[4], val[5], "0", "1"]
+		];
+	}
+
+	$.fx.step.transform = function(fx) {
+		fx.rateFn = fx.rateFn || rateFn(fx.elem, fx.start, fx.end);
+		$.style(fx.elem, "transform", fx.rateFn(fx.pos));
+	};
+
+	// All of this interfaces are functions for unit testing.
+	return {
+		toMatrix: toMatrixArray,
+		toMatrix3d: toMatrix3d
+	};
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+        <!-- disqus code -->
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        <!-- // disqus code -->
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Tue Sep 20 2016 14:54:15 GMT+0900 (KST)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

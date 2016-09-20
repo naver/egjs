@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Source: module.js | egjs - API</title>
+    
+    <meta name="description" content="egjs is a jQuery-based JavaScript library consisting of UI interactions, effects, and utilities, which brings easiest and fastest way to build a web application in your way." />
+    
+        <meta name="keywords" content="jQuery, UI Component, egjs" />
+        <meta name="keyword" content="jQuery, UI Component, egjs" />
+    
+    
+    
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    <link rel="canonical" href="http://naver.github.io/egjs/latest/doc/"/>
+    
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"egjs","disqus":"egjs","googleAnalytics":"","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"egjs - API","description":"egjs is a jQuery-based JavaScript library consisting of UI interactions, effects, and utilities, which brings easiest and fastest way to build a web application in your way.","keyword":"jQuery, UI Component, egjs"},"linenums":true,"link":{"canonical":"http://naver.github.io/egjs/latest/doc/"}};
+    </script>
+    
+
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName"><a href="index.html">egjs</a></h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+    
+    
+        <!-- Grouping Version -->
+        <ul class="group">
+        <span>egjs</span>
+        
+            
+<li class="item" data-name="eg">
+    <span class="title">
+        <a href="eg.html">eg</a>
+        
+        <span class="static">static</span>
+        
+    </span>
+    <ul class="members itemMembers">
+    
+    <span class="subtitle">Members</span>
+    
+        <li data-name="eg.VERSION"><a href="eg.html#VERSION">VERSION</a></li>
+    
+    </ul>
+    <ul class="typedefs itemMembers">
+    
+    </ul>
+    <ul class="methods itemMembers">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg#agent"><a href="eg.html#agent">agent</a></li>
+    
+        <li data-name="eg#cancelAnimationFrame"><a href="eg.html#cancelAnimationFrame">cancelAnimationFrame</a></li>
+    
+        <li data-name="eg#isHWAccelerable"><a href="eg.html#isHWAccelerable">isHWAccelerable</a></li>
+    
+        <li data-name="eg#isPortrait"><a href="eg.html#isPortrait">isPortrait</a></li>
+    
+        <li data-name="eg#isTransitional"><a href="eg.html#isTransitional">isTransitional</a></li>
+    
+        <li data-name="eg#requestAnimationFrame"><a href="eg.html#requestAnimationFrame">requestAnimationFrame</a></li>
+    
+        <li data-name="eg#translate"><a href="eg.html#translate">translate</a></li>
+    
+    </ul>
+    <ul class="events itemMembers">
+    
+    </ul>
+
+    
+
+</li>
+
+        
+            
+<li class="item" data-name="eg.Class">
+    <span class="title">
+        <a href="eg.Class.html">eg.Class</a>
+        
+    </span>
+    <ul class="members itemMembers">
+    
+    </ul>
+    <ul class="typedefs itemMembers">
+    
+    </ul>
+    <ul class="methods itemMembers">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.Class.extend"><a href="eg.Class.html#extend">extend</a></li>
+    
+        <li data-name="eg.Class#instance"><a href="eg.Class.html#instance">instance</a></li>
+    
+    </ul>
+    <ul class="events itemMembers">
+    
+    </ul>
+
+    
+
+</li>
+
+        
+            
+<li class="item" data-name="eg.Component">
+    <span class="title">
+        <a href="eg.Component.html">eg.Component</a>
+        
+    </span>
+    <ul class="members itemMembers">
+    
+    </ul>
+    <ul class="typedefs itemMembers">
+    
+    </ul>
+    <ul class="methods itemMembers">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.Component#hasOn"><a href="eg.Component.html#hasOn">hasOn</a></li>
+    
+        <li data-name="eg.Component#off"><a href="eg.Component.html#off">off</a></li>
+    
+        <li data-name="eg.Component#on"><a href="eg.Component.html#on">on</a></li>
+    
+        <li data-name="eg.Component#option"><a href="eg.Component.html#option">option</a></li>
+    
+        <li data-name="eg.Component#trigger"><a href="eg.Component.html#trigger">trigger</a></li>
+    
+    </ul>
+    <ul class="events itemMembers">
+    
+    </ul>
+
+    
+
+</li>
+
+        
+            
+<li class="item" data-name="eg.Flicking">
+    <span class="title">
+        <a href="eg.Flicking.html">eg.Flicking</a>
+        
+    </span>
+    <ul class="members itemMembers">
+    
+    </ul>
+    <ul class="typedefs itemMembers">
+    
+    </ul>
+    <ul class="methods itemMembers">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.Flicking#destroy"><a href="eg.Flicking.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.Flicking#disableInput"><a href="eg.Flicking.html#disableInput">disableInput</a></li>
+    
+        <li data-name="eg.Flicking#enableInput"><a href="eg.Flicking.html#enableInput">enableInput</a></li>
+    
+        <li data-name="eg.Flicking#getAllElements"><a href="eg.Flicking.html#getAllElements">getAllElements</a></li>
+    
+        <li data-name="eg.Flicking#getElement"><a href="eg.Flicking.html#getElement">getElement</a></li>
+    
+        <li data-name="eg.Flicking#getIndex"><a href="eg.Flicking.html#getIndex">getIndex</a></li>
+    
+        <li data-name="eg.Flicking#getNextElement"><a href="eg.Flicking.html#getNextElement">getNextElement</a></li>
+    
+        <li data-name="eg.Flicking#getNextIndex"><a href="eg.Flicking.html#getNextIndex">getNextIndex</a></li>
+    
+        <li data-name="eg.Flicking#getPrevElement"><a href="eg.Flicking.html#getPrevElement">getPrevElement</a></li>
+    
+        <li data-name="eg.Flicking#getPrevIndex"><a href="eg.Flicking.html#getPrevIndex">getPrevIndex</a></li>
+    
+        <li data-name="eg.Flicking#getTotalCount"><a href="eg.Flicking.html#getTotalCount">getTotalCount</a></li>
+    
+        <li data-name="eg.Flicking#hasOn"><a href="eg.Flicking.html#hasOn">hasOn</a></li>
+    
+        <li data-name="eg.Flicking#isPlaying"><a href="eg.Flicking.html#isPlaying">isPlaying</a></li>
+    
+        <li data-name="eg.Flicking#moveTo"><a href="eg.Flicking.html#moveTo">moveTo</a></li>
+    
+        <li data-name="eg.Flicking#next"><a href="eg.Flicking.html#next">next</a></li>
+    
+        <li data-name="eg.Flicking#off"><a href="eg.Flicking.html#off">off</a></li>
+    
+        <li data-name="eg.Flicking#on"><a href="eg.Flicking.html#on">on</a></li>
+    
+        <li data-name="eg.Flicking#option"><a href="eg.Flicking.html#option">option</a></li>
+    
+        <li data-name="eg.Flicking#prev"><a href="eg.Flicking.html#prev">prev</a></li>
+    
+        <li data-name="eg.Flicking#resize"><a href="eg.Flicking.html#resize">resize</a></li>
+    
+        <li data-name="eg.Flicking#restore"><a href="eg.Flicking.html#restore">restore</a></li>
+    
+        <li data-name="eg.Flicking#trigger"><a href="eg.Flicking.html#trigger">trigger</a></li>
+    
+    </ul>
+    <ul class="events itemMembers">
+    
+    <span class="subtitle">Events</span>
+    
+        <li data-name="eg.Flicking#event:beforeFlickStart"><a href="eg.Flicking.html#event:beforeFlickStart">beforeFlickStart</a></li>
+    
+        <li data-name="eg.Flicking#event:beforeRestore"><a href="eg.Flicking.html#event:beforeRestore">beforeRestore</a></li>
+    
+        <li data-name="eg.Flicking#event:flick"><a href="eg.Flicking.html#event:flick">flick</a></li>
+    
+        <li data-name="eg.Flicking#event:flickEnd"><a href="eg.Flicking.html#event:flickEnd">flickEnd</a></li>
+    
+        <li data-name="eg.Flicking#event:restore"><a href="eg.Flicking.html#event:restore">restore</a></li>
+    
+    </ul>
+
+    
+
+</li>
+
+        
+            
+<li class="item" data-name="eg.InfiniteGrid">
+    <span class="title">
+        <a href="eg.InfiniteGrid.html">eg.InfiniteGrid</a>
+        
+    </span>
+    <ul class="members itemMembers">
+    
+    </ul>
+    <ul class="typedefs itemMembers">
+    
+    </ul>
+    <ul class="methods itemMembers">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid#append"><a href="eg.InfiniteGrid.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid#clear"><a href="eg.InfiniteGrid.html#clear">clear</a></li>
+    
+        <li data-name="eg.InfiniteGrid#destroy"><a href="eg.InfiniteGrid.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.InfiniteGrid#fit"><a href="eg.InfiniteGrid.html#fit">fit</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getBottomElement"><a href="eg.InfiniteGrid.html#getBottomElement">getBottomElement</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getGroupKeys"><a href="eg.InfiniteGrid.html#getGroupKeys">getGroupKeys</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getStatue"><a href="eg.InfiniteGrid.html#getStatue">getStatue</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getTopElement"><a href="eg.InfiniteGrid.html#getTopElement">getTopElement</a></li>
+    
+        <li data-name="eg.InfiniteGrid#hasOn"><a href="eg.InfiniteGrid.html#hasOn">hasOn</a></li>
+    
+        <li data-name="eg.InfiniteGrid#isProcessing"><a href="eg.InfiniteGrid.html#isProcessing">isProcessing</a></li>
+    
+        <li data-name="eg.InfiniteGrid#isRecycling"><a href="eg.InfiniteGrid.html#isRecycling">isRecycling</a></li>
+    
+        <li data-name="eg.InfiniteGrid#layout"><a href="eg.InfiniteGrid.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid#off"><a href="eg.InfiniteGrid.html#off">off</a></li>
+    
+        <li data-name="eg.InfiniteGrid#on"><a href="eg.InfiniteGrid.html#on">on</a></li>
+    
+        <li data-name="eg.InfiniteGrid#option"><a href="eg.InfiniteGrid.html#option">option</a></li>
+    
+        <li data-name="eg.InfiniteGrid#prepend"><a href="eg.InfiniteGrid.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid#setStatus"><a href="eg.InfiniteGrid.html#setStatus">setStatus</a></li>
+    
+        <li data-name="eg.InfiniteGrid#trigger"><a href="eg.InfiniteGrid.html#trigger">trigger</a></li>
+    
+    </ul>
+    <ul class="events itemMembers">
+    
+    <span class="subtitle">Events</span>
+    
+        <li data-name="eg.InfiniteGrid#event:append"><a href="eg.InfiniteGrid.html#event:append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid#event:layoutComplete"><a href="eg.InfiniteGrid.html#event:layoutComplete">layoutComplete</a></li>
+    
+        <li data-name="eg.InfiniteGrid#event:prepend"><a href="eg.InfiniteGrid.html#event:prepend">prepend</a></li>
+    
+    </ul>
+
+    
+
+</li>
+
+        
+            
+<li class="item" data-name="eg.MovableCoord">
+    <span class="title">
+        <a href="eg.MovableCoord.html">eg.MovableCoord</a>
+        
+    </span>
+    <ul class="members itemMembers">
+    
+    <span class="subtitle">Members</span>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_ALL"><a href="eg.MovableCoord.html#DIRECTION_ALL">DIRECTION_ALL</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_DOWN"><a href="eg.MovableCoord.html#DIRECTION_DOWN">DIRECTION_DOWN</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_HORIZONTAL"><a href="eg.MovableCoord.html#DIRECTION_HORIZONTAL">DIRECTION_HORIZONTAL</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_LEFT"><a href="eg.MovableCoord.html#DIRECTION_LEFT">DIRECTION_LEFT</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_NONE"><a href="eg.MovableCoord.html#DIRECTION_NONE">DIRECTION_NONE</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_RIGHT"><a href="eg.MovableCoord.html#DIRECTION_RIGHT">DIRECTION_RIGHT</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_UP"><a href="eg.MovableCoord.html#DIRECTION_UP">DIRECTION_UP</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_VERTICAL"><a href="eg.MovableCoord.html#DIRECTION_VERTICAL">DIRECTION_VERTICAL</a></li>
+    
+    </ul>
+    <ul class="typedefs itemMembers">
+    
+    </ul>
+    <ul class="methods itemMembers">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.MovableCoord#bind"><a href="eg.MovableCoord.html#bind">bind</a></li>
+    
+        <li data-name="eg.MovableCoord#destroy"><a href="eg.MovableCoord.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.MovableCoord#get"><a href="eg.MovableCoord.html#get">get</a></li>
+    
+        <li data-name="eg.MovableCoord#hasOn"><a href="eg.MovableCoord.html#hasOn">hasOn</a></li>
+    
+        <li data-name="eg.MovableCoord#off"><a href="eg.MovableCoord.html#off">off</a></li>
+    
+        <li data-name="eg.MovableCoord#on"><a href="eg.MovableCoord.html#on">on</a></li>
+    
+        <li data-name="eg.MovableCoord#option"><a href="eg.MovableCoord.html#option">option</a></li>
+    
+        <li data-name="eg.MovableCoord#setBy"><a href="eg.MovableCoord.html#setBy">setBy</a></li>
+    
+        <li data-name="eg.MovableCoord#setTo"><a href="eg.MovableCoord.html#setTo">setTo</a></li>
+    
+        <li data-name="eg.MovableCoord#trigger"><a href="eg.MovableCoord.html#trigger">trigger</a></li>
+    
+        <li data-name="eg.MovableCoord#unbind"><a href="eg.MovableCoord.html#unbind">unbind</a></li>
+    
+    </ul>
+    <ul class="events itemMembers">
+    
+    <span class="subtitle">Events</span>
+    
+        <li data-name="eg.MovableCoord#event:animationEnd"><a href="eg.MovableCoord.html#event:animationEnd">animationEnd</a></li>
+    
+        <li data-name="eg.MovableCoord#event:change"><a href="eg.MovableCoord.html#event:change">change</a></li>
+    
+        <li data-name="eg.MovableCoord#event:hold"><a href="eg.MovableCoord.html#event:hold">hold</a></li>
+    
+        <li data-name="eg.MovableCoord#event:release"><a href="eg.MovableCoord.html#event:release">release</a></li>
+    
+    </ul>
+
+    
+
+</li>
+
+        
+            
+<li class="item" data-name="eg.Visible">
+    <span class="title">
+        <a href="eg.Visible.html">eg.Visible</a>
+        
+    </span>
+    <ul class="members itemMembers">
+    
+    </ul>
+    <ul class="typedefs itemMembers">
+    
+    </ul>
+    <ul class="methods itemMembers">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.Visible#check"><a href="eg.Visible.html#check">check</a></li>
+    
+        <li data-name="eg.Visible#hasOn"><a href="eg.Visible.html#hasOn">hasOn</a></li>
+    
+        <li data-name="eg.Visible#off"><a href="eg.Visible.html#off">off</a></li>
+    
+        <li data-name="eg.Visible#on"><a href="eg.Visible.html#on">on</a></li>
+    
+        <li data-name="eg.Visible#option"><a href="eg.Visible.html#option">option</a></li>
+    
+        <li data-name="eg.Visible#refresh"><a href="eg.Visible.html#refresh">refresh</a></li>
+    
+        <li data-name="eg.Visible#trigger"><a href="eg.Visible.html#trigger">trigger</a></li>
+    
+    </ul>
+    <ul class="events itemMembers">
+    
+    <span class="subtitle">Events</span>
+    
+        <li data-name="eg.Visible#event:change"><a href="eg.Visible.html#event:change">change</a></li>
+    
+    </ul>
+
+    
+
+</li>
+
+        
+        </ul>
+    
+        <!-- Grouping Version -->
+        <ul class="group">
+        <span>jQuery Extension</span>
+        
+            
+<li class="item" data-name="jQuery">
+    <span class="title">
+        <a href="jQuery.html">jQuery</a>
+        
+        <span class="static">static</span>
+        
+    </span>
+    <ul class="members itemMembers">
+    
+    </ul>
+    <ul class="typedefs itemMembers">
+    
+    </ul>
+    <ul class="methods itemMembers">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="jQuery.flicking"><a href="jQuery.html#flicking">flicking</a></li>
+    
+        <li data-name="jQuery.infiniteGrid"><a href="jQuery.html#infiniteGrid">infiniteGrid</a></li>
+    
+        <li data-name="jQuery.persist"><a href="jQuery.html#persist">persist</a></li>
+    
+        <li data-name="jQuery.persist"><a href="jQuery.html#persist">persist</a></li>
+    
+        <li data-name="jQuery.persist"><a href="jQuery.html#persist">persist</a></li>
+    
+        <li data-name="jQuery.visible"><a href="jQuery.html#visible">visible</a></li>
+    
+        <li data-name="jQuery#animate"><a href="jQuery.html#animate">animate</a></li>
+    
+        <li data-name="jQuery#pause"><a href="jQuery.html#pause">pause</a></li>
+    
+        <li data-name="jQuery#resume"><a href="jQuery.html#resume">resume</a></li>
+    
+    </ul>
+    <ul class="events itemMembers">
+    
+    <span class="subtitle">Events</span>
+    
+        <li data-name="jQuery#event:rotate"><a href="jQuery.html#event:rotate">rotate</a></li>
+    
+        <li data-name="jQuery#event:scrollEnd"><a href="jQuery.html#event:scrollEnd">scrollEnd</a></li>
+    
+        <li data-name="jQuery#flicking:beforeFlickStart"><a href="jQuery.html#event:flicking:beforeFlickStart">flicking:beforeFlickStart</a></li>
+    
+        <li data-name="jQuery#flicking:beforeRestore"><a href="jQuery.html#event:flicking:beforeRestore">flicking:beforeRestore</a></li>
+    
+        <li data-name="jQuery#flicking:flick"><a href="jQuery.html#event:flicking:flick">flicking:flick</a></li>
+    
+        <li data-name="jQuery#flicking:flickEnd"><a href="jQuery.html#event:flicking:flickEnd">flicking:flickEnd</a></li>
+    
+        <li data-name="jQuery#flicking:restore"><a href="jQuery.html#event:flicking:restore">flicking:restore</a></li>
+    
+        <li data-name="jQuery#infiniteGrid:append"><a href="jQuery.html#event:infiniteGrid:append">infiniteGrid:append</a></li>
+    
+        <li data-name="jQuery#infiniteGrid:layoutComplete"><a href="jQuery.html#event:infiniteGrid:layoutComplete">infiniteGrid:layoutComplete</a></li>
+    
+        <li data-name="jQuery#infiniteGrid:prepend"><a href="jQuery.html#event:infiniteGrid:prepend">infiniteGrid:prepend</a></li>
+    
+        <li data-name="jQuery#visible:change"><a href="jQuery.html#event:visible:change">visible:change</a></li>
+    
+    </ul>
+
+    
+
+</li>
+
+        
+        </ul>
+    
+    </ul>
+</div>
+
+    <div class="main">
+        <h1 class="page-title" data-filename="module.js.html">Source: module.js</h1>
+        
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+* Copyright (c) 2015 NAVER Corp.
+* egjs projects are licensed under the MIT license
+*/
+
+(function(jQueryName, ns, global) {
+	"use strict";
+
+	var eg;
+	if (!global[ns]) {
+		global[ns] = {};
+	}
+	eg = global[ns];
+
+	var $ = global[jQueryName];
+
+	var dependency = {
+		"jQuery": {
+			"url": "http://jquery.com/"
+		},
+		"Hammer": {
+			"url": "http://hammerjs.github.io/"
+		}
+	};
+
+	// jscs:disable maximumLineLength
+	var templateMessage = [
+		"[egjs] The {{name}} library must be loaded before {{componentName}}.",
+		"[egjs] For AMD environment (like RequireJS), \"{{name}}\" must be declared, which is required by {{componentName}}.",
+        "[egjs] The {{index}} argument of {{componentName}} is missing.\r\nDownload {{name}} from [{{url}}].",
+		"[egjs] The {{name}} parameter of {{componentName}} is not valid.\r\nPlease check and try again.",
+        "[egjs] The {{index}} argument of {{componentName}} is undefined.\r\nPlease check and try again."
+	];
+
+	// jscs:enable maximumLineLength
+
+	var ordinal = [ "1st", "2nd", "3rd"];
+
+	function changeOrdinal(index) {
+		return index > 2 ? (index + 1) + "th" : ordinal[index];
+	}
+
+	function replaceStr(str, obj) {
+		var i;
+		for (i in obj) {
+			str = str.replace(new RegExp("{{" + i + "}}","gi"), obj[i]);
+		}
+		return str;
+	}
+
+	function checkDependency(componentName, di) {
+		var i = 0;
+		var l = di.length;
+		var message = [];
+		var paramList = [];
+		var require = global.require;
+		var dependencyInfo;
+		var param;
+		var messageInfo;
+		var isString;
+		var isUndefined;
+		var registedDependency;
+		var isNotGlobal;
+		var specifiedAMD;
+
+		for (; i &lt; l; i++) {
+			param = di[i];
+			messageInfo = {
+				"index": changeOrdinal(i),
+				"name": param,
+				"componentName": componentName
+			};
+
+			isString = typeof di[i] === "string";
+			isUndefined = di[i] === undefined;
+			registedDependency = isString && (dependencyInfo = dependency[di[i]]);
+			isNotGlobal = isString && dependencyInfo && !global[di[i]];
+			specifiedAMD = isNotGlobal &&
+				require && require.specified && require.specified(di[i]);
+
+			// Message decision flow
+			//             argument
+			// |--------------|--------------|
+			// undefined    string    !string&&!undefined
+			// |              |              |
+			// msg(4)         |             (OK)
+			//         defined dependency
+			//                |
+			// |-----------------------------|
+			// |                             |
+			// msg(3)                     in global
+			//                               |
+			//                 |------------------------------|
+			//              use AMD                          (OK)
+			//                 |
+			//  |------------------------------|
+			//  msg(2)                  require.specified
+			// 	                               |
+			// 	                |------------------------------|
+			//                  msg(1)                  require.defined
+			// 	                                               |
+			//                                  |------------------------------|
+			//                                  msg(0)                        (OK)
+
+			if (!isString && !isUndefined) {
+				paramList.push(param);
+				continue;
+			}
+
+			if (specifiedAMD && require.defined(di[i])) {
+				param = require(di[i]);
+				paramList.push(param);
+				continue;
+			}
+
+			if (specifiedAMD && !require.defined(di[i])) {
+				messageInfo.url = dependencyInfo.url;
+				message.push(replaceStr(templateMessage[0], messageInfo));
+				continue;
+			}
+
+			if (isNotGlobal && require &&
+				require.specified && !require.specified(di[i])) {
+				messageInfo.url = dependencyInfo.url;
+				message.push(replaceStr(templateMessage[1], messageInfo));
+				continue;
+			}
+
+			if (isNotGlobal && !require) {
+				messageInfo.url = dependencyInfo.url;
+				message.push(replaceStr(templateMessage[2], messageInfo));
+				continue;
+			}
+
+			if (registedDependency && global[di[i]]) {
+				param = global[di[i]];
+				paramList.push(param);
+				continue;
+			}
+
+			if (isString && !dependencyInfo) {
+				message.push(replaceStr(templateMessage[3], messageInfo));
+				continue;
+			}
+
+			if (di[i] === undefined) {
+				message.push(replaceStr(templateMessage[4], messageInfo));
+				continue;
+			}
+		}
+
+		return [paramList, message];
+	}
+
+	function capitalizeFirstLetter(str) {
+		return str.charAt(0).toUpperCase() + str.slice(1);
+	}
+
+	function plugin(name) {
+		var upperCamelCase = capitalizeFirstLetter(name);
+		var events;
+		var special;
+		var componentMethodNames;
+
+		if (!(eg[upperCamelCase] && eg[upperCamelCase].prototype &&
+			eg[upperCamelCase].prototype._events)) {
+			return false;
+		}
+
+		// jscs:disable validateLineBreaks, maximumLineLength
+		if ($.fn[name]) {
+			throw new Error("The name '" + upperCamelCase + "' has already been used and registered as plugin. Try with different one.");
+		}
+
+		// jscs:enable validateLineBreaks, maximumLineLength
+
+		// Extend method.
+		$.fn[name] = function(options) {
+			var ins;
+			var result;
+			if (typeof options === "string") {
+				ins = this.data(ns + "-" + name);
+				if (options === "instance") {
+					return ins;
+				} else {
+					result = ins[options].apply(ins, Array.prototype.slice.call(arguments, 1));
+					return result === ins ? this : result;
+				}
+			}
+
+			if (options === undefined || $.isPlainObject(options)) {
+				this.data(ns + "-" + name, new eg[upperCamelCase](
+					this, options || {}, name + ":"
+				));
+			}
+			return this;
+		};
+
+		componentMethodNames = {
+			trigger: "trigger",
+			add: "on",
+			remove: "off"
+		};
+		events = eg[upperCamelCase].prototype._events();
+
+		for (var i in events) {
+			special = $.event.special[name + ":" + events[i]] = {};
+
+			// to not bind native event
+			special.setup = function() {
+				return true;
+			};
+
+			for (var j in componentMethodNames) {
+				// jscs:disable validateLineBreaks, maximumLineLength
+				/*jshint loopfunc: true */
+				special[j] = (function(componentMethodName) {
+					return function(event, param) {
+						$(this).data(ns + "-" + name)[componentMethodName](
+							event.type,
+							componentMethodName === "trigger" ? param : event.handler
+						);
+						return false;
+					};
+				})(componentMethodNames[j]);
+
+				// jscs:enable validateLineBreaks, maximumLineLength
+			}
+		}
+	}
+
+	var warn = function(msg) {
+		/* jshint ignore:start */
+		if (global.console && global.console.warn) {
+			warn = function(msg) {
+				global.console.warn(msg);
+			};
+		} else {
+			warn = function(msg) {
+			};
+		}
+		/* jshint ignore:end */
+		warn(msg);
+	};
+
+	/**
+	 * Regist module.
+	 * @private
+	 */
+	if (!eg.module) {
+		eg.module = function(name, di, fp) {
+			var result = checkDependency(name, di);
+			if (result[1].length) {
+				warn(result[1].join("\r\n"));
+			} else {
+				fp.apply(global, result[0]);
+				plugin(name);
+			}
+		};
+	}
+
+})("jQuery", "eg", window);</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+        <!-- disqus code -->
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        <!-- // disqus code -->
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Tue Sep 20 2016 14:54:13 GMT+0900 (KST)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>
