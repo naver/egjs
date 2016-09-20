@@ -177,12 +177,12 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 		setState(beforeData);
 	}
 	/**
-	* Save state as JSON in global namespace.
-	* @ko 상태를 디폴트 키에 JSON 으로 저장한다
+	* Stores the current state of the web page in a default key using JSON.
+	* @ko 웹 페이지의 현재 상태를 기본 키에 JSON 형식으로 저장한다.
 	* @method jQuery.persist
 	* @deprecated since version 1.2.0
 	* @support {"ie": "9+", "ch" : "latest", "ff" : "1.5+",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.2+ (except 3.x)"}
-	* @param {Object} state A state information defined as JSON object <ko>JSON 객체로 정의한 상태 정보</ko>
+	* @param {Object} state The state information of the web page written in JSON <ko>JSON 객체로 정의한 웹 페이지의 상태 정보</ko>
 	* @example
 	$("a").on("click",function(e){
 		e.preventdefault();
@@ -204,11 +204,11 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 	});
 	*/
 	/**
-	* Serialize given state as JSON and save paired with given key.
-	* @ko 상태를 키에 JSON 으로 저장한다.
+	* Stores the current state of the web page using JSON.
+	* @ko 웹 페이지의 현재 상태를 JSON 형식으로 저장한다
 	* @method jQuery.persist
-    * @param {String} key A string containing the name of the key you want to store. <ko>저장하려는 키의 이름을 나타내는 문자열</ko>
-    * @param {Object} state The value you want to give the key you are storing.<ko>키와 짝지어 저장하고자 하는 값</ko>
+    * @param {String} key The key of the state information to be stored <ko>저장할 상태 정보의 키</ko>
+    * @param {Object} state The value to be stored in a given key<ko>키에 저장할 값</ko>
 	* @example
 	$("a").on("click",function(e){
 		e.preventdefault();
@@ -217,11 +217,11 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 	});
 	*/
 	/**
-	* Return the state stored with given key.
-	* @ko 키에 저장된 상태를 반환한다.
+	* Returns the state of stored web pages.
+	* @ko 저장된 웹 페이지의 상태를 반환한다
 	* @method jQuery.persist
-	* @param {String} key A string containing the name of the key you want to retrieve the value of. <ko>값을 읽으려는 키의 이름에 해당하는 문자열</ko>
-	* @return {Object}
+	* @param {String} key The name of the key to be checked<ko>값을 확인할 키의 이름</ko>
+	* @return {Object} The value of the key <ko>키의 값</ko>
 	* @example
 	$("a").on("click",function(e){
 		e.preventdefault();
