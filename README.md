@@ -20,8 +20,8 @@ The following is a list of egjs components.
   - [API Documentation](http://naver.github.io/egjs/latest/doc/eg.Class.html)
   - [Usage Examples](http://naver.github.io/egjs/demo/class/)
 * eg.Component: A base class utility that manages events and options in modules.
-  - [Usage Examples](http://naver.github.io/egjs/demo/component/)
   - [API Documentation](http://naver.github.io/egjs/latest/doc/eg.Component.html)
+  - [Usage Examples](http://naver.github.io/egjs/demo/component/)
 * eg.MovableCoord: A module that transforms user coordinates into logical coordinates in a virtual coordinate system. 
   - [API Documentation](http://naver.github.io/egjs/latest/doc/eg.MovableCoord.html)
   - [Usage Examples](http://naver.github.io/egjs/demo/movableCoord/), [Usage Examples (CodePen)](http://codepen.io/collection/AKpkGW/)
