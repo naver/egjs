@@ -8,33 +8,33 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 
 	// jscs:enable validateLineBreaks, maximumLineLength
 	/**
-	 * Component to build flickable carousel UI - Make UI placing panel elements like carousel style which can be moved by touch flicks.
+	 * A module used to implement flicking interactions. With this module, you can make flicking gestures, which are ways to navigate left and right to move between panels arranged side by side.
 	 * @group egjs
-	 * @ko 캐로셀 형태의 플리킹 UI 구성 컴포넌트 - 회전목마처럼 패널 요소들을 배치하고, 터치를 통해 밀어 넘김(flick) 형태로 이동하는 UI를 만들 수 있다.
+	 * @ko 플리킹 UI를 구현하는 모듈. 나란히 배치한 패널을 쓸어 넘겨 다음 패널이나 이전 패널로 이동하는 플리킹 UI를 만들 수 있다.
 	 * @class
 	 * @name eg.Flicking
 	 * @extends eg.Component
 	 *
-	 * @param {HTMLElement|String|jQuery} element wrapper element <ko>기준 요소</ko>
-	 * @param {Object} options
-	 * @param {Boolean} [options.hwAccelerable=eg.isHWAccelerable()] Force to use HW compositing <ko>하드웨어 가속 사용 여부</ko>
-	 * @param {String} [options.prefix=eg-flick] Prefix string for flicking elements <ko>요소에 설정될 접두사</ko>
-	 * @param {Number} [options.deceleration=0.0006] Deceleration value can be altered to change the momentum animation duration. higher numbers make the animation shorter <ko>감속 계수는 가속도를 조절하여 애니메이션 시간을 변경할 수 있다. 높을수록 애니메이션이 짧아진다.</ko>
-	 * @param {Boolean} [options.horizontal=true] For move direction (when horizontal is false, then move direction is vertical) <ko>이동방향 설정 (true 가로방향, false 세로방향)</ko>
-	 * @param {Boolean} [options.circular=false] To make panels rotate infinitely  <ko>순환 여부</ko>
-	 * @param {Number|Array} [options.previewPadding=[0,0]] Padding value to display previous and next panels. If set array value the order is left(up) to right(down) <ko>이전과 다음 패널을 출력하는 프리뷰 형태에 사용되는 padding 값. 배열 형태로 지정시 좌측(상단), 우측(하단) 순서로 지정</ko>
-	 * @param {Number|Array} [options.bounce=[10,10]] Bounce value of start/end in non-circular mode. If set array value the order is left(up) to right(down) <ko>비순환일 때 시작/마지막 패널의 바운스 값. 배열 형태로 지정시 좌측(상단), 우측(하단) 순서로 지정</ko>
-	 * @param {Number} [options.threshold=40] Threshold pixels to move panels in prev/next direction <ko>다음 패널로 이동되기 위한 임계치 픽셀</ko>
-	 * @param {Number} [options.duration=100] Duration time of panel change animation in milliseconds <ko>패널 이동 애니메이션 진행시간(ms) 값</ko>
-	 * @param {Function} [options.panelEffect=easeOutCubic] easing function which is used on panel move animation<ko>패널 간의 이동 애니메이션에 사용되는 effect easing 함수</ko>
-	 * @param {Number} [options.defaultIndex=0] Default panel index to show in first time <ko>초기에 출력할 패널 인덱스</ko>
-	 * @param {Array} [options.inputType] inputType you can control input type. a kind of inputs are "touch", "mouse".  default value is ["touch", "mouse"] <ko>입력 타입을 지정할 수 있다. 입력 타입은 "touch", "mouse"가 있으며, 배열로 입력할 수 있다. (기본값은 ["touch", "mouse"])</ko>
+	 * @param {HTMLElement|String|jQuery} element A base element for the eg.Flicking module <ko>eg.Flicking 모듈을 사용할 기준 엘리먼트</ko>
+	 * @param {Object} options The option object of the eg.Flicking module<ko>eg.Flicking 모듈의 옵션 객체</ko>
+	 * @param {Boolean} [options.hwAccelerable=eg.isHWAccelerable()] Force hardware compositing <ko>하드웨어 가속 사용 여부</ko>
+	 * @param {String} [options.prefix=eg-flick] A prefix for class names of the panel elements <ko>패널 엘리먼트의 클래스 이름에 설정할 접두사</ko>
+	 * @param {Number} [options.deceleration=0.0006] Deceleration of the animation where acceleration is manually enabled by user. A higher value indicates shorter running time <ko>사용자의 동작으로 가속도가 적용된 애니메이션의 감속도. 값이 높을수록 애니메이션 실행 시간이 짧아진다</ko>
+	 * @param {Boolean} [options.horizontal=true] Direction of the panel movement (true: horizontal, false: vertical) <ko>패널 이동 방향 (true 가로방향, false 세로방향)</ko>
+	 * @param {Boolean} [options.circular=false] Indicates whether a circular panel is available <ko>패널 순환 여부</ko>
+	 * @param {Number|Array} [options.previewPadding=[0,0]] The preview size for the previous or next panel. If direction is set to "horizontal", the preview section will be displayed on the left and right of the panel. If direction is set to "vertical", it will be displayed on the top and bottom of the panel <ko>이전 패널과 다음 패널을 미리 보는 영역의 크기. 패널 이동 방향이 가로 방향이면 패널 왼쪽과 오른쪽에 미리 보는 영역이 나타난다. 패널 이동 방향이 세로 방향이면 패널 위쪽과 아래쪽에 미리 보는 영역이 나타난다</ko>
+	 * @param {Number|Array} [options.bounce=[10,10]] −	The size of bouncing area. If a panel is set to "non-circulable", the start and end panels can exceed the base element area and move further as much as the bouncing area. If a panel is dragged to the bouncing area and then dropped, the panel where bouncing effects are applied is retuned back into the base element area. <ko>바운스 영역의 크기. 패널이 순환하지 않도록 설정됐다면 시작 패널과 마지막 패널은 기준 엘리먼트 영역을 넘어 바운스 영역의 크기만큼 더 이동할 수 있다. 패널을 바운스 영역까지 끌었다가 놓으면, 바운스 효과가 적용된 패널이 다시 기준 엘리먼트 영역 안으로 들어온다</ko>
+	 * @param {Number} [options.threshold=40] Distance threshold. If the drag exceeds the threshold value, it will be changed to the next panel <ko>다음 패널로 바뀌는 기준 이동 거리. 패널을 기준 이동 거리 이상 끌었다 놓으면 패널이 다음 패널로 바뀐다</ko>
+	 * @param {Number} [options.duration=100] Duration of the panel movement (unit: ms) <ko>패널 이동 애니메이션 진행 시간(단위: ms)</ko>
+	 * @param {Function} [options.panelEffect=easeOutCubic] The easing function to apply to a panel moving animation <ko>패널 이동 애니메이션에 적용할 easing 함수</ko>
+	 * @param {Number} [options.defaultIndex=0] The index number of a panel to be selected upon module initialization <ko>모듈이 초기화될 때 선택할 패널의 인덱스 번호</ko>
+	 * @param {Array} [options.inputType] Types of input devices.<br>- touch: A touch screen can be used to move a panel.<br>- mouse: A mouse can be used to move a panel. <ko>입력 장치 종류.<br>- touch: 터치 입력 장치로 패널을 이동할 수 있다.<br>- mouse: 마우스로 패널을 이동할 수 있다.</ko>
 	 *
-	 * @codepen {"id":"rVOpPK", "ko":"플리킹 기본 예제", "en":"Flicking default example", "collectionId":"ArxyLK", "height" : 403}
+	 * @codepen {"id":"rVOpPK", "ko":"플리킹 UI 기본 예제", "en":"Flicking UI default example", "collectionId":"ArxyLK", "height" : 403}
 	 * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest" , "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
 	 *
 	 * @see Easing Functions Cheat Sheet {@link http://easings.net/}
-	 * @see If you want to use another easing function then should be import jQuery easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/}) or jQuery UI easing.({@link https://jqueryui.com/easing/})<ko>다른 easing 함수를 사용하고 싶다면, jQuery easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/})이나, jQuery UI easing({@link https://jqueryui.com/easing/}) 라이브러리를 삽입해야 한다.</ko>
+	 * @see If you want to try a different easing function, use the jQuery easing plugin ({@link http://gsgd.co.uk/sandbox/jquery/easing}) or the jQuery UI easing library ({@link https://jqueryui.com/easing}). <ko>다른 easing 함수를 사용하려면 jQuery easing 플러그인({@link http://gsgd.co.uk/sandbox/jquery/easing})이나, jQuery UI easing 라이브러리({@link https://jqueryui.com/easing})를 사용한다</ko>
 	 * @example
 	 	<!-- HTML -->
 		<div id="mflick">
@@ -661,19 +661,19 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			this._setPointerEvents(e);  // for "click" bug
 
 			/**
-			 * Occurs during the change
-			 * @ko 패널이 이동될 때 발생하는 이벤트
+			 * This event is fired when panel moves.
+			 * @ko 패널이 이동할 때 발생하는 이벤트
 			 * @name eg.Flicking#flick
 			 * @event
-			 * @param {Object} param
-			 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
-			 * @param {Number} param.index Current panel physical index (@deprecated since 1.3.0)<ko>현재 패널의 물리적 인덱스 (@deprecated since 1.3.0)</ko>
-			 * @param {Number} param.no Current panel logical position <ko>패널 인덱스 번호</ko>
-			 * @param {Number} param.direction Direction of the panel move (see eg.MovableCoord.DIRECTION_* constant) <ko>플리킹 방향 (eg.MovableCoord.DIRECTION_* constant 확인)</ko>
-			 * @param {Array} param.pos Departure coordinate <ko>출발점 좌표</ko>
-			 * @param {Number} param.pos.0 Departure x-coordinate <ko>x 좌표</ko>
-			 * @param {Number} param.pos.1 Departure y-coordinate <ko>y 좌표</ko>
-			 * @param {Boolean} param.holding Boolean value of holding(staying in touch) screen<ko>스크린 누름(터치 유지 상태) 상태 불리언 값</ko>
+			 * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+			 * @param {String} param.eventType The name of the event<ko>이름명</ko>
+			 * @param {Number} param.index Physical index number of the current panel element, which is relative to DOM (@deprecated since 1.3.0)<ko>현재 패널 엘리먼트의 물리적 인덱스 번호. DOM 엘리먼트를 기준으로 하는 인덱스 번호다 (@deprecated since 1.3.0)</ko>
+			 * @param {Number} param.no Logical index number of the current panel element, which is relative to the panel content <ko>현재 패널 엘리먼트의 논리적 인덱스 번호. 패널 콘텐츠를 기준으로 하는 인덱스 번호다</ko>
+			 * @param {Number} param.direction Direction of the movement (see eg.MovableCoord.DIRECTION_* constant) <ko>이동 방향(eg.MovableCoord.DIRECTION_* constant 참고)</ko>
+			 * @param {Array} param.pos Start coordinate <ko>출발점 좌표</ko>
+			 * @param {Number} param.pos.0 x-coordinate <ko>x 좌표</ko>
+			 * @param {Number} param.pos.1 y-coordinate <ko>y 좌표</ko>
+			 * @param {Boolean} param.holding Indicates whether a user holds an element on the screen of the device. <ko>사용자가 기기의 화면을 누르고 있는지 여부</ko>
 			 * @param {Number} param.distance Distance moved from then starting point. According the move direction, positive on eg.MovableCoord.DIRECTION_LEFT/UP and negative on eg.MovableCoord.DIRECTION_RIGHT/DOWN <ko>시작점부터 이동된 거리의 값. 이동 방향에 따라 eg.MovableCoord.DIRECTION_LEFT/UP의 경우 양수를 eg.MovableCoord.DIRECTION_RIGHT/DOWN의 경우는 음수를 반환</ko>
 			 */
 			if (e.hammerEvent) {
@@ -786,21 +786,21 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			touch.direction = ~~conf.dirData.join("").replace(touch.direction, "");
 
 			/**
-			 * Before panel restores it's last position
-			 * @ko 플리킹 임계치에 도달하지 못하고 사용자의 액션이 끝났을 경우, 원래 패널로 복원되기 전에 발생하는 이벤트
+			 * This event is fired before an element is restored to its original position when user action is done while the element is not dragged until a certain distance threshold is reached
+			 * @ko 다음 패널로 바뀌는 기준 이동 거리만큼 이동하기 전에 사용자의 동작이 끝났을 때 원래 패널로 복원되기 전에 발생하는 이벤트
 			 * @name eg.Flicking#beforeRestore
 			 * @event
-			 * @param {Object} param
-			 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
-			 * @param {Number} param.index Current panel physical index (@deprecated since 1.3.0)<ko>현재 패널의 물리적 인덱스 (@deprecated since 1.3.0)</ko>
-			 * @param {Number} param.no Current panel logical position <ko>패널 인덱스 번호</ko>
-			 * @param {Number} param.direction Direction of the panel move (see eg.MovableCoord.DIRECTION_* constant) <ko>플리킹 방향 (eg.MovableCoord.DIRECTION_* constant 확인)</ko>
-			 * @param {Array} param.depaPos Departure coordinate <ko>출발점 좌표</ko>
-			 * @param {Number} param.depaPos.0 Departure x-coordinate <ko>x 좌표</ko>
-			 * @param {Number} param.depaPos.1 Departure y-coordinate <ko>y 좌표</ko>
-			 * @param {Array} param.destPos Destination coordinate <ko>도착점 좌표</ko>
-			 * @param {Number} param.destPos.0 Destination x-coordinate <ko>x 좌표</ko>
-			 * @param {Number} param.destPos.1 Destination y-coordinate <ko>y 좌표</ko>
+			 * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+			 * @param {String} param.eventType The name of the event <ko>이름명</ko>
+			 * @param {Number} param.index Physical index number of the current panel element, which is relative to DOM. (@deprecated since 1.3.0)<ko>현재 패널 엘리먼트의 물리적 인덱스 번호. DOM 엘리먼트를 기준으로 하는 인덱스 번호다. (@deprecated since 1.3.0)</ko>
+			 * @param {Number} param.no Logical index number of the current panel element, which is relative to the panel content.<ko>현재 패널 엘리먼트의 논리적 인덱스 번호. 패널 콘텐츠를 기준으로 하는 인덱스 번호다</ko>
+			 * @param {Number} param.direction Direction of the movement (see eg.MovableCoord.DIRECTION_* constant) <ko>이동 방향(eg.MovableCoord.DIRECTION_* constant 참고)</ko>
+			 * @param {Array} param.depaPos Start coordinate <ko>출발점 좌표</ko>
+			 * @param {Number} param.depaPos.0 x-coordinate <ko>x 좌표</ko>
+			 * @param {Number} param.depaPos.1 y-coordinate <ko>y 좌표</ko>
+			 * @param {Array} param.destPos End coordinate <ko>도착점 좌표</ko>
+			 * @param {Number} param.destPos.0 x-coordinate <ko>x 좌표</ko>
+			 * @param {Number} param.destPos.1 y-coordinate <ko>y 좌표</ko>
 			 */
 			conf.customEvent.restore = this._triggerEvent(EVENTS.beforeRestore, {
 				depaPos: e.depaPos,
@@ -820,15 +820,15 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var customEvent = this._conf.customEvent;
 
 			/**
-			 * After panel restores it's last position
-			 * @ko 플리킹 임계치에 도달하지 못하고 사용자의 액션이 끝났을 경우, 원래 인덱스로 복원된 후 발생하는 이벤트
+			 * This event is fired after an element is restored to its original position when user action is done while the element is not dragged until a certain distance threshold is reached.
+			 * @ko 다음 패널로 바뀌는 기준 이동 거리만큼 이동하기 전에 사용자의 동작이 끝났을 때 원래 패널로 복원된 다음 발생하는 이벤트
 			 * @name eg.Flicking#restore
 			 * @event
-			 * @param {Object} param
-			 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
-			 * @param {Number} param.index Current panel physical index (@deprecated since 1.3.0)<ko>현재 패널의 물리적 인덱스 (@deprecated since 1.3.0)</ko>
-			 * @param {Number} param.no Current panel logical position <ko>패널 인덱스 번호</ko>
-			 * @param {Number} param.direction Direction of the panel move (see eg.MovableCoord.DIRECTION_* constant) <ko>플리킹 방향 (eg.MovableCoord.DIRECTION_* constant 확인)</ko>
+			 * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+			 * @param {String} param.eventType The name of the event <ko>이름명</ko>
+			 * @param {Number} param.index Physical index number of the current panel element, which is relative to DOM(@deprecated since 1.3.0)<ko>현재 패널 엘리먼트의 물리적 인덱스 번호. DOM 엘리먼트를 기준으로 하는 인덱스 번호다 (@deprecated since 1.3.0)</ko>
+			 * @param {Number} param.no Logical index number of the current panel element, which is relative to the panel content. <ko>현재 패널 엘리먼트의 논리적 인덱스 번호. 패널 콘텐츠를 기준으로 하는 인덱스 번호다</ko>
+			 * @param {Number} param.direction Direction of the panel move (see eg.MovableCoord.DIRECTION_* constant) <ko>이동 방향(eg.MovableCoord.DIRECTION_* constant 참고)</ko>
 			 */
 			customEvent.restore && this._triggerEvent(EVENTS.restore);
 			customEvent.restoreCall = false;
@@ -846,21 +846,21 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 
 			if (phase === "start" && (panel.changed = this._isMovable())) {
 				/**
-				 * Before panel changes
-				 * @ko 플리킹이 시작되기 전에 발생하는 이벤트
+				 * This event is fired before flicking starts
+				 * @ko 플리킹이 시작하기 전에 발생하는 이벤트
 				 * @name eg.Flicking#beforeFlickStart
 				 * @event
-				 * @param {Object} param
-				 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
-				 * @param {Number} param.index Current panel physical index (@deprecated since 1.3.0)<ko>현재 패널의 물리적 인덱스 (@deprecated since 1.3.0)</ko>
-				 * @param {Number} param.no Current panel logical position <ko>패널 인덱스 번호</ko>
-				 * @param {Number} param.direction Direction of the panel move (see eg.MovableCoord.DIRECTION_* constant) <ko>플리킹 방향 (eg.MovableCoord.DIRECTION_* constant 확인)</ko>
-				 * @param {Array} param.depaPos Departure coordinate <ko>출발점 좌표</ko>
-				 * @param {Number} param.depaPos.0 Departure x-coordinate <ko>x 좌표</ko>
-				 * @param {Number} param.depaPos.1 Departure y-coordinate <ko>y 좌표</ko>
-				 * @param {Array} param.destPos Destination coordinate <ko>도착점 좌표</ko>
-				 * @param {Number} param.destPos.0 Destination x-coordinate <ko>x 좌표</ko>
-				 * @param {Number} param.destPos.1 Destination y-coordinate <ko>y 좌표</ko>
+				 * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+				 * @param {String} param.eventType The name of the event <ko>이름명</ko>
+				 * @param {Number} param.index Physical index number of the current panel element, which is relative to DOM. (@deprecated since 1.3.0)<ko>현재 패널 엘리먼트의 물리적 인덱스 번호. DOM 엘리먼트를 기준으로 하는 인덱스 번호다 (@deprecated since 1.3.0)</ko>
+				 * @param {Number} param.no Logical index number of the current panel element, which is relative to the panel content.<ko>현재 패널 엘리먼트의 논리적 인덱스 번호. 패널 콘텐츠를 기준으로 하는 인덱스 번호다</ko>
+				 * @param {Number} param.direction Direction of the movement (see eg.MovableCoord.DIRECTION_* constant) <ko>−	이동 방향(eg.MovableCoord.DIRECTION_* constant 참고)</ko>
+				 * @param {Array} param.depaPos Start coordinate <ko>출발점 좌표</ko>
+				 * @param {Number} param.depaPos.0 x-coordinate <ko>x 좌표</ko>
+				 * @param {Number} param.depaPos.1 y-coordinate <ko>y 좌표</ko>
+				 * @param {Array} param.destPos End coordinate <ko>도착점 좌표</ko>
+				 * @param {Number} param.destPos.0 x-coordinate <ko>x 좌표</ko>
+				 * @param {Number} param.destPos.1 y-coordinate <ko>y 좌표</ko>
 				 */
 				if (!this._triggerEvent(EVENTS.beforeFlickStart, pos)) {
 					return panel.changed = panel.animating = false;
@@ -876,15 +876,15 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				conf.touch.distance = conf.indexToMove = 0;
 
 				/**
-				 * After panel changes
-				 * @ko 플리킹으로 패널이 이동된 후 발생하는 이벤트
+				 * This event is fired after panel moves.
+				 * @ko 패널이 이동한 다음 발생하는 이벤트
 				 * @name eg.Flicking#flickEnd
 				 * @event
-				 * @param {Object} param
-				 * @param {String} param.eventType Name of event <ko>이벤트명</ko>
-				 * @param {Number} param.index Current panel physical index (@deprecated since 1.3.0)<ko>현재 패널의 물리적 인덱스 (@deprecated since 1.3.0)</ko>
-				 * @param {Number} param.no Current panel logical position <ko>패널 인덱스 번호</ko>
-				 * @param {Number} param.direction Direction of the panel move (see eg.MovableCoord.DIRECTION_* constant) <ko>플리킹 방향 (eg.MovableCoord.DIRECTION_* constant 확인)</ko>
+				 * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+				 * @param {String} param.eventType The name of the event <ko>이름명</ko>
+				 * @param {Number} param.index Physical index number of the current panel element, which is relative to DOM (@deprecated since 1.3.0)<ko>현재 패널 엘리먼트의 물리적 인덱스 번호. DOM 엘리먼트를 기준으로 하는 인덱스 번호다 (@deprecated since 1.3.0)</ko>
+				 * @param {Number} param.no Logical index number of the current panel element, which is relative to the panel content. <ko>현재 패널 엘리먼트의 논리적 인덱스 번호. 패널 콘텐츠를 기준으로 하는 인덱스 번호다.</ko>
+				 * @param {Number} param.direction Direction of the movemen (see eg.MovableCoord.DIRECTION_* constant) <ko>−	이동 방향(eg.MovableCoord.DIRECTION_* constant 참고</ko>
 				 */
 				panel.changed && this._triggerEvent(EVENTS.flickEnd);
 			}
@@ -1117,21 +1117,21 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		},
 
 		/**
-		 * Get current panel position
-		 * @ko 현재 패널의 인덱스 값을 반환한다.
+		 * Returns the index number of the current panel element.
+		 * @ko 현재 패널 엘리먼트의 인덱스 번호를 반환한다
 		 * @method eg.Flicking#getIndex
-		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical) <ko>물리적/논리적 값 인덱스 불리언(true: 물리적, false: 논리적)</ko>
-		 * @return {Number} Number Current index number <ko>현재 패널의 인덱스 번호</ko>
+		 * @param {Boolean} [physical=false] Types of index numbers<br>- true: Indicates physical index numbers relative to DOM.<br>- false: Indicates logical index numbers relative to the panel content. <ko>−	인덱스 번호의 종류<br>- true: 물리적 인덱스 번호. DOM 엘리먼트를 기준으로 하는 인덱스 번호다.<br>- false: 논리적 인덱스 번호. 패널 콘텐츠를 기준으로 하는 인덱스 번호다.</ko>
+		 * @return {Number} Index number of the current panel element <ko>현재 패널의 인덱스 번호</ko>
 		 */
 		getIndex: function (physical) {
 			return this._conf.panel[ physical ? "currIndex" : "currNo" ];
 		},
 
 		/**
-		 * Get current panel element
-		 * @ko 현재 패널 요소의 레퍼런스를 반환한다.
+		 * Returns the reference of the current panel element.
+		 * @ko 현재 패널 엘리먼트의 레퍼런스를 반환한다
 		 * @method eg.Flicking#getElement
-		 * @return {jQuery} jQuery Current element <ko>현재 요소</ko>
+		 * @return {jQuery} Current element <ko>현재 엘리먼트</ko>
 		 */
 		getElement: function () {
 			var panel = this._conf.panel;
@@ -1139,51 +1139,51 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		},
 
 		/**
-		 * Get next panel element
-		 * @ko 다음 패널 요소의 레퍼런스를 반환한다.
+		 * Returns the reference of the next panel element.
+		 * @ko 다음 패널 엘리먼트의 레퍼런스를 반환한다.
 		 * @method eg.Flicking#getNextElement
-		 * @return {jQuery|null} Next element or null if no more element exist<ko>다음 패널 요소. 패널이 없는 경우에는 null</ko>
+		 * @return {jQuery|null} Next panel element or null if it does not exist.<ko>다음 패널 엘리먼트. 패널이 없으면 'null'을 반환한다.</ko>
 		 */
 		getNextElement: function () {
 			return this._getElement(this._conf.dirData[0], true);
 		},
 
 		/**
-		 * Get next panel index
-		 * @ko 다음 패널의 인덱스 값을 반환한다.
+		 * Returns the index number of the next panel element.
+		 * @ko 다음 패널 엘리먼트의 인덱스 번호를 반환한다
 		 * @method eg.Flicking#getNextIndex
-		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical) <ko>물리적/논리적 값 인덱스 불리언(true: 물리적, false: 논리적)</ko>
-		 * @return {Number|null} Next element index value or null if no more element exist<ko>다음 패널 인덱스 번호. 패널이 없는 경우에는 null</ko>
+		 * @param {Boolean} [physical=false] Types of index numbers<br>- true: Indicates physical index numbers relative to DOM.<br>- false: Indicates logical index numbers relative to the panel content. <ko>−	인덱스 번호의 종류<br>- true: 물리적 인덱스 번호. DOM 엘리먼트를 기준으로 하는 인덱스 번호다.<br>- false: 논리적 인덱스 번호. 패널 콘텐츠를 기준으로 하는 인덱스 번호다.</ko>
+		 * @return {Number|null} Index number of the next panel element or null if it does not exist. <ko>다음 패널 엘리먼트의 인덱스 번호. 패널이 없으면 'null'을 반환한다</ko>
 		 */
 		getNextIndex: function (physical) {
 			return this._getElement(this._conf.dirData[0], false, physical);
 		},
 
 		/**
-		 * Get whole panel elements
-		 * @ko 패널을 구성하는 모든 요소들의 레퍼런스를 반환한다.
+		 * Returns the references of whole panel elements.
+		 * @ko 패널을 구성하는 모든 엘리먼트의 레퍼런스를 반환한다
 		 * @method eg.Flicking#getAllElements
-		 * @return {jQuery} jQuery All panel elements <ko>모든 패널 요소</ko>
+		 * @return {jQuery} Whole panel elements <ko>모든 패널 엘리먼트</ko>
 		 */
 		getAllElements: function () {
 			return this._conf.panel.$list;
 		},
 
 		/**
-		 * Get previous panel element
-		 * @ko 이전 패널 요소의 레퍼런스를 반환한다.
+		 * Returns the reference of the previous panel element.
+		 * @ko 이전 패널 엘리먼트의 레퍼런스를 반환한다.
 		 * @method eg.Flicking#getPrevElement
-		 * @return {jQuery|null} Previous element or null if no more element exist <ko>이전 패널 요소. 패널이 없는 경우에는 null</ko>
+		 * @return {jQuery|null} Previous panel element or null if it does not exist. <ko>이전 패널 엘리먼트. 패널이 없으면 'null'을 반환한다</ko>
 		 */
 		getPrevElement: function () {
 			return this._getElement(this._conf.dirData[1], true);
 		},
 
 		/**
-		 * Get previous panel index
-		 * @ko 이전 패널의 인덱스 값을 반환한다.
+		 * Returns the index number of the previous panel element.
+		 * @ko 이전 패널 엘리먼트의 인덱스 번호를 반환한다
 		 * @method eg.Flicking#getPrevIndex
-		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical) <ko>물리적/논리적 값 인덱스 불리언(true: 물리적, false: 논리적)</ko>
+		 * @param {Boolean} [physical=false] Types of index numbers<br>- true: Indicates physical index numbers relative to DOM.<br>- false: Indicates logical index numbers relative to the panel content. <ko>−	인덱스 번호의 종류<br>- true: 물리적 인덱스 번호. DOM 엘리먼트를 기준으로 하는 인덱스 번호다.<br>- false: 논리적 인덱스 번호. 패널 콘텐츠를 기준으로 하는 인덱스 번호다.</ko>
 		 * @return {Number|null} Previous element index value or null if no more element exist<ko>이전 패널 인덱스 번호. 패널이 없는 경우에는 null</ko>
 		 */
 		getPrevIndex: function (physical) {
@@ -1191,22 +1191,22 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		},
 
 		/**
-		 * Get total panel count
-		 * @ko 전체 패널의 개수를 반환한다.
+		 * Returns the total number of whole panel elements.
+		 * @ko 전체 패널 엘리먼트의 개수를 반환한다
 		 * @method eg.Flicking#getTotalCount
 		 * @deprecated since 1.3.0
-		 * @param {Boolean} [physical=false] Boolean to get physical or logical index (true : physical, false : logical) <ko>물리적/논리적 값 인덱스 불리언(true: 물리적, false: 논리적)</ko>
-		 * @return {Number} Number Count of all elements <ko>모든 패널 요소 개수</ko>
+		 * @param {Boolean} [physical=false] Number of elements relative to (true: DOM, false: panel content)<ko>엘리먼트 개수의 기준(true: DOM 엘리먼트 기준, false: 패널 콘텐츠 기준)</ko>
+		 * @return {Number} Total number of whole panel elements <ko>모든 패널 엘리먼트의 개수</ko>
 		 */
 		getTotalCount: function (physical) {
 			return this._conf.panel[ physical ? "count" : "origCount" ];
 		},
 
 		/**
-		 * Return either panel is animating or not
-		 * @ko 현재 애니메이션 중인지 여부를 반환한다.
+		 * Checks whether the animated panel is playing.
+		 * @ko 패널 이동 애니메이션이 진행 중인지 확인한다.
 		 * @method eg.Flicking#isPlaying
-		 * @return {Boolean}
+		 * @return {Boolean} Indicates whether the animated panel is playing <ko>패널 이동 애니메이션 진행 중 여부</ko>
 		 */
 		isPlaying: function () {
 			return this._conf.panel.animating;
@@ -1255,34 +1255,34 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		},
 
 		/**
-		 * Move to next panel
+		 * Moves an element to the next panel.
 		 * @ko 다음 패널로 이동한다.
 		 * @method eg.Flicking#next
-		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
-		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
+		 * @param {Number} [duration=options.duration] Duration of the panel movement (unit: ms) <ko>패널 이동 애니메이션 진행 시간(단위: ms)</ko>
+		 * @return {eg.Flicking} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 		 */
 		next: function (duration) {
 			return this._movePanel(true, duration);
 		},
 
 		/**
-		 * Move to previous panel
+		 * Moves an element to the previous panel.
 		 * @ko 이전 패널로 이동한다.
 		 * @method eg.Flicking#prev
-		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
-		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
+		 * @param {Number} [duration=options.duration] Duration of the panel movement (unit: ms) <ko>패널 이동 애니메이션 진행 시간(단위: ms)</ko>
+		 * @return {eg.Flicking} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 		 */
 		prev: function (duration) {
 			return this._movePanel(false, duration);
 		},
 
 		/**
-		 * Move to indicated panel
+		 * Moves an element to the indicated panel.
 		 * @ko 지정한 패널로 이동한다.
 		 * @method eg.Flicking#moveTo
-		 * @param {Number} no logical panel index
-		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
-		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
+		 * @param {Number} no Logical index number of the target panel element, which is relative to the panel content. <ko>이동할 패널 엘리먼트의 논리적 인덱스 번호. 패널 콘텐츠를 기준으로 하는 인덱스 번호다</ko>
+		 * @param {Number} [duration=options.duration] Duration of the panel movement (unit: ms) <ko>패널 이동 애니메이션 진행 시간(단위: ms)</ko>
+		 * @return {eg.Flicking} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 		 */
 		moveTo: function (no, duration) {
 			var conf = this._conf;
@@ -1354,10 +1354,10 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		},
 
 		/**
-		 * Update panel size according current viewport
-		 * @ko 패널 사이즈 정보를 갱신한다.
+		 * Updates the size of the panel.
+		 * @ko 패널의 크기를 갱신한다
 		 * @method eg.Flicking#resize
-		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
+		 * @return {eg.Flicking} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 		 * @example
 			var some = new eg.Flicking("#mflick", {
 					previewPadding: [10,10]
@@ -1403,11 +1403,11 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		},
 
 		/**
-		 * Restore panel in its right position
-		 * @ko 패널의 위치가 올바르지 않을 때, 올바르게 위치하도록 보정한다.
+		 * Restores an element to its original position when it movement stops while the element is not dragged until a certain distance threshold is reached.
+		 * @ko 다음 패널로 바뀌기 전에 패널 이동이 멈췄을 때 원래 패널로 복원한다
 		 * @method eg.Flicking#restore
-		 * @param {Number} [duration=options.duration] Duration of animation in milliseconds <ko>애니메이션 진행시간(ms)</ko>
-		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
+		 * @param {Number} [duration=options.duration] Duration of the panel movement (unit: ms) <ko>패널 이동 애니메이션 진행 시간(단위: ms)</ko>
+		 * @return {eg.Flicking} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 		 * @example
 			var some = new eg.Flicking("#mflick").on({
 					beforeFlickStart : function(e) {
@@ -1465,28 +1465,28 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		},
 
 		/**
-		 * Enable input events
-		 * @ko 입력 이벤트를 활성화한다.
+		 * Enables input devices.
+		 * @ko 입력 장치를 사용할 수 있게 한다
 		 * @method eg.Flicking#enableInput
-		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
+		 * @return {eg.Flicking} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 		 */
 		enableInput: function() {
 			return this._setInputEvent(true);
 		},
 
 		/**
-		 * Disable input events
-		 * @ko 입력 이벤트를 비활성화 한다.
+		 * Disables input devices.
+		 * @ko 입력 장치를 사용할 수 없게 한다.
 		 * @method eg.Flicking#disableInput
-		 * @return {eg.Flicking} instance of itself<ko>자신의 인스턴스</ko>
+		 * @return {eg.Flicking} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 		 */
 		disableInput: function() {
 			return this._setInputEvent();
 		},
 
 		/**
-		 * Release resources and events attached
-		 * @ko 사용된 리소스와 이벤트를 해제한다.
+		 * Destroys elements, properties, and events used in a panel.
+		 * @ko 패널에 사용한 엘리먼트와 속성, 이벤트를 해제한다
 		 * @method eg.Flicking#destroy
 		 */
 		destroy: function() {
@@ -1522,9 +1522,9 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 	});
 });
 /**
- * Flicking in jQuery plugin
+ * A jQuery plugin available in the eg.Flicking module.
  *
- * @ko Flicking in jQuery plugin
+ * @ko eg.Flicking 모듈의 jQuery 플러그인
  * @method jQuery.flicking
  * @example
 	<div id="content">
@@ -1552,9 +1552,9 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
  * @see eg.Flicking
  */
 /**
- * flicking:beforeRestore jQuery event plugin
+ * A jQuery custom event of the eg.Flicking module. This event is fired before an element is restored to its original position when user action is done while the element is not dragged until a certain distance threshold is reached.
  *
- * @ko flicking:beforeRestore jQuery event plugin
+ * @ko eg.Flicking 모듈의 jQuery 커스텀 이벤트. 다음 패널로 바뀌는 기준 이동 거리만큼 이동하기 전에 사용자의 동작이 끝났을 때 원래 패널로 복원되기 전에 발생한다
  * @name jQuery#flicking:beforeRestore
  * @event
  * @example
@@ -1564,9 +1564,9 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
  * @see eg.Flicking#event:beforeRestore
  */
 /**
- * flicking:beforeFlickStart jQuery event plugin
+ * A jQuery custom event of the eg.Flicking module, which occurs before the flicking starts.
  *
- * @ko flicking:beforeFlickStart jQuery event plugin
+ * @ko eg.Flicking 모듈의 jQuery 커스텀 이벤트. 플리킹을 시작하기 전에 발생한다
  * @name jQuery#flicking:beforeFlickStart
  * @event
  * @example
@@ -1576,9 +1576,9 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
  * @see eg.Flicking#event:beforeFlickStart
  */
 /**
- * flicking:flick jQuery event plugin
+ * A jQuery custom event of the eg.Flicking module. This event is fired when panel moves.
  *
- * @ko flicking:flick jQuery event plugin
+ * @ko eg.Flicking 모듈의 jQuery 커스텀 이벤트. 패널이 이동될 때 발생한다
  * @name jQuery#flicking:flick
  * @event
  * @example
@@ -1588,9 +1588,9 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
  * @see eg.Flicking#event:flick
  */
 /**
- * flicking:flickEnd jQuery event plugin
+ * A jQuery custom event of the eg.Flicking module. This event is fired after the panel moves.
  *
- * @ko flicking:flickEnd jQuery event plugin
+ * @ko eg.Flicking 모듈의 jQuery 커스텀 이벤트. 패널이 이동된 뒤 발생한다
  * @name jQuery#flicking:flickEnd
  * @event
  * @example
@@ -1600,9 +1600,9 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
  * @see eg.Flicking#event:flickEnd
  */
 /**
- * flicking:restore jQuery event plugin
+ * A jQuery custom event of the eg.Flicking module. This event is fired after an element is restored to its original position when user action is done while the element has not bene dragged until a certain distance threshold is reached.
  *
- * @ko flicking:restore jQuery event plugin
+ * @ko eg.Flicking 모듈의 jQuery 커스텀 이벤트. 다음 패널로 바뀌는 기준 이동 거리만큼 이동하기 전에 사용자의 동작이 끝났을 때 원래 패널로 복원된 다음 발생한다
  * @name jQuery#flicking:restore
  * @event
  * @example

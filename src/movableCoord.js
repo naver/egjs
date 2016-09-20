@@ -11,53 +11,49 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 
 	// jscs:enable maximumLineLength
 	/**
-	 * Easily get computed coordinate values according user actions.
+	 * A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions. You can implement a user interface by applying the logical coordinates provided. For more information on the eg.MovableCoord module, see demos.
 	 * @group egjs
-	 * @ko MovableCoord는 다양한 입력 장치(touch, mouse)를 통해 전달 받은 사용자 액션을 논리적 좌표로 변경한다. 컴포넌트 사용자는 변경된 논리적 좌표를 이용하여 실제 UI 에 반영할 수 있다.
-또한, MovableCoord는 사용자의 입력 감도에 따라 가속도가 적용된 애니메이션 좌표 정보를 제공한다. 예를 들어, 사용자가 빠르게 터치를 하였을 경우, 사용자 액션에 맞게 시간순으로 변경된 좌표를 제공한다.
-MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
+	 * @ko 터치 입력 장치나 마우스와 같은 다양한 입력 장치로 전달 받은 사용자의 동작을 가상 좌표계의 논리적 좌표로 변경하는 모듈. 사용자의 동작으로 애니메이션이 일어나면 시간순으로 변경되는 좌표 정보도 제공한다. 변경된 논리적 좌표를 반영해 UI를 구현할 수 있다. eg.MovableCoord 모듈의 자세한 작동 방식은 데모를 참고한다.
 	 * @class
 	 * @name eg.MovableCoord
 	 * @extends eg.Component
 	 *
-	 * @param {Object} options
-	 * @param {Array} options.min The minimum coordinate  <ko>좌표계의 최소값</ko>
-	 * @param {Number} [options.min.0=0] The minimum x-coordinate <ko>최소 X좌표</ko>
-	 * @param {Number} [options.min.1=0] The minimum y-coordinate <ko>최소 Y좌표</ko>
+	 * @param {Object} options The option object of the eg.MovableCoord module<ko>eg.MovableCoord 모듈의 옵션 객체</ko>
+	 * @param {Array} options.min The minimum value of X and Y coordinates <ko>좌표계의 최솟값</ko>
+	 * @param {Number} [options.min.0=0] The X coordinate of the minimum <ko>최소 x좌표</ko>
+	 * @param {Number} [options.min.1=0] The Y coordinate of the minimum <ko>최소 y좌표</ko>
 	 *
-	 * @param {Array} options.max The maximum coordinate <ko>좌표계의 최대값</ko>
-	 * @param {Number} [options.max.0=100] The maximum x-coordinate <ko>최대 X좌표</ko>
-	 * @param {Number} [options.max.1=100] The maximum y-coordinate <ko>최대 Y좌표</ko>
+	 * @param {Array} options.max The maximum value of X and Y coordinates <ko>좌표계의 최댓값</ko>
+	 * @param {Number} [options.max.0=100] The X coordinate of the maximum<ko>최대 x좌표</ko>
+	 * @param {Number} [options.max.1=100] The Y coordinate of the maximum<ko>최대 y좌표</ko>
 	 *
-	 * @param {Array} options.bounce The area can move using animation. <ko>바운스 영역 : 바운스 효과로 인해서 좌표가 어느 범위까지 넘어갈 수 있는지를 의미한다. 만약, 사용자가 빠른 터치 동작 직후 손을 놓게 되어, 가속도가 발생한 경우라면, 좌표가 좌표영역 밖으로 나가게 된다. 이때, 좌표는 bounce 영역 범위까지 넘어가게 되며, 바운스 효과가 적용되어 다시 좌표영역 범위 안으로 들어오게 된다.</ko>
-	 * @param {Boolean} [options.bounce.0=10] The bounce top range <ko>top 바운스 영역. bounce가 1</ko>
-	 * @param {Boolean} [options.bounce.1=10] The bounce right range <ko>right 바운스 영역</ko>
-	 * @param {Boolean} [options.bounce.2=10] The bounce bottom range <ko>bottom 바운스 영역</ko>
-	 * @param {Boolean} [options.bounce.3=10] The bounce left range <ko>left 바운스 영역</ko>
+	 * @param {Array} options.bounce The size of bouncing area. The coordinates can exceed the coordinate area as much as the bouncing area based on user action. If the coordinates does not exceed the bouncing area when an element is dragged, the coordinates where bouncing effects are applied are retuned back into the coordinate area<ko>바운스 영역의 크기. 사용자의 동작에 따라 좌표가 좌표 영역을 넘어 바운스 영역의 크기만큼 더 이동할 수 있다. 사용자가 끌어다 놓는 동작을 했을 때 좌표가 바운스 영역에 있으면, 바운스 효과가 적용된 좌표가 다시 좌표 영역 안으로 들어온다</ko>
+	 * @param {Boolean} [options.bounce.0=10] The size of top area <ko>위쪽 바운스 영역의 크기</ko>
+	 * @param {Boolean} [options.bounce.1=10] The size of right area <ko>오른쪽 바운스 영역의 크기</ko>
+	 * @param {Boolean} [options.bounce.2=10] The size of bottom area <ko>아래쪽 바운스 영역의 크기</ko>
+	 * @param {Boolean} [options.bounce.3=10] The size of left area <ko>왼쪽 바운스 영역의 크기</ko>
 	 *
-	 * @param {Array} options.margin The area can move using user's action. <ko>사용자 액션에 의해, 추가로 이동할 수 있는 영역 : hold 상태에서 움직였을 때 최대로 넘어갈수 있는 좌표. 좌표 영역을 넘어 margin 영역까지 이동 후, 터치를 떼면 좌표는 최대 좌표영역 범위 안으로 들어온다.
-	 </ko>
-	 * @param {Boolean} [options.margin.0=0] The margin top range <ko>top 마진 영역</ko>
-	 * @param {Boolean} [options.margin.1=0] The margin right range <ko>right 마진 영역</ko>
-	 * @param {Boolean} [options.margin.2=0] The margin bottom range <ko>bottom 마진 영역</ko>
-	 * @param {Boolean} [options.margin.3=0] The margin left range <ko>left 마진 영역</ko>
-	 * @param {Array} options.circular <ko>영역별 순환 여부 : 해당 방향으로 좌표영역 밖으로 넘어가면, 반대방향에서 나타나게 할 지 여부를 지정하는 옵션이다.</ko>
-	 * @param {Boolean} [options.circular.0=false] The circular top range <ko>top 순환 영역</ko>
-	 * @param {Boolean} [options.circular.1=false] The circular right range <ko>right 순환 영역</ko>
-	 * @param {Boolean} [options.circular.2=false] The circular bottom range <ko>bottom 순환 영역</ko>
-	 * @param {Boolean} [options.circular.3=false] The circular left range <ko>left 순환 영역</ko>
+	 * @param {Array} options.margin The size of accessible space outside the coordinate area. If an element is dragged outside the coordinate area and then dropped, the coordinates of the element are returned back into the coordinate area. The size of margins that can be exceeded <ko>−	좌표 영역을 넘어 이동할 수 있는 바깥 영역의 크기. 사용자가 좌표를 바깥 영역까지 끌었다가 놓으면 좌표가 좌표 영역 안으로 들어온다.</ko>
+	 * @param {Boolean} [options.margin.0=0] The size of top margin <ko>위쪽 바깥 영역의 크기</ko>
+	 * @param {Boolean} [options.margin.1=0] The size of right margin <ko>오른쪽 바깥 영역의 크기</ko>
+	 * @param {Boolean} [options.margin.2=0] The size of bottom margin <ko>아래쪽 바깥 영역의 크기</ko>
+	 * @param {Boolean} [options.margin.3=0] The size of left margin <ko>왼쪽 바깥 영역의 크기</ko>
+	 * @param {Array} options.circular Indicates whether a circular element is available. If it is set to "true" and an element is dragged outside the coordinate area, the element will appear on the other side.<ko>순환 여부. 'true'로 설정한 방향의 좌표 영역 밖으로 엘리먼트가 이동하면 반대 방향에서 엘리먼트가 나타난다</ko>
+	 * @param {Boolean} [options.circular.0=false] Indicates whether to circulate to top <ko>위로 순환 여부</ko>
+	 * @param {Boolean} [options.circular.1=false] Indicates whether to circulate to right <ko>오른쪽으로 순환 여부</ko>
+	 * @param {Boolean} [options.circular.2=false] Indicates whether to circulate to bottom  <ko>아래로 순환 여부</ko>
+	 * @param {Boolean} [options.circular.3=false] Indicates whether to circulate to left  <ko>왼쪽으로 순환 여부</ko>
 	 *
-	 * @param {Function} [options.easing=easing.easeOutCubic] Function of the Easing (jQuery UI Easing, jQuery Easing Plugin). <ko>가속도에 의해 애니메이션이 동작할 때의 Easing 함수</ko>
-	 * @param {Number} [options.maximumDuration=Infinity] The maximum duration. <ko>가속도에 의해 애니메이션이 동작할 때의 최대 좌표 이동 시간</ko>
-	 * @param {Number} [options.deceleration=0.0006] deceleration This value can be altered to change the momentum animation duration. higher numbers make the animation shorter. <ko>가속도에 의해 애니메이션이 동작할 때의 감속계수. 높은 값이 주어질수록 애니메이션의 동작 시간이 짧아진다.</ko>
-	 * @see Hammerjs {@link http://hammerjs.github.io}
-	 * @see There is usability issue due to default CSS properties ({@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}) settings from Hammerjs. movableCoord removes that settings to fix.
-	 * <ko>Hammerjs는 인스턴스 생성시 기본적으로 특정 CSS 속성({@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html})을 적용한다. 특정한 상황의 경우, 이 속성으로 인해 사용성 이슈가 발생한다. 따라서, movableCoord는 hammerjs의 기본 CSS 속성을 모두 제거 하였다.</ko>
+	 * @param {Function} [options.easing=easing.easeOutCubic] The easing function to apply to an animation <ko>애니메이션에 적용할 easing 함수</ko>
+	 * @param {Number} [options.maximumDuration=Infinity] Maximum duration of the animation <ko>가속도에 의해 애니메이션이 동작할 때의 최대 좌표 이동 시간</ko>
+	 * @param {Number} [options.deceleration=0.0006] Deceleration of the animation where acceleration is manually enabled by user. A higher value indicates shorter running time. <ko>사용자의 동작으로 가속도가 적용된 애니메이션의 감속도. 값이 높을수록 애니메이션 실행 시간이 짧아진다</ko>
+	 * @see HammerJS {@link http://hammerjs.github.io}
+	 * @see •	Hammer.JS applies specific CSS properties by default when creating an instance (See {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}). The eg.MovableCoord module removes all default CSS properties provided by Hammer.JS <ko>Hammer.JS는 인스턴스를 생성할 때 기본으로 특정 CSS 속성을 적용한다(참고: @link{http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}). 특정한 상황에서는 Hammer.JS의 속성 때문에 사용성에 문제가 있을 수 있다. eg.MovableCoord 모듈은 Hammer.JS의 기본 CSS 속성을 모두 제거했다</ko>
 	 *
 	 * @codepen {"id":"jPPqeR", "ko":"MovableCoord Cube 예제", "en":"MovableCoord Cube example", "collectionId":"AKpkGW", "height": 403}
 	 *
 	 * @see Easing Functions Cheat Sheet {@link http://easings.net/}
-	 * @see To use other Easing functions, import jQuery Easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/}) or jQuery UI Easing.({@link https://jqueryui.com/easing/})<ko>다른 Easing 함수를 사용하고 싶다면, jQuery Easing plugin({@link http://gsgd.co.uk/sandbox/jquery/easing/})이나, jQuery UI Easing({@link https://jqueryui.com/easing/}) 라이브러리를 사용 한다.</ko>
+	 * @see If you want to try a different easing function, use the jQuery easing plugin ({@link http://gsgd.co.uk/sandbox/jquery/easing}) or the jQuery UI easing library ({@link https://jqueryui.com/easing}) <ko>다른 easing 함수를 사용하려면 jQuery easing 플러그인({@link http://gsgd.co.uk/sandbox/jquery/easing})이나, jQuery UI easing 라이브러리({@lin https://jqueryui.com/easing})를 사용한다</ko>
 	 *
 	 * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
 	 */
@@ -91,23 +87,20 @@ MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 			this._panend = $.proxy(this._panend, this);	// for caching
 		},
 		/**
-		 * Bind element
-		 * @ko movableCoord을 사용하기 위한 엘리먼트를 등록한다.
+		 * Registers an element to use the eg.MovableCoord module.
+		 * @ko eg.MovableCoord 모듈을 사용할 엘리먼트를 등록한다
 		 * @method eg.MovableCoord#bind
-		 * @param {HTMLElement|String|jQuery} element A target element. <ko>movableCoord을 사용하기 위한 엘리먼트</ko>
-		 * @param {Object} options
-		 * @param {Number} [options.direction=eg.MovableCoord.DIRECTION_ALL] The controllable directions. <ko>사용자 액션에 의해 움직일 수 있는 좌표의 방향.
-		 - eg.MovableCoord.DIRECTION_ALL은 모든 방향으로 움직일 수 있다.
-		 - eg.MovableCoord.DIRECTION_HORIZONTAL은 가로 방향으로만 움직일 수 있다.
-		 - eg.MovableCoord.DIRECTION_VERTICAL은 세로 방향으로만 움직일 수 있다.</ko>
-		 * @param {Array} options.scale The moving scale. <ko>사용자 액션에 의해 이동하는 좌표의 배율</ko>
-		 * @param {Number} [options.scale.0=1] x-scale <ko>x축 배율</ko>
-		 * @param {Number} [options.scale.1=1] y-scale <ko>y축 배율</ko>
-		 * @param {Number} [options.thresholdAngle=45] The threshold angle about direction which range is 0~90 <ko>방향에 대한 임계각 (0~90)</ko>
-		 * @param {Number} [options.interruptable=true] interruptable This value can be enabled to interrupt cycle of the animation event. <ko>가속에 의해 애니메이션이 발생 하였을 때, 이 값이 true이면, 사용자 액션이나 API에 의해 애니메이션을 중지할 수 있다. 하지만, 이 값이 false이면, 애니메이션이 진행 중에는 사용자 액션이나 API가 동작하지 않는다.</ko>
-		 * @param {Array} [options.inputType] inputType you can control input type. a kind of inputs are "touch", "mouse".  default value is ["touch", "mouse"] <ko>사용자 입력 타입을 지정할수 있다. 입력타입은 "touch", "mouse" 가 있으며, 배열로 입력할 수 있다. (기본값은 ["touch", "mouse"] 이다)</ko>
+		 * @param {HTMLElement|String|jQuery} element Element to use the eg.MovableCoord module<ko>−	eg.MovableCoord 모듈을 사용할 엘리먼트</ko>
+		 * @param {Object} options The option object of the bind() method <ko>bind() 메서드의 옵션 객체</ko>
+		 * @param {Number} [options.direction=eg.MovableCoord.DIRECTION_ALL] Coordinate direction that a user can move<br>- eg.MovableCoord.DIRECTION_ALL: All directions available.<br>- eg.MovableCoord.DIRECTION_HORIZONTAL: Horizontal direction only.<br>- eg.MovableCoord.DIRECTION_VERTICAL: Vertical direction only<ko>사용자의 동작으로 움직일 수 있는 좌표의 방향.<br>- eg.MovableCoord.DIRECTION_ALL: 모든 방향으로 움직일 수 있다.<br>- eg.MovableCoord.DIRECTION_HORIZONTAL: 가로 방향으로만 움직일 수 있다.<br>- eg.MovableCoord.DIRECTION_VERTICAL: 세로 방향으로만 움직일 수 있다.</ko>
+		 * @param {Array} options.scale Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
+		 * @param {Number} [options.scale.0=1] X-axis scale <ko>x축 배율</ko>
+		 * @param {Number} [options.scale.1=1] Y-axis scale <ko>y축 배율</ko>
+		 * @param {Number} [options.thresholdAngle=45] The threshold value that determines whether user action is horizontal or vertical (0~90) <ko>사용자의 동작이 가로 방향인지 세로 방향인지 판단하는 기준 각도(0~90)</ko>
+		 * @param {Number} [options.interruptable=true] Indicates whether an animation is interruptible.<br>- true: It can be paused or stopped by user action or the API.<br>- false: It cannot be paused or stopped by user action or the API while it is running.<ko>진행 중인 애니메이션 중지 가능 여부.<br>- true: 사용자의 동작이나 API로 애니메이션을 중지할 수 있다.<br>- false: 애니메이션이 진행 중일 때는 사용자의 동작이나 API가 적용되지 않는다</ko>
+		 * @param {Array} [options.inputType] Types of input devices. (default: ["touch", "mouse"])<br>- touch: Touch screen<br>- mouse: Mouse <ko>입력 장치 종류.(기본값: ["touch", "mouse"])<br>- touch: 터치 입력 장치<br>- mouse: 마우스</ko>
 		 *
-		 * @return {eg.MovableCoord} instance of itself<ko>자신의 인스턴스</ko>
+		 * @return {eg.MovableCoord} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 		 */
 		bind: function(el, options) {
 			var $el = $(el);
@@ -206,11 +199,11 @@ MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 		},
 
 		/**
-		 * Unbind element
-		 * @ko movableCoord을 사용하기 위한 엘리먼트를 해제한다.
+		 * Detaches elements using the eg.MovableCoord module.
+		 * @ko eg.MovableCoord 모듈을 사용하는 엘리먼트를 해제한다
 		 * @method eg.MovableCoord#unbind
-		 * @param {HTMLElement|String|jQuery} element The target element.<ko>movableCoord을 해제할 엘리먼트</ko>
-		 * @return {eg.MovableCoord} instance of itself<ko>자신의 인스턴스</ko>
+		 * @param {HTMLElement|String|jQuery} element Elements from which the eg.MovableCoord module is detached<ko>eg.MovableCoord 모듈을 해제할 엘리먼트</ko>
+		 * @return {eg.MovableCoord} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 		 */
 		unbind: function(el) {
 			var $el = $(el);
@@ -284,15 +277,15 @@ MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 			var pos = this._pos;
 			this._grab();
 			/**
-			 * When an area was pressed
-			 * @ko 스크린에서 사용자가 손을 대었을 때 발생하는 이벤트
+			 * This event is fired when a user holds an element on the screen of the device.
+			 * @ko 사용자가 기기의 화면에 손을 대고 있을 때 발생하는 이벤트
 			 * @name eg.MovableCoord#hold
 			 * @event
-			 * @param {Object} param
+			 * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
 			 * @param {Array} param.pos coordinate <ko>좌표 정보</ko>
-			 * @param {Number} param.pos.0 x-coordinate <ko>x 좌표</ko>
-			 * @param {Number} param.pos.1 y-coordinate <ko>y 좌표</ko>
-			 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자 액션에 대한 hammerjs 이벤트 정보로서, API에 의해 호출될 경우, null 을 반환한다.</ko>
+			 * @param {Number} param.pos.0 The X coordinate<ko>x 좌표</ko>
+			 * @param {Number} param.pos.1 The Y coordinate<ko>y 좌표</ko>
+			 * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
 			 *
 			 */
 			this.trigger("hold", {
@@ -432,19 +425,19 @@ MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 				var destPos = [ pos[0] + offset[0], pos[1] + offset[1] ];
 				destPos = this._getPointOfIntersection(pos, destPos);
 				/**
-				 * When an area was released
-				 * @ko 스크린에서 사용자가 손을 떼었을 때, 발생하는 이벤트
+				 * This event is fired when a user release an element on the screen of the device.
+				 * @ko 사용자가 기기의 화면에서 손을 뗐을 때 발생하는 이벤트
 				 * @name eg.MovableCoord#release
 				 * @event
 				 *
-				 * @param {Object} param
-				 * @param {Array} param.depaPos departure coordinate <ko>현재 좌표</ko>
-				 * @param {Number} param.depaPos.0 departure x-coordinate <ko>현재 x 좌표</ko>
-				 * @param {Number} param.depaPos.1 departure y-coordinate <ko>현재 y 좌표</ko>
-				 * @param {Array} param.destPos destination coordinate <ko>애니메이션에 의해 이동할 좌표</ko>
-				 * @param {Number} param.destPos.0 destination x-coordinate <ko>x 좌표</ko>
-				 * @param {Number} param.destPos.1 destination y-coordinate <ko>y 좌표</ko>
-				 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자 액션에 대한 hammerjs 이벤트 정보로서, API에 의해 호출될 경우, null 을 반환한다.</ko>
+				 * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+				 * @param {Array} param.depaPos The coordinates when releasing an element<ko>손을 뗐을 때의 좌표현재 </ko>
+				 * @param {Number} param.depaPos.0 The X coordinate <ko> x 좌표</ko>
+				 * @param {Number} param.depaPos.1 The Y coordinate <ko> y 좌표</ko>
+				 * @param {Array} param.destPos The coordinates to move to after releasing an element<ko>손을 뗀 뒤에 이동할 좌표</ko>
+				 * @param {Number} param.destPos.0 The X coordinate <ko>x 좌표</ko>
+				 * @param {Number} param.destPos.1 The Y coordinate <ko>y 좌표</ko>
+				 * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다</ko>
 				 *
 				 */
 				this.trigger("release", {
@@ -586,7 +579,7 @@ MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 			]);
 			this._setInterrupt(false);
 			/**
-			 * When animation was ended.
+			 * This event is fired when animation ends.
 			 * @ko 에니메이션이 끝났을 때 발생한다.
 			 * @name eg.MovableCoord#animationEnd
 			 * @event
@@ -688,17 +681,17 @@ MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 		// trigger 'change' event
 		_triggerChange: function(pos, holding, e) {
 			/**
-			 * When coordinate was changed
+			 * This event is fired when coordinate changes.
 			 * @ko 좌표가 변경됐을 때 발생하는 이벤트
 			 * @name eg.MovableCoord#change
 			 * @event
 			 *
-			 * @param {Object} param
+			 * @param {Object} param The object of data to be sent when the event is fired <ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
 			 * @param {Array} param.pos departure coordinate  <ko>좌표</ko>
-			 * @param {Number} param.pos.0 departure x-coordinate <ko>x 좌표</ko>
-			 * @param {Number} param.pos.1 departure y-coordinate <ko>y 좌표</ko>
-			 * @param {Boolean} param.holding If an area was pressed, this value is 'true'. <ko>스크린을 사용자가 누르고 있을 경우 true </ko>
-			 * @param {Object} param.hammerEvent Hammerjs event. if you use api, this value is null. http://hammerjs.github.io/api/#hammer.input-event <ko>사용자 액션에 대한 hammerjs 이벤트 정보. setTo() 혹은 setBy() 컴포넌트 메서드를 호출해 이벤트가 발생한 경우에는 null을 반환한다.</ko>
+			 * @param {Number} param.pos.0 The X coordinate <ko>x 좌표</ko>
+			 * @param {Number} param.pos.1 The Y coordinate <ko>y 좌표</ko>
+			 * @param {Boolean} param.holding Indicates whether a user holds an element on the screen of the device.<ko>사용자가 기기의 화면을 누르고 있는지 여부</ko>
+			 * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
 			 *
 			 */
 			this._pos = pos.concat();
@@ -710,27 +703,25 @@ MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 		},
 
 		/**
-		 * Get current position
-		 * @ko 현재 위치를 반환한다.
+		 * Returns the current position of the logical coordinates.
+		 * @ko 논리적 좌표의 현재 위치를 반환한다
 		 * @method eg.MovableCoord#get
 		 * @return {Array} pos <ko>좌표</ko>
-		 * @return {Number} pos.0 x position <ko>x 좌표</ko>
-		 * @return {Number} pos.1 y position <ko>y 좌표</ko>
+		 * @return {Number} pos.0 The X coordinate <ko>x 좌표</ko>
+		 * @return {Number} pos.1 The Y coordinate <ko>y 좌표</ko>
 		 */
 		get: function() {
 			return this._pos.concat();
 		},
 
 		/**
-		 * Set to absolute position
-		 *
-		 * When duration is greater than zero, 'change' event is triggered
-		 * @ko 위치를 설정한다. 만약, duration이 0보다 크다면 duration동안 애니메이션 된다.
+		 * Moves an element to specific coordinates.
+		 * @ko 좌표를 이동한다.
 		 * @method eg.MovableCoord#setTo
-		 * @param {Number} x x-coordinate <ko>이동할 x좌표</ko>
-		 * @param {Number} y y-coordinate <ko>이동할 y좌표</ko>
-		 * @param {Number} [duration=0] Duration of animation in milliseconds. <ko>애니메이션 진행시간(ms)</ko>
-		 * @return {eg.MovableCoord} instance of itself<ko>자신의 인스턴스</ko>
+		 * @param {Number} x The X coordinate to move to <ko>이동할 x좌표</ko>
+		 * @param {Number} y The Y coordinate to move to  <ko>이동할 y좌표</ko>
+		 * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
+		 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
 		 */
 		setTo: function(x, y, duration) {
 			this._grab();
@@ -768,15 +759,13 @@ MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 			return this;
 		},
 		/**
-		 * Set to relative position
-		 *
-		 * When duration is greater than zero, 'change' event is triggered
-		 * @ko 현재를 기준으로 위치를 설정한다. 만약, duration이 0보다 크다면 'change' 이벤트가 발생한다.
+		 * Moves an element from the current coordinates to specific coordinates. The change event is fired when the method is executed.
+		 * @ko 현재 좌표를 기준으로 좌표를 이동한다. 메서드가 실행되면 change 이벤트가 발생한다
 		 * @method eg.MovableCoord#setBy
-		 * @param {Number} x x-coordinate <ko>이동할 x좌표</ko>
-		 * @param {Number} y y-coordinate <ko>이동할 y좌표</ko>
-		 * @param {Number} [duration=0] Duration of animation in milliseconds. <ko>애니메이션 진행시간(ms)</ko>
-		 * @return {eg.MovableCoord} instance of itself<ko>자신의 인스턴스</ko>
+		 * @param {Number} x The X coordinate to move to <ko>이동할 x좌표</ko>
+		 * @param {Number} y The Y coordinate to move to <ko>이동할 y좌표</ko>
+		 * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
+		 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
 		 */
 		setBy: function(x, y, duration) {
 			return this.setTo(
@@ -811,8 +800,8 @@ MovableCoord에 대한 상세한 내용은 데모를 살펴보기 바란다.
 		},
 
 		/**
-		 * Release resources and unbind custom events
-		 * @ko 모든 커스텀 이벤트와 자원을 해제한다.
+		 * Destroys elements, properties, and events used in a module.
+		 * @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
 		 * @method eg.MovableCoord#destroy
 		 */
 		destroy: function() {

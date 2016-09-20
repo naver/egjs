@@ -57,23 +57,23 @@ eg.module("eg", ["jQuery", eg, window, eg.Agent], function($, ns, global, Agent)
 
 	/**
 	 * @name eg.VERSION
-	 * @description A string containing the egjs version number.
+	 * @description The version numbers of egjs.
 	 * @ko egjs 버전
 	 */
 	ns.VERSION = "#__VERSION__#";
 	ns.hook =  {};
 	/**
-	* Get the value of user-agent information the browser.
-	* @ko 브라우저의 user-agent 정보를 반환한다.
+	* Returns the User-Agent information
+	* @ko user-agent 정보를 반환한다.
 	* @method eg#agent
 	* @return {Object} agent
-	* @return {Object} agent.os os infomation <ko>os 정보</ko>
-	* @return {String} agent.os.name os name (android, ios, window, mac) <ko>os 이름 (android, ios, window, mac)</ko>
-	* @return {String} agent.os.version os version <ko>os 버전</ko>
-	* @return {String} agent.browser browser information <ko>브라우저 정보</ko>
-	* @return {String} agent.browser.name browser name (default, safari, chrome, sbrowser, ie, firefox) <ko>브라우저 이름 (default, safari, chrome, sbrowser, ie, firefox)</ko>
-	* @return {String} agent.browser.version browser version <ko>브라우저 버전 </ko>
-	* @return {String} agent.browser.webview check to see if the browser is a webview<ko>웹뷰 브라우저 여부</ko>
+	* @return {Object} agent.os os Operating system information <ko>운영체제 정보</ko>
+	* @return {String} agent.os.name Operating system name (android, ios, window, mac) <ko>운영체제 이름 (android, ios, window, mac)</ko>
+	* @return {String} agent.os.version Operating system version <ko>운영체제 버전</ko>
+	* @return {String} agent.browser Browser information <ko>브라우저 정보</ko>
+	* @return {String} agent.browser.name Browser name (default, safari, chrome, sbrowser, ie, firefox) <ko>브라우저 이름 (default, safari, chrome, sbrowser, ie, firefox)</ko>
+	* @return {String} agent.browser.version Browser version <ko>브라우저 버전 </ko>
+	* @return {String} agent.browser.webview Indicates whether a WebView browser is available<ko>웹뷰 브라우저 여부</ko>
 	* @example
 eg.agent();
 // {
@@ -100,14 +100,14 @@ if(agent.os.name === "naver") {
 	};
 
 	/**
-	 * Get the string containing css 'translate' syntax.
+	 * Returns the syntax of the translate style which is applied to CSS transition properties.
 	 *
-	 * @ko CSS translate 구문을 반환한다.
+	 * @ko CSS 트랜지션 속성에 적용할 translate 스타일 구문을 반환한다
 	 * @method eg#translate
-	 * @param {String} x x-axis <ko>x축</ko>
-	 * @param {String} y y-axis <ko>y축</ko>
-	 * @param {Boolean} [isHA] isHWAccelerable <ko>하드웨어 가속 여부</ko>
-	 * @return {String}
+	 * @param {String} x Distance to move along the X axis <ko>x축을 따라 이동할 거리</ko>
+	 * @param {String} y Distance to move along the Y axis <ko>y축을 따라 이동할 거리</ko>
+	 * @param {Boolean} [isHA] Force hardware acceleration <ko>하드웨어 가속 사용 여부</ko>
+	 * @return {String} Syntax of the translate style <ko>translate 스타일 구문</ko>
 	 * @example
 eg.translate('10px', '200%');  // translate(10px,200%);
 eg.translate('10px', '200%', true);  // translate3d(10px,200%,0);
@@ -120,11 +120,11 @@ eg.translate('10px', '200%', true);  // translate3d(10px,200%,0);
 	};
 
 	/**
-	 * Check to see if the hardware acceleration is suitable to use.
+	 * Checks whether hardware acceleration is enabled.
 	 *
-	 * @ko 하드웨어 가속을 사용하는 것이 적합한지 확인한다.
+	 * @ko 하드웨어 가속을 사용할 수 있는 환경인지 확인한다
 	 * @method eg#isHWAccelerable
-	 * @return {Boolean}
+	 * @return {Boolean} Indicates whether hardware acceleration is enabled. <ko>하드웨어 가속 사용 가능 여부</ko>
 	 * @example
 eg.isHWAccelerable();  // Returns 'true' when hardware acceleration is supported
 
@@ -168,11 +168,11 @@ return defaultVal;
 	};
 
 	/**
-	 * Check to see CSS transition is suitable to use.
+	 * Checks whether CSS transition properties can be used.
 	 *
-	 * @ko CSS transtion을 사용하는 것이 적합한지 확인한다.
+	 * @ko CSS 트랜지션 속성을 사용할 수 있는 환경인지 확인한다.
 	 * @method eg#isTransitional
-	 * @return {Boolean}
+	 * @return {Boolean} Indicates whether CSS transition properties can be used. <ko>CSS 트랜지션 속성 사용 가능 여부</ko>
 	 * @example
 eg.isTransitional();  // Returns 'true' when CSS transition is supported.
 
@@ -225,11 +225,11 @@ return defaultVal;
 	};
 
 	/**
-	* The polyfill for 'requestAnimationFrame'
-	* @ko requestAnimationFrame 폴리필
+	* A polyfill for the window.requestAnimationFrame() method.
+	* @ko window.requestAnimationFrame() 메서드의 polyfill 함수다
 	* @method eg#requestAnimationFrame
-	* @param {Function} timer function
-	* @return {Number} key
+	* @param {Function} timer The function returned through a call to the requestAnimationFrame() method <ko>requestAnimationFrame() 메서드가 호출할 함수</ko>
+	* @return {Number} ID of the requestAnimationFrame() method. <ko>requestAnimationFrame() 메서드의 아이디</ko>
 	* @example
 		var timerId = eg.requestAnimationFrame(function() {
 			console.log("call");
@@ -240,10 +240,10 @@ return defaultVal;
 		return raf(fp);
 	};
 	/**
-	* The polyfill for 'cancelAnimationFrame'
-	* @ko cancelAnimationFrame 폴리필
+	* A polyfill for the window.cancelAnimationFrame() method. It cancels an animation executed through a call to the requestAnimationFrame() method.
+	* @ko window.cancelAnimationFrame() 메서드의 polyfill 함수다. requestAnimationFrame() 메서드로 실행한 애니메이션을 중단한다
 	* @method eg#cancelAnimationFrame
-	* @param {Number} key
+	* @param {Number} key −	The ID value returned through a call to the requestAnimationFrame() method. <ko>requestAnimationFrame() 메서드가 반환한 아이디 값</ko>
 	* @example
 		eg.cancelAnimationFrame(timerId);
 	* @see  https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
