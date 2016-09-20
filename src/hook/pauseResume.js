@@ -187,8 +187,8 @@ eg.module("pauseResume", ["jQuery"], function($) {
 	};
 
 	/**
-	 * Pause animation
-	 * @ko <a href="http://api.jquery.com/animate/">jQuery animate 메서드</a>가 실행한 에니메이션을 일시 정지한다.
+	 * Pauses the animation executed through a call to the jQuery <a href=http://api.jquery.com/animate/>.animate()</a> method.
+	 * @ko jQuery의<a href=http://api.jquery.com/animate/>animate() 메서드</a>가 실행한 애니메이션을 일시 정지한다
 	 *
 	 * @name jQuery#pause
 	 * @method
@@ -219,8 +219,8 @@ eg.module("pauseResume", ["jQuery"], function($) {
 	};
 
 	/**
-	 * Resume animation
-	 * @ko <a href="http://naver.github.io/egjs/latest/doc/jQuery.html#pause">pause 메서드</a>가 일시 정지한 애니메이션을 재개한다.
+	 * Resumes the animation paused through a call to the pause() method.
+	 * @ko pause() 메서드가 일시 정지한 애니메이션을 다시 실행한다
 	 *
 	 * @name jQuery#resume
 	 * @method

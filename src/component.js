@@ -7,11 +7,11 @@ eg.module("component", [eg], function(ns) {
 	"use strict";
 
 	/**
-	 * Component
+	 * A class used to manage events and options in a component
 	 * @class
 	 * @group egjs
 	 * @name eg.Component
-	 * @ko 컴포넌트를 만들 때 이벤트와 옵션을 관리할 수 있도록 도와주는 클래스이다.
+	 * @ko 컴포넌트의 이벤트와 옵션을 관리할 수 있게 하는 클래스
 	 *
 	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 */
@@ -23,12 +23,12 @@ eg.module("component", [eg], function(ns) {
 			this.options = {};
 		},
 		/**
-		 * Get or set option.
-		 * @ko 옵션을 관리한다.
+		 * Sets options in a component or returns them.
+		 * @ko 컴포넌트에 옵션을 설정하거나 옵션을 반환한다
 		 * @method eg.Component#option
-		 * @param {String} key
-		 * @param {Object} [value]
-		 * @return {eg.Component|Object} (set)instance of itself or (get)option value <ko>옵션을 설정할 경우 인스턴스 자신을 반환하며, 옵션 값을 요청한 경우 해당 key에 저장된 값을 반환한다.</ko>
+		 * @param {String} key The key of the option<ko>옵션의 키</ko>
+		 * @param {Object} [value] The option value that corresponds to a given key <ko>키에 해당하는 옵션값</ko>
+		 * @return {eg.Component|Object} An instance, an option value, or an option object of a component itself.<br>- If both key and value are used to set an option, it returns an instance of a component itself.<br>- If only a key is specified for the parameter, it returns the option value corresponding to a given key.<br>- If nothing is specified, it returns an option object. <ko>컴포넌트 자신의 인스턴스나 옵션값, 옵션 객체.<br>- 키와 값으로 옵션을 설정하면 컴포넌트 자신의 인스턴스를 반환한다.<br>- 파라미터에 키만 설정하면 키에 해당하는 옵션값을 반환한다.<br>- 파라미터에 아무것도 설정하지 않으면 옵션 객체를 반환한다.</ko>
 		 * @example
 			var Some = eg.Class.extend(eg.Component);
 			var some = new Some({
@@ -65,12 +65,12 @@ eg.module("component", [eg], function(ns) {
 			return this;
 		},
 		/**
-		 * Trigger custom event.
-		 * @ko 커스텀 이벤트를 발생시킨다.
+		 * Triggers a custom event.
+		 * @ko 커스텀 이벤트를 발생시킨다
 		 * @method eg.Component#trigger
-		 * @param {String} eventName
-		 * @param {Object} customEvent
-		 * @return {Boolean}
+		 * @param {String} eventName The name of the custom event to be triggered <ko>발생할 커스텀 이벤트의 이름</ko>
+		 * @param {Object} customEvent Event data to be sent when triggering a custom event <ko>커스텀 이벤트가 발생할 때 전달할 데이터</ko>
+		 * @return {Boolean} Indicates whether the event has occurred. If the stop() method is called by a custom event handler, it will return false and prevent the event from occurring. <ko>이벤트 발생 여부. 커스텀 이벤트 핸들러에서 stop() 메서드를 호출하면 'false'를 반환하고 이벤트 발생을 중단한다.</ko>
 		 * @example
 			var Some = eg.Class.extend(eg.Component,{
 				"some": function(){
@@ -113,11 +113,11 @@ eg.module("component", [eg], function(ns) {
 			return !isCanceled;
 		},
 		/**
-		 * Check whether the event has been registered in component.
-		 * @ko 컴포넌트에 이벤트 등록 여부를 확인한다.
+		 * Checks whether an event has been attached to a component.
+		 * @ko 컴포넌트에 이벤트가 등록됐는지 확인한다.
 		 * @method eg.Component#hasOn
-		 * @param {String} eventName
-		 * @return {Boolean}
+		 * @param {String} eventName The name of the event to be attached <ko>등록 여부를 확인할 이벤트의 이름</ko>
+		 * @return {Boolean} Indicates whether the event is attached. <ko>이벤트 등록 여부</ko>
 		 * @example
 			var Some = eg.Class.extend(eg.Component,{
 				"some": function(){
@@ -129,12 +129,12 @@ eg.module("component", [eg], function(ns) {
 			return !!this.eventHandler[eventName];
 		},
 		/**
-		 * Attach an event handler function.
-		 * @ko 이벤트를 등록한다.
+		 * Attaches an event to a component.
+		 * @ko 컴포넌트에 이벤트를 등록한다.
 		 * @method eg.Component#on
-		 * @param {eventName} eventName
-		 * @param {Function} handlerToAttach
-		 * @return {eg.Component} instance of itself<ko>자신의 인스턴스</ko>
+		 * @param {eventName} eventName The name of the event to be attached <ko>등록할 이벤트의 이름</ko>
+		 * @param {Function} handlerToAttach The handler function of the event to be attached <ko>등록할 이벤트의 핸들러 함수</ko>
+		 * @return {eg.Component} An instance of a component itself<ko>컴포넌트 자신의 인스턴스</ko>
 		 * @example
 			var Some = eg.Class.extend(eg.Component,{
 				"hi": function(){},
@@ -166,12 +166,12 @@ eg.module("component", [eg], function(ns) {
 			return this;
 		},
 		/**
-		 * Detach an event handler function.
-		 * @ko 이벤트를 해제한다.
+		 * Detaches an event from the component.
+		 * @ko 컴포넌트에 등록된 이벤트를 해제한다
 		 * @method eg.Component#off
-		 * @param {eventName} eventName
-		 * @param {Function} handlerToDetach
-		 * @return {eg.Component} instance of itself<ko>자신의 인스턴스</ko>
+		 * @param {eventName} eventName The name of the event to be detached <ko>해제할 이벤트의 이름</ko>
+		 * @param {Function} handlerToDetach The handler function of the event to be detached <ko>해제할 이벤트의 핸들러 함수</ko>
+		 * @return {eg.Component} An instance of a component itself <ko>컴포넌트 자신의 인스턴스</ko>
 		 * @example
 			var Some = eg.Class.extend(eg.Component,{
 				"hi": function(){},

@@ -790,3 +790,31 @@ QUnit.test("check a clear after scrolling", function(assert) {
 		}, 100);
 	});
 });
+
+QUnit.test("if width is not changed, layout should be not called on resize event.", function(assert) {
+	// Given
+	var done = assert.async();
+	var resizeCount = 0;
+	var layoutCount = 0;
+	var $global = $(window);
+	var inst = this.inst = new eg.InfiniteGrid("#grid");
+	this.inst.on("layoutComplete", function(e) {
+		this.off("layoutComplete");
+		this.on("layoutComplete", function(e) {
+			assert.ok(false, "layoutComplete event should not be called");
+		});
+	});
+	$global.on("resize", function(e) {
+		resizeCount++;
+	});
+
+	// When
+	$global.trigger("resize");
+
+	// Then
+	setTimeout(function() {
+		assert.ok(resizeCount > 0, "should exist resize event");
+		assert.equal(inst.$el.innerWidth(), inst._containerWidth, "width is not changed");
+		done();
+	},100);
+});
