@@ -22,10 +22,13 @@
         },
         "meta": {
             "title": "egjs - API",
-            "description": "",
-            "keyword": ""
+            "description": "egjs is a jQuery-based JavaScript library consisting of UI interactions, effects, and utilities, which brings easiest and fastest way to build a web application in your way.",
+            "keyword": "jQuery, UI Component, egjs"
         },
-        "linenums": true
+        "linenums": true,
+        "link": {
+            "canonical": "http://naver.github.io/egjs/latest/doc/"
+        }
     },
     "markdown": {
         "parser": "gfm",
