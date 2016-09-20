@@ -14,11 +14,11 @@ egjs is a jQuery-based JavaScript library consisting of UI interactions, effects
 The following is a list of egjs components.
 
 * eg: As a default namespace, it is a collection of base utilities for egjs, which is used in diverse components. 
-  - [Usage Examples](http://naver.github.io/egjs/demo/eg/)
   - [API Documentation](http://naver.github.io/egjs/latest/doc/eg.html)
+  - [Usage Examples](http://naver.github.io/egjs/demo/eg/)
 * eg.Class: A module that enables developing classes in object-oriented programming style.
-  - [Usage Examples](http://naver.github.io/egjs/demo/class/)
   - [API Documentation](http://naver.github.io/egjs/latest/doc/eg.Class.html)
+  - [Usage Examples](http://naver.github.io/egjs/demo/class/)
 * eg.Component: A base class utility that manages events and options in modules.
   - [Usage Examples](http://naver.github.io/egjs/demo/component/)
   - [API Documentation](http://naver.github.io/egjs/latest/doc/eg.Component.html)
@@ -30,7 +30,7 @@ The following is a list of egjs components.
   - [Usage Examples](http://naver.github.io/egjs/demo/flicking/), [Usage Examples (CodePen)](http://codepen.io/collection/ArxyLK/)
 * eg.Visible: A module that checks if an element is visible in the base element or viewport.
   - [API Documentation](http://naver.github.io/egjs/latest/doc/eg.Visible.html)
-  - [Usage Examples (CodePen)](http://codepen.io/collection/Ayrabj/)
+  - [Usage Examples](http://naver.github.io/egjs/demo/visible/), [Usage Examples (CodePen)](http://codepen.io/collection/Ayrabj/)
 * eg.infiniteGrid: A module that arranges infinite card elements including content on a grid.
   - [API Documentation](http://naver.github.io/egjs/latest/doc/eg.InfiniteGrid.html)
   - [Usage Examples](http://naver.github.io/egjs/demo/infiniteGrid/), [Usage Examples (CodePen)](http://codepen.io/collection/DPYEww/)
