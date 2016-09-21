@@ -15,10 +15,13 @@ The following is a list of egjs components.
 
 * eg: As a default namespace, it is a collection of base utilities for egjs, which is used in diverse components. 
   - [API Documentation](http://naver.github.io/egjs/latest/doc/eg.html)
+  - [Usage Examples](http://naver.github.io/egjs/demo/eg/)
 * eg.Class: A module that enables developing classes in object-oriented programming style.
   - [API Documentation](http://naver.github.io/egjs/latest/doc/eg.Class.html)
+  - [Usage Examples](http://naver.github.io/egjs/demo/class/)
 * eg.Component: A base class utility that manages events and options in modules.
   - [API Documentation](http://naver.github.io/egjs/latest/doc/eg.Component.html)
+  - [Usage Examples](http://naver.github.io/egjs/demo/component/)
 * eg.MovableCoord: A module that transforms user coordinates into logical coordinates in a virtual coordinate system. 
   - [API Documentation](http://naver.github.io/egjs/latest/doc/eg.MovableCoord.html)
   - [Usage Examples](http://naver.github.io/egjs/demo/movableCoord/), [Usage Examples (CodePen)](http://codepen.io/collection/AKpkGW/)
@@ -27,7 +30,7 @@ The following is a list of egjs components.
   - [Usage Examples](http://naver.github.io/egjs/demo/flicking/), [Usage Examples (CodePen)](http://codepen.io/collection/ArxyLK/)
 * eg.Visible: A module that checks if an element is visible in the base element or viewport.
   - [API Documentation](http://naver.github.io/egjs/latest/doc/eg.Visible.html)
-  - [Usage Examples (CodePen)](http://codepen.io/collection/Ayrabj/)
+  - [Usage Examples](http://naver.github.io/egjs/demo/visible/), [Usage Examples (CodePen)](http://codepen.io/collection/Ayrabj/)
 * eg.infiniteGrid: A module that arranges infinite card elements including content on a grid.
   - [API Documentation](http://naver.github.io/egjs/latest/doc/eg.InfiniteGrid.html)
   - [Usage Examples](http://naver.github.io/egjs/demo/infiniteGrid/), [Usage Examples (CodePen)](http://codepen.io/collection/DPYEww/)
@@ -42,13 +45,16 @@ The following is a list of methods extended from jQuery.
 
 * persist() method: Stores the current state of a webpage into a key in JSON.
   - [API Documentation](http://naver.github.io/egjs/latest/doc/jQuery.html#persist)
-  - [Usage Examples (CodePen)](http://codepen.io/collection/XOLpog/)
+  - [Usage Examples](http://naver.github.io/egjs/demo/persist/), [Usage Examples (CodePen)](http://codepen.io/collection/XOLpog/)
 * prefixCss() method: Enables to add CSS vendor prefixes when you use jQuery that does not support them.
+  - [API Documentation](http://naver.github.io/egjs/latest/doc/jQuery.html#persist)
+  - [Usage Examples](http://naver.github.io/egjs/demo/cssPrefix/)
 * animate() method: A method extended from the jQuery animate() method. It supports CSS transform property and 3D acceleration.
   - [API Documentation](http://naver.github.io/egjs/latest/doc/jQuery.html#animate)
+  - [Usage Examples](http://naver.github.io/egjs/demo/transform/)
 * pause() and resume() methods: Pauses and resumes animation executed by the jQuery animate() method.
   - [API Documentation](http://naver.github.io/egjs/latest/doc/jQuery.html#pause)
-  - [Usage Examples (CodePen)](http://codepen.io/collection/XOEpOw)
+  - [Usage Examples](http://naver.github.io/egjs/demo/pauseResume/), [Usage Examples (CodePen)](http://codepen.io/collection/XOEpOw)
 
 #### Events
 
@@ -56,10 +62,10 @@ The following is a list of events extended from jQuery.
 
 * rotate: An event that detects the orientation of the mobile device.
   - [API Documentation](http://naver.github.io/egjs/latest/doc/jQuery.html#event:rotate)
-  - [Usage Examples (CodePen)](http://codepen.io/collection/nLYYqP/)
+  - [Usage Examples](http://naver.github.io/egjs/demo/rotate/), [Usage Examples (CodePen)](http://codepen.io/collection/nLYYqP/)
 * scrollend: An event that detects the scrolling to bottom of the page.
   - [API Documtation](http://naver.github.io/egjs/latest/doc/jQuery.html#event:scrollEnd)
-  - [Usage Examples (CodePen)](http://codepen.io/collection/Dxeemo/)
+  - [Usage Examples](http://naver.github.io/egjs/demo/scrollEnd/), [Usage Examples (CodePen)](http://codepen.io/collection/Dxeemo/)
 
 ## Downloads and Installation
 

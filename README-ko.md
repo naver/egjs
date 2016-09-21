@@ -13,12 +13,15 @@ egjs는 jQuery를 기반으로 하는 JavaScript 라이브러리로, UI 인터�
 
 egjs가 제공하는 컴포넌트는 다음과 같다.
 
-* eg: egjs에서 사용하는 기본 유틸리티 모듈. egjs의 기본 네임스페이스다. 
+* eg: egjs에서 사용하는 기본 유틸리티 모듈. egjs의 기본 네임스페이스다.
   - [API 문서](http://naver.github.io/egjs/latest/doc/eg.html)
+  - [모듈 사용 예](http://naver.github.io/egjs/demo/eg/) 
 * eg.Class: 객체지향 프로그래밍 방식으로 클래스를 개발할 수 있게 하는 모듈
   - [API 문서](http://naver.github.io/egjs/latest/doc/eg.Class.html)
+  - [모듈 사용 예](http://naver.github.io/egjs/demo/class/) 
 * eg.Component: 모듈의 이벤트와 옵션을 관리할 수 있게 하는 클래스
   - [API 문서](http://naver.github.io/egjs/latest/doc/eg.Component.html)
+  - [모듈 사용 예](http://naver.github.io/egjs/demo/component/) 
 * eg.MovableCoord: 사용자의 동작을 가상 좌표계의 논리적 좌표로 변경하는 모듈
   - [API 문서](http://naver.github.io/egjs/latest/doc/eg.MovableCoord.html)
   - [모듈 사용 예](http://naver.github.io/egjs/demo/movableCoord/), [모듈 사용 예(CodePen)](http://codepen.io/collection/AKpkGW/)
@@ -27,7 +30,7 @@ egjs가 제공하는 컴포넌트는 다음과 같다.
   - [모듈 사용 예](http://naver.github.io/egjs/demo/flicking/), [모듈 사용 예(CodePen)](http://codepen.io/collection/ArxyLK/)
 * eg.Visible: 엘리먼트가 기준 엘리먼트나 뷰포트 안에 보이는지 확인하는 모듈
   - [API 문서](http://naver.github.io/egjs/latest/doc/eg.Visible.html)
-  - [모듈 사용 예(CodePen)](http://codepen.io/collection/Ayrabj/)
+  - [모듈 사용 예](http://naver.github.io/egjs/demo/visible/), [모듈 사용 예(CodePen)](http://codepen.io/collection/Ayrabj/)
 * eg.infiniteGrid: 콘텐츠가 있는 카드 엘리먼트를 그리드 레이아웃에 무한으로 배치하는 모듈
   - [API 문서](http://naver.github.io/egjs/latest/doc/eg.InfiniteGrid.html)
   - [모듈 사용 예](http://naver.github.io/egjs/demo/infiniteGrid/), [모듈 사용 예(CodePen)](http://codepen.io/collection/DPYEww/)
@@ -42,13 +45,16 @@ egjs의 jQuery 확장 메서드는 다음과 같다.
 
 * persist() 메서드: 웹 페이지의 현재 상태를 키에 JSON 형식으로 저장한다.
   - [API 문서](http://naver.github.io/egjs/latest/doc/jQuery.html#persist)
-  - [메서드 사용 예(CodePen)](http://codepen.io/collection/XOLpog/)
+  - [메서드 사용 예](http://naver.github.io/egjs/demo/persist/), [메서드 사용 예(CodePen)](http://codepen.io/collection/XOLpog/)
 * prefixCss() 메서드: CSS 속성의 제조사 접두어(vendor prefix)를 지원하지 않는 일부 jQuery 버전을 사용할 때 제조사 접두어를 지원할 수 있게 한다.
+  - [API 문서](http://naver.github.io/egjs/latest/doc/jQuery.html#persist)
+  - [메서드 사용 예](http://naver.github.io/egjs/demo/cssPrefix/)
 * animate() 메서드: jQuery의 animate() 메서드를 확장한 메서드. CSS의 transform 속성과 3D 가속을 사용할 수 있다.
   - [API 문서](http://naver.github.io/egjs/latest/doc/jQuery.html#animate)
+  - [메서드 사용 예](http://naver.github.io/egjs/demo/transform/)
 * pause() 메서드, resume() 메서드: jQuery의 animate() 메서드로 실행한 애니메이션을 일시 정지하고 다시 실행한다.
   - [API 문서](http://naver.github.io/egjs/latest/doc/jQuery.html#pause)
-  - [메서드 사용 예(CodePen)](http://codepen.io/collection/XOEpOw)
+  - [메서드 사용 예](http://naver.github.io/egjs/demo/pauseResume/), [메서드 사용 예(CodePen)](http://codepen.io/collection/XOEpOw)
 
 #### 이벤트
 
@@ -56,10 +62,10 @@ egjs의 jQuery 확장 이벤트는 다음과 같다.
 
 * rotate: 모바일 기기의 회전을 감지하는 이벤트
   - [API 문서](http://naver.github.io/egjs/latest/doc/jQuery.html#event:rotate)
-  - [이벤트 사용 예(CodePen)](http://codepen.io/collection/nLYYqP/)
+  - [이벤트 사용 예](http://naver.github.io/egjs/demo/rotate/), [이벤트 사용 예(CodePen)](http://codepen.io/collection/nLYYqP/)
 * scrollend: 스크롤의 마지막 시점을 감지하는 이벤트
   - [API 문서](http://naver.github.io/egjs/latest/doc/jQuery.html#event:scrollEnd)
-  - [이벤트 사용 예(CodePen)](http://codepen.io/collection/Dxeemo/)
+  - [이벤트 사용 예](http://naver.github.io/egjs/demo/scrollEnd/), [이벤트 사용 예(CodePen)](http://codepen.io/collection/Dxeemo/)
 
 ## 다운로드 및 설치
 
