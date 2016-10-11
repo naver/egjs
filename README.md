@@ -7,7 +7,7 @@ egjs is a jQuery-based JavaScript library consisting of UI interactions, effects
 * API Documentation
     - Latest: https://naver.github.io/egjs/latest/doc
     - Specific version: https://naver.github.io/egjs/[VERSION]/doc
-* [한글 readme](README-ko.md)
+* [한국어 readme](README-ko.md)
 
 ### Components
 
