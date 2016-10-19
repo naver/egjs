@@ -283,6 +283,7 @@ pre {
     overflow: scroll;
     -webkit-overflow-scrolling: touch;
     background-color: rgba(0,0,0,.1);
+    transform: translateZ(0px);
 }
 
 .scroller {
@@ -297,6 +298,9 @@ pre {
     box-shadow: 0 1px 2px rgba(0,0,0,0.15);
     position: relative;
     border-radius: 5px;
+    -webkit-transform: translateY(0);
+    -webkit-transition: all .3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: all .3s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .item {
@@ -364,7 +368,7 @@ pre {
 .infinitegrid-item img.logo_mono {
 }
 .infinitegrid-item img {
-    width: 60px;
+    width: 50px;
 }
 .card.visible {
     -webkit-transform: scale(1.10, 1.10);
@@ -419,6 +423,8 @@ pre {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
     position: relative;
     border-radius: 5px;
+    -webkit-transition: all 16.6667ms linear;
+    transition: all 16.6667ms linear;
 
 	font-size:0px;
 }
