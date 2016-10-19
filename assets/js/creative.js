@@ -87,7 +87,7 @@
          return items.reduce(function(prv, cur) {
              var html = '<div class="infinitegrid-item">' +
      		'<div class="card">' +
-     			'<img class="' + cur.className + '" src="/assets/img/' + cur.className + '.svg" />' +
+     			'<img class="' + cur.className + '" src="./assets/img/' + cur.className + '.svg" />' +
      		'</div>' +
              '</div>';
              return prv + html;
@@ -124,8 +124,6 @@
              var gk = this.getGroupKeys();
              var lastGk = gk[gk.length-1];
              lastGk++;
-             console.log("appendL");
-
              this.append(gridItemHTML(griditemData.getItems(lastGk)), lastGk);
          },
          "prepend" : function(e) {
@@ -152,7 +150,98 @@
          ig.layout();
      });
 
-
      ig.append(gridItemHTML(griditemData.getItems(0)), 0);
+
+     var $movableDot = $(".movableDot");
+    $(".hand").closest(".showcase-content").css("overflow", "hidden");
+     var hand = $(".hand")[0];
+     var $card = $(".handcard");
+     var handRect = hand.getBoundingClientRect();
+     var handCenterY = (handRect.top +  handRect.bottom) / 2;
+     var handCenterX = (handRect.left +  handRect.right) / 2
+     var HAND_RADIUS = parseInt(window.getComputedStyle(hand).width) / 2;
+     var CARD_OFFSET = -300;
+
+     var handRotMin = null;
+     var handRotMax = null;
+
+     $card.each(function(idx, card) {
+     	setCardOnHand(card);
+     });
+
+          var movalbeCoord = new eg.MovableCoord({
+              min : [handRotMin, 0],
+              max: [handRotMax, 0],
+              circular: false,
+              deceleration: 0.00034,
+              bounce: [160, 15, 40, 15]
+          }).on({
+             "change" : function(evt) {
+                 var pos = evt.pos;
+            //     $movableDot.css("left", pos[0] + 15 + "px");
+                 $movableDot.css("bottom", -1.4 * pos[1] + "px");
+
+                 $movableDot.css("transform", "translateX(" + pos[0]*2.3 + "px)");
+
+     						$(hand).css("transform", "rotateZ(" + pos[0] + "deg)");
+
+     						$card.each(function(idx, card) {
+     							var cardDistance = getCardDistance(card, hand).distance;
+     							var cardOffset = pos[1];
+     							//	var cardOffset = cardDistance - CARD_OFFSET - HAND_RADIUS;
+     							var currentRotateZ =  card.style.transform.split("translateY")[0];
+     							$(card).css("transform", currentRotateZ + "translateY("+($(card).data("cardOffset") + pos[1]) +"px)");
+     						});
+             }
+          });
+          movalbeCoord.bind(hand, {
+              maximumSpeed : 50,
+              scale: [.3, 0.8]
+          });
+          movalbeCoord.setTo((handRotMin + handRotMax) / 2,0);
+
+     function getCardDistance(card, hand) {
+     	var handRect = hand.getBoundingClientRect();
+     	var handCenterY = (handRect.top +  handRect.bottom) / 2;
+     	var handCenterX = (handRect.left +  handRect.right) / 2
+     	var cardRect = card.getBoundingClientRect();
+     	var cardCenterY = (cardRect.top +  cardRect.bottom) / 2;
+     	var cardCenterX = (cardRect.left +  cardRect.right) / 2;
+     	var deltaX = handCenterX - cardCenterX;
+     	var deltaY = handCenterY - cardCenterY;
+     	var cardDistance = Math.sqrt( Math.pow(deltaX, 2) + Math.pow(deltaY, 2) );
+     	var cardTilt = radToDeg( Math.atan( deltaX / deltaY ) * -1);
+     	return {
+     		distance: cardDistance,
+     		tilt: cardTilt
+     	};
+     }
+     	function radToDeg (rad) {
+     		return rad / Math.PI * 180;
+     	};
+     function setCardOnHand(card) {
+     	var distance = getCardDistance(card, hand);
+
+     	var cardTilt = distance.tilt;
+     	var cardDistance = distance.distance;
+
+     	var cardOffset = cardDistance - CARD_OFFSET - HAND_RADIUS;
+
+     	if(handRotMin === null) {
+     		handRotMin = cardTilt;
+     	} else if(cardTilt < handRotMin) {
+     		handRotMin = cardTilt;
+     	}
+     	if(handRotMax === null) {
+     		handRotMax = cardTilt;
+     	} else if(cardTilt > handRotMax) {
+     		handRotMax = cardTilt;
+     	}
+
+     	$(card).css("transform", "rotateZ(" + cardTilt + "deg) translateY("+cardOffset+"px)");
+     	$(card).data("cardOffset", cardOffset);
+
+     }
+
 
 })(jQuery); // End of use strict

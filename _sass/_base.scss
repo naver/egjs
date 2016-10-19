@@ -1,14 +1,12 @@
-@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+
 
 html,
 body {
     height: 100%;
     width: 100%;
-    font-family: 'Nanum Gothic', sans-serif;
 }
 
 body {
-    @include serif-font;
 }
 
 hr {
@@ -242,6 +240,11 @@ pre {
 #showcase .row {
 
 }
+
+.showcase-item {
+    margin-bottom: 40px;
+}
+
 #flick {
     height: 100%;
 }
@@ -347,7 +350,7 @@ pre {
     width: 50%;
     display: block;
     text-align: center;
-    @media (min-width : 420px) and (max-width : 768px) {
+    @media (min-width : 420px) and (max-width : 992px) {
         width: 33.3333%;
     }
 }
@@ -371,6 +374,66 @@ pre {
     background-color: rgba(140, 83, 46, 1);
 }
 
+#movableCoordWrapper {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    -webkit-perspective: 450px;
+    -moz-perspective: 450px;
+    -ms-perspective: 450px;
+    -o-perspective: 450px;
+    perspective: 450px;
+}
+.movableDot {
+    width: 10px;
+        height: 10px;
+        background-color: #FFF;
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        border-radius: 5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+        /* left: 0px; */
+        margin-left: -5px;
+        margin-bottom: 60px;
+        opacity: .9;
+}
+.hand {
+    margin-top: -70px;
+    position: relative;
+    width: 1000px;
+    height: 1000px;
+    border-radius: 500px;
+    font-size: 0px;
+    text-align: center;
+    margin-left: -500px;
+    left: 50%;
+}
+.handcard {
+		display: inline-block;
+		width: 130px;
+		height: 190px;
+    margin-left: -30px;
+    background-color: #8c532e;
+    border-radius: 5px;
+    padding: 25px 15px;
+    box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+    position: relative;
+    border-radius: 5px;
+
+	font-size:0px;
+}
+.handcard img {
+    margin-top: 12px;
+    width: 90px;
+    user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
 .outlink {
     margin-top: 20px;
 }
