@@ -57,7 +57,8 @@
 
 @mixin sans-serif-font()
 {
-	font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Nanum Gothis', 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
 
 @mixin serif-font()

@@ -1,5 +1,4 @@
 
-
 html,
 body {
     height: 100%;
@@ -68,12 +67,57 @@ aside {
     padding: 0;
 }
 
+
+
+
 // Navigation
+.navbar-nav {
+    text-align: right;
+}
+.navbar-toggle {
+    position: relative;
+    margin-right: 10px;;
+    position: relative;
+    float: right;
+    padding: 4px 8px;
+    margin-top: 10px;
+
+    width: 55px;
+    border: none;
+    float: right;
+
+
+}
+.navbar-default .navbar-collapse {
+    border: none;
+}
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: rgba(0,0,0,0);
+}
+.navbar-default.affix-top {
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+}
+
+.navbar {
+    position: absolute;
+    @media (min-width: 990px) {
+        position: fixed;
+    }
+}
+@media (min-width: 768px) {
+    .navbar-right {
+        float: none;
+        margin-right: -15px
+    }
+}
 
 .navbar-default {
+    border: none;
     z-index: 9999;
-    background-color: white;
-    border-color: rgba($theme-dark, .5);
+    background-color: rgba(255, 255, 255, 0.95);
+    -webkit-backdrop-filter: blur(10px);
     @include sans-serif-font;
     @include transition-all;
     .navbar-header .navbar-brand {
@@ -90,17 +134,17 @@ aside {
             > a,
             > a:focus {
                 text-transform: uppercase;
-                font-weight: 700;
-                font-size: 13px;
-                color: $theme-dark;
+                font-weight: 500;
+                font-size: 15px;
+                color: white;
                 &:hover {
-                    color: $theme-primary;
+                    color: #ffce00;
                 }
             }
             &.active {
                 > a,
                 > a:focus {
-                    color: $theme-primary !important;
+                    color: #ffce00 !important;
                     background-color: transparent;
                     &:hover {
                         background-color: transparent;
@@ -109,9 +153,26 @@ aside {
             }
         }
     }
-    @media (min-width: 768px) {
+    &.affix {
+        .nav > li > a,
+        .nav > li > a:focus {
+            color: black;
+            &:hover {
+                color: #ffce00;
+            }
+        }
+    }
+     &.affix-top  {
+         .nav > li > a,
+         .nav > li > a:focus {
+             color: white;
+             &:hover {
+                 color: #ffce00;
+             }
+         }
+     }
+    @media (min-width: 990px) {
         background-color: transparent;
-        border-color: rgba(white, .3);
         .navbar-header .navbar-brand {
             color: rgba(white, 1);
             &:hover,
@@ -127,8 +188,7 @@ aside {
             }
         }
         &.affix {
-            background-color: white;
-            border-color: rgba($theme-dark, .5);
+            background-color: rgba(255, 255, 255, 0.95);
             .navbar-header .navbar-brand {
                 color: $theme-primary;
                 font-size: 14px;
@@ -139,9 +199,9 @@ aside {
             }
             .nav > li > a,
             .nav > li > a:focus {
-                color: $theme-dark;
+                color: black;
                 &:hover {
-                    color: $theme-primary;
+                    color: #ffce00;
                 }
             }
         }
@@ -166,8 +226,11 @@ header {
     .header-content {
         position: relative;
         text-align: center;
-        padding: 100px 15px 100px;
+        padding: 120px 15px 100px;
         width: 100%;
+        @media (min-width: 990px) {
+            padding-top: 100px;
+        }
         .header-content-inner {
             h1 {
                 font-weight: 700;
@@ -215,10 +278,15 @@ header {
 
 pre {
     padding: 1.0em;
-    color: white;
-    background: #543729;
-    border-radius: 5px;
+    color: rgba(255, 255, 255, 0.8);
     white-space: pre-wrap;
+    background: rgba(0,0,0,.33);
+    font-family: Source Code Pro,Monaco,Menlo,Consolas,monospace;
+    display: inline-block;
+    padding: 15px 20px;
+    border-radius: 0;
+    border: none;
+    width: 100%;
 }
 
 .brand-desc {
@@ -234,6 +302,15 @@ pre {
     font-size: 32px;
     font-weight:600;
 }
+#install h3 {
+    color: #FFF;
+    font-size: 32px;
+}
+
+#install p {
+    color: rgba(255,255,255,.8);
+}
+
 #showcase p {
     color: #8c532e;
 }
@@ -276,11 +353,12 @@ pre {
     text-align: center;
     font-family: sans-serif;
 }
+
 .showcase-content {
     width: 100%;
     height: 300px;
     border-radius: 5px;
-    overflow: scroll;
+    overflow: overlay;
     -webkit-overflow-scrolling: touch;
     background-color: rgba(0,0,0,.1);
     transform: translateZ(0px);
@@ -423,8 +501,7 @@ pre {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
     position: relative;
     border-radius: 5px;
-    -webkit-transition: all 16.6667ms linear;
-    transition: all 16.6667ms linear;
+
 
 	font-size:0px;
 }
@@ -463,6 +540,17 @@ pre {
     p {
         margin-bottom: 0;
     }
+}
+.bg-primary#install {
+    background-color: #8c532e;;
+
+}
+
+code .string, code .tag .value {
+    color: #0C4;
+}
+code .tag {
+    color: #6CF;
 }
 
 .portfolio-box {
