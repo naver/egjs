@@ -11,7 +11,7 @@ var $box = $("#box"),
 		}
 	});
 
-inst.bind(document.body, {
+inst.bind($("#area")[0], {
 	direction : eg.DIRECTION_ALL,
 	maximumSpeed : 50
 });

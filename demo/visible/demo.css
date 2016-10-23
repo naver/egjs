@@ -1,12 +1,13 @@
 .wrap {
   position: relative;
+     width: 100%;
 }
 .control{
   float: left;
   position: relaative;
     width: 360px;
     padding: 30px 20px 0 20px;
-    
+
 }
 #effeciveViewportIndicator {
   display: none;
@@ -28,7 +29,6 @@
   position: relative;
   float: left;
   height: 500px;
-  width: 380px;
   background: #eee;
   padding: 0;
   overflow-y: auto;
@@ -39,10 +39,10 @@
 .item {
     display: block;
     background-color: #ccc;
-    width: 300px;
+    width: 260px;
     height: 60px;
     border-radius: 5px;
-    margin: 30px auto;
+    margin: 30px;
     box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
 
 }
