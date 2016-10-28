@@ -722,13 +722,13 @@ QUnit.test("destroy()", function(assert) {
 
 	var origPanelStyle = {
 		wrapper: {
-			className: $el.attr("class"),
-			style: $el.attr("style")
+			className: $el.attr("class") || "",
+			style: $el.attr("style") || ""
 		},
 		list: $panel.map(function(i,v) {
 			return {
-				className: $(v).attr("class"),
-				style: $(v).attr("style")
+				className: $(v).attr("class") || "",
+				style: $(v).attr("style") || ""
 			};
 		})
 	};
@@ -751,14 +751,14 @@ QUnit.test("destroy()", function(assert) {
 		assert.ok(!isEventFired, "Input action should be disabled.");
 		assert.ok($el.find("."+ containerClassName).length === 0, "Container element was removed?");
 
-		assert.ok($el.attr("class") === origPanelStyle.wrapper.className, "Wrapper element class has been restored?");
-		assert.ok($el.attr("style") === origPanelStyle.wrapper.style, "Wrapper element style has been restored?");
+		assert.equal($el.attr("class") || "", origPanelStyle.wrapper.className, "Wrapper element class has been restored?");
+		assert.equal($el.attr("style") || "", origPanelStyle.wrapper.style, "Wrapper element style has been restored?");
 
 		$panel.each(function(i, v) {
 			var $panelEl = $(v);
 
-			assert.ok($panelEl.attr("class") === origPanelStyle.list[i].className, "Panel element class has been restored?");
-			assert.ok($panelEl.attr("style") === origPanelStyle.list[i].style, "Panel element style has been restored?");
+			assert.equal($panelEl.attr("class") || "", origPanelStyle.list[i].className, "Panel element class has been restored?");
+			assert.equal($panelEl.attr("style") || "", origPanelStyle.list[i].style, "Panel element style has been restored?");
 		});
 
 		// check for the resources release
