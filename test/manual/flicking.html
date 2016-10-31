@@ -120,7 +120,20 @@ button{
 	<div style="background-color:red">
 		<p>Layer 5</p>
 	</div>
-</div>
+</div><br/>
+
+4) Dynamic Height :
+<div id="mflick4">
+	<div style="background-color:#CC66CC; height: 100px;">
+		<p>Layer 0</p>
+	</div>
+	<div style="background-color:#66cccc; height: 130px;">
+		<p>Layer 1</p>
+	</div>
+	<div style="background-color:#ffc000; height: 70px;">
+		<p>Layer 2</p>
+	</div>
+</div><br>
 
 	<hr />
 
@@ -371,6 +384,13 @@ setTimeout(function() {
 		duration : 300,
 		circular : true,
 		previewPadding : 80
+	});
+
+	f4 = new eg.Flicking("#mflick4", {
+		duration : 300,
+		circular : true,
+		previewPadding : 80,
+		dynamicHeight: true
 	});
 
 	// Vertical direction flicking

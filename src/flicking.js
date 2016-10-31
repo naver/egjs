@@ -238,12 +238,18 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var panelCount = panel.count = panel.origCount = $children.length;
 			var cssValue;
 			var bounce = options.bounce;
+			var dynamicHeight = options.dynamicHeight;
 
 			this._setPadding(padding, true);
 			var sizeValue = this._getDataByDirection([ panel.size, "100%" ]);
 
+			var heightCSSValue = horizontal && dynamicHeight ?
+				this._getMaxHeightOfElements($children)
+				: "100%;";
+
 			// create container element
-			cssValue = "position:relative;z-index:2000;width:100%;height:100%;" +
+			cssValue = "position:relative;z-index:2000;width:100%;" +
+				("height:" + heightCSSValue) +
 				(horizontal ? "" : "top:0;");
 
 			if (this.$container) {
@@ -254,15 +260,21 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				).parent();
 			}
 
-			// panels' css values
-			$children.addClass(prefix + "-panel").css({
+			var childrenCss = {
 				position: "absolute",
 				width: sizeValue[0],
-				height: sizeValue[1],
 				boxSizing: "border-box",
 				top: 0,
 				left: 0
-			});
+			};
+
+			// To avoid overwriting children's height
+			if (!horizontal && !dynamicHeight) {
+				childrenCss.height = sizeValue[1];
+			}
+
+			// panels' css values
+			$children.addClass(prefix + "-panel").css(childrenCss);
 
 			if (this._addClonePanels()) {
 				panelCount = panel.count = (
@@ -282,6 +294,19 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			});
 
 			this._setDefaultPanel(options.defaultIndex);
+		},
+
+		/**
+		 * Get the max height of elements
+		 * @param {Array} $elements
+		 * @returns {string}
+		 */
+		_getMaxHeightOfElements: function($elements) {
+			var maxVal = Math.max.apply(Math, $elements.map(function() {
+				return $(this).height();
+			}).get());
+
+			return maxVal + "px";
 		},
 
 		/**
