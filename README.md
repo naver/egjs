@@ -46,7 +46,7 @@ The following is a list of methods extended from jQuery.
 * persist() method: Stores the current state of a webpage into a key in JSON.
   - [API Documentation](http://naver.github.io/egjs/latest/doc/jQuery.html#persist)
   - [Usage Examples](http://naver.github.io/egjs/demo/persist/), [Usage Examples (CodePen)](http://codepen.io/collection/XOLpog/)
-* prefixCss() method: Enables to add CSS vendor prefixes when you use jQuery that does not support them.
+* prefixCss() method: Enables to add CSS vendor prefixes when you use some jQuery version(1.4.3 ~ 1.8.x) that does not support them.
   - [API Documentation](http://naver.github.io/egjs/latest/doc/jQuery.html#persist)
   - [Usage Examples](http://naver.github.io/egjs/demo/cssPrefix/)
 * animate() method: A method extended from the jQuery animate() method. It supports CSS transform property and 3D acceleration.
@@ -139,7 +139,7 @@ Let egjs load after jQuery loads.
 ```html
 ...
 <!-- Load jQuery -->
-<script src="bower_components/jquery/jquery.js"></script>
+<script src="node_modules/jquery/dist/jquery.js"></script>
 
 <!-- Load egjs packaged with all dependencies (Hammer.js) -->
 <!-- Load from your local installation -->
@@ -170,13 +170,12 @@ For anyone interested to develop egjs, follow the instructions below.
 
 ### Development Environment
 
-#### 1. Install grunt-cli and Bower
+#### 1. Install grunt-cli
 
-Install grunt-cli and Bower globally.
+Install grunt-cli globally.
 
 ```bash
 $ npm install grunt-cli -g  # Install grunt-cli
-$ npm install bower -g  # Install Bower
 ```
 
 #### 2. Clone the repository and install dependencies
@@ -190,10 +189,7 @@ $ mkdir egjs && cd egjs
 # Clone a repository.
 $ git clone https://github.com/naver/egjs.git
 
-# Install the Bower dependency module.
-$ bower install
-
-# Install the node dependency module.
+# Install the node dependencies modules.
 $ npm install
 ```
 

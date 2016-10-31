@@ -16,6 +16,6 @@ module.exports = {
 		"src/plugin/persist.js"
 	],
 	hammer : [
-		"bower_components/hammer.js/hammer.js"
+		"node_modules/hammerjs/hammer.js"
 	]
 };
