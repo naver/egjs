@@ -30,6 +30,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 	 * @param {Number} [options.defaultIndex=0] The index number of a panel to be selected upon module initialization <ko>모듈이 초기화될 때 선택할 패널의 인덱스 번호</ko>
 	 * @param {Array} [options.inputType] Types of input devices.<br>- touch: A touch screen can be used to move a panel.<br>- mouse: A mouse can be used to move a panel. <ko>입력 장치 종류.<br>- touch: 터치 입력 장치로 패널을 이동할 수 있다.<br>- mouse: 마우스로 패널을 이동할 수 있다.</ko>
 	 * @param {Number} [options.thresholdAngle=45] The threshold value that determines whether user action is horizontal or vertical (0~90) <ko>사용자의 동작이 가로 방향인지 세로 방향인지 판단하는 기준 각도(0~90)</ko>
+	 * @param {Boolean} [options.adaptiveHeight=false] Set container's height be adaptive according panel's height <ko>컨테이너 영역이 패널의 높이값에 따라 변경될지 여부</ko>
 	 *
 	 * @codepen {"id":"rVOpPK", "ko":"플리킹 UI 기본 예제", "en":"Flicking UI default example", "collectionId":"ArxyLK", "height" : 403}
 	 * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest" , "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
@@ -114,6 +115,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			this._arrangePanels();
 
 			this.options.hwAccelerable && SUPPORT_WILLCHANGE && this._setHint();
+			this.options.adaptiveHeight && this._setAdaptiveHeight();
+
 			this._adjustContainerCss("end");
 		},
 
@@ -140,7 +143,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				panelEffect: $.easing.easeOutCubic,  // $.easing function for panel change animation
 				defaultIndex: 0,			// initial panel index to be shown
 				inputType: ["touch", "mouse"],  // input type
-				thresholdAngle: 45			// the threshold value that determines whether user action is horizontal or vertical (0~90)
+				thresholdAngle: 45,			// the threshold value that determines whether user action is horizontal or vertical (0~90)
+				adaptiveHeight: false		// Set container's height be adaptive according panel's height
 			}, options);
 
 			var self = this;
@@ -778,6 +782,36 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		},
 
 		/**
+		 * Set container's height value according to children's height
+		 * @param {Number} direction
+		 */
+		_setAdaptiveHeight: function(direction) {
+			var $panel;
+			var $first;
+			var $children;
+			var height;
+			var dataName = "data-height";
+
+			$panel = this[ "get" + (
+					direction === MC.DIRECTION_LEFT && "Next" ||
+					direction === MC.DIRECTION_RIGHT && "Prev" || ""
+				) + "Element" ]();
+
+			$first = $panel.find(":first-child");
+			height = $first.attr(dataName);
+
+			if (!height) {
+				$children = $panel.children();
+				height = ($children.length > 1 ? $panel.css("height", "auto") : $first)
+					.outerHeight(true);
+
+				$first.attr(dataName, height);
+			}
+
+			this.$wrapper.height(height);
+		},
+
+		/**
 		 * Trigger beforeRestore event
 		 * @param {Object} e event object
 		 */
@@ -867,6 +901,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				 */
 				if (!this._triggerEvent(EVENTS.beforeFlickStart, pos)) {
 					return panel.changed = panel.animating = false;
+				} else {
+					options.adaptiveHeight && this._setAdaptiveHeight(conf.touch.direction);
 				}
 
 				conf.indexToMove === 0 && this._setPanelNo();

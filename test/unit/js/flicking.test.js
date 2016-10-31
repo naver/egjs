@@ -455,6 +455,22 @@ QUnit.test("hwAccelerable", function(assert) {
 	assert.ok($.css(panel, "willChange") === "transform" || $getTransformValue(panel).indexOf("3d") >= 0, "HW Acceleration css property is prensent in panel element?");
 });
 
+QUnit.test("adaptiveHeight", function(assert) {
+	// Given
+	var inst = this.create("#mflick4", {
+		adaptiveHeight: true,
+		circular: true
+	});
+
+	// Then
+	for (var i = 0; i < inst._conf.panel.count; i++) {
+		var panelHeight = inst.getElement().outerHeight(true);
+		assert.ok(panelHeight === inst.$container.height(), "Should update container's height according to each panel's height");
+		inst.next(0);
+		assert.ok(panelHeight === Number(inst.getPrevElement().children(':first').attr('data-height')), "Should cache each panel's height to first element");
+	}
+});
+
 QUnit.test("thresholdAngle", function(assert) {
 	var done = assert.async();
 

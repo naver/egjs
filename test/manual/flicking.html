@@ -121,7 +121,29 @@ button{
 	<div style="background-color:red">
 		<p>Layer 5</p>
 	</div>
-</div>
+</div><br/>
+
+4) Option(adaptiveHeight) :
+<div id="mflick4" class="flick">
+	<div style="background-color:#CC66CC;">
+		<p>Layer 0</p>
+	</div>
+	<div style="background-color:#66cccc;">
+		<p>
+			Layer 1<br>
+			Layer 1<br>
+			Layer 1<br>
+			Layer 1<br>
+			Layer 1<br>
+			Layer 1<br>
+		</p>
+	</div>
+	<div style="background-color:#ffc000;">
+		<p>Layer 2</p>
+		<br>
+		<p>Multiple elements on one panel also supported</p>
+	</div>
+</div><br>
 
 	<hr />
 
@@ -372,6 +394,12 @@ setTimeout(function() {
 		duration : 300,
 		circular : true,
 		previewPadding : 80
+	});
+
+	f4 = new eg.Flicking("#mflick4", {
+		duration : 300,
+		circular : true,
+		adaptiveHeight: true
 	});
 
 	// Vertical direction flicking
