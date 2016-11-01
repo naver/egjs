@@ -102,7 +102,7 @@ QUnit.test("transform and transition not support", function(assert) {
 
 
 cssPrefixes.forEach(function(v,i) {
-    QUnit.test("check with the vendor documnet.head : "+ v, function(assert) {
+    QUnit.test("check with the vendor document.head : "+ v, function(assert) {
         // Given
         jQuery.cssHooks = {};
         this.fakeDocument.head.style[v+"Transition"] = "";
@@ -116,7 +116,7 @@ cssPrefixes.forEach(function(v,i) {
 });
 
 cssPrefixes.forEach(function(v,i) {
-    QUnit.test("check the vendor does not support documnet.head : "+ v, function(assert) {
+    QUnit.test("check the vendor does not support document.head : "+ v, function(assert) {
         // Given
         jQuery.cssHooks = {};
         this.fakeDocument = {};

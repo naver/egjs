@@ -46,7 +46,7 @@ egjs의 jQuery 확장 메서드는 다음과 같다.
 * persist() 메서드: 웹 페이지의 현재 상태를 키에 JSON 형식으로 저장한다.
   - [API 문서](http://naver.github.io/egjs/latest/doc/jQuery.html#persist)
   - [메서드 사용 예](http://naver.github.io/egjs/demo/persist/), [메서드 사용 예(CodePen)](http://codepen.io/collection/XOLpog/)
-* prefixCss() 메서드: CSS 속성의 제조사 접두어(vendor prefix)를 지원하지 않는 일부 jQuery 버전을 사용할 때 제조사 접두어를 지원할 수 있게 한다.
+* prefixCss() 메서드: CSS 속성의 제조사 접두어(vendor prefix)를 지원하지 않는 일부 jQuery 버전(1.4.3 ~ 1.7.x)을 사용할 때 제조사 접두어를 지원할 수 있게 한다.
   - [API 문서](http://naver.github.io/egjs/latest/doc/jQuery.html#persist)
   - [메서드 사용 예](http://naver.github.io/egjs/demo/cssPrefix/)
 * animate() 메서드: jQuery의 animate() 메서드를 확장한 메서드. CSS의 transform 속성과 3D 가속을 사용할 수 있다.
@@ -140,7 +140,7 @@ jQuery를 먼저 로딩한 다음 egjs를 로딩하게 설정한다.
 ```html
 ...
 <!-- jQuery 로딩 -->
-<script src="bower_components/jquery/jquery.js"></script>
+<script src="node_modules/jquery/dist/jquery.js"></script>
 
 <!-- 모든 의존성(Hammer.js) 파일이 패키징된 egjs를 로딩 -->
 <!-- 로컬에 설치된 파일을 로딩 -->
@@ -171,14 +171,13 @@ egjs를 개발하려면 다음과 같이 개발 환경을 설정한다.
 
 ### 개발 환경 설정
 
-#### 1. grunt-cli, Bower 설치
+#### 1. grunt-cli 설치
 
-grunt-cli와 Bower를 전역으로 설치한다.
+grunt-cli를 전역으로 설치한다.
 
 ```bash
 
 $ npm install grunt-cli -g  # grunt-cli 설치
-$ npm install bower -g  # Bower 설치
 ```
 
 #### 2. 저장소 복제와 의존성 모듈 설치
@@ -192,10 +191,7 @@ $ mkdir egjs && cd egjs
 # 저장소에서 코드를 복제
 $ git clone https://github.com/naver/egjs.git
 
-# Bower 의존성 모듈 설치
-$ bower install
-
-# node 의존성 모듈 설치
+# node 의존성 모듈들을 설치
 $ npm install
 ```
 
