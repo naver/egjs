@@ -138,7 +138,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				duration: 100,				// duration ms for animation
 				panelEffect: $.easing.easeOutCubic,  // $.easing function for panel change animation
 				defaultIndex: 0,			// initial panel index to be shown
-				inputType: ["touch", "mouse"]  // input type
+				inputType: ["touch", "mouse"],  // input type
+				adaptiveHeight: false  // whether container to be expanded depending on its children's max height or not
 			}, options);
 
 			var self = this;
@@ -238,12 +239,12 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var panelCount = panel.count = panel.origCount = $children.length;
 			var cssValue;
 			var bounce = options.bounce;
-			var dynamicHeight = options.dynamicHeight;
+			var adaptiveHeight = options.adaptiveHeight;
 
 			this._setPadding(padding, true);
 			var sizeValue = this._getDataByDirection([ panel.size, "100%" ]);
 
-			var heightCSSValue = horizontal && dynamicHeight ?
+			var heightCSSValue = horizontal && adaptiveHeight ?
 				this._getMaxHeightOfElements($children)
 				: "100%;";
 
@@ -269,7 +270,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			};
 
 			// To avoid overwriting children's height
-			if (!horizontal && !dynamicHeight) {
+			if (!horizontal && !adaptiveHeight) {
 				childrenCss.height = sizeValue[1];
 			}
 

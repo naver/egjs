@@ -455,10 +455,10 @@ QUnit.test("hwAccelerable", function(assert) {
 	assert.ok($.css(panel, "willChange") === "transform" || $getTransformValue(panel).indexOf("3d") >= 0, "HW Acceleration css property is prensent in panel element?");
 });
 
-QUnit.test("dynamicHeight", function(assert) {
+QUnit.test("adaptiveHeight", function(assert) {
 	// Given
 	var inst = this.create("#mflick4", {
-		dynamicHeight: true
+		adaptiveHeight: true
 	});
 
 	var container = inst.$container;
