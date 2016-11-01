@@ -3,7 +3,7 @@
 * egjs projects are licensed under the MIT license
 */
 
-eg.module("eg", ["jQuery", eg, window, eg.Agent], function($, ns, global, Agent) {
+eg.module("eg", [eg, window, eg.Agent], function(ns, global, Agent) {
 	"use strict";
 
 	var raf = global.requestAnimationFrame || global.webkitRequestAnimationFrame ||
@@ -251,10 +251,4 @@ return defaultVal;
 	ns.cancelAnimationFrame = function(key) {
 		caf(key);
 	};
-
-	$.extend($.easing, {
-		easeOutCubic: function(p) {
-			return 1 - Math.pow(1 - p, 3);
-		}
-	});
 });

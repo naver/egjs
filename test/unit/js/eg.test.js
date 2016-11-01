@@ -94,7 +94,7 @@ $.each( ua, function( i, v ) {
 	QUnit.test("isHWAccelerable Test : "+ v.device, function() {
 		// Given
 		this.fakeWindow.navigator.userAgent = v.ua;
-		eg.invoke("eg",[null, null, this.fakeWindow]);
+		eg.invoke("eg",[null, this.fakeWindow]);
 		// When
 		var isHWAccelerable = eg.isHWAccelerable();
 		//Then
@@ -106,7 +106,7 @@ $.each( ua, function( i, v ) {
 	QUnit.test("isTransitional Test : "+ v.device, function() {
 		// Given
 		this.fakeWindow.navigator.userAgent = v.ua;
-		eg.invoke("eg",[null, null, this.fakeWindow]);
+		eg.invoke("eg",[null, this.fakeWindow]);
 		// When
 		var isTransitional = eg.isTransitional();
 		//Then
@@ -118,7 +118,7 @@ $.each( ua, function( i, v ) {
 	QUnit.test("_hasClickBug Test : "+ v.device, function() {
 		// Given
 		this.fakeWindow.navigator.userAgent = v.ua;
-		eg.invoke("eg",[null, null, this.fakeWindow]);
+		eg.invoke("eg",[null, this.fakeWindow]);
 		// When
 		var _hasClickBug = eg._hasClickBug();
 		//Then
