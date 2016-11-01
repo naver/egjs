@@ -403,7 +403,8 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 
 				// when start pointer is held in inside
 				// get a initialization slope value to prevent smooth animation.
-				var initSlope = this._initSlope();
+				var initSlope = this._easing(0.00001) / 0.00001;
+
 				if (pos[1] < min[1]) { // up
 					tv = (min[1] - pos[1]) / (out[0] * initSlope);
 					pos[1] = min[1] - this._easing(tv) * out[0];
@@ -807,23 +808,6 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 
 		_easing: function(p) {
 			return p > 1 ? 1 : this.options.easing(p);
-		},
-
-		_initSlope: function() {
-			var easing = this.options.easing;
-
-			// var isIn = false;
-			// var p;
-			// for (p in $.easing) {
-			// 	if ($.easing[p] === easing) {
-			// 		isIn = !~p.indexOf("Out");
-			// 		break;
-			// 	}
-			// }
-			// return isIn ?
-			// 		easing(0.9999) / 0.9999 :
-			// 		easing(0.00001) / 0.00001;
-			return easing(0.00001) / 0.00001;
 		},
 
 		_setInterrupt: function(prevented) {

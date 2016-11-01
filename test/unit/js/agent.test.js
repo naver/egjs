@@ -14,7 +14,7 @@ $.each( ua, function( i, v ) {
 	QUnit.test("agent Test : "+ v.device, function(assert) {
 		// Given
 		this.fakeWindow.navigator.userAgent = v.ua;
-		eg.invoke("eg",[null, this.fakeWindow]);
+		eg.invoke("eg",[null, null, this.fakeWindow]);
 		// When
 		var agent = eg.agent();
 		//Then
@@ -30,7 +30,7 @@ $.each( nativeVersionProfile, function( i, v ) {
 	QUnit.test("agent hook nativeVersion Test"+i, function(assert) {
 		// Given
 		this.fakeWindow.navigator.userAgent = v.ua;
-		eg.invoke("eg",[null, this.fakeWindow]);
+		eg.invoke("eg",[null, null, this.fakeWindow]);
 		eg.hook = {};
 		eg.hook.agent = function(agent){
 			var dm = dm || v._documentMode || -1,
