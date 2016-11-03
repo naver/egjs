@@ -4,14 +4,14 @@
 */
 
 /**
- * Extends jQuery animate in order to use 'transform' property
- * @ko jQuery animate 사용시 transform을 사용할 수 있도록 확장한 animate 메소드
+ * A method that extends the <a href=http://api.jquery.com/animate/>.animate()</a> method provided by jQuery. With this method, you can use the transform property and 3D acceleration
+ * @ko jQuery의<a href=http://api.jquery.com/animate/>animate() 메서드</a>를 확장한 메서드. CSS의 transform 속성과 3D 가속을 사용할 수 있다.
  * @name jQuery#animate
  * @method
- * @param {Object} properties An object of CSS properties and values that the animation will move toward. <ko>애니메이션 할 CSS 속성과 값으로 구성된 오브젝트</ko>
- * @param {Number|String} [duration=4000] A string or number determining how long the animation will run. <ko>애니메이션 진행 시간</ko>
- * @param {String} [easing="swing"] A string indicating which easing function to use for the transition. <ko>transition에 사용할 easing 함수명</ko>
- * @param {Function} [complete] A function to call once the animation is complete. <ko>애니메이션이 완료한 후 호출하는 함수</ko>
+ * @param {Object} properties An object composed of the CSS property and value which will be applied to an animation<ko>애니메이션을 적용할 CSS 속성과 값으로 구성된 객체</ko>
+ * @param {Number|String} [duration=4000] Duration of the animation (unit: ms)<ko>애니메이션 진행 시간(단위: ms)</ko>
+ * @param {String} [easing="swing"] The easing function to apply to an animation<ko>애니메이션에 적용할 easing 함수</ko>
+ * @param {Function} [complete] A function that is called once the animation is complete.<ko>애니메이션을 완료한 다음 호출할 함수</ko>
  *
  * @example
  * $("#box")

@@ -6,8 +6,8 @@
 var cssPrefixes = [ "Webkit", "Moz" , "O" , "ms" ];
 var jQueryVer = jQuery.fn.jquery;
 
-module("css", {
-  setup : function() {
+QUnit.module("css", {
+  beforeEach : function() {
     this.fakeDocument = {
         head : {
             style : {}
@@ -17,13 +17,11 @@ module("css", {
     jQuery.fn.jquery = jQueryVer;
 
     jQuery.cssHooks = {};
-  },
-  teardown : function() {
   }
 });
 
 
-test("When is not jQuery.cssHooks", function() {
+QUnit.test("When is not jQuery.cssHooks", function(assert) {
     // Given
     delete jQuery.cssHooks;
     var method = null;
@@ -37,23 +35,60 @@ test("When is not jQuery.cssHooks", function() {
     // When
 
     //Then
-    equal(method, false);
+    assert.equal(method, false);
 });
 
 
-test("jQuery version 1.8 or later", function() {
+QUnit.test("jQuery version 1.8 or later", function(assert) {
     // Given
-    jQuery.fn.jquery = "1.8";
-    var method = eg.invoke("cssPrefix",[jQuery]);
+    var method;
 
     // When
+    jQuery.fn.jquery = "1.6.4";
+    method = eg.invoke("cssPrefix",[jQuery]);
 
     //Then
-    equal(method, undefined);
+    assert.notEqual(method, undefined, jQuery.fn.jquery);
+
+    // When
+    jQuery.fn.jquery = "1.7";
+    method = eg.invoke("cssPrefix",[jQuery]);
+
+    //Then
+    assert.notEqual(method, undefined, jQuery.fn.jquery);
+
+    // When
+    jQuery.fn.jquery = "1.8.0";
+    method = eg.invoke("cssPrefix",[jQuery]);
+
+    //Then
+    assert.equal(method, undefined, jQuery.fn.jquery);
+
+    // When
+    jQuery.fn.jquery = "1.11.1";
+    method = eg.invoke("cssPrefix",[jQuery]);
+
+    //Then
+    assert.equal(method, undefined, jQuery.fn.jquery);
+
+    // When
+    jQuery.fn.jquery = "2.0.1";
+    method = eg.invoke("cssPrefix",[jQuery]);
+
+    //Then
+    assert.equal(method, undefined, jQuery.fn.jquery);
+
+
+    // When
+    jQuery.fn.jquery = "3.1.0";
+    method = eg.invoke("cssPrefix",[jQuery]);
+
+    //Then
+    assert.equal(method, undefined, jQuery.fn.jquery);
 });
 
 
-test("transform and transition not support", function() {
+QUnit.test("transform and transition not support", function(assert) {
     // Given
     jQuery.cssHooks = {};
     this.fakeDocument.head.style = {};
@@ -62,12 +97,12 @@ test("transform and transition not support", function() {
     // When
 
     //Then
-    equal(method, undefined);
+    assert.equal(method, undefined);
 });
 
 
 cssPrefixes.forEach(function(v,i) {
-    test("check with the vendor documnet.head : "+ v, function() {
+    QUnit.test("check with the vendor document.head : "+ v, function(assert) {
         // Given
         jQuery.cssHooks = {};
         this.fakeDocument.head.style[v+"Transition"] = "";
@@ -76,12 +111,12 @@ cssPrefixes.forEach(function(v,i) {
         // When
 
         //Then
-        equal(method.vendorPrefix, v);
+        assert.equal(method.vendorPrefix, v);
     });
 });
 
 cssPrefixes.forEach(function(v,i) {
-    test("check the vendor does not support documnet.head : "+ v, function() {
+    QUnit.test("check the vendor does not support document.head : "+ v, function(assert) {
         // Given
         jQuery.cssHooks = {};
         this.fakeDocument = {};
@@ -96,65 +131,65 @@ cssPrefixes.forEach(function(v,i) {
         // When
 
         //Then
-        equal(method.vendorPrefix, v);
+        assert.equal(method.vendorPrefix, v);
     });
 });
 
 
 cssPrefixes.forEach(function(v,i) {
-    test("css property in jQuery.cssHooks : "+ v, function() {
+    QUnit.test("css property in jQuery.cssHooks : "+ v, function(assert) {
         // Given
         this.fakeDocument.head.style[v+"Transition"] = "";
-        var method = eg.invoke("cssPrefix",[jQuery, this.fakeDocument]);
+        eg.invoke("cssPrefix",[jQuery, this.fakeDocument]);
         var checkPropertie = v.toLowerCase() + "Transform";
 
         // When
 
         //Then
-        equal( checkPropertie in jQuery.cssHooks, true);
+        assert.equal( checkPropertie in jQuery.cssHooks, true);
     });
 });
 
-test("When not computed ", function() {
+QUnit.test("When not computed ", function(assert) {
     // Given
-    var method = eg.invoke("cssPrefix",[jQuery, document]);
+    eg.invoke("cssPrefix",[jQuery, document]);
 
     // When
     $("#prefixId").css("transform", "translate(100px, 0px)");
 
     //Then
     var returnValue = $.style($("#prefixId").get(0), "transform");
-    equal(returnValue, "translate(100px, 0px)");
+    assert.equal(returnValue, "translate(100px, 0px)");
 });
 
-test("transform property set/get", function() {
+QUnit.test("transform property set/get", function(assert) {
     // Given
-    var method = eg.invoke("cssPrefix",[jQuery, document]);
+    eg.invoke("cssPrefix",[jQuery, document]);
 
     // When
     $("#prefixId").css("transform", "translate(200px, 0px)");
 
     //Then
     var returnValue = jQuery("#prefixId").css("transform");
-    equal(returnValue , "matrix(1, 0, 0, 1, 200, 0)");
+    assert.equal(returnValue , "matrix(1, 0, 0, 1, 200, 0)");
 });
 
 
-test("Transform property set/get", function() {
+QUnit.test("Transform property set/get", function(assert) {
     // Given
-    var method = eg.invoke("cssPrefix",[jQuery, document]);
+    eg.invoke("cssPrefix",[jQuery, document]);
 
     // When
     $("#prefixId").css("Transform", "translate(300px, 0px)");
 
     //Then
     var returnValue = jQuery("#prefixId").css("Transform");
-    equal(returnValue , "matrix(1, 0, 0, 1, 300, 0)");
+    assert.equal(returnValue , "matrix(1, 0, 0, 1, 300, 0)");
 });
 
-test("transform property with bender prefix set/get", function() {
+QUnit.test("transform property with bender prefix set/get", function(assert) {
     // Given
-    var method = eg.invoke("cssPrefix",[jQuery, document]);
+    eg.invoke("cssPrefix",[jQuery, document]);
 	var cssPrefixes = [ "Webkit", "Moz", "O", "ms" ];
     var vendorPrefix = (function() {
 		var bodyStyle = (document.head || document.getElementsByTagName("head")[0]).style;
@@ -170,5 +205,5 @@ test("transform property with bender prefix set/get", function() {
 
     //Then
     var returnValue = jQuery("#prefixId").css( vendorPrefix + "Transform");
-    equal(returnValue , "matrix(1, 0, 0, 1, 400, 0)");
+    assert.equal(returnValue , "matrix(1, 0, 0, 1, 400, 0)");
 });

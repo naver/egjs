@@ -4,13 +4,25 @@
 */
 
 // jscs:disable maximumLineLength
-eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, doc) {
+eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 	"use strict";
 
 	// jscs:enable maximumLineLength
 	var wp = global.performance;
 	var history = global.history;
-	var userAgent = global.navigator.userAgent;
+	var isNeeded = (function() {
+		var ua = global.navigator.userAgent;
+		var version = ua ? ua.match(/Android\s([^\;]*)/i) : null;
+
+		/*
+		* a isNeeded value is
+		*  - iOS: false,
+		*  - Android 4.4+: true
+		*  - Android 4.4 and less: false
+		*/
+		return !(/iPhone|iPad/.test(ua) || (version ? parseFloat(version.pop()) < 4.4 : true));
+	})();
+
 	var JSON = global.JSON;
 	var CONST_PERSIST = "___persist___";
 	var GLOBAL_KEY = "KEY" + CONST_PERSIST;
@@ -47,7 +59,6 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 			return false;
 		}
 	}
-
 	if (!isSupportState && !storage) {
 		return;
 	}
@@ -80,7 +91,6 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	function reset() {
 		setState(null);
 	}
-
 	/*
 	 * Get state value
 	 */
@@ -103,7 +113,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 			state = JSON.parse(stateStr);
 
 			// like '[ ... ]', '1', '1.234', '"123"' is also not valid
-			isValidType = !(jQuery.type(state) !== "object" || state instanceof Array);
+			isValidType = !($.type(state) !== "object" || state instanceof Array);
 
 			if (!isValidStateStr || !isValidType) {
 				throw new Error();
@@ -133,7 +143,6 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 		}
 		return result;
 	}
-
 	/*
 	 * Set state value
 	 */
@@ -167,14 +176,13 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 		beforeData[key] = data;
 		setState(beforeData);
 	}
-
 	/**
-	* Save current state.
-	* @ko 인자로 넘긴 현재 상태정보를 저장한다.
+	* Stores the current state of the web page in a default key using JSON.
+	* @ko 웹 페이지의 현재 상태를 기본 키에 JSON 형식으로 저장한다.
 	* @method jQuery.persist
 	* @deprecated since version 1.2.0
 	* @support {"ie": "9+", "ch" : "latest", "ff" : "1.5+",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.2+ (except 3.x)"}
-	* @param {Object} state State object to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체</ko>
+	* @param {Object} state The state information of the web page written in JSON <ko>JSON 객체로 정의한 웹 페이지의 상태 정보</ko>
 	* @example
 	$("a").on("click",function(e){
 		e.preventdefault();
@@ -183,11 +191,11 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	});
 	*/
 	/**
-	* Return current state
-	* @ko 인자로 넘긴 현재 상태정보를 반환한다.
-	* @method jQuery.persist
+	* Return stored state in global namespace as object
+	* @ko 디폴트 키에 저장된 상태를 반환한다.
+`	* @method jQuery.persist
 	* @deprecated since version 1.2.0
-	* @return {Object} state Stored state object <ko>복원을 위해 저장되어있는 상태 객체</ko>
+	* @return {Object}
 	* @example
 	$("a").on("click",function(e){
 		e.preventdefault();
@@ -196,12 +204,11 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	});
 	*/
 	/**
-	* Save current state
-	* @ko 인자로 넘긴 현재 상태정보를 저장한다.
+	* Stores the current state of the web page using JSON.
+	* @ko 웹 페이지의 현재 상태를 JSON 형식으로 저장한다
 	* @method jQuery.persist
-    * @param {String} key State key to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체의 키</ko>
-    * @param {String} state State object to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체</ko>
-	* @return {Object} state Stored state object <ko>복원을 위해 저장되어있는 상태 객체</ko>
+    * @param {String} key The key of the state information to be stored <ko>저장할 상태 정보의 키</ko>
+    * @param {Object} state The value to be stored in a given key<ko>키에 저장할 값</ko>
 	* @example
 	$("a").on("click",function(e){
 		e.preventdefault();
@@ -210,11 +217,11 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	});
 	*/
 	/**
-	* Return current state
-	* @ko 인자로 넘긴 현재 상태정보를 반환한다.
+	* Returns the state of stored web pages.
+	* @ko 저장된 웹 페이지의 상태를 반환한다
 	* @method jQuery.persist
-	* @param {String} key State key to be stored in order to restore UI component's state <ko>UI 컴포넌트의 상태를 복원하기위해 저장하려는 상태 객체의 키</ko>
-	* @return {Object} state Stored state object <ko>복원을 위해 저장되어있는 상태 객체</ko>
+	* @param {String} key The name of the key to be checked<ko>값을 확인할 키의 이름</ko>
+	* @return {Object} The value of the key <ko>키의 값</ko>
 	* @example
 	$("a").on("click",function(e){
 		e.preventdefault();
@@ -237,22 +244,13 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	};
 
 	/**
-	* Return persist needs by checking bfCache support
-	* @ko Persist 동작 필요여부를 반환한다.
+	* Return whether you need "Persist" module by checking the bfCache support of the current browser
+	* @ko 현재 브라우저의 bfCache 지원여부에 따라 persist 모듈의 필요여부를 반환한다.
 	* @method $.persist.isApplicable
 	* @example
 	$.persist.isApplicable();
 	*/
 	$.persist.isNeeded = function() {
-		var agentOs = ns.agent(userAgent).os;
-		var isNeeded = true;
-		if (agentOs.name === "ios" ||
-				(agentOs.name === "android" && parseFloat(agentOs.version) < 4.4)) {
-			isNeeded = false;
-		}
-		$.persist.isNeeded = function() {
-			return isNeeded;
-		};
 		return isNeeded;
 	};
 
@@ -267,7 +265,6 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 			$global.off("pageshow", onPageshow);
 		},
 		trigger: function(e) {
-
 			//If you use 'persist' event, you can get global-key only!
 			e.state = getStateByKey(GLOBAL_KEY);
 		}
@@ -278,8 +275,6 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 		"reset": reset,
 		"getState": getState,
 		"setState": setState,
-		"persist": $.persist,
-		"isNeeded": $.persist.isNeeded,
 		"GLOBALKEY": GLOBAL_KEY
 	};
 });

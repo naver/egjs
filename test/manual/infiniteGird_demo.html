@@ -5,27 +5,23 @@
 <title>InfiniteGrid</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
-<link rel="stylesheet" href="../../bower_components/bootflat/bootstrap/bootstrap.min.css">
-<link rel="stylesheet" href="../../bower_components/bootflat/css/bootflat.css">
+
+<!--<link rel="stylesheet" href="../../node_modules/bootflat/css/bootstrap.min.css">
+<link rel="stylesheet" href="../../node_modules/bootflat/bootflat/css/bootflat.css">-->
+
+<link rel="stylesheet" href="../../node_modules/bootflat/css/bootstrap.min.css">
+<link rel="stylesheet" href="../../node_modules/bootflat/bootflat/css/bootflat.css">
+
 <link rel="stylesheet" href="../../assets/css/item.css">
 <!--[if lt IE 9]>
-<script src="../../bower_components/respond/dest/respond.min.js"></script>
+<script src="../../node_modules/respond.js/dest/respond.min.js"></script>
 <![endif]-->
 
-<script src="../../bower_components/jquery/jquery.js"></script>
-<script src="../../bower_components/handlebars/handlebars.js"></script>
+<script src="../../node_modules/jquery/dist/jquery.js"></script>
+<script src="../../node_modules/handlebars/dist/handlebars.js"></script>
 <script src="../../src/module.js"></script>
+<script src="../../src/agent.js"></script>
 <script src="../../src/eg.js"></script>
-<script src="../../src/hook/cssPrefix.js"></script>
-<script src="../../bower_components/get-style-property/get-style-property.js"></script>
-<script src="../../bower_components/get-size/get-size.js"></script>
-<script src="../../bower_components/matches-selector/matches-selector.js"></script>
-<script src="../../bower_components/eventEmitter/EventEmitter.js"></script>
-<script src="../../bower_components/eventie/eventie.js"></script>
-<script src="../../bower_components/doc-ready/doc-ready.js"></script>
-<script src="../../bower_components/fizzy-ui-utils/utils.js"></script>
-<script src="../../bower_components/outlayer/item.js"></script>
-<script src="../../bower_components/outlayer/outlayer.js"></script>
 <script src="../../src/class.js"></script>
 <script src="../../src/component.js"></script>
 <script src="../../src/plugin/persist.js"></script>
@@ -93,7 +89,7 @@ var data = {
 			return {
 				offset: v,
 				imgSrc: "http://naver.github.io/egjs-experiment/infiniteGridService/demo/img/" + ( ( (v + 1) % 60) + 1 ) + ".jpg",
-				href: "http://naver.com/",
+				href: "http://www.google.com/",
 				desc: "Cras justo odio bla bla bla bla bla bla bla bla"
 			};
 		});
@@ -102,12 +98,12 @@ var data = {
 };
 $(function() {
 	var $grid = $("#grid");
-	// $grid.append(template(data.getItems(0)));
 
 	var ig = new eg.InfiniteGrid("#grid", {
 		count : 60,
 		defaultGroupKey : 0
-	}).on({
+	})
+	.on({
 		"append" : function(e) {
 			var gk = this.getGroupKeys();
 			var lastGk = gk[gk.length-1];
@@ -127,7 +123,7 @@ $(function() {
 	});
 
 	// for persist logic
-	if($.persist.isNeeded()) {
+	// if($.persist.isNeeded()) {
 		if ("scrollRestoration" in history) {
 			history.scrollRestoration = "manual";
 		}
@@ -144,9 +140,9 @@ $(function() {
 			ig.setStatus(persistData.grid);
 			window.scrollTo(0, persistData.scrollPos);
 		}
-	} else {
-		ig.append(template(data.getItems(0)), 0);
-	}
+	// } else {
+	// 	ig.append(template(data.getItems(0)), 0);
+	// }
 });
 </script>
 </body>

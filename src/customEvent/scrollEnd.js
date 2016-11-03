@@ -9,14 +9,14 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 
 	// jscs:eable maximumLineLength
 	/**
-	* Add scrollEnd event support in jQuery
-	* @ko jQuery custom scrollEnd 이벤트 지원
+	* A custom event in jQuery occurs when scroll ends.
+	* @ko 스크롤이 끝날 때 발생하는 jQuery 커스텀 이벤트
 	* @name jQuery#scrollEnd
 	* @event
-	* @param {Event} e
-	* @param {Object} info
-	* @param {Number} info.top top position <ko>상단(top) 위치 값</ko>
-	* @param {Number} info.left left position <ko>왼쪽(left) 위치 값</ko>
+	* @param {Event} e The Event object in jQuery <ko>jQuery의 Event 객체</ko>
+	* @param {Object} info The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+	* @param {Number} info.top The size of the vertical scroll pane (unit: px)<ko>세로 스크롤 영역의 크기(단위: px)</ko>
+	* @param {Number} info.left The size of horizontal scroll pane (unit: px)<ko>가로 스크롤 영역의 크기(단위: px)</ko>
 	* @support {"ie": "9+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	* @example
 	* $(window).on("scrollend",function(e, info){
@@ -72,18 +72,16 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 		var osVersion = parseInt(osInfo.version, 10);
 		var browserInfo = agent.browser;
 
-		// Browsers that trigger scroll event like scrollstop : SCROLLBASE
-		if (osInfo.name === "ios") {
+		// webview : TIMERBASE
+		if (!browserInfo.webview) {
 
-			// webview : TIMERBASE
-			if (browserInfo.webview === true) {
-				retValue = TIMERBASE;
-			} else if (osVersion <= 7) {
+			// Browsers that trigger scroll event like scrollstop : SCROLLBASE
+			if (osInfo.name === "ios" && osVersion <= 7) {
 				retValue = SCROLLBASE;
-			}
-		} else if (osInfo.name === "android") {
-			if (browserInfo.name === "default" && osVersion <= 2.3) {
-				retValue = SCROLLBASE;
+			} else if (osInfo.name === "android") {
+				if (browserInfo.name === "default" && osVersion <= 2.3) {
+					retValue = SCROLLBASE;
+				}
 			}
 		}
 		return retValue;

@@ -130,6 +130,79 @@ test("getDeviceType : android && version 3.x over ", function() {
 
 });
 
+
+
+test("getDeviceType : webview ", function() {
+    // Given
+  eg.agent = function(){
+    return {
+       "os" : {
+           "name" : "ios",
+           "version" : "7.0"
+        },
+        "browser" : {
+            "name" : "safari",
+            "version" : "7.0",
+            "webview" : true
+        }
+    };
+  };
+    var method = eg.invoke("scrollEnd");
+
+    // When
+    $(window).on("scrollend", function(){
+    });
+
+    // Then
+    equal(method.getDeviceType(), method.TIMERBASE);
+
+    // Given
+    eg.agent = function(){
+      return {
+         "os" : {
+             "name" : "ios",
+             "version" : "8.0"
+          },
+          "browser" : {
+              "name" : "safari",
+              "version" : "7.0",
+              "webview" : true
+          }
+      };
+    };
+    method = eg.invoke("scrollEnd");
+
+    // When
+    $(window).on("scrollend", function(){
+    });
+
+    // Then
+    equal(method.getDeviceType(), method.TIMERBASE);
+
+    // Given
+    eg.agent = function(){
+      return {
+         "os" : {
+             "name" : "android",
+             "version" : "4.1"
+          },
+          "browser" : {
+              "name" : "default",
+              "webview" : true
+          }
+      };
+    };
+    method = eg.invoke("scrollEnd");
+
+    // When
+    $(window).on("scrollend", function(){
+    });
+
+    // Then
+    equal(method.getDeviceType(), method.TIMERBASE);
+
+});
+
 test("getDeviceType : ios 7 && not webview ", function() {
     // Given
   eg.agent = function(){
@@ -286,7 +359,7 @@ test("scroll after rotate", function() {
       start();
   }, 1000);
 });
-  
+
 if(eg.agent().browser.name === "PhantomJS") {
   test("scroll scroll", function() {
     // Given
@@ -301,16 +374,16 @@ if(eg.agent().browser.name === "PhantomJS") {
          }
        }
       };
-  
+
       window.scrollTo(0, 1);
       var method = eg.invoke("scrollEnd");
       var self = this;
-  
+
     // When
       $(window).on("scrollend", function(){
          self.isFireEvent = true;
       });
-  
+
       this.intervalNum = setInterval(function(){
           self.topPos += 10;
           window.scrollTo(0, self.topPos);
@@ -318,18 +391,18 @@ if(eg.agent().browser.name === "PhantomJS") {
               clearInterval(self.intervalNum);
           }
       }, 30);
-  
+
     // Then
     equal(method.getDeviceType(), method.SCROLLBASE);
-  
+
     stop();
     setTimeout(function(){
         strictEqual(self.isFireEvent , true, "scrollend event occurred");
         start();
     }, 500);
   });
-  
-  
+
+
   test("timer scroll", function() {
     // Given
     eg.agent = function(){
@@ -343,16 +416,16 @@ if(eg.agent().browser.name === "PhantomJS") {
          }
        }
       };
-  
+
       window.scrollTo(0, 1);
       var method = eg.invoke("scrollEnd");
       var self = this;
-  
+
     // When
       $(window).on("scrollend", function(){
          self.isFireEvent = true;
       });
-  
+
       this.intervalNum = setInterval(function(){
           self.topPos += 10;
           window.scrollTo(0, self.topPos);
@@ -360,18 +433,18 @@ if(eg.agent().browser.name === "PhantomJS") {
               clearInterval(self.intervalNum);
           }
       }, 30);
-  
+
     // Then
     equal(method.getDeviceType(), method.TIMERBASE);
-  
+
     stop();
     setTimeout(function(){
         strictEqual(self.isFireEvent , true, "scrollend event occurred");
         start();
     }, 500);
   });
-  
-  
+
+
   test("chrome scroll", function() {
     // Given
     eg.agent = function(){
@@ -385,17 +458,17 @@ if(eg.agent().browser.name === "PhantomJS") {
          }
        }
       };
-  
+
       window.scrollTo(0, 1);
       var method = eg.invoke("scrollEnd");
       var self = this;
-  
+
     // When
       $(window).on("scrollend", function(){
          self.isFireEvent = true;
       });
       $(window).trigger("orientationchange");
-  
+
       this.intervalNum = setInterval(function(){
           self.topPos += 10;
           window.scrollTo(0, self.topPos);
@@ -403,10 +476,10 @@ if(eg.agent().browser.name === "PhantomJS") {
               clearInterval(self.intervalNum);
           }
       }, 30);
-  
+
     // Then
     equal(method.getDeviceType(), method.TIMERBASE);
-  
+
     stop();
     setTimeout(function(){
         strictEqual(self.isFireEvent , true, "scrollend event occurred");
