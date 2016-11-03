@@ -139,7 +139,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				panelEffect: $.easing.easeOutCubic,  // $.easing function for panel change animation
 				defaultIndex: 0,			// initial panel index to be shown
 				inputType: ["touch", "mouse"],  // input type
-				adaptiveHeight: false  // whether container to be expanded depending on its children's max height or not
+				adaptiveHeight: false  // whether change container's height according to each panel's height or not
 			}, options);
 
 			var self = this;
@@ -239,18 +239,12 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var panelCount = panel.count = panel.origCount = $children.length;
 			var cssValue;
 			var bounce = options.bounce;
-			var adaptiveHeight = options.adaptiveHeight;
 
 			this._setPadding(padding, true);
 			var sizeValue = this._getDataByDirection([ panel.size, "100%" ]);
 
-			var heightCSSValue = horizontal && adaptiveHeight ?
-				this._getMaxHeightOfElements($children)
-				: "100%;";
-
 			// create container element
-			cssValue = "position:relative;z-index:2000;width:100%;" +
-				("height:" + heightCSSValue) +
+			cssValue = "position:relative;z-index:2000;width:100%;height:100%;" +
 				(horizontal ? "" : "top:0;");
 
 			if (this.$container) {
@@ -261,21 +255,15 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				).parent();
 			}
 
-			var childrenCss = {
+			// panels' css values
+			$children.addClass(prefix + "-panel").css({
 				position: "absolute",
 				width: sizeValue[0],
+				height: sizeValue[1],
 				boxSizing: "border-box",
 				top: 0,
 				left: 0
-			};
-
-			// To avoid overwriting children's height
-			if (!horizontal && !adaptiveHeight) {
-				childrenCss.height = sizeValue[1];
-			}
-
-			// panels' css values
-			$children.addClass(prefix + "-panel").css(childrenCss);
+			});
 
 			if (this._addClonePanels()) {
 				panelCount = panel.count = (
@@ -295,19 +283,6 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			});
 
 			this._setDefaultPanel(options.defaultIndex);
-		},
-
-		/**
-		 * Get the max height of elements
-		 * @param {Array} $elements
-		 * @returns {string}
-		 */
-		_getMaxHeightOfElements: function($elements) {
-			var maxVal = Math.max.apply(Math, $elements.map(function() {
-				return $(this).height();
-			}).get());
-
-			return maxVal + "px";
 		},
 
 		/**
@@ -426,12 +401,13 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 */
 		_arrangePanels: function (sort, indexToMove) {
 			var conf = this._conf;
+			var options = this.options;
 			var panel = conf.panel;
 			var touch = conf.touch;
 			var dirData = conf.dirData;
 			var baseIndex;
 
-			if (this.options.circular) {
+			if (options.circular) {
 				// when arranging panels, set flag to not trigger flick custom event
 				conf.customEvent.flick = false;
 
@@ -456,6 +432,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			}
 
 			this._applyPanelsPos();
+			options.adaptiveHeight && this._setAdaptiveHeight();
 		},
 
 		/**
@@ -651,6 +628,10 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 					animationStart: $.proxy(this._animationStartHandler, this),
 					animationEnd: $.proxy(this._animationEndHandler, this)
 				});
+
+				options.adaptiveHeight && this.on({
+					beforeFlickStart: $.proxy(this._adaptiveHeightHandler, this)
+				});
 			} else {
 				mcInst.unbind($wrapper).off();
 			}
@@ -798,6 +779,46 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 
 			this._conf.panel.animating = false;
 			this._triggerRestore();
+		},
+
+		/**
+		 * 'beforeFlickStart' event Handler
+		 * @param e
+     */
+		_adaptiveHeightHandler: function(e) {
+			this._setAdaptiveHeight(e.direction);
+		},
+
+		/**
+		 * Set container's height according to each children's height
+		 * @param direction
+     */
+		_setAdaptiveHeight: function(direction) {
+			var MC = eg.MovableCoord;
+			var $panel;
+			var $children;
+
+			if (direction === MC.DIRECTION_LEFT) {
+				$panel = this.getNextElement();
+			} else if (direction === MC.DIRECTION_RIGHT) {
+				$panel = this.getPrevElement();
+			} else {
+				$panel = this.getElement();
+			}
+
+			var height = $panel.attr("data-height") || 0;
+			if (!height) {
+				$children = $panel.children();
+
+				// if panel element has multiple elements as child,
+				// create a wrapper div to measure outerHeight correctly
+				if ($children.length > 1) {
+					$children.wrapAll("<div></div>");
+					$children = $panel.children();
+				}
+				$panel.attr("data-height", height = $children.outerHeight(true));
+			}
+			this.$wrapper.height(height);
 		},
 
 		/**
