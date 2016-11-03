@@ -4,10 +4,30 @@
 */
 
 // jscs:disable maximumLineLength
-eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, global, HM) {
+eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 	"use strict";
 
 	var SUPPORT_TOUCH = "ontouchstart" in global;
+
+	function extend(out) {
+		out = out || {};
+		for (var i = 1; i < arguments.length; i++) {
+			if (!arguments[i]) {
+				continue;
+			}
+
+			for (var key in arguments[i]) {
+				if (arguments[i].hasOwnProperty(key)) {
+					out[key] = arguments[i][key];
+				}
+			}
+		}
+		return out;
+	}
+
+	function easeOutCubic(x) {
+		return 1 - Math.pow(1 - x, 3);
+	}
 
 	// jscs:enable maximumLineLength
 	/**
@@ -59,13 +79,13 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 	 */
 	var MC = ns.MovableCoord = ns.Class.extend(ns.Component, {
 		construct: function(options) {
-			$.extend(this.options = {
+			extend(this.options = {
 				min: [0, 0],
 				max: [100, 100],
 				bounce: [10, 10, 10, 10],
 				margin: [0,0,0,0],
 				circular: [false, false, false, false],
-				easing: $.easing.easeOutCubic,
+				easing: easeOutCubic,
 				maximumDuration: Infinity,
 				deceleration: 0.0006
 			}, options);
@@ -81,10 +101,10 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			this._pos = this.options.min.concat();
 			this._subOptions = {};
 			this._raf = null;
-			this._animationEnd = $.proxy(this._animationEnd, this);	// for caching
-			this._restore = $.proxy(this._restore, this);	// for caching
-			this._panmove = $.proxy(this._panmove, this);	// for caching
-			this._panend = $.proxy(this._panend, this);	// for caching
+			this._animationEnd = this._animationEnd.bind(this);	// for caching
+			this._restore = this._restore.bind(this);	// for caching
+			this._panmove = this._panmove.bind(this);	// for caching
+			this._panend = this._panend.bind(this);	// for caching
 		},
 		/**
 		 * Registers an element to use the eg.MovableCoord module.
@@ -103,8 +123,13 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		 * @return {eg.MovableCoord} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 		 */
 		bind: function(el, options) {
-			var $el = $(el);
-			var keyValue = $el.data(MC._KEY);
+			if (typeof el === "string") {
+				el = document.querySelector(el);
+			} else if (el instanceof jQuery && el.length > 0) {
+				el = el[0];
+			}
+
+			var keyValue = el[MC._KEY];
 			var subOptions = {
 				direction: MC.DIRECTION_ALL,
 				scale: [ 1, 1 ],
@@ -113,7 +138,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 				inputType: [ "touch", "mouse" ]
 			};
 
-			$.extend(subOptions, options);
+			extend(subOptions, options);
 
 			var inputClass = this._convertInputType(subOptions.inputType);
 			if (!inputClass) {
@@ -127,13 +152,13 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			}
 			this._hammers[keyValue] = {
 				inst: this._createHammer(
-					$el.get(0),
+					el,
 					subOptions,
 					inputClass
 				),
 				options: subOptions
 			};
-			$el.data(MC._KEY, keyValue);
+			el[MC._KEY] = keyValue;
 			return this;
 		},
 
@@ -166,7 +191,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		},
 
 		_attachHammerEvents: function(hammer, options) {
-			return hammer.on("hammer.input", $.proxy(function(e) {
+			return hammer.on("hammer.input", function(e) {
 					if (e.isFirst) {
 						// apply options each
 						this._subOptions = options;
@@ -176,7 +201,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 						// substitute .on("panend tap", this._panend); Because it(tap, panend) cannot catch vertical(horizontal) movement on HORIZONTAL(VERTICAL) mode.
 						this._panend(e);
 					}
-				}, this))
+				}.bind(this))
 				.on("panstart panmove", this._panmove);
 		},
 
@@ -188,7 +213,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			var hasTouch = false;
 			var hasMouse = false;
 			inputType = inputType || [];
-			$.each(inputType, function(i, v) {
+			inputType.forEach(function(v) {
 				switch (v) {
 					case "mouse" : hasMouse = true; break;
 					case "touch" : hasTouch = SUPPORT_TOUCH;
@@ -206,12 +231,17 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		 * @return {eg.MovableCoord} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 		 */
 		unbind: function(el) {
-			var $el = $(el);
-			var key = $el.data(MC._KEY);
+			if (typeof el === "string") {
+				el = document.querySelector(el);
+			} else if (el instanceof jQuery && el.length > 0) {
+				el = el[0];
+			}
+
+			var key = el[MC._KEY];
 			if (key) {
 				this._hammers[key].inst.destroy();
 				delete this._hammers[key];
-				$el.data(MC._KEY, null);
+				delete el[MC._KEY];
 			}
 			return this;
 		},
@@ -373,7 +403,8 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 
 				// when start pointer is held in inside
 				// get a initialization slope value to prevent smooth animation.
-				var initSlope = this._initSlope();
+				var initSlope = this._easing(0.00001) / 0.00001;
+
 				if (pos[1] < min[1]) { // up
 					tv = (min[1] - pos[1]) / (out[0] * initSlope);
 					pos[1] = min[1] - this._easing(tv) * out[0];
@@ -663,10 +694,10 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		_reviseOptions: function() {
 			var key;
 			var self = this;
-			$.each(["bounce", "margin", "circular"], function(i, v) {
+			(["bounce", "margin", "circular"]).forEach(function(v) {
 				key = self.options[v];
 				if (key != null) {
-					if ($.isArray(key)) {
+					if (key.constructor === Array) {
 						self.options[v] = key.length === 2 ?
 							key.concat(key) : key.concat();
 					} else if (/string|number|boolean/.test(typeof key)) {
@@ -776,22 +807,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		},
 
 		_easing: function(p) {
-			return p > 1 ? 1 : this.options.easing(p, p, 0, 1, 1);
-		},
-
-		_initSlope: function() {
-			var easing = this.options.easing;
-			var isIn = false;
-			var p;
-			for (p in $.easing) {
-				if ($.easing[p] === easing) {
-					isIn = !~p.indexOf("Out");
-					break;
-				}
-			}
-			return isIn ?
-					easing(0.9999, 0.9999, 0, 1, 1) / 0.9999 :
-					easing(0.00001, 0.00001, 0, 1, 1) / 0.00001;
+			return p > 1 ? 1 : this.options.easing(p);
 		},
 
 		_setInterrupt: function(prevented) {

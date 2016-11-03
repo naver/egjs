@@ -2,6 +2,7 @@
 * Copyright (c) 2015 NAVER Corp.
 * egjs projects are licensed under the MIT license
 */
+QUnit.config.reorder = false;
 
 QUnit.module("movableCoord init Test", {
 	beforeEach : function() {
@@ -88,17 +89,17 @@ QUnit.module("movableCoord bind/unbind Test", {
 
 QUnit.test("bind", function(assert) {
 	// Given
-	var $el = jQuery("#area");
-	var before = $el.data(eg.MovableCoord._KEY);
+	var el = document.getElementById("area");
+	var before = el[eg.MovableCoord._KEY];
 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
 
 	// When
-	this.inst.bind($el, {
+	this.inst.bind(el, {
 		direction : eg.MovableCoord.DIRECTION_ALL
 	});
 
 	// Then
-	var key = $el.data(eg.MovableCoord._KEY);
+	var key = el[eg.MovableCoord._KEY];
 	assert.equal(before, undefined, "key data value is 'undefined'' before call bind method" );
 	assert.notEqual(key, undefined, "key data value is something after call bind method" );
 	assert.equal(beforeHammerCount+1, Object.keys(this.inst._hammers).length, "added hammer instance after call bind method" );
@@ -106,18 +107,18 @@ QUnit.test("bind", function(assert) {
 
 QUnit.test("bind with inputType", function(assert) {
 	// Given
-	var $el = jQuery("#area");
-	var before = $el.data(eg.MovableCoord._KEY);
+	var el = document.getElementById("area");
+	var before = el[eg.MovableCoord._KEY];
 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
 
 	// When
-	var returnVal = this.inst.bind($el, {
+	var returnVal = this.inst.bind(el, {
 		direction : eg.MovableCoord.DIRECTION_ALL,
 		inputType : null
 	});
 
 	// Then
-	var key = $el.data(eg.MovableCoord._KEY);
+	var key = el[eg.MovableCoord._KEY];
 	assert.equal(returnVal, this.inst, "return instance" );
 	assert.equal(before, undefined, "key data value is 'undefined'' before call bind method" );
 	assert.equal(key, undefined, "key data value is 'undefined' after call bind method" );
@@ -126,17 +127,17 @@ QUnit.test("bind with inputType", function(assert) {
 
 QUnit.test("unbind", function(assert) {
 	// Given
-	var $el = jQuery("#area");
-	this.inst.bind($el, {
+	var el = document.getElementById("area");
+	this.inst.bind(el, {
 		direction : eg.MovableCoord.DIRECTION_ALL
 	});
-	var before = $el.data(eg.MovableCoord._KEY);
+	var before = el[eg.MovableCoord._KEY];
 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
 
 	// When
-	var returnVal = this.inst.unbind($el);
+	var returnVal = this.inst.unbind(el);
 	// Then
-	var key = $el.data(eg.MovableCoord._KEY);
+	var key = el[eg.MovableCoord._KEY];
 	assert.equal(returnVal, this.inst, "return instance" );
 	assert.notEqual(before, key, "key data value was changed after call 'unbind' method" );
 	assert.equal(key, undefined, "key data value is 'undefined'' after call bind method" );
@@ -145,19 +146,19 @@ QUnit.test("unbind", function(assert) {
 
 QUnit.test("unbind with inputType", function(assert) {
 	// Given
-	var $el = jQuery("#area");
-	this.inst.bind($el, {
+	var el = document.getElementById("area");
+	this.inst.bind(el, {
 		direction : eg.MovableCoord.DIRECTION_ALL,
 		inputType : []
 	});
-	var before = $el.data(eg.MovableCoord._KEY);
+	var before = el[eg.MovableCoord._KEY];
 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
 
 	// When
-	this.inst.unbind($el);
+	this.inst.unbind(el);
 
 	// Then
-	var key = $el.data(eg.MovableCoord._KEY);
+	var key = el[eg.MovableCoord._KEY];
 	assert.equal(before, undefined, "key data value is 'undefined'' after call 'unbind' method" );
 	assert.equal(key, undefined, "key data value is 'undefined'' after call bind method" );
 	assert.equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "nothing" );
@@ -165,21 +166,21 @@ QUnit.test("unbind with inputType", function(assert) {
 
 QUnit.test("one element, double bind", function(assert) {
 	// Given
-	var $el = jQuery("#area");
-	this.inst.bind($el, {
+	var el = document.getElementById("area");
+	this.inst.bind(el, {
 		direction : eg.MovableCoord.DIRECTION_ALL
 	});
 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
-	var before = $el.data(eg.MovableCoord._KEY);
+	var before = el[eg.MovableCoord._KEY];
 	var beforeHammerObject = this.inst._hammers[before];
 
 	// When
-	this.inst.bind($el, {
+	this.inst.bind(el, {
 		direction : eg.MovableCoord.DIRECTION_HORIZONTAL
 	});
 
 	// Then
-	var key = $el.data(eg.MovableCoord._KEY);
+	var key = el[eg.MovableCoord._KEY];
 	assert.equal(before, key, "key data value is same" );
 	assert.notDeepEqual(beforeHammerObject.inst, this.inst._hammers[key].inst, "recreate hammer instance" );
 	assert.equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "hammer instance count is same" );
@@ -1234,7 +1235,7 @@ QUnit.test("_convertInputType (support touch)", function(assert) {
 	var globalWithToucnSupport = {
 		"ontouchstart": {}
 	};
-	var method = eg.invoke("movableCoord", [jQuery, eg, globalWithToucnSupport, Hammer]);
+	var method = eg.invoke("movableCoord", [eg, globalWithToucnSupport, Hammer]);
 	var inst = new method.MovableCoord( {
 		min : [ 0, 0 ],
 		max : [ 300, 400 ],
@@ -1269,7 +1270,7 @@ QUnit.test("_convertInputType (support touch)", function(assert) {
 QUnit.test("_convertInputType (not support touch)", function(assert) {
 	// Given
 	var globalWithoutToucnSupport = {};
-	var method = eg.invoke("movableCoord", [jQuery, eg, globalWithoutToucnSupport, Hammer]);
+	var method = eg.invoke("movableCoord", [eg, globalWithoutToucnSupport, Hammer]);
 	var inst = new method.MovableCoord( {
 		min : [ 0, 0 ],
 		max : [ 300, 400 ],

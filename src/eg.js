@@ -252,7 +252,7 @@ return defaultVal;
 		caf(key);
 	};
 
-	$.extend($.easing, {
+	$ && $.extend($.easing, {
 		easeOutCubic: function(p) {
 			return 1 - Math.pow(1 - p, 3);
 		}
