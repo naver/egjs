@@ -82,8 +82,10 @@ QUnit.module("movableCoord bind/unbind Test", {
 		});
 	},
 	afterEach : function() {
-		this.inst.destroy();
-		this.inst = null;
+		if (this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
 	}
 });
 
@@ -184,6 +186,25 @@ QUnit.test("one element, double bind", function(assert) {
 	assert.equal(before, key, "key data value is same" );
 	assert.notDeepEqual(beforeHammerObject.inst, this.inst._hammers[key].inst, "recreate hammer instance" );
 	assert.equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "hammer instance count is same" );
+});
+
+
+QUnit.test("bind, after calling destroy", function(assert) {
+	// Given
+	var el = document.getElementById("area");
+	this.inst.bind(el, {
+		direction : eg.MovableCoord.DIRECTION_ALL
+	});
+
+	// When
+	this.inst.destroy();
+
+	// Then
+	var key = el[eg.MovableCoord._KEY];
+	assert.equal(key, undefined, "key is undefined" );
+	assert.equal(el[eg.MovableCoord._KEY], undefined, "hammer instance is undefined" );
+	assert.equal(Object.keys(this.inst._hammers).length, 0, "hammer instance count is zero" );
+	this.inst = null;
 });
 
 QUnit.module("movableCoord methods Test", {
