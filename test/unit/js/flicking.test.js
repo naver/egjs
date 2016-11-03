@@ -458,21 +458,16 @@ QUnit.test("hwAccelerable", function(assert) {
 QUnit.test("adaptiveHeight", function(assert) {
 	// Given
 	var inst = this.create("#mflick4", {
-		adaptiveHeight: true
+		adaptiveHeight: true,
+		circular: true
 	});
 
-	var container = inst.$container;
-	var $panels = inst._conf.panel.$list;
-	var panelHeights = ["100px", "130px", "70px"];
-	var maxHeight = Math.max.apply(Math, $panels.map(function() {
-		return $(this).height();
-	}).get());
-
 	// Then
-	assert.ok($.css(container[0], "height") === (maxHeight + "px"), "Container height should be max height of its children");
-
-	for (var i = 0; i < $panels.length; i++) {
-		assert.ok($.css($panels[i], 'height') === panelHeights[i], "Each panel should have their own height");
+	for (var i = 0; i < inst._conf.panel.count; i++) {
+		var panelHeight = inst.getElement().outerHeight(true);
+		assert.ok(panelHeight === inst.$container.height(), "Should update container's height according to each panel's height");
+		inst.next(0);
+		assert.ok(panelHeight === inst.getPrevElement().data('height'), "Should cache each panel's height at the DOM element attribute");
 	}
 });
 
