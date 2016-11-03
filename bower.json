@@ -1,0 +1,50 @@
+{
+  "name": "egjs",
+  "version": "1.3.0-snapshot",
+  "description": "Set of UI interactions, effects and utilities components library.",
+  "authors": [
+    "NAVER corp"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "egjs",
+    "flicking",
+    "infiniteGrid",
+    "visible",
+    "scrollend",
+    "rotate",
+    "class",
+    "component",
+    "persist",
+    "plugin",
+    "javascript",
+    "jQuery"
+  ],
+  "ignore": [
+    "**/.*",
+    ".*",
+    "Gruntfile.js",
+    "*.json",
+    "*.md",
+    "*.txt",
+    "assets",
+    "bower_components",
+    "node_modules",
+    "report",
+    "src",
+    "test",
+    "tc",
+    "config"
+  ],
+  "dependencies": {
+    "jquery": "~1.7.0",
+    "qunit": "~1.17.1",
+    "hammer.js": "~2.0.4"
+  },
+  "devDependencies": {
+    "iscroll": "~5.1.3",
+    "bootflat": "*",
+    "handlebars": "^4.0.5",
+    "respond": "^1.4.2"
+  }
+}
