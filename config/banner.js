@@ -11,9 +11,6 @@ module.exports = {
 		"* @SHA-1 <%= gitinfo.shortSHA %>" +
 		"<%= /(?!^master$)(^.*$)/.test(gitinfo.branchName) " +
 		"	&& ' ('+ RegExp.$1 +')' || '' %>",
-		"*",
-		"* For custom build use egjs-cli",
-		"* <%= pkg.customdownload %>",
 		"*/\n"].join("\r\n"),
 	pkgd: function(type) {
 		return [

@@ -3,8 +3,8 @@ module.exports = {
 		expand: true,
 		flatten: true,
 		src: [
-			"bower_components/jquery/jquery.js",
-			"bower_components/hammer.js/hammer.js"
+			"node_modules/jquery/dist/jquery.js",
+			"node_modules/hammerjs/hammer.js"
 		],
 		dest: "dist/lib"
 	},
