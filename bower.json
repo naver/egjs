@@ -39,7 +39,8 @@
   "dependencies": {
     "jquery": "~1.7.0",
     "qunit": "~1.17.1",
-    "hammer.js": "~2.0.4"
+    "hammer.js": "~2.0.4",
+    "bind-polyfill": "^1.0.0"
   },
   "devDependencies": {
     "iscroll": "~5.1.3",
