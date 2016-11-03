@@ -13,14 +13,14 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 	 * @group jQuery Extension
 	 */
 	/**
-	 * Add rotate event support in jQuery
+	 * This jQuery custom event is fired when device rotates.
 	 *
-	 * @ko jQuery custom rotate 이벤트 지원
+	 * @ko 기기가 회전할 때 발생하는 jQuery 커스텀 이벤트
 	 * @name jQuery#rotate
 	 * @event
-	 * @param {Event} e
-	 * @param {Object} info
-	 * @param {Boolean} info.isVertical vertical <ko>수직여부</ko>
+	 * @param {Event} e The Event object in jQuery<ko>jQuery의 Event 객체</ko>
+	 * @param {Object} info The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+	 * @param {Boolean} info.isVertical The orientation of the device (true: portrait, false: landscape) <ko>기기의 화면 방향(true: 수직 방향, false: 수평 방향)</ko>
 	 * @support { "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 * @example
 	 * $(window).on("rotate",function(e, info){
@@ -175,10 +175,10 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 	};
 
 	/**
-	 * Check if device is in portrait mode
-	 * @ko 해당 기기가 portait(수직방향) 모드일 경우, true을 반환한다.
+	 * Checks whether the current orientation of the device is portrait.
+	 * @ko 기기의 화면이 수직 방향인지 확인한다
 	 * @method eg#isPortrait
-	 * @return {Boolean}
+	 * @return {Boolean} The orientation of the device (true: portrait, false: landscape) <ko>기기의 화면 방향(true: 수직 방향, false: 수평 방향)</ko>
 	 * @example
 eg.isPortrait();  // Check if device is in portrait mode
 	*/
