@@ -1,6 +1,6 @@
 module.exports = {
 	options: {
-		timeout: 20000,
+		timeout: 10000,
 		"--web-security": "no",
 		coverage: {
 			disposeCollector: true,
