@@ -37,14 +37,20 @@
     "config"
   ],
   "dependencies": {
+    "hammer.js": "~2.0.4",
     "jquery": "~1.7.0",
-    "qunit": "~1.17.1",
-    "hammer.js": "~2.0.4"
+    "qunit": "~1.17.1"
   },
   "devDependencies": {
-    "iscroll": "~5.1.3",
     "bootflat": "*",
     "handlebars": "^4.0.5",
+    "iscroll": "~5.1.3",
     "respond": "^1.4.2"
-  }
+  },
+  "main": "dist/eg.js",
+  "repository": {
+    "url": "https://github.com/naver/egjs",
+    "type": "git"
+  },
+  "author": "NAVER corp"
 }
