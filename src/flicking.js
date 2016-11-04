@@ -29,6 +29,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 	 * @param {Function} [options.panelEffect=easeOutCubic] The easing function to apply to a panel moving animation <ko>패널 이동 애니메이션에 적용할 easing 함수</ko>
 	 * @param {Number} [options.defaultIndex=0] The index number of a panel to be selected upon module initialization <ko>모듈이 초기화될 때 선택할 패널의 인덱스 번호</ko>
 	 * @param {Array} [options.inputType] Types of input devices.<br>- touch: A touch screen can be used to move a panel.<br>- mouse: A mouse can be used to move a panel. <ko>입력 장치 종류.<br>- touch: 터치 입력 장치로 패널을 이동할 수 있다.<br>- mouse: 마우스로 패널을 이동할 수 있다.</ko>
+	 * @param {Number} [options.thresholdAngle=45] The threshold value that determines whether user action is horizontal or vertical (0~90) <ko>사용자의 동작이 가로 방향인지 세로 방향인지 판단하는 기준 각도(0~90)</ko>
 	 *
 	 * @codepen {"id":"rVOpPK", "ko":"플리킹 UI 기본 예제", "en":"Flicking UI default example", "collectionId":"ArxyLK", "height" : 403}
 	 * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest" , "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
@@ -138,7 +139,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				duration: 100,				// duration ms for animation
 				panelEffect: $.easing.easeOutCubic,  // $.easing function for panel change animation
 				defaultIndex: 0,			// initial panel index to be shown
-				inputType: ["touch", "mouse"]  // input type
+				inputType: ["touch", "mouse"],  // input type
+				thresholdAngle: 45			// the threshold value that determines whether user action is horizontal or vertical (0~90)
 			}, options);
 
 			var self = this;
@@ -617,7 +619,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 					direction: MC["DIRECTION_" +
 					(options.horizontal ? "HORIZONTAL" : "VERTICAL")],
 					interruptable: false,
-					inputType: options.inputType
+					inputType: options.inputType,
+					thresholdAngle: options.thresholdAngle
 				}).on({
 					hold: $.proxy(this._holdHandler, this),
 					change: $.proxy(this._changeHandler, this),
