@@ -113,6 +113,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			this._arrangePanels();
 
 			this.options.hwAccelerable && SUPPORT_WILLCHANGE && this._setHint();
+			this.options.adaptiveHeight && this._setAdaptiveHeight();
+
 			this._adjustContainerCss("end");
 		},
 
@@ -432,7 +434,6 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			}
 
 			this._applyPanelsPos();
-			options.adaptiveHeight && this._setAdaptiveHeight();
 		},
 
 		/**
@@ -628,10 +629,6 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 					animationStart: $.proxy(this._animationStartHandler, this),
 					animationEnd: $.proxy(this._animationEndHandler, this)
 				});
-
-				options.adaptiveHeight && this.on({
-					beforeFlickStart: $.proxy(this._adaptiveHeightHandler, this)
-				});
 			} else {
 				mcInst.unbind($wrapper).off();
 			}
@@ -782,21 +779,15 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		},
 
 		/**
-		 * 'beforeFlickStart' event Handler
-		 * @param e
-     */
-		_adaptiveHeightHandler: function(e) {
-			this._setAdaptiveHeight(e.direction);
-		},
-
-		/**
 		 * Set container's height according to each children's height
 		 * @param direction
      */
 		_setAdaptiveHeight: function(direction) {
 			var MC = eg.MovableCoord;
 			var $panel;
+			var $first;
 			var $children;
+			var height;
 
 			if (direction === MC.DIRECTION_LEFT) {
 				$panel = this.getNextElement();
@@ -806,17 +797,18 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				$panel = this.getElement();
 			}
 
-			var height = $panel.attr("data-height") || 0;
+			$first = $(":first-child", $panel);
+			height = $first.data("height");
+
 			if (!height) {
 				$children = $panel.children();
 
 				// if panel element has multiple elements as child,
 				// create a wrapper div to measure outerHeight correctly
 				if ($children.length > 1) {
-					$children.wrapAll("<div></div>");
-					$children = $panel.children();
+					$first = $children.wrapAll("<div></div>").parent();
 				}
-				$panel.attr("data-height", height = $children.outerHeight(true));
+				$first.data("height", height = $first.outerHeight(true));
 			}
 			this.$wrapper.height(height);
 		},
@@ -911,6 +903,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				 */
 				if (!this._triggerEvent(EVENTS.beforeFlickStart, pos)) {
 					return panel.changed = panel.animating = false;
+				} else {
+					options.adaptiveHeight && this._setAdaptiveHeight(conf.touch.direction);
 				}
 
 				conf.indexToMove === 0 && this._setPanelNo();
