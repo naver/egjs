@@ -9,26 +9,6 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 
 	var SUPPORT_TOUCH = "ontouchstart" in global;
 
-	function extend(out) {
-		out = out || {};
-		for (var i = 1; i < arguments.length; i++) {
-			if (!arguments[i]) {
-				continue;
-			}
-
-			for (var key in arguments[i]) {
-				if (arguments[i].hasOwnProperty(key)) {
-					out[key] = arguments[i][key];
-				}
-			}
-		}
-		return out;
-	}
-
-	function easeOutCubic(x) {
-		return 1 - Math.pow(1 - x, 3);
-	}
-
 	// jscs:enable maximumLineLength
 	/**
 	 * A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions. You can implement a user interface by applying the logical coordinates provided. For more information on the eg.MovableCoord module, see demos.
@@ -79,13 +59,15 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 	 */
 	var MC = ns.MovableCoord = ns.Class.extend(ns.Component, {
 		construct: function(options) {
-			extend(this.options = {
+			HM.assign(this.options = {
 				min: [0, 0],
 				max: [100, 100],
 				bounce: [10, 10, 10, 10],
 				margin: [0,0,0,0],
 				circular: [false, false, false, false],
-				easing: easeOutCubic,
+				easing: function easeOutCubic(x) {
+					return 1 - Math.pow(1 - x, 3);
+				},
 				maximumDuration: Infinity,
 				deceleration: 0.0006
 			}, options);
@@ -101,10 +83,10 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 			this._pos = this.options.min.concat();
 			this._subOptions = {};
 			this._raf = null;
-			this._animationEnd = this._animationEnd.bind(this);	// for caching
-			this._restore = this._restore.bind(this);	// for caching
-			this._panmove = this._panmove.bind(this);	// for caching
-			this._panend = this._panend.bind(this);	// for caching
+			this._animationEnd = HM.bindFn(this._animationEnd, this);	// for caching
+			this._restore = HM.bindFn(this._restore, this);	// for caching
+			this._panmove = HM.bindFn(this._panmove, this);	// for caching
+			this._panend = HM.bindFn(this._panend, this);	// for caching
 		},
 		/**
 		 * Registers an element to use the eg.MovableCoord module.
@@ -138,7 +120,7 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 				inputType: [ "touch", "mouse" ]
 			};
 
-			extend(subOptions, options);
+			HM.assign(subOptions, options);
 
 			var inputClass = this._convertInputType(subOptions.inputType);
 			if (!inputClass) {
@@ -156,6 +138,7 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 					subOptions,
 					inputClass
 				),
+				el: el,
 				options: subOptions
 			};
 			el[MC._KEY] = keyValue;
@@ -191,7 +174,7 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 		},
 
 		_attachHammerEvents: function(hammer, options) {
-			return hammer.on("hammer.input", function(e) {
+			return hammer.on("hammer.input", HM.bindFn(function(e) {
 					if (e.isFirst) {
 						// apply options each
 						this._subOptions = options;
@@ -201,7 +184,7 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 						// substitute .on("panend tap", this._panend); Because it(tap, panend) cannot catch vertical(horizontal) movement on HORIZONTAL(VERTICAL) mode.
 						this._panend(e);
 					}
-				}.bind(this))
+				}, this))
 				.on("panstart panmove", this._panmove);
 		},
 
@@ -824,7 +807,8 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 			this.off();
 			for (var p in this._hammers) {
 				this._hammers[p].inst.destroy();
-				this._hammers[p] = null;
+				delete this._hammers[p].el[MC._KEY];
+				delete this._hammers[p];
 			}
 		}
 	});
