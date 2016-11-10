@@ -229,7 +229,7 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 		getHammer: function(element) {
 			var el = this._getEl(element);
 			var key = el[MC._KEY];
-			if (key) {
+			if (key && this._hammers[key]) {
 				return this._hammers[key].inst;
 			} else {
 				return null;
