@@ -202,7 +202,6 @@ QUnit.test("bind, after calling destroy", function(assert) {
 	// Then
 	var key = el[eg.MovableCoord._KEY];
 	assert.equal(key, undefined, "key is undefined" );
-	assert.equal(el[eg.MovableCoord._KEY], undefined, "hammer instance is undefined" );
 	assert.equal(Object.keys(this.inst._hammers).length, 0, "hammer instance count is zero" );
 	this.inst = null;
 });

@@ -9,26 +9,6 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 
 	var SUPPORT_TOUCH = "ontouchstart" in global;
 
-	// function extend(out) {
-	// 	out = out || {};
-	// 	for (var i = 1; i < arguments.length; i++) {
-	// 		if (!arguments[i]) {
-	// 			continue;
-	// 		}
-
-	// 		for (var key in arguments[i]) {
-	// 			if (arguments[i].hasOwnProperty(key)) {
-	// 				out[key] = arguments[i][key];
-	// 			}
-	// 		}
-	// 	}
-	// 	return out;
-	// }
-
-	// function easeOutCubic(x) {
-	// 	return 1 - Math.pow(1 - x, 3);
-	// }
-
 	// jscs:enable maximumLineLength
 	/**
 	 * A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions. You can implement a user interface by applying the logical coordinates provided. For more information on the eg.MovableCoord module, see demos.
