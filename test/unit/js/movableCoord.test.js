@@ -71,7 +71,7 @@ QUnit.test("check initialization status", function(assert) {
 	assert.deepEqual(this.inst.options.circular, [false, false, false, false], "circular : check css expression");
 });
 
-QUnit.module("movableCoord bind/unbind Test", {
+QUnit.module("movableCoord bind/unbind/getHammer Test", {
 	beforeEach : function() {
 		this.inst = new eg.MovableCoord( {
 			min : [ 0, 0 ],
@@ -204,6 +204,30 @@ QUnit.test("bind, after calling destroy", function(assert) {
 	assert.equal(key, undefined, "key is undefined" );
 	assert.equal(Object.keys(this.inst._hammers).length, 0, "hammer instance count is zero" );
 	this.inst = null;
+});
+
+
+QUnit.test("getHammer", function(assert) {
+	// Given
+	var el = document.getElementById("area");
+
+	// When
+	this.inst.bind(el, {
+		direction : eg.MovableCoord.DIRECTION_ALL
+	});
+
+	// Then
+	assert.equal(Object.keys(this.inst._hammers).length, 1, "hammer instance count is 1" );
+	assert.equal(this.inst.getHammer(el), this.inst._hammers[Object.keys(this.inst._hammers)[0]].inst, "hammer instance is equal" );
+
+	// When
+	this.inst.unbind(el, {
+		direction : eg.MovableCoord.DIRECTION_ALL
+	});
+
+	// Then
+	assert.equal(Object.keys(this.inst._hammers).length, 0, "hammer instance count is zero" );
+	assert.equal(this.inst.getHammer(el), null, "hammer instance is equal" );
 });
 
 QUnit.module("movableCoord methods Test", {

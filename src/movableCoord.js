@@ -92,7 +92,7 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 		 * Registers an element to use the eg.MovableCoord module.
 		 * @ko eg.MovableCoord 모듈을 사용할 엘리먼트를 등록한다
 		 * @method eg.MovableCoord#bind
-		 * @param {HTMLElement|String|jQuery} element Element to use the eg.MovableCoord module<ko>−	eg.MovableCoord 모듈을 사용할 엘리먼트</ko>
+		 * @param {HTMLElement|String|jQuery} element An element to use the eg.MovableCoord module<ko>−	eg.MovableCoord 모듈을 사용할 엘리먼트</ko>
 		 * @param {Object} options The option object of the bind() method <ko>bind() 메서드의 옵션 객체</ko>
 		 * @param {Number} [options.direction=eg.MovableCoord.DIRECTION_ALL] Coordinate direction that a user can move<br>- eg.MovableCoord.DIRECTION_ALL: All directions available.<br>- eg.MovableCoord.DIRECTION_HORIZONTAL: Horizontal direction only.<br>- eg.MovableCoord.DIRECTION_VERTICAL: Vertical direction only<ko>사용자의 동작으로 움직일 수 있는 좌표의 방향.<br>- eg.MovableCoord.DIRECTION_ALL: 모든 방향으로 움직일 수 있다.<br>- eg.MovableCoord.DIRECTION_HORIZONTAL: 가로 방향으로만 움직일 수 있다.<br>- eg.MovableCoord.DIRECTION_VERTICAL: 세로 방향으로만 움직일 수 있다.</ko>
 		 * @param {Array} options.scale Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
@@ -104,13 +104,8 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 		 *
 		 * @return {eg.MovableCoord} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 		 */
-		bind: function(el, options) {
-			if (typeof el === "string") {
-				el = document.querySelector(el);
-			} else if (el instanceof jQuery && el.length > 0) {
-				el = el[0];
-			}
-
+		bind: function(element, options) {
+			var el = this._getEl(element);
 			var keyValue = el[MC._KEY];
 			var subOptions = {
 				direction: MC.DIRECTION_ALL,
@@ -207,19 +202,14 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 		},
 
 		/**
-		 * Detaches elements using the eg.MovableCoord module.
+		 * Detaches an element using the eg.MovableCoord module.
 		 * @ko eg.MovableCoord 모듈을 사용하는 엘리먼트를 해제한다
 		 * @method eg.MovableCoord#unbind
-		 * @param {HTMLElement|String|jQuery} element Elements from which the eg.MovableCoord module is detached<ko>eg.MovableCoord 모듈을 해제할 엘리먼트</ko>
+		 * @param {HTMLElement|String|jQuery} element An element from which the eg.MovableCoord module is detached<ko>eg.MovableCoord 모듈을 해제할 엘리먼트</ko>
 		 * @return {eg.MovableCoord} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 		 */
-		unbind: function(el) {
-			if (typeof el === "string") {
-				el = document.querySelector(el);
-			} else if (el instanceof jQuery && el.length > 0) {
-				el = el[0];
-			}
-
+		unbind: function(element) {
+			var el = this._getEl(element);
 			var key = el[MC._KEY];
 			if (key) {
 				this._hammers[key].inst.destroy();
@@ -227,6 +217,23 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 				delete el[MC._KEY];
 			}
 			return this;
+		},
+
+		/**
+		 * get a hammer instance from elements using the eg.MovableCoord module.
+		 * @ko eg.MovableCoord 모듈을 사용하는 엘리먼트에서 hammer 객체를 얻는다
+		 * @method eg.MovableCoord#getHammer
+		 * @param {HTMLElement|String|jQuery} element An element from which the eg.MovableCoord module is using<ko>eg.MovableCoord 모듈을 사용하는 엘리먼트</ko>
+		 * @return {Hammer|null} An instance of Hammer.JS<ko>Hammer.JS의 인스턴스</ko>
+		 */
+		getHammer: function(element) {
+			var el = this._getEl(element);
+			var key = el[MC._KEY];
+			if (key && this._hammers[key]) {
+				return this._hammers[key].inst;
+			} else {
+				return null;
+			}
 		},
 
 		_grab: function() {
@@ -796,6 +803,15 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 		_setInterrupt: function(prevented) {
 			!this._subOptions.interruptable &&
 			(this._status.prevented = prevented);
+		},
+
+		_getEl: function(el) {
+			if (typeof el === "string") {
+				return document.querySelector(el);
+			} else if (el instanceof jQuery && el.length > 0) {
+				return el[0];
+			}
+			return el;
 		},
 
 		/**
