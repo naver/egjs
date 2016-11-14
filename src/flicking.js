@@ -783,7 +783,6 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @param direction
      */
 		_setAdaptiveHeight: function(direction) {
-			var MC = eg.MovableCoord;
 			var $panel;
 			var $first;
 			var $children;
@@ -797,8 +796,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				$panel = this.getElement();
 			}
 
-			$first = $(":first-child", $panel);
-			height = $first.data("height");
+			$first = $panel.find(":first-child");
+			height = $first[0].height;
 
 			if (!height) {
 				$children = $panel.children();
@@ -806,10 +805,15 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				// if panel element has multiple elements as child,
 				// create a wrapper div to measure outerHeight correctly
 				if ($children.length > 1) {
-					$first = $children.wrapAll("<div></div>").parent();
+					height = $children.wrapAll("<div></div>").parent().outerHeight(true);
+					$children.unwrap();
+				} else {
+					height = $first.outerHeight(true);
 				}
-				$first.data("height", height = $first.outerHeight(true));
+
+				$first.attr("height", height);
 			}
+
 			this.$wrapper.height(height);
 		},
 
