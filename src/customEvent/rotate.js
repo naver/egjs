@@ -32,12 +32,28 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 	var beforeScreenWidth = -1;
 	var beforeVertical = null;
 	var rotateTimer = null;
-	var agent = ns.agent();
-	var isMobile = /android|ios/.test(agent.os.name);
+
+	var agent = (function() {
+		var ua = global.navigator.userAgent;
+		var match = ua.match(/(iPhone OS|CPU OS|Android)\s([^\s;-]+)/);  // fetch Android & iOS env only
+		var res = {
+			os: "",
+			version: ""
+		};
+
+		if (match) {
+			res.os = match[1].replace(/P[^\s]+\s/, "").toLowerCase();
+			res.version = match[2].replace(/\D/g, ".");
+		}
+
+		return res;
+	})();
+
+	var isMobile = /android|ios/.test(agent.os);
 
 	if (!isMobile) {
 		ns.isPortrait = function() {
-			return;
+			return false;
 		};
 
 		return;
@@ -63,7 +79,7 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 		 * InApp bug:
 		 * - Set 200ms delay
 		 */
-		if ((agent.os.name === "android" && agent.os.version === "2.1")) {//|| htInfo.galaxyTab2)
+		if ((agent.os === "android" && agent.version === "2.1")) {//|| htInfo.galaxyTab2)
 			type = "resize";
 		} else {
 			type = "onorientationchange" in global ? "orientationchange" : "resize";
@@ -141,7 +157,7 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 			}, 0);
 		} else {
 			delay = 300;
-			if (agent.os.name === "android") {
+			if (agent.os === "android") {
 				screenWidth = doc.documentElement.clientWidth;
 				if (e.type === "orientationchange" && screenWidth === beforeScreenWidth) {
 					global.setTimeout(function() {
