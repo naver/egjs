@@ -9,26 +9,6 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 
 	var SUPPORT_TOUCH = "ontouchstart" in global;
 
-	function extend(out) {
-		out = out || {};
-		for (var i = 1; i < arguments.length; i++) {
-			if (!arguments[i]) {
-				continue;
-			}
-
-			for (var key in arguments[i]) {
-				if (arguments[i].hasOwnProperty(key)) {
-					out[key] = arguments[i][key];
-				}
-			}
-		}
-		return out;
-	}
-
-	function easeOutCubic(x) {
-		return 1 - Math.pow(1 - x, 3);
-	}
-
 	// jscs:enable maximumLineLength
 	/**
 	 * A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions. You can implement a user interface by applying the logical coordinates provided. For more information on the eg.MovableCoord module, see demos.
@@ -79,13 +59,15 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 	 */
 	var MC = ns.MovableCoord = ns.Class.extend(ns.Component, {
 		construct: function(options) {
-			extend(this.options = {
+			HM.assign(this.options = {
 				min: [0, 0],
 				max: [100, 100],
 				bounce: [10, 10, 10, 10],
 				margin: [0,0,0,0],
 				circular: [false, false, false, false],
-				easing: easeOutCubic,
+				easing: function easeOutCubic(x) {
+					return 1 - Math.pow(1 - x, 3);
+				},
 				maximumDuration: Infinity,
 				deceleration: 0.0006
 			}, options);
@@ -101,16 +83,16 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 			this._pos = this.options.min.concat();
 			this._subOptions = {};
 			this._raf = null;
-			this._animationEnd = this._animationEnd.bind(this);	// for caching
-			this._restore = this._restore.bind(this);	// for caching
-			this._panmove = this._panmove.bind(this);	// for caching
-			this._panend = this._panend.bind(this);	// for caching
+			this._animationEnd = HM.bindFn(this._animationEnd, this);	// for caching
+			this._restore = HM.bindFn(this._restore, this);	// for caching
+			this._panmove = HM.bindFn(this._panmove, this);	// for caching
+			this._panend = HM.bindFn(this._panend, this);	// for caching
 		},
 		/**
 		 * Registers an element to use the eg.MovableCoord module.
 		 * @ko eg.MovableCoord 모듈을 사용할 엘리먼트를 등록한다
 		 * @method eg.MovableCoord#bind
-		 * @param {HTMLElement|String|jQuery} element Element to use the eg.MovableCoord module<ko>−	eg.MovableCoord 모듈을 사용할 엘리먼트</ko>
+		 * @param {HTMLElement|String|jQuery} element An element to use the eg.MovableCoord module<ko>−	eg.MovableCoord 모듈을 사용할 엘리먼트</ko>
 		 * @param {Object} options The option object of the bind() method <ko>bind() 메서드의 옵션 객체</ko>
 		 * @param {Number} [options.direction=eg.MovableCoord.DIRECTION_ALL] Coordinate direction that a user can move<br>- eg.MovableCoord.DIRECTION_ALL: All directions available.<br>- eg.MovableCoord.DIRECTION_HORIZONTAL: Horizontal direction only.<br>- eg.MovableCoord.DIRECTION_VERTICAL: Vertical direction only<ko>사용자의 동작으로 움직일 수 있는 좌표의 방향.<br>- eg.MovableCoord.DIRECTION_ALL: 모든 방향으로 움직일 수 있다.<br>- eg.MovableCoord.DIRECTION_HORIZONTAL: 가로 방향으로만 움직일 수 있다.<br>- eg.MovableCoord.DIRECTION_VERTICAL: 세로 방향으로만 움직일 수 있다.</ko>
 		 * @param {Array} options.scale Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
@@ -122,13 +104,8 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 		 *
 		 * @return {eg.MovableCoord} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 		 */
-		bind: function(el, options) {
-			if (typeof el === "string") {
-				el = document.querySelector(el);
-			} else if (el instanceof jQuery && el.length > 0) {
-				el = el[0];
-			}
-
+		bind: function(element, options) {
+			var el = this._getEl(element);
 			var keyValue = el[MC._KEY];
 			var subOptions = {
 				direction: MC.DIRECTION_ALL,
@@ -138,7 +115,7 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 				inputType: [ "touch", "mouse" ]
 			};
 
-			extend(subOptions, options);
+			HM.assign(subOptions, options);
 
 			var inputClass = this._convertInputType(subOptions.inputType);
 			if (!inputClass) {
@@ -156,6 +133,7 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 					subOptions,
 					inputClass
 				),
+				el: el,
 				options: subOptions
 			};
 			el[MC._KEY] = keyValue;
@@ -191,7 +169,7 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 		},
 
 		_attachHammerEvents: function(hammer, options) {
-			return hammer.on("hammer.input", function(e) {
+			return hammer.on("hammer.input", HM.bindFn(function(e) {
 					if (e.isFirst) {
 						// apply options each
 						this._subOptions = options;
@@ -201,7 +179,7 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 						// substitute .on("panend tap", this._panend); Because it(tap, panend) cannot catch vertical(horizontal) movement on HORIZONTAL(VERTICAL) mode.
 						this._panend(e);
 					}
-				}.bind(this))
+				}, this))
 				.on("panstart panmove", this._panmove);
 		},
 
@@ -224,19 +202,14 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 		},
 
 		/**
-		 * Detaches elements using the eg.MovableCoord module.
+		 * Detaches an element using the eg.MovableCoord module.
 		 * @ko eg.MovableCoord 모듈을 사용하는 엘리먼트를 해제한다
 		 * @method eg.MovableCoord#unbind
-		 * @param {HTMLElement|String|jQuery} element Elements from which the eg.MovableCoord module is detached<ko>eg.MovableCoord 모듈을 해제할 엘리먼트</ko>
+		 * @param {HTMLElement|String|jQuery} element An element from which the eg.MovableCoord module is detached<ko>eg.MovableCoord 모듈을 해제할 엘리먼트</ko>
 		 * @return {eg.MovableCoord} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 		 */
-		unbind: function(el) {
-			if (typeof el === "string") {
-				el = document.querySelector(el);
-			} else if (el instanceof jQuery && el.length > 0) {
-				el = el[0];
-			}
-
+		unbind: function(element) {
+			var el = this._getEl(element);
 			var key = el[MC._KEY];
 			if (key) {
 				this._hammers[key].inst.destroy();
@@ -244,6 +217,23 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 				delete el[MC._KEY];
 			}
 			return this;
+		},
+
+		/**
+		 * get a hammer instance from elements using the eg.MovableCoord module.
+		 * @ko eg.MovableCoord 모듈을 사용하는 엘리먼트에서 hammer 객체를 얻는다
+		 * @method eg.MovableCoord#getHammer
+		 * @param {HTMLElement|String|jQuery} element An element from which the eg.MovableCoord module is using<ko>eg.MovableCoord 모듈을 사용하는 엘리먼트</ko>
+		 * @return {Hammer|null} An instance of Hammer.JS<ko>Hammer.JS의 인스턴스</ko>
+		 */
+		getHammer: function(element) {
+			var el = this._getEl(element);
+			var key = el[MC._KEY];
+			if (key && this._hammers[key]) {
+				return this._hammers[key].inst;
+			} else {
+				return null;
+			}
 		},
 
 		_grab: function() {
@@ -815,6 +805,15 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 			(this._status.prevented = prevented);
 		},
 
+		_getEl: function(el) {
+			if (typeof el === "string") {
+				return document.querySelector(el);
+			} else if (el instanceof jQuery && el.length > 0) {
+				return el[0];
+			}
+			return el;
+		},
+
 		/**
 		 * Destroys elements, properties, and events used in a module.
 		 * @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
@@ -824,7 +823,8 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 			this.off();
 			for (var p in this._hammers) {
 				this._hammers[p].inst.destroy();
-				this._hammers[p] = null;
+				delete this._hammers[p].el[MC._KEY];
+				delete this._hammers[p];
 			}
 		}
 	});

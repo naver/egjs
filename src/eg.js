@@ -6,34 +6,6 @@
 eg.module("eg", ["jQuery", eg, window, eg.Agent], function($, ns, global, Agent) {
 	"use strict";
 
-	var raf = global.requestAnimationFrame || global.webkitRequestAnimationFrame ||
-				global.mozRequestAnimationFrame || global.msRequestAnimationFrame;
-	var caf = global.cancelAnimationFrame || global.webkitCancelAnimationFrame ||
-				global.mozCancelAnimationFrame || global.msCancelAnimationFrame;
-
-	if (raf && !caf) {
-		var keyInfo = {};
-		var oldraf = raf;
-		raf = function(callback) {
-			function wrapCallback() {
-				if (keyInfo[key]) {
-					callback();
-				}
-			}
-			var key = oldraf(wrapCallback);
-			keyInfo[key] = true;
-			return key;
-		};
-		caf = function(key) {
-			delete keyInfo[key];
-		};
-	} else if (!(raf && caf)) {
-		raf = function(callback) {
-			return global.setTimeout(callback, 16);
-		};
-		caf = global.clearTimeout;
-	}
-
 	function resultCache(scope, name, param, defaultValue) {
 		var method = scope.hook[name];
 		if (method) {
@@ -222,34 +194,6 @@ return defaultVal;
 		var result = agent.browser.name === "safari";
 
 		return resultCache(this, "_hasClickBug", [result, agent], result);
-	};
-
-	/**
-	* A polyfill for the window.requestAnimationFrame() method.
-	* @ko window.requestAnimationFrame() 메서드의 polyfill 함수다
-	* @method eg#requestAnimationFrame
-	* @param {Function} timer The function returned through a call to the requestAnimationFrame() method <ko>requestAnimationFrame() 메서드가 호출할 함수</ko>
-	* @return {Number} ID of the requestAnimationFrame() method. <ko>requestAnimationFrame() 메서드의 아이디</ko>
-	* @example
-		var timerId = eg.requestAnimationFrame(function() {
-			console.log("call");
-		});
-	* @see  https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
-	*/
-	ns.requestAnimationFrame = function(fp) {
-		return raf(fp);
-	};
-	/**
-	* A polyfill for the window.cancelAnimationFrame() method. It cancels an animation executed through a call to the requestAnimationFrame() method.
-	* @ko window.cancelAnimationFrame() 메서드의 polyfill 함수다. requestAnimationFrame() 메서드로 실행한 애니메이션을 중단한다
-	* @method eg#cancelAnimationFrame
-	* @param {Number} key −	The ID value returned through a call to the requestAnimationFrame() method. <ko>requestAnimationFrame() 메서드가 반환한 아이디 값</ko>
-	* @example
-		eg.cancelAnimationFrame(timerId);
-	* @see  https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
-	*/
-	ns.cancelAnimationFrame = function(key) {
-		caf(key);
 	};
 
 	$ && $.extend($.easing, {
