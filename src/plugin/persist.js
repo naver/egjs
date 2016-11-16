@@ -239,7 +239,10 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 			key = GLOBAL_KEY;
 			data = arguments.length === 1 ? state : null;
 		}
-		data && setStateByKey(key, data);
+
+		if (data || arguments.length === 2) {
+			setStateByKey(key, data);
+		}
 		return getStateByKey(key);
 	};
 

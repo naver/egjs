@@ -103,6 +103,21 @@ test("persist : save state data by key, get state data by key", function() {
 	deepEqual(clonedState, this.data);
 });
 
+$.each([null, undefined, ''], function(i, v) {
+	test("persist : remove state data with value by key", function() {
+		// Given
+		var state = $.persist("TESTKEY");
+		$.persist("TESTKEY", this.data);
+
+		// When
+		var clonedState = $.persist("TESTKEY", v);
+
+		// Then
+		equal(clonedState, v);
+	});
+})
+
+
 test("onPageshow : when bfCache miss and not BF navigated, _reset method must be executed.", function() {
 	// Given
 	var ht = {};
@@ -284,6 +299,21 @@ test("persist : save state data by key, get state data by key", function() {
 	notEqual(clonedState, this.data);
 	deepEqual(clonedState, this.data);
 });
+
+$.each([null, undefined, ''], function(i, v) {
+	test("persist : remove state data with value by key", function() {
+		// Given
+		var state = $.persist("TESTKEY");
+		$.persist("TESTKEY", this.data);
+
+		// When
+		var clonedState = $.persist("TESTKEY", v);
+
+		// Then
+		equal(clonedState, v);
+	});
+})
+
 
 $.each(['{', '[ 1,2,3 ]', '1', '1.234', '"123"'], function(i, v) {
 	test("show warning message for storage polloution with value that can be parsed: "+ v, function() {
