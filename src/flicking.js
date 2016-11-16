@@ -779,7 +779,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		},
 
 		/**
-		 * Set container's height according to each children's height
+		 * Set container's height value according to children's height
 		 * @param direction
      */
 		_setAdaptiveHeight: function(direction) {
@@ -797,19 +797,12 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			}
 
 			$first = $panel.find(":first-child");
-			height = $first[0].height;
+			height = $first.attr("height");
 
 			if (!height) {
 				$children = $panel.children();
-
-				// if panel element has multiple elements as child,
-				// create a wrapper div to measure outerHeight correctly
-				if ($children.length > 1) {
-					height = $children.wrapAll("<div></div>").parent().outerHeight(true);
-					$children.unwrap();
-				} else {
-					height = $first.outerHeight(true);
-				}
+				height = ($children.length > 1 ? $panel.css("height", "auto") : $first)
+					.outerHeight(true);
 
 				$first.attr("height", height);
 			}
