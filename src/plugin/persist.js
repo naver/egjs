@@ -88,6 +88,20 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 
 	// jscs:enable maximumLineLength
 
+	/**
+	 * This jQuery custom event is fired when device rotates.
+	 *
+	 * @ko 기기가 회전할 때 발생하는 jQuery 커스텀 이벤트
+	 * @name jQuery#persist
+	 * @event
+	 * @deprecated since version 1.2.0
+	 * @example
+	 * $(window).on("persist",function(){
+	 *      var state = $.persist("KEY");
+	 *		// Restore state
+	 * });
+	 *
+	 */
 	function onPageshow(e) {
 		isPersisted = isPersisted || (e.originalEvent && e.originalEvent.persisted);
 		if (!isPersisted && isBackForwardNavigated) {
@@ -261,9 +275,11 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	/**
 	* Return whether you need "Persist" module by checking the bfCache support of the current browser
 	* @ko 현재 브라우저의 bfCache 지원여부에 따라 persist 모듈의 필요여부를 반환한다.
-	* @method $.persist.isApplicable
+	* @group jQuery Extension
+	* @namespace
+	* @property {function} isNeeded 
 	* @example
-	$.persist.isApplicable();
+	$.persist.isNeeded();
 	*/
 	$.persist.isNeeded = function() {
 		return isNeeded;
