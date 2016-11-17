@@ -4,23 +4,35 @@
 */
 
 // jscs:disable maximumLineLength
-eg.module("persist", ["jQuery", window, document], function($, global, doc) {
+eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, doc) {
 	"use strict";
 
 	// jscs:enable maximumLineLength
 	var wp = global.performance;
 	var history = global.history;
-	var isNeeded = (function() {
-		var ua = global.navigator.userAgent;
-		var version = ua ? ua.match(/Android\s([^\;]*)/i) : null;
+	var agent = ns.agent();
 
-		/*
-		* a isNeeded value is
-		*  - iOS: false,
-		*  - Android 4.4+: true
-		*  - Android 4.4 and less: false
-		*/
-		return !(/iPhone|iPad/.test(ua) || (version ? parseFloat(version.pop()) < 4.4 : true));
+	var isNeeded = (function() {
+		var isNeeded = true;
+
+		if (agent.os.name === "ios") {
+			isNeeded = false;
+		} else if (agent.os.name === "mac" && agent.browser.name === "safari") {
+			isNeeded = false;
+		} else if (
+			agent.os.name === "android" &&
+			parseFloat(agent.os.version) <= 4.3 &&
+			agent.browser.webview === true
+		) {
+			isNeeded = false;
+		} else if (
+			agent.os.name === "android" &&
+			parseFloat(agent.os.version) < 3
+		) {
+			isNeeded = false;
+		}
+
+		return isNeeded;
 	})();
 
 	var JSON = global.JSON;
