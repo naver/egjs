@@ -277,7 +277,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	* @ko 현재 브라우저의 bfCache 지원여부에 따라 persist 모듈의 필요여부를 반환한다.
 	* @group jQuery Extension
 	* @namespace
-	* @property {function} isNeeded 
+	* @property {function} isNeeded
 	* @example
 	$.persist.isNeeded();
 	*/
