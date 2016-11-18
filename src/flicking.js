@@ -114,6 +114,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			this._arrangePanels();
 
 			this.options.hwAccelerable && SUPPORT_WILLCHANGE && this._setHint();
+			this.options.adaptiveHeight && this._setAdaptiveHeight();
+
 			this._adjustContainerCss("end");
 		},
 
@@ -140,7 +142,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				panelEffect: $.easing.easeOutCubic,  // $.easing function for panel change animation
 				defaultIndex: 0,			// initial panel index to be shown
 				inputType: ["touch", "mouse"],  // input type
-				thresholdAngle: 45			// the threshold value that determines whether user action is horizontal or vertical (0~90)
+				thresholdAngle: 45,			// the threshold value that determines whether user action is horizontal or vertical (0~90)
+				adaptiveHeight: false  // whether change container's height according to each panel's height or not
 			}, options);
 
 			var self = this;
@@ -778,6 +781,38 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		},
 
 		/**
+		 * Set container's height value according to children's height
+		 * @param direction
+     */
+		_setAdaptiveHeight: function(direction) {
+			var $panel;
+			var $first;
+			var $children;
+			var height;
+
+			if (direction === MC.DIRECTION_LEFT) {
+				$panel = this.getNextElement();
+			} else if (direction === MC.DIRECTION_RIGHT) {
+				$panel = this.getPrevElement();
+			} else {
+				$panel = this.getElement();
+			}
+
+			$first = $panel.find(":first-child");
+			height = $first.attr("height");
+
+			if (!height) {
+				$children = $panel.children();
+				height = ($children.length > 1 ? $panel.css("height", "auto") : $first)
+					.outerHeight(true);
+
+				$first.attr("height", height);
+			}
+
+			this.$wrapper.height(height);
+		},
+
+		/**
 		 * Trigger beforeRestore event
 		 * @param {Object} e event object
 		 */
@@ -867,6 +902,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				 */
 				if (!this._triggerEvent(EVENTS.beforeFlickStart, pos)) {
 					return panel.changed = panel.animating = false;
+				} else {
+					options.adaptiveHeight && this._setAdaptiveHeight(conf.touch.direction);
 				}
 
 				conf.indexToMove === 0 && this._setPanelNo();
