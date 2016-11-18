@@ -467,7 +467,7 @@ QUnit.test("adaptiveHeight", function(assert) {
 		var panelHeight = inst.getElement().outerHeight(true);
 		assert.ok(panelHeight === inst.$container.height(), "Should update container's height according to each panel's height");
 		inst.next(0);
-		assert.ok(panelHeight === inst.getPrevElement().children(':first').data('height'), "Should cache each panel's height to first element");
+		assert.ok(panelHeight === Number(inst.getPrevElement().children(':first').attr('height')), "Should cache each panel's height to first element");
 	}
 });
 
