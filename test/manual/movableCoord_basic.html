@@ -27,14 +27,12 @@
 </style>
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-shim.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-sham.js"></script> -->
-<script src="../../bower_components/jquery/jquery.js"></script>
-<script src="../../bower_components/hammer.js/hammer.js"></script>
+<script src="../../node_modules/jquery/dist/jquery.js"></script>
+<script src="../../node_modules/hammerjs/hammer.js"></script>
 <script src="../../src/module.js"></script>
 <script src="../../src/agent.js"></script>
+<script src="../../src/raf.js"></script>
 <script src="../../src/eg.js"></script>
-<script src="../../src/customEvent/rotate.js"></script>
-<script src="../../src/customEvent/scrollEnd.js"></script>
-<script src="../../src/hook/cssPrefix.js"></script>
 <script src="../../src/class.js"></script>
 <script src="../../src/component.js"></script>
 <script src="../../src/movableCoord.js"></script>
@@ -48,20 +46,19 @@
   <button id="clear">LOG CLEAR</button>
   <textarea id="log" class="log"></textarea>
 <script>
-var $log = $("#log");
+var log = document.getElementById("log");
 function addLog(msg) {
-  $log.html(msg + "\n" + $log.html());
+    log.innerHTML = msg + "\n" + log.innerHTML;
 }
-$("#clear").click(function(e) {
-  $log.html("");
+document.getElementById("clear").addEventListener("click", function(e) {
+    log.innerHTML = "";
 });
 
 var supportTransform = (function() {
     var bodyStyle = (document.head || document.getElementsByTagName("head")[0]).style;
     return "transform" in bodyStyle || "webkitTransform" in bodyStyle || "msTransform" in bodyStyle || "mozTransform" in bodyStyle;
 })();
-var $dot = $("#dot"),
-  useHW = eg.isHWAccelerable(),
+var dot = document.getElementById("dot"),
   inst = new eg.MovableCoord({
     min : [ 0, 0 ],
     max : [ 200, 300 ],
@@ -82,15 +79,9 @@ var $dot = $("#dot"),
     },
     "change" : function(evt) {
       var pos = evt.pos;
-      // addLog("[Change] " + pos);
-      if(supportTransform) {
-        $dot.css("transform", eg.translate(pos[0] + 'px',pos[1] + "px", useHW));
-      } else {
-        $dot.css({
-            "left" : (pos[0]) + 'px',
-            "top" : (pos[1]) + "px"
-          });
-      }
+      dot.setAttribute("style",
+          "left:"+ (pos[0]) + 'px;' + "top:"+ (pos[1]) + "px"
+        );
     }
   });
 

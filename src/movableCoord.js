@@ -4,7 +4,7 @@
 */
 
 // jscs:disable maximumLineLength
-eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, global, HM) {
+eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 	"use strict";
 
 	var SUPPORT_TOUCH = "ontouchstart" in global;
@@ -59,13 +59,15 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 	 */
 	var MC = ns.MovableCoord = ns.Class.extend(ns.Component, {
 		construct: function(options) {
-			$.extend(this.options = {
+			HM.assign(this.options = {
 				min: [0, 0],
 				max: [100, 100],
 				bounce: [10, 10, 10, 10],
 				margin: [0,0,0,0],
 				circular: [false, false, false, false],
-				easing: $.easing.easeOutCubic,
+				easing: function easeOutCubic(x) {
+					return 1 - Math.pow(1 - x, 3);
+				},
 				maximumDuration: Infinity,
 				deceleration: 0.0006
 			}, options);
@@ -81,16 +83,16 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			this._pos = this.options.min.concat();
 			this._subOptions = {};
 			this._raf = null;
-			this._animationEnd = $.proxy(this._animationEnd, this);	// for caching
-			this._restore = $.proxy(this._restore, this);	// for caching
-			this._panmove = $.proxy(this._panmove, this);	// for caching
-			this._panend = $.proxy(this._panend, this);	// for caching
+			this._animationEnd = HM.bindFn(this._animationEnd, this);	// for caching
+			this._restore = HM.bindFn(this._restore, this);	// for caching
+			this._panmove = HM.bindFn(this._panmove, this);	// for caching
+			this._panend = HM.bindFn(this._panend, this);	// for caching
 		},
 		/**
 		 * Registers an element to use the eg.MovableCoord module.
 		 * @ko eg.MovableCoord 모듈을 사용할 엘리먼트를 등록한다
 		 * @method eg.MovableCoord#bind
-		 * @param {HTMLElement|String|jQuery} element Element to use the eg.MovableCoord module<ko>−	eg.MovableCoord 모듈을 사용할 엘리먼트</ko>
+		 * @param {HTMLElement|String|jQuery} element An element to use the eg.MovableCoord module<ko>−	eg.MovableCoord 모듈을 사용할 엘리먼트</ko>
 		 * @param {Object} options The option object of the bind() method <ko>bind() 메서드의 옵션 객체</ko>
 		 * @param {Number} [options.direction=eg.MovableCoord.DIRECTION_ALL] Coordinate direction that a user can move<br>- eg.MovableCoord.DIRECTION_ALL: All directions available.<br>- eg.MovableCoord.DIRECTION_HORIZONTAL: Horizontal direction only.<br>- eg.MovableCoord.DIRECTION_VERTICAL: Vertical direction only<ko>사용자의 동작으로 움직일 수 있는 좌표의 방향.<br>- eg.MovableCoord.DIRECTION_ALL: 모든 방향으로 움직일 수 있다.<br>- eg.MovableCoord.DIRECTION_HORIZONTAL: 가로 방향으로만 움직일 수 있다.<br>- eg.MovableCoord.DIRECTION_VERTICAL: 세로 방향으로만 움직일 수 있다.</ko>
 		 * @param {Array} options.scale Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
@@ -102,9 +104,9 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		 *
 		 * @return {eg.MovableCoord} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 		 */
-		bind: function(el, options) {
-			var $el = $(el);
-			var keyValue = $el.data(MC._KEY);
+		bind: function(element, options) {
+			var el = this._getEl(element);
+			var keyValue = el[MC._KEY];
 			var subOptions = {
 				direction: MC.DIRECTION_ALL,
 				scale: [ 1, 1 ],
@@ -113,7 +115,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 				inputType: [ "touch", "mouse" ]
 			};
 
-			$.extend(subOptions, options);
+			HM.assign(subOptions, options);
 
 			var inputClass = this._convertInputType(subOptions.inputType);
 			if (!inputClass) {
@@ -127,13 +129,14 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			}
 			this._hammers[keyValue] = {
 				inst: this._createHammer(
-					$el.get(0),
+					el,
 					subOptions,
 					inputClass
 				),
+				el: el,
 				options: subOptions
 			};
-			$el.data(MC._KEY, keyValue);
+			el[MC._KEY] = keyValue;
 			return this;
 		},
 
@@ -166,7 +169,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		},
 
 		_attachHammerEvents: function(hammer, options) {
-			return hammer.on("hammer.input", $.proxy(function(e) {
+			return hammer.on("hammer.input", HM.bindFn(function(e) {
 					if (e.isFirst) {
 						// apply options each
 						this._subOptions = options;
@@ -188,7 +191,7 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			var hasTouch = false;
 			var hasMouse = false;
 			inputType = inputType || [];
-			$.each(inputType, function(i, v) {
+			inputType.forEach(function(v) {
 				switch (v) {
 					case "mouse" : hasMouse = true; break;
 					case "touch" : hasTouch = SUPPORT_TOUCH;
@@ -199,21 +202,38 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		},
 
 		/**
-		 * Detaches elements using the eg.MovableCoord module.
+		 * Detaches an element using the eg.MovableCoord module.
 		 * @ko eg.MovableCoord 모듈을 사용하는 엘리먼트를 해제한다
 		 * @method eg.MovableCoord#unbind
-		 * @param {HTMLElement|String|jQuery} element Elements from which the eg.MovableCoord module is detached<ko>eg.MovableCoord 모듈을 해제할 엘리먼트</ko>
+		 * @param {HTMLElement|String|jQuery} element An element from which the eg.MovableCoord module is detached<ko>eg.MovableCoord 모듈을 해제할 엘리먼트</ko>
 		 * @return {eg.MovableCoord} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 		 */
-		unbind: function(el) {
-			var $el = $(el);
-			var key = $el.data(MC._KEY);
+		unbind: function(element) {
+			var el = this._getEl(element);
+			var key = el[MC._KEY];
 			if (key) {
 				this._hammers[key].inst.destroy();
 				delete this._hammers[key];
-				$el.data(MC._KEY, null);
+				delete el[MC._KEY];
 			}
 			return this;
+		},
+
+		/**
+		 * get a hammer instance from elements using the eg.MovableCoord module.
+		 * @ko eg.MovableCoord 모듈을 사용하는 엘리먼트에서 hammer 객체를 얻는다
+		 * @method eg.MovableCoord#getHammer
+		 * @param {HTMLElement|String|jQuery} element An element from which the eg.MovableCoord module is using<ko>eg.MovableCoord 모듈을 사용하는 엘리먼트</ko>
+		 * @return {Hammer|null} An instance of Hammer.JS<ko>Hammer.JS의 인스턴스</ko>
+		 */
+		getHammer: function(element) {
+			var el = this._getEl(element);
+			var key = el[MC._KEY];
+			if (key && this._hammers[key]) {
+				return this._hammers[key].inst;
+			} else {
+				return null;
+			}
 		},
 
 		_grab: function() {
@@ -373,7 +393,8 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 
 				// when start pointer is held in inside
 				// get a initialization slope value to prevent smooth animation.
-				var initSlope = this._initSlope();
+				var initSlope = this._easing(0.00001) / 0.00001;
+
 				if (pos[1] < min[1]) { // up
 					tv = (min[1] - pos[1]) / (out[0] * initSlope);
 					pos[1] = min[1] - this._easing(tv) * out[0];
@@ -663,10 +684,10 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		_reviseOptions: function() {
 			var key;
 			var self = this;
-			$.each(["bounce", "margin", "circular"], function(i, v) {
+			(["bounce", "margin", "circular"]).forEach(function(v) {
 				key = self.options[v];
 				if (key != null) {
-					if ($.isArray(key)) {
+					if (key.constructor === Array) {
 						self.options[v] = key.length === 2 ?
 							key.concat(key) : key.concat();
 					} else if (/string|number|boolean/.test(typeof key)) {
@@ -776,27 +797,21 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 		},
 
 		_easing: function(p) {
-			return p > 1 ? 1 : this.options.easing(p, p, 0, 1, 1);
-		},
-
-		_initSlope: function() {
-			var easing = this.options.easing;
-			var isIn = false;
-			var p;
-			for (p in $.easing) {
-				if ($.easing[p] === easing) {
-					isIn = !~p.indexOf("Out");
-					break;
-				}
-			}
-			return isIn ?
-					easing(0.9999, 0.9999, 0, 1, 1) / 0.9999 :
-					easing(0.00001, 0.00001, 0, 1, 1) / 0.00001;
+			return p > 1 ? 1 : this.options.easing(p);
 		},
 
 		_setInterrupt: function(prevented) {
 			!this._subOptions.interruptable &&
 			(this._status.prevented = prevented);
+		},
+
+		_getEl: function(el) {
+			if (typeof el === "string") {
+				return document.querySelector(el);
+			} else if (el instanceof jQuery && el.length > 0) {
+				return el[0];
+			}
+			return el;
 		},
 
 		/**
@@ -808,7 +823,8 @@ eg.module("movableCoord", ["jQuery", eg, window, "Hammer"], function($, ns, glob
 			this.off();
 			for (var p in this._hammers) {
 				this._hammers[p].inst.destroy();
-				this._hammers[p] = null;
+				delete this._hammers[p].el[MC._KEY];
+				delete this._hammers[p];
 			}
 		}
 	});

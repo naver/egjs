@@ -471,6 +471,48 @@ QUnit.test("adaptiveHeight", function(assert) {
 	}
 });
 
+QUnit.test("thresholdAngle", function(assert) {
+	var done = assert.async();
+
+	// Given
+	var el = $("#mflick3")[0];
+	var changedPanelNo = 0;
+
+	this.create(el, {
+		circular: true,
+		threshold: 30,
+		thresholdAngle: 15
+	}, {
+		flickEnd: function(e) {
+			changedPanelNo = e.no;
+
+			// Then
+			assert.equal(changedPanelNo, 1, "Panel should be changed.");
+			done();
+		},
+
+	});
+
+	// When
+	simulator(el, {
+		pos: [100, 0],
+		deltaX: -100,
+		deltaY: 30,
+		duration: 500
+	}, function() {
+		setTimeout(function() {
+			assert.equal(changedPanelNo, 0, "Panel should not be changed.");
+
+			simulator(el, {
+				pos: [100, 0],
+				deltaX: -100,
+				deltaY: 10,
+				duration: 500
+			});
+		}, 300)
+	});
+});
+
 
 QUnit.module("Methods call", hooks);
 QUnit.test("getIndex()", function(assert) {

@@ -5,7 +5,6 @@
   "outputname": "eg",
   "main": "dist/eg.js",
   "homepage": "http://naver.github.io/egjs",
-  "customdownload": "https://github.com/naver/egjs-cli",
   "scripts": {
     "test": "grunt check",
     "fakeserver": "node test/fakeserver/app.js",
@@ -34,9 +33,17 @@
     "persist",
     "plugin",
     "javascript",
-    "jQuery"
+    "jQuery",
+    "transform",
+    "animation"
   ],
+  "dependencies": {
+    "jquery": "^1.7.0",
+    "qunitjs": "^1.17.1",
+    "hammerjs": "^2.0.4"
+  },
   "devDependencies": {
+    "bootflat": "*",
     "browserstack-runner": "^0.4.1",
     "egjs-jsdoc-template": "*",
     "grunt": "^0.4.5",
@@ -52,10 +59,14 @@
     "grunt-jscs": "^2.1.0",
     "grunt-jsdoc": "^0.5.8",
     "grunt-qunit-istanbul": "^0.5.0",
+    "handlebars": "^4.0.5",
     "husky": "^0.11.4",
+    "iscroll": "~5.1.3",
     "jshint-stylish": "^1.0.1",
     "jsonfile": "^2.2.3",
     "load-grunt-tasks": "^3.1.0",
+    "phantomjs-polyfill": "0.0.2",
+    "respond.js": "^1.4.2",
     "time-grunt": "^1.1.0",
     "xml2js": "^0.4.15"
   }
