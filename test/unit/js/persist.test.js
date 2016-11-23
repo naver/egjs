@@ -66,56 +66,75 @@ module("persist: mock", {
 	}
 });
 
-test("reset", function() {
-	// When
-	this.method.reset();
+var UniversalTestMap = {
+	resetTest: {
+		"name": "reset",
+		"testFunc": function() {
+			// When
+			this.method.reset();
 
-	// Then
-	equal(this.fakeWindow.history.state, null);
-});
+			// Then
+			equal($.persist(), null);
+		}
+	},
+	getAndsetDataTest: {
+		"name": "persist : save state data, get state data",
+		"testFunc": function() {
+			// When
+			var state = $.persist();
 
-test("persist : save state data, get state data", function() {
-	// When
-	var state = $.persist();
+			// Then
+			equal(state, null);
 
-	// Then
-	equal(state, null);
+			// When
+			var clonedState = $.persist(this.data);
 
-	// When
-	var clonedState = $.persist(this.data);
-	// Then
-	notEqual(clonedState, this.data);
-	deepEqual(clonedState, this.data);
-});
+			// Then
+			ok(clonedState !== this.data);
+			deepEqual(clonedState, this.data);
+		}
+	},
+	getAndsetDataWithKeyTest: {
+		"name": "persist : save state data by key, get state data by key",
+		"testFunc": function() {
+			// When
+			var state = $.persist("TESTKEY");
 
-test("persist : save state data by key, get state data by key", function() {
-	// When
-	var state = $.persist("TESTKEY");
+			// Then
+			equal(state, null);
 
-	// Then
-	equal(state, null);
+			// When
+			var clonedState = $.persist("TESTKEY", this.data);
 
-	// When
-	var clonedState = $.persist("TESTKEY", this.data);
+			// Then
+			ok(clonedState !== this.data);
+			deepEqual(clonedState, this.data);
+		}
+	},
+	removeDataWithKeyTest: {
+		"name": "persist : remove state data with value by key",
+		"testFunc": function(v){
+			// Given
+			var state = $.persist("TESTKEY");
+			$.persist("TESTKEY", this.data);
 
-	// Then
-	notEqual(clonedState, this.data);
-	deepEqual(clonedState, this.data);
-});
+			// When
+			var clonedState = $.persist("TESTKEY", v);
+
+			// Then
+			equal(clonedState, v);
+			
+		}
+	}
+};
+
+test(UniversalTestMap.resetTest.name, UniversalTestMap.resetTest.testFunc);
+test(UniversalTestMap.getAndsetDataTest.name, UniversalTestMap.getAndsetDataTest.testFunc);
+test(UniversalTestMap.getAndsetDataWithKeyTest.name, UniversalTestMap.getAndsetDataWithKeyTest.testFunc);
 
 $.each([null, undefined, ''], function(i, v) {
-	test("persist : remove state data with value by key", function() {
-		// Given
-		var state = $.persist("TESTKEY");
-		$.persist("TESTKEY", this.data);
-
-		// When
-		var clonedState = $.persist("TESTKEY", v);
-
-		// Then
-		equal(clonedState, v);
-	});
-})
+	test(UniversalTestMap.removeDataWithKeyTest.name, UniversalTestMap.removeDataWithKeyTest.testFunc.bind(this, v));
+});
 
 
 test("onPageshow : when bfCache miss and not BF navigated, _reset method must be executed.", function() {
@@ -175,18 +194,7 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 
 	// Then
 	equal($.persist(), null);
-
 });
-
-test("getState, setState: getter, setter of state", function() {
-	// When
-	this.method.setState(this.data);
-	var clonedData = this.method.getState();
-
-	// Then
-	deepEqual(clonedData, this.data);
-});
-
 
 test("onPageshow : when bfCache miss and BF navigated, persist event must be triggered.", function(assert) {
 	// Given
@@ -262,58 +270,13 @@ module("persist: native", {
 	}
 });
 
-test("reset", function() {
-	// When
-	this.method.reset();
-
-	// Then
-	equal($.persist(), null);
-});
-
-test("persist : save state data, get state data", function() {
-	// When
-	var state = $.persist();
-
-	// Then
-	equal(state, null);
-
-	// When
-	var clonedState = $.persist(this.data);
-
-	// Then
-	notEqual(clonedState, this.data);
-	deepEqual(clonedState, this.data);
-});
-
-test("persist : save state data by key, get state data by key", function() {
-	// When
-	var state = $.persist("TESTKEY");
-
-	// Then
-	equal(state, null);
-
-	// When
-	var clonedState = $.persist("TESTKEY", this.data);
-
-	// Then
-	notEqual(clonedState, this.data);
-	deepEqual(clonedState, this.data);
-});
+test(UniversalTestMap.resetTest.name, UniversalTestMap.resetTest.testFunc);
+test(UniversalTestMap.getAndsetDataTest.name, UniversalTestMap.getAndsetDataTest.testFunc);
+test(UniversalTestMap.getAndsetDataWithKeyTest.name, UniversalTestMap.getAndsetDataWithKeyTest.testFunc);
 
 $.each([null, undefined, ''], function(i, v) {
-	test("persist : remove state data with value by key", function() {
-		// Given
-		var state = $.persist("TESTKEY");
-		$.persist("TESTKEY", this.data);
-
-		// When
-		var clonedState = $.persist("TESTKEY", v);
-
-		// Then
-		equal(clonedState, v);
-	});
-})
-
+	test(UniversalTestMap.removeDataWithKeyTest.name, UniversalTestMap.removeDataWithKeyTest.testFunc.bind(this, v));
+});
 
 $.each(['{', '[ 1,2,3 ]', '1', '1.234', '"123"'], function(i, v) {
 	test("show warning message for storage polloution with value that can be parsed: "+ v, function() {
@@ -348,15 +311,6 @@ $.each(['{', '[ 1,2,3 ]', '1', '1.234', '"123"'], function(i, v) {
 
 		console.warn = console.oldWarn;
 	});
-});
-
-test("getState, setState: getter, setter of state", function() {
-	// When
-	this.method.setState(this.data);
-	var clonedData = this.method.getState();
-
-	// Then
-	deepEqual(clonedData, this.data);
 });
 
 test("Test not throwing error for legacy browsers", function() {
