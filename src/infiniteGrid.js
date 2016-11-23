@@ -4,255 +4,52 @@
 */
 
 // jscs:disable validateLineBreaks, maximumLineLength
-eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function($, ns, global, doc, Outlayer) {
+eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, global, doc) {
 	"use strict";
 
-	// jscs:enable validateLineBreaks, maximumLineLength
-	if (!Outlayer) {
-		ns.InfiniteGrid = ns.Class({});
-		return;
-	}
-
-	function clone(target, source, what) {
-		var s;
-		$.each(what, function(i, v) {
-			s = source[v];
-			if (v in source) {
-				if ($.isArray(s)) {
-					target[v] = $.merge([], s);
-				} else if ($.isPlainObject(s)) {
-					target[v] = $.extend(true, {}, s);
-				} else {
-					target[v] = s;
-				}
-			}
-		});
-		return target;
-	}
-
-	var InfiniteGridCore = Outlayer.create("InfiniteGrid");
-	$.extend(InfiniteGridCore.prototype, {
-		// @override (from layout)
-		_resetLayout: function() {
-			if (!this._isLayoutInited) {
-				this._registGroupKey(this.options.defaultGroupKey, this.items);
-			}
-			this.element.style.width = null;
-			this.getSize();	// create size property
-			this._measureColumns();
-		},
-
-		// @override
-		_getContainerSize: function() {
-			return {
-				height: Math.max.apply(Math, this._appendCols),
-				width: this.size.innerWidth
-			};
-		},
-
-		// @override
-		_getItemLayoutPosition: function(item) {
-			if (this._equalItemSize) {
-				item.size = this._equalItemSize;
-			} else {
-				item.getSize();
-			}
-			(item.isAppend == null) && (item.isAppend = true);
-			var outerHeight = parseInt(item.size.outerHeight, 10);
-			var shortColIndex;
-			var isAppend = item.isAppend;
-			var cols = isAppend ? this._appendCols : this._prependCols;
-			var y = Math[isAppend ? "min" : "max"].apply(Math, cols);
-			if (isAppend) {
-				shortColIndex = $.inArray(y, cols);
-			} else {
-				var i = cols.length;
-				while (i-- >= 0) {
-					if (cols[i] === y) {
-						shortColIndex = i;
-						break;
-					}
-				}
-			}
-			cols[shortColIndex] = y + (isAppend ? outerHeight : -outerHeight);
-
-			return {
-				x: this.columnWidth * shortColIndex,
-				y: isAppend ? y : y - outerHeight
-			};
-		},
-		resetLayout: function() {
-			this._resetLayout();
-			this._isLayoutInited = true;
-		},
-		updateCols: function(isAppend) {
-			var col = isAppend ? this._appendCols : this._prependCols;
-			var items = this.getColItems(isAppend);
-			var base = this._isFitted || isAppend ? 0 : this._getMinY(items);
-			var i = 0;
-			var len = col.length;
-			var item;
-			for (; i < len; i++) {
-				if (item = items[i]) {
-					col[i] = item.position.y + (isAppend ? item.size.outerHeight : -base);
-				} else {
-					col[i] = 0;
-				}
-			}
-			return base;
-		},
-		_getMinY: function(items) {
-			return Math.min.apply(Math, $.map(items, function(v) {
-				return v ? v.position.y : 0;
-			}));
-		},
-		_measureColumns: function() {
-			var containerWidth = this.size.innerWidth;
-			var columnWidth = this._getColumnWidth();
-			var cols = containerWidth / columnWidth;
-			var excess = columnWidth - containerWidth % columnWidth;
-
-			// if overshoot is less than a pixel, round up, otherwise floor it
-			cols = Math.max(Math[ excess && excess <= 1 ? "round" : "floor" ](cols), 1);
-
-			// reset column Y
-			this._appendCols = [];
-			this._prependCols = [];
-			while (cols--) {
-				this._appendCols.push(0);
-				this._prependCols.push(0);
-			}
-		},
-		_getColumnWidth: function() {
-			var el = this.items[0] && this.items[0].element;
-			var size;
-			if (el) {
-				/* jshint ignore:start */
-				size = getSize(el);
-				/* jshint ignore:end */
-			} else {
-				size = {
-					outerWidth: 0,
-					outerHeight: 0
-				};
-			}
-			this.options.isEqualSize && (this._equalItemSize = size);
-			this.columnWidth = size.outerWidth || this.size.outerWidth;
-			return this.columnWidth;
-		},
-		_getColIdx: function(item) {
-			return parseInt(item.position.x / parseInt(this.columnWidth, 10), 10);
-		},
-		getColItems: function(isTail) {
-			var len = this._appendCols.length;
-			var colItems = new Array(len);
-			var item;
-			var idx;
-			var count = 0;
-			var i = isTail ? this.items.length - 1 : 0;
-			while (item = this.items[i]) {
-				idx = this._getColIdx(item);
-				if (!colItems[idx]) {
-					colItems[idx] = item;
-					if (++count === len) {
-						return colItems;
-					}
-				}
-				i += isTail ? -1 : 1;
-			}
-			return colItems;
-		},
-		clone: function(target, source) {
-			clone(target, source, [
-				"_isLayoutInited",
-				"_equalItemSize",
-				"_appendCols",
-				"_prependCols",
-				"columnWidth",
-				"size",
-				"options"
-				]);
-			target.items = target.items || [];
-			target.items.length = source.items.length;
-			$.each(source.items, function(i) {
-				target.items[i] = clone(target.items[i] || {}, source.items[i],
-					["position", "size", "isAppend", "groupKey"]);
-			});
-			return target;
-		},
-		itemize: function(elements, groupKey) {
-			var items = this._itemize(elements);
-			this._registGroupKey(groupKey, items);
-			return items;
-		},
-		_registGroupKey: function(groupKey, array) {
-			if (groupKey != null) {
-				var i = 0;
-				var v;
-				while (v = array[i++]) {
-					v.groupKey = groupKey;
-				}
-			}
-		},
-
-		// @override
-		destroy: function() {
-			this.off();
-			Outlayer.prototype.destroy.apply(this);
-		}
-	});
-
 	/**
-	 * To build Grid layout UI
-	 * InfiniteGrid is composed using Outlayer and supports recycle-dom.
-	 * DOM elements are fixed even contents are added infinitely.
+	 * A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
 	 * @group egjs
-	 * @ko InfiniteGrid는 무한 그리드 레이아웃 UI 컴포넌트이다. 이 컴포넌트는 크게 2가지 기능을 제공한다.
-	 첫째, 다양한 크기의 카드를 격자모양으로 배치하는 기능을 제공한다. 동일한 넓이를 가진 카드는 위에서부터 차례대로 수직 공간의 빈 공간에 끼워 맞춰진다.
-	 둘째, 카드의 개수가 계속 증가하더라도, 내부적으로 일정한 DOM의 개수를 유지한다. 이로 인해, 카드가 무한으로 증가하더라도, 최적의 성능을 보장한다.
+	 * @ko 콘텐츠가 있는 카드 엘리먼트를 그리드 레이아웃에 무한으로 배치하는 모듈. 다양한 크기의 카드 엘리먼트를 격자 모양으로 배치하는 UI를 만들 수 있다. 카드 엘리먼트의 개수가 계속 늘어나도 모듈이 처리하는 DOM의 개수를 일정하게 유지해 최적의 성능을 보장한다
 	 * @class
 	 * @name eg.InfiniteGrid
 	 * @extends eg.Component
 	 *
-	 * @param {HTMLElement|String|jQuery} element wrapper element <ko>기준 요소</ko>
-	 * @param {Object} [options]
-	 * @param {String} [options.itemSelector] selector string for layout item elements <ko>레이아웃 구성시, 구성의 단위로 사용될 엘리먼트들의 셀렉터. 즉, 카드들의 셀렉터.</ko>
-	 * @param {Number} [options.count=30] when count value is greater than 0, grid will maintain same DOM length recycling <ko>내부적으로 유지되는 실제 DOM의 개수. count값이 0보다 클 경우, 일정한 dom 개수를 유지한다. count값이 0보다 작을 경우, DOM의 개수는 카드가 추가되면 될수록 계속 증가한다.</ko>
-	 * @param {String} [options.defaultGroupKey=null] when encounter item markup during the initialization, then set `defaultGroupKey` as groupKey <ko>객체를 초기화할 때 마크업에 존재하는 카드에 부여될 그룹키</ko>
-	 * @param {Boolean} [options.isEqualSize=false] determine if all item's size are same <ko>배치 될 카드의 크기가 모두 동일한 경우, 이 옵션을 true로 설정하면, 레이아웃 배치 성능을 높일 수 있다.</ko>
-	 * @param {Number} [options.threshold=300] Threshold pixels to determine if grid needs to append or prepend elements<ko>뷰포트의 임계치 픽셀 값. InfinteGrid는 window 스크롤의 y값이 '마지막 카드 엘리먼트(getBottomElement)의 top + threshold' 값에 도달하면, append 이벤트가 발생하고, '최상위 카드 엘리먼트(getTopElement)의 bottom - threshold' 값에 도달하면, prepend 이벤트가 발생한다.</ko>
+	 * @param {HTMLElement|String|jQuery} element A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
+	 * @param {Object} [options] The option object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 옵션 객체</ko>
+	 * @param {String} [options.itemSelector] A selector to select card elements that make up the layout (@deprecated since 1.3.0)<ko>레이아웃을 구성하는 카드 엘리먼트를 선택할 선택자(selector) (@deprecated since 1.3.0)</ko>
+	 * @param {Number} [options.count=30] The number of DOMs handled by module. If the count value is greater than zero, the number of DOMs is maintained. If the count value is zero or less than zero, the number of DOMs will increase as card elements are added. <ko>모듈이 유지할 실제 DOM의 개수. count 값이 0보다 크면 DOM 개수를 일정하게 유지한다. count 값이 0 이하면 카드 엘리먼트가 추가될수록 DOM 개수가 계속 증가한다.</ko>
+	 * @param {String} [options.defaultGroupKey=null] The default group key configured in a card element contained in the markup upon initialization of a module object <ko>모듈 객체를 초기화할 때 마크업에 있는 카드 엘리먼트에 설정할 그룹 키 </ko>
+	 * @param {Boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. <ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
+	 * @param {Number} [options.threshold=300] The threshold size of an event area where card elements are added to a layout.<br>- append event: If the current vertical position of the scroll bar is greater than "the bottom property value of the card element at the top of the layout" plus "the value of the threshold option", the append event will occur.<br>- prepend event: If the current vertical position of the scroll bar is less than "the bottom property value of the card element at the top of the layout" minus "the value of the threshold option", the prepend event will occur. <ko>−	레이아웃에 카드 엘리먼트를 추가하는 이벤트가 발생하는 기준 영역의 크기.<br>- append 이벤트: 현재 스크롤의 y 좌표 값이 '레이아웃의 맨 아래에 있는 카드 엘리먼트의 top 속성의 값 + threshold 옵션의 값'보다 크면 append 이벤트가 발생한다.<br>- prepend 이벤트: 현재 스크롤의 y 좌표 값이 '레이아웃의 맨 위에 있는 카드 엘리먼트의 bottom 속성의 값 - threshold 옵션의 값'보다 작으면 prepend 이벤트가 발생한다</ko>
 	 *
 	 * @codepen {"id":"zvrbap", "ko":"InfiniteGrid 데모", "en":"InfiniteGrid example", "collectionId":"DPYEww", "height": 403}
 	 *  @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
-	 *
-	 *  @see Outlayer {@link https://github.com/metafizzy/outlayer}
 	 *
 	 * @example
 		<!-- HTML -->
 		<ul id="grid">
 			<li class="card">
-			  <div>test1</div>
+				<div>test1</div>
 			</li>
 			<li class="card">
-			  <div>test2</div>
+				<div>test2</div>
 			</li>
 			<li class="card">
-			  <div>test3</div>
+				<div>test3</div>
 			</li>
 			<li class="card">
-			  <div>test4</div>
+				<div>test4</div>
 			</li>
 			<li class="card">
-			  <div>test5</div>
+				<div>test5</div>
 			</li>
 			<li class="card">
-			  <div>test6</div>
+				<div>test6</div>
 			</li>
 		</ul>
 		<script>
-		var some = new eg.InfiniteGrid("#grid", {
-			itemSelector : ".card"
-		}).on("layoutComplete", function(e) {
+		var some = new eg.InfiniteGrid("#grid").on("layoutComplete", function(e) {
 			// ...
 		});
 		</script>
@@ -268,42 +65,37 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		},
 		construct: function(el, options, _prefix) {
 			this.options = $.extend({
-				"isEqualSize": false,
-				"defaultGroupKey": null,
-				"count": 30,
-				"threshold": 300
+				isEqualSize: false,
+				defaultGroupKey: null,
+				count: 30,
+				threshold: 300
 			}, options);
-			this.options.transitionDuration = 0;	// don't use this option.
-			this.options.isInitLayout = false;	// isInitLayout is always 'false' in order to controll layout.
-			this.options.isResizeBound = false;	// isResizeBound is always 'false' in order to controll layout.
 
 			// if el is jQuery instance, el should change to HTMLElement.
-			if (el instanceof $) {
-				el = el.get(0);
-			}
+			this.$el = el instanceof $ ? el : $(el);
+			this.el = this.$el.get(0);
+			this.el.style.position = "relative";
 			this._prefix = _prefix || "";
-			this.core = new InfiniteGridCore(el, this.options)
-				.on(EVENTS.layoutComplete, $.proxy(this._onlayoutComplete, this));
+			this._isIos = /iPhone|iPad/.test(global.navigator.userAgent);
+			this._isIE10lower = !!(doc.documentMode && doc.documentMode < 10);
+			this._appendCols = this._prependCols = [];
 			this.$view = $(global);
 			this._reset();
-			this.core.$element.children().length > 0 && this.layout();
-			this._onResize = $.proxy(this._onResize, this);
-			this._onScroll = $.proxy(this._onScroll, this);
-			this._isIos = ns.agent().os.name === "ios";
-			this._prevScrollTop = 0;
-			this._topElement = null;
-			this._bottomElement = null;
 			this._refreshViewport();
-			this.$view.on("resize", this._onResize);
-			this.$view.on("scroll", this._onScroll);
+			if (this.el.children.length > 0) {
+				this.items = this._itemize($.makeArray(this.el.children), this.options.defaultGroupKey, true);
+				this.layout(this.items, true);
+			}
+
+			this._onScroll = $.proxy(this._onScroll, this);
+			this._onResize = $.proxy(this._onResize, this);
+			this.$view.on("scroll", this._onScroll)
+				.on("resize", this._onResize);
 		},
 		_getScrollTop: function() {
 			return doc.body.scrollTop || doc.documentElement.scrollTop;
 		},
 		_onScroll: function() {
-			if (this.core && !this.core._isLayoutInited) {
-				return;
-			}
 			if (this.isProcessing()) {
 				return;
 			}
@@ -326,15 +118,13 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 				rect = ele.getBoundingClientRect();
 				if (rect.top <= this._clientHeight + this.options.threshold) {
 					/**
-					 * Occurs when grid needs to append elements.
-					 * in order words, when scroll reaches end of page
-					 *
-					 * @ko 카드가 append 될 필요가 있을 때 발생하는 이벤트. 사용자가 아래로 스크롤 할 때, 화면상에서 더이상 추가로 볼 카드가 없는 경우에 발생한다.
+					 * This event is fired when a card element must be added at the bottom of a grid layout because there is no card to be displayed on screen when a user scrolls near bottom.
+					 * @ko 카드 엘리먼트가 그리드 레이아웃의 아래에 추가돼야 할 때 발생하는 이벤트. 사용자가 아래로 스크롤해서 화면에 표시될 카드가 없을 때 발생한다
 					 * @name eg.InfiniteGrid#append
 					 * @event
 					 *
-					 * @param {Object} param
-					 * @param {Number} param.scrollTop scrollTop scroll-y position of window<ko>윈도우 y 스크롤의 값</ko>
+					 * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+					 * @param {Number} param.scrollTop Current vertical position of the scroll bar<ko>현재 스크롤의 y 좌표 값</ko>
 					 */
 					this.trigger(this._prefix + EVENTS.append, {
 						scrollTop: scrollTop
@@ -352,15 +142,13 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 					rect = ele.getBoundingClientRect();
 					if (rect.bottom >= -this.options.threshold) {
 						/**
-						 * Occurs when grid needs to prepend elements
-						 * in order words, when scroll reaches top of page and a count of cropped element is more than zero.
-						 *
-						 * @ko 카드가 prepend 될 필요가 있을 때 발생하는 이벤트. 실제 추가된 카드는 더 있지만, 일정한 수의 DOM 개수를 유지하기 위해 내부적으로 삭제된다. 이때, 사용자가 위로 스크롤 할 경우, 화면상에서 더이상 추가로 볼 카드가 없는 경우에 prepend 이벤트가 발생된다. 이 이벤트는 isRecycling()의 반환값이 true일 경우에만 발생한다.
+						 * This event is fired when a card element must be added at the top of a grid layout because there is no card to be displayed on screen when a user scrolls near top. This event is available only if the isRecycling() method returns true.
+						 * @ko 카드가 그리드 레이아웃의 위에 추가돼야 할 때 발생하는 이벤트. 사용자가 위로 스크롤해서 화면에 표시될 카드가 없을 때 발생한다. 이 이벤트는 isRecycling() 메서드의 반환값이 'true'일 때만 발생한다
 						 * @name eg.InfiniteGrid#prepend
 						 * @event
 						 *
-						 * @param {Object} param
-						 * @param {Number} param.scrollTop scrollTop scroll-y position of window<ko>윈도우 y 스크롤의 값</ko>
+						 * @param {Object} param The object of data to be sent to an event<ko>이벤트에 전달되는 데이터 객체</ko>
+						 * @param {Number} param.scrollTop Current vertical position of the scroll bar<ko>현재 스크롤의 y 좌표 값</ko>
 						 */
 						var croppedDistance = this.fit();
 						if (croppedDistance > 0) {
@@ -376,131 +164,139 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			this._prevScrollTop = scrollTop;
 		},
 		_onResize: function() {
-			if (this.resizeTimeout) {
-				clearTimeout(this.resizeTimeout);
-			}
-			if (this.core && !this.core._isLayoutInited) {
-				return;
+			if (this._resizeTimeout) {
+				clearTimeout(this._resizeTimeout);
 			}
 			var self = this;
-			function delayed() {
+			this._resizeTimeout = setTimeout(function() {
 				self._refreshViewport();
-				if (self.core) {
-					self.core.element.style.width = null;
-					self.core.needsResizeLayout() && self.layout();
-				}
-				delete self.resizeTimeout;
-			}
-			this.resizeTimeout = setTimeout(delayed, 100);
+				(self.$el.innerWidth() !== self._containerWidth) && self.layout(self.items, true);
+				self._resizeTimeout = null;
+			}, 100);
 		},
 		_refreshViewport: function() {
 			this._clientHeight = this.$view.height();
 		},
 		/**
-		 * Get current status
-		 * @ko 각각 카드의 위치 정보 등 현재 상태 정보를 반환한다. 반환된 정보는 저장해두었다가 setStatus() 함수를 통해 복원할 수 있다.
+		 * Returns the current state of a module such as location information. You can use the setStatus() method to restore the information returned through a call to this method.
+		 * @ko 카드의 위치 정보 등 모듈의 현재 상태 정보를 반환한다. 이 메서드가 반환한 정보를 저장해 두었다가 setStatus() 메서드로 복원할 수 있다
 		 * @method eg.InfiniteGrid#getStatue
-		 * @return {Object} infiniteGrid status Object<ko>infiniteGrid 상태 오브젝트</ko>
+		 * @return {Object} State object of the eg.InfiniteGrid module<ko>eg.InfiniteGrid 모듈의 상태 객체</ko>
 		 */
 		getStatus: function() {
-			var data = [];
+			var data = {};
 			var p;
 			for (p in this) {
 				if (this.hasOwnProperty(p) && /^_/.test(p) &&
-					typeof this[p] !== "function" && !(this[p] instanceof HTMLElement)) {
-					data.push(p);
+					typeof this[p] !== "function" && !(this[p] instanceof Element)) {
+					data[p] = this[p];
 				}
 			}
 			return {
-				core: this.core.clone({}, this.core),
-				data: clone({}, this, data),
-				html: this.core.$element.html(),
-				cssText: this.core.element.style.cssText
+				prop: data,
+				options: $.extend({}, this.options),
+				items: $.map(this.items, function(v) {
+					var clone = $.extend({}, v);
+					delete clone.el;
+					return clone;
+				}),
+				html: this.el.innerHTML,
+				cssText: this.el.style.cssText
 			};
 		},
 		/**
-		 * Set current status
-		 * @ko infiniteGrid의 현재 상태를 설정한다. getStatus() 를 통해 반환된 상태 정보로 복원한다.
+		 * Sets the state of the eg.InfiniteGrid module with the information returned through a call to the getStatue() method.
+		 * @ko getStatue() 메서드가 저장한 정보로 eg.InfiniteGrid 모듈의 상태를 설정한다.
 		 * @method eg.InfiniteGrid#setStatus
-		 * @param {Object} status Object
-		 * @return {eg.InfiniteGrid} instance of itself<ko>자신의 인스턴스</ko>
+		 * @param {Object} status State object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 상태 객체</ko>
+		 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 		 */
 		setStatus: function(status) {
 			if (!status || !status.cssText || !status.html ||
-				!status.core || !status.data) {
+				!status.prop || !status.items) {
 				return this;
 			}
-			this.core.element.style.cssText = status.cssText;
-			this.core.$element.html(status.html);
-			this.core.items = this.core.itemize(this.core.$element.children().toArray());
-			this.core.clone(this.core, status.core);
-			$.extend(this, status.data);
+			this.el.style.cssText = status.cssText;
+			this.el.innerHTML = status.html;
+			$.extend(this, status.prop);
+			this._topElement = this._bottomElement = null;
+			this.items = $.map(this.el.children, function(v, i) {
+				status.items[i].el = v;
+				return status.items[i];
+			});
 			return this;
 		},
 		/**
-		 * Check if element is appending or prepending
-		 * @ko append나 prepend가 진행 중인 상태를 반환한다. 진행 중일 경우 true를 반환한다.
+		 * Checks whether a card element is being added.
+		 * @ko 카드 엘리먼트 추가가 진행 중인지 확인한다
 		 * @method eg.InfiniteGrid#isProcessing
-		 * @return {Boolean}
+		 * @return {Boolean} Indicates whether a card element is being added <ko>카드 엘리먼트 추가 진행 중 여부</ko>
 		 */
 		isProcessing: function() {
 			return this._isProcessing;
 		},
 		/**
-		 * Check if elements are in recycling mode
-		 * @ko 추가된 총 카드의 개수가 count 옵션 개수( > 0)보다 클 경우 true 를 반환한다. 이후에는 카드가 추가되더라도 더 이상 DOM 개수가 증가하지 않고 기존 DOM 을 재활용(recycle)한다.
-		 * 즉, 일정한 DOM을 유지하는 상태가 되면 true를 반환한다.
+		 * Checks whether the total number of added card elements is greater than the value of the count option. Note that the value of the count option is always greater than zero. If it returns true, the number of DOMs won't increase even though card elements are added; instead of adding a new DOM, existing DOMs are recycled to maintain the number of DOMs.
+		 * @ko 추가된 카드 엘리먼트의 전체 개수가 count 옵션의 값보다 큰지 확인한다. 단, count 옵션의 값은 0보다 크다. 'true'가 반환되면 카드 엘리먼트가 더 추가돼도 DOM의 개수를 증가하지 않고 기존 DOM을 재활용(recycle)해 DOM의 개수를 일정하게 유지한다
 		 * @method eg.InfiniteGrid#isRecycling
-		 * @return {Boolean}
+		 * @return {Boolean} Indicates whether the total number of added card elements is greater than the value of the count option. <ko>추가된 카드 엘리먼트의 전체 개수가 count 옵션의 값보다 큰지 여부</ko>
 		 */
 		isRecycling: function() {
-			return this.core.options.count > 0 && this._isRecycling;
+			return (this.options.count > 0) && this._isRecycling;
 		},
 		/**
-		 * Get group keys
-		 * @ko 현재 유지되고 있는 카드들의 그룹키 목록을 반환한다. 여러 개의 카드를 하나의 그룹으로 묶어 관리하기 위해 옵션으로 그룹키를 지정할 수 있다. 그룹키를 이용해 여러 개의 카드들을 관리할 수 있다. append 나 prepend 때, 그룹키를 지정하지 않았다면, 반환되는 그룹키는 undefined 이다.
+		 * Returns the list of group keys which belongs to card elements currently being maintained. You can use the append() or prepend() method to configure group keys so that multiple card elements can be managed at once. If you do not use these methods to configure group keys, it returns undefined as a group key.
+		 * @ko 현재 유지하고 있는 카드 엘리먼트의 그룹 키 목록을 반환한다. 여러 개의 카드 엘리먼트를 묶어서 관리할 수 있도록 append() 메서드나 prepend() 메서드에서 그룹 키를 지정할 수 있다. append() 메서드나 prepend() 메서드에서 그룹 키를 지정하지 않았다면 'undefined'가 그룹 키로 반환된다
 		 * @method eg.InfiniteGrid#getGroupKeys
-		 * @return {Array} groupKeys
+		 * @return {Array} List of group keys <ko>그룹 키의 목록</ko>
 		 */
 		getGroupKeys: function() {
-			var result = [];
-			if (this.core._isLayoutInited) {
-				var i = 0;
-				var item;
-				while (item = this.core.items[i++]) {
-					result.push(item.groupKey);
-				}
-			}
-			return result;
+			return $.map(this.items, function(v) {
+				return v.groupKey;
+			});
 		},
 		/**
-		 * Rearrange layout
-		 * @ko 레이아웃을 재배치한다.
+		 * Rearranges a layout.
+		 * @ko 레이아웃을 다시 배치한다.
 		 * @method eg.InfiniteGrid#layout
-		 * @return {eg.InfiniteGrid} instance of itself<ko>자신의 인스턴스</ko>
+		 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 		 */
-		layout: function() {
+		layout: function(items, isRefresh) {
+			items = items || this.items;
+			isRefresh = typeof isRefresh === "undefined" ? true : isRefresh;
 			this._isProcessing = true;
-			this._isAppendType = true;
-			var i = 0;
-			var v;
-			while (v = this.core.items[i++]) {
+			isRefresh && (items = $.map(items, function(v) {
 				v.isAppend = true;
-			}
-			!this.core._isLayoutInited ?
-				this._waitResource(this.core.$element, function() {
-					this.core.layout();
-				}) : this.core.layout();
+				return v;
+			}));
+			this._waitResource(items, isRefresh);
 			return this;
 		},
+		_layoutItems: function(items) {
+			var self = this;
+
+			// for performance
+			$.each(
+				$.map(items, function(v) {
+					v.position = self._getItemLayoutPosition(v);
+					return v;
+				}),
+				function(i, v) {
+					if (v.el) {
+						var style = v.el.style;
+						style.left = v.position.x + "px";
+						style.top = v.position.y + "px";
+					}
+				});
+		},
 		/**
-		 * Append elements
-		 * @ko 카드 엘리먼트를 append 한다.
+		 * Adds a card element at the bottom of a grid layout. This method is available only if the isProcessing() method returns false.
+		 * @ko 카드 엘리먼트를 그리드 레이아웃의 아래에 추가한다. isProcessing() 메서드의 반환값이 'false'일 때만 이 메서드를 사용할 수 있다
 		 * 이 메소드는 isProcessing()의 반환값이 false일 경우에만 사용 가능하다.
 		 * @method eg.InfiniteGrid#append
-		 * @param {Array|String|jQuery} elements to be appended elements <ko>append될 카드 엘리먼트의 배열</ko>
-		 * @param {Number|String} [groupKey] to be appended groupkey of elements<ko>append될 카드 엘리먼트의 그룹키 (생략하면 undefined)</ko>
-		 * @return {Number} length a number of elements
+		 * @param {Array|String|jQuery} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트의 배열</ko>
+		 * @param {Number|String} [groupKey] The group key to be configured in a card element. It is set to "undefined" by default.<ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 'undefined'로 설정된다</ko>
+		 * @return {Number} The number of added card elements <ko>추가된 카드 엘리먼트의 개수</ko>
 		 */
 		append: function($elements, groupKey) {
 			if (this._isProcessing || $elements.length === 0) {
@@ -510,21 +306,20 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			// convert jQuery instance
 			$elements = $($elements);
 			this._isProcessing = true;
-			if (!this._isRecycling) {
+			if (!this.isRecycling()) {
 				this._isRecycling =
-				(this.core.items.length + $elements.length) >= this.core.options.count;
+				(this.items.length + $elements.length) >= this.options.count;
 			}
 			this._insert($elements, groupKey, true);
 			return $elements.length;
 		},
 		/**
-		 * Prepend elements
-		 * @ko 카드 엘리먼트를 prepend 한다.
-		 * 이 메소드는 isProcessing()의 반환값이 false이고, isRecycling()의 반환값이 true일 경우에만 사용 가능하다.
+		 * Adds a card element at the top of a grid layout. This method is available only if the isProcessing() method returns false and the isRecycling() method returns true.
+		 * @ko 카드 엘리먼트를 그리드 레이아웃의 위에 추가한다. isProcessing() 메서드의 반환값이 'false'이고, isRecycling() 메서드의 반환값이 'true'일 때만 이 메서드를 사용할 수 있다
 		 * @method eg.InfiniteGrid#prepend
-		 * @param {Array|String|jQuery} elements to be prepended elements <ko>prepend될 카드 엘리먼트 배열</ko>
-		 * @param {Number|String} [groupKey] to be prepended groupkey of elements<ko>prepend될 카드 엘리먼트의 그룹키 (생략하면 undefined)</ko>
-		 * @return {Number} length a number of elements
+		 * @param {Array|String|jQuery} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트 배열</ko>
+		 * @param {Number|String} [groupKey] The group key to be configured in a card element. It is set to "undefined" by default.<ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 'undefined'로 설정된다</ko>
+		 * @return {Number} The number of added card elements <ko>추가된 카드 엘리먼트의 개수</ko>
 		 */
 		prepend: function($elements, groupKey) {
 			if (!this.isRecycling() || this._removedContent === 0 ||
@@ -544,23 +339,22 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			return $elements.length;
 		},
 		/**
-		 * Clear elements and data
+		 * Clears added card elements and data.
 		 * @ko 추가된 카드 엘리먼트와 데이터를 모두 지운다.
 		 * @method eg.InfiniteGrid#clear
-		 * @return {eg.InfiniteGrid} instance of itself<ko>자신의 인스턴스</ko>
+		 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 		 */
 		clear: function() {
-			this.core.$element.empty();
-			this.core.items.length = 0;
+			this.el.innerHTML = "";
+			this.el.style.height = "";
 			this._reset();
-			this.layout();
 			return this;
 		},
 
 		_getTopItem: function() {
 			var item = null;
 			var min = Infinity;
-			$.each(this.core.getColItems(false), function(i, v) {
+			$.each(this._getColItems(false), function(i, v) {
 				if (v && v.position.y < min) {
 					min = v.position.y;
 					item = v;
@@ -570,23 +364,23 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		},
 
 		/**
-		 * Get the first element at the top
-		 * @ko 가장 상위에 있는 카드 엘리먼트를 반환한다.
+		 * Returns a card element at the top of a layout.
+		 * @ko 레이아웃의 맨 위에 있는 카드 엘리먼트를 반환한다.
 		 * @method eg.InfiniteGrid#getTopElement
 		 *
-		 * @return {HTMLElement} element
+		 * @return {HTMLElement} Card element at the top of a layout <ko>레이아웃의 맨 위에 있는 카드 엘리먼트</ko>
 		 */
 		getTopElement: function() {
 			var item = this._getTopItem();
-			return item && item.element;
+			return item && item.el;
 		},
 
 		_getBottomItem: function() {
 			var item = null;
 			var max = -Infinity;
-			$.each(this.core.getColItems(true), function(i, v) {
-				if (v && v.position.y + v.size.outerHeight > max) {
-					max = v.position.y + v.size.outerHeight;
+			$.each(this._getColItems(true), function(i, v) {
+				if (v && v.position.y + v.size.height > max) {
+					max = v.position.y + v.size.height;
 					item = v;
 				}
 			});
@@ -594,30 +388,37 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		},
 
 		/**
-		 * Get the last element at the bottom
-		 * @ko 가장 하위에 있는 카드 엘리먼트를 반환한다.
+		 * Returns a card element at the bottom of a layout.
+		 * @ko 레이아웃의 맨 아래에 있는 카드 엘리먼트를 반환한다.
 		 * @method eg.InfiniteGrid#getBottomElement
 		 *
-		 * @return {HTMLElement} element
+		 * @return {HTMLElement} Card element at the bottom of a layout <ko>레이아웃의 맨 아래에 있는 카드 엘리먼트</ko>
 		 */
 		getBottomElement: function() {
 			var item = this._getBottomItem();
-			return item && item.element;
+			return item && item.el;
 		},
 
-		_onlayoutComplete: function(e) {
-			var distance = 0;
-			var isAppend = this._isAppendType;
+		_postLayout: function(items) {
+			if (!this._isProcessing || items.length <= 0) {
+				return;
+			}
+
+			var size = this._getContainerSize();
+			this.el.style.width = size.width + "px";
+			this.el.style.height = size.height + "px";
 
 			// refresh element
 			this._topElement = this.getTopElement();
 			this._bottomElement = this.getBottomElement();
 
-			if (isAppend === false) {
+			var distance = 0;
+			var isAppend = items[0].isAppend;
+			if (!isAppend) {
 				this._isFitted = false;
 				this._fit(true);
-				distance = e.length >= this.core.items.length ?
-					0 : this.core.items[e.length].position.y;
+				distance = items.length >= this.items.length ?
+					0 : this.items[items.length].position.y;
 				if (distance > 0) {
 					this._prevScrollTop = this._getScrollTop() + distance;
 					this.$view.scrollTop(this._prevScrollTop);
@@ -625,22 +426,22 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			}
 
 			// reset flags
-			this._reset(true);
+			this._isProcessing = false;
 
 			/**
-			 * Occurs when layout is completed (after append / after prepend / after layout)
-			 * @ko 레이아웃 배치가 완료 되었을 때 발생하는 이벤트 (append/prepend/layout 메소드 호출 후, 카드의 배치가 완료되었을때 발생)
+			 * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
+			 * @ko 레이아웃 배치가 완료됐을 때 발생하는 이벤트. append() 메서드나 prepend() 메서드, layout() 메서드 호출 후 카드의 배치가 완료됐을 때 발생한다
 			 * @name eg.InfiniteGrid#layoutComplete
 			 * @event
 			 *
-			 * @param {Object} param
-			 * @param {Array} param.target target rearranged elements<ko>재배치된 카드 엘리먼트들</ko>
-			 * @param {Boolean} param.isAppend isAppend determine if append or prepend (value is true when call layout method)<ko>카드 엘리먼트가 append로 추가되었는지, prepend로 추가되었는지를 반환한다. (layout호출시에는 true 값을 반환한다)</ko>
-			 * @param {Number} param.distance the distance of moved top-element after layoutComplete event is triggered. in order words, prepended distance or height <ko>최상단 엘리먼트가 layoutComplete 이벤트 발생 후,이동되어진 거리. 즉, prepend 되어 늘어난 거리(높이)</ko>
-			 * @param {Number} param.croppedCount the count of removed elements for recycle-dom. <ko>일정한 DOM 개수를 유지하기 위해, 삭제된 카드 엘리먼트들의 개수</ko>
+			 * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+			 * @param {Array} param.target Rearranged card elements<ko>재배치된 카드 엘리먼트들</ko>
+			 * @param {Boolean} param.isAppend Checks whether the append() method is used to add a card element. It returns true even though the layoutComplete event is fired after the layout() method is called. <ko>카드 엘리먼트가 append() 메서드로 추가됐는지 확인한다. layout() 메서드가 호출된 후 layoutComplete 이벤트가 발생해도 'true'를 반환한다.</ko>
+			 * @param {Number} param.distance Distance the card element at the top of a grid layout has moved after the layoutComplete event is fired. In other words, it is the same as an increased height with a new card element added using the prepend() method <ko>그리드 레이아웃의 맨 위에 있던 카드 엘리먼트가 layoutComplete 이벤트 발생 후 이동한 거리. 즉, prepend() 메서드로 카드 엘리먼트가 추가돼 늘어난 높이다.</ko>
+			 * @param {Number} param.croppedCount The number of deleted card elements to maintain the number of DOMs<ko>일정한 DOM 개수를 유지하기 위해, 삭제한 카드 엘리먼트들의 개수</ko>
 			 */
 			this.trigger(this._prefix + EVENTS.layoutComplete, {
-				target: e.concat(),
+				target: items.concat(),
 				isAppend: isAppend,
 				distance: distance,
 				croppedCount: this._removedContent
@@ -652,94 +453,92 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			if ($elements.length === 0) {
 				return;
 			}
-			this._isAppendType = isAppend;
 			var elements = $elements.toArray();
 			var $cloneElements = $(elements);
-			var i = 0;
-			var item;
-			var items = this.core.itemize(elements, groupKey);
-			while (item = items[i++]) {
-				item.isAppend = isAppend;
-			}
+			var dummy = -this._clientHeight + "px";
+			$.each(elements, function(i, v) {
+				v.style.position = "absolute";
+				v.style.top = dummy;
+			});
+			var items = this._itemize(elements, groupKey, isAppend);
 			if (isAppend) {
-				this.core.items = this.core.items.concat(items);
+				this.items = this.items.concat(items);
 			} else {
-				this.core.items = items.concat(this.core.items.slice(0));
+				this.items = items.concat(this.items);
 				items = items.reverse();
 			}
 			this.isRecycling() && this._adjustRange(isAppend, $cloneElements);
 
-			var noChild = this.core.$element.children().length === 0;
-			this.core.$element[isAppend ? "append" : "prepend"]($cloneElements);
-			noChild && this.core.resetLayout();		// for init-items
-
-			this._waitResource($cloneElements, function() {
-				this.core.layoutItems(items, true);
-			});
+			this.$el[isAppend ? "append" : "prepend"]($cloneElements);
+			this.layout(items, false);
 		},
-		_waitResource: function($element, callback) {
-			var needCheck = this._checkImageLoaded($element);
+		_waitResource: function(items, isRefresh) {
+			var needCheck = this._checkImageLoaded();
+			var self = this;
+			var callback = function() {
+				if (self._isProcessing) {
+					if (isRefresh || !self._appendCols.length) {
+						$.each(items, function(i, v) {
+							v.el.style.position = "absolute";
+						});
+						self._measureColumns();
+					}
+					self._layoutItems(items);
+					self._postLayout(items);
+				}
+			};
 			if (needCheck.length > 0) {
 				this._waitImageLoaded(needCheck, callback);
 			} else {
-				var self = this;
-
 				// convert to async
 				setTimeout(function() {
-					callback && self.core && callback.apply(self);
+					callback && callback();
 				}, 0);
 			}
 		},
 		_adjustRange: function (isTop, $elements) {
-			var diff = this.core.items.length - this.core.options.count;
+			var diff = this.items.length - this.options.count;
 			var targets;
 			var idx;
 			if (diff <= 0 || (idx = this._getDelimiterIndex(isTop, diff)) < 0) {
 				return;
 			}
 			if (isTop) {
-				targets = this.core.items.slice(0, idx);
-				this.core.items = this.core.items.slice(idx);
+				targets = this.items.splice(0, idx);
 				this._isFitted = false;
 			} else {
-				targets = this.core.items.slice(idx);
-				this.core.items = this.core.items.slice(0, idx);
+				targets = this.items.splice(idx, this.items.length - idx);
 			}
 
 			// @todo improve performance
-			var i = 0;
-			var item;
-			var el;
-			while (item = targets[i++]) {
-				el = item.element;
-				idx = $elements.index(el);
+			$.each(targets, function(i, v) {
+				idx = $elements.index(v.el);
 				if (idx !== -1) {
 					$elements.splice(idx, 1);
 				} else {
-					el.parentNode.removeChild(el);
+					v.el.parentNode.removeChild(v.el);
 				}
-			}
+			});
 			this._removedContent += isTop ? targets.length : -targets.length;
-
 		},
 		_getDelimiterIndex: function(isTop, removeCount) {
-			var len = this.core.items.length;
+			var len = this.items.length;
 			var i;
 			var idx = 0;
 			var baseIdx = isTop ? removeCount - 1 : len - removeCount;
 			var targetIdx = baseIdx + (isTop ? 1 : -1);
-			var groupKey = this.core.items[baseIdx].groupKey;
-			if (groupKey != null && groupKey === this.core.items[targetIdx].groupKey) {
+			var groupKey = this.items[baseIdx].groupKey;
+			if (groupKey != null && groupKey === this.items[targetIdx].groupKey) {
 				if (isTop) {
 					for (i = baseIdx; i > 0; i--) {
-						if (groupKey !== this.core.items[i].groupKey) {
+						if (groupKey !== this.items[i].groupKey) {
 							break;
 						}
 					}
 					idx =  i === 0 ? -1 : i + 1;
 				} else {
 					for (i = baseIdx; i < len; i++) {
-						if (groupKey !== this.core.items[i].groupKey) {
+						if (groupKey !== this.items[i].groupKey) {
 							break;
 						}
 					}
@@ -754,7 +553,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 		// fit size
 		_fit: function(applyDom) {
 			// for caching
-			if (this.core.options.count <= 0) {
+			if (this.options.count <= 0) {
 				this._fit = function() {
 					return false;
 				};
@@ -765,192 +564,310 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document, "Outlayer"], function
 			if (this._isFitted) {
 				return false;
 			}
-
-			var item;
-			var height;
-			var i = 0;
-			var y = this.core.updateCols();	// for prepend
-			while (item = this.core.items[i++]) {
-				item.position.y -= y;
-				applyDom && $.style(item.element, "top", item.position.y + "px");
-			}
-			this.core.updateCols(true);	// for append
-			height = this.core._getContainerSize().height;
-			applyDom && this.core._setContainerMeasure(height, false);
+			var y = this._updateCols();	// for prepend
+			$.each(this.items, function(i, v) {
+				v.position.y -= y;
+				applyDom && (v.el.style.top = v.position.y + "px");
+			});
+			this._updateCols(true);	// for append
+			var height = this._getContainerSize().height;
+			applyDom && (this.el.style.height = height + "px");
 			this._isFitted = true;
 			return true;
 		},
 
 		/**
-		 * Remove white space which was removed by append action.
-		 * @ko append에 의해 생긴 빈공간을 제거한다.
-		 * @method eg.InfiniteGrid#fit
-		 * @return {Number} distance if empty space is removed, value is not zero. <ko>빈공간이 제거된 실제 길이를 px 단위로 반환</ko>
-		 */
+		* Removes extra space caused by adding card elements.
+		* @ko 카드 엘리먼트를 추가한 다음 생긴 빈 공간을 제거한다
+		* @method eg.InfiniteGrid#fit
+		* @deprecated since version 1.3.0
+		* @return {Number} Actual length of space removed (unit: px) <ko>빈 공간이 제거된 실제 길이(단위: px)</ko>
+		*/
 		fit: function() {
 			var item = this._getTopItem();
 			var distance = item ? item.position.y : 0;
 			this._fit(true);
 			return distance;
 		},
-		_reset: function(isLayoutComplete) {
-			if (!isLayoutComplete) {
-				this._isFitted = true;
-				this._isRecycling = false;
-				this._removedContent = 0;
-			}
-			this._isAppendType = null;
+		_reset: function() {
 			this._isProcessing = false;
+			this._topElement = null;
+			this._bottomElement = null;
+			this._isFitted = true;
+			this._isRecycling = false;
+			this._removedContent = 0;
+			this._prevScrollTop = 0;
+			this._equalItemSize = 0;
+			this._resizeTimeout = null;
+			this._resetCols(this._appendCols.length || 0);
+			this.items = [];
 		},
-		_checkImageLoaded: function($elements) {
-			var needCheck = [];
-			$elements.each(function(k, v) {
-				if (v.nodeName === "IMG") {
-					!v.complete && needCheck.push(v);
-				} else if (v.nodeType &&
-					(v.nodeType === 1 || v.nodeType === 9 || v.nodeType === 11)) {	// ELEMENT_NODE, DOCUMENT_NODE, DOCUMENT_FRAGMENT_NODE
-					needCheck = needCheck.concat($(v).find("img").filter(function(fk, fv) {
-						return !fv.complete;
-					}).toArray());
+		_checkImageLoaded: function() {
+			return this.$el.find("img").filter(function(k, v) {
+				if (v.nodeType && ($.inArray(v.nodeType, [1,9,11]) !== -1)) {
+					return !v.complete;
 				}
-			});
-			return needCheck;
+			}).toArray();
 		},
 		_waitImageLoaded: function(needCheck, callback) {
-			var self = this;
 			var checkCount = needCheck.length;
 			var onCheck = function(e) {
 				checkCount--;
 				$(e.target).off("load error");
-				checkCount <= 0 && callback && self.core && callback.apply(self);
+				checkCount <= 0 && callback && callback();
 			};
-			$.each(needCheck, function(k, v) {
-				$(v).on("load error", onCheck);
+			var $el;
+			var self = this;
+			$.each(needCheck, function(i, v) {
+				$el = $(v);
+
+				// for IE10 lower
+				if (self._isIE10lower) {
+					var url = v.getAttribute("src");
+					v.setAttribute("src", "");
+					v.setAttribute("src", url);
+				}
+				$el.on("load error", onCheck);
 			});
 		},
+		_measureColumns: function() {
+			this.el.style.width = null;
+			this._containerWidth = this.$el.innerWidth();
+			this._columnWidth = this._getColumnWidth() || this._containerWidth;
+			var cols = this._containerWidth / this._columnWidth;
+			var excess = this._columnWidth - this._containerWidth % this._columnWidth;
+
+			// if overshoot is less than a pixel, round up, otherwise floor it
+			cols = Math.max(Math[ excess && excess <= 1 ? "round" : "floor" ](cols), 1);
+
+			// reset column Y
+			this._resetCols(cols || 0);
+		},
+		_resetCols: function(count) {
+			count = typeof count === "undefined" ? 0 : count;
+			var arr = [];
+			while (count--) {
+				arr.push(0);
+			}
+			this._appendCols = arr.concat();
+			this._prependCols = arr.concat();
+		},
+		_getContainerSize: function() {
+			return {
+				height: Math.max.apply(Math, this._appendCols),
+				width: this._containerWidth
+			};
+		},
+		_getColumnWidth: function() {
+			var el = this.items[0] && this.items[0].el;
+			var width = 0;
+			if (el) {
+				var $el = $(el);
+				width = $el.innerWidth();
+				if (this.options.isEqualSize) {
+					this._equalItemSize = {
+						width: width,
+						height: $el.innerHeight()
+					};
+				}
+			}
+			return width;
+		},
+		_updateCols: function(isAppend) {
+			var col = isAppend ? this._appendCols : this._prependCols;
+			var items = this._getColItems(isAppend);
+			var base = this._isFitted || isAppend ? 0 : this._getMinY(items);
+			var i = 0;
+			var len = col.length;
+			var item;
+			for (; i < len; i++) {
+				if (item = items[i]) {
+					col[i] = item.position.y + (isAppend ? item.size.height : -base);
+				} else {
+					col[i] = 0;
+				}
+			}
+			return base;
+		},
+		_getMinY: function(items) {
+			return Math.min.apply(Math, $.map(items, function(v) {
+				return v ? v.position.y : 0;
+			}));
+		},
+		_getColIdx: function(item) {
+			return parseInt(item.position.x / parseInt(this._columnWidth, 10), 10);
+		},
+		_getColItems: function(isTail) {
+			var len = this._appendCols.length;
+			var colItems = new Array(len);
+			var item;
+			var idx;
+			var count = 0;
+			var i = isTail ? this.items.length - 1 : 0;
+			while (item = this.items[i]) {
+				idx = this._getColIdx(item);
+				if (!colItems[idx]) {
+					colItems[idx] = item;
+					if (++count === len) {
+						return colItems;
+					}
+				}
+				i += isTail ? -1 : 1;
+			}
+			return colItems;
+		},
+		_itemize: function(elements, groupKey, isAppend) {
+			return $.map(elements, function(v) {
+				return {
+					el: v,
+					position: {
+						x: 0,
+						y: 0
+					},
+					isAppend: typeof isAppend === "undefined" ? true : isAppend,
+					groupKey: typeof groupKey === "undefined" ? null : groupKey
+				};
+			});
+		},
+		_getItemLayoutPosition: function(item) {
+			if (!item.el) {
+				return;
+			}
+			var $el = $(item.el);
+			item.size = this._equalItemSize || {
+				width: $el.innerWidth(),
+				height: $el.innerHeight()
+			};
+			var isAppend = item.isAppend;
+			var cols = isAppend ? this._appendCols : this._prependCols;
+			var y = Math[isAppend ? "min" : "max"].apply(Math, cols);
+			var shortColIndex;
+			if (isAppend) {
+				shortColIndex = $.inArray(y, cols);
+			} else {
+				var i = cols.length;
+				while (i-- >= 0) {
+					if (cols[i] === y) {
+						shortColIndex = i;
+						break;
+					}
+				}
+			}
+			cols[shortColIndex] = y + (isAppend ? item.size.height : -item.size.height);
+
+			return {
+				x: this._columnWidth * shortColIndex,
+				y: isAppend ? y : y - item.size.height
+			};
+		},
 		/**
-		 * Release resources and unbind custom events
-		 * @ko 모든 커스텀 이벤트와 자원을 해제한다.
+		 * Destroys elements, properties, and events used on a grid layout.
+		 * @ko 그리드 레이아웃에 사용한 엘리먼트와 속성, 이벤트를 해제한다
 		 * @method eg.InfiniteGrid#destroy
 		 */
 		destroy: function() {
-			if (this.core) {
-				this.core.destroy();
-				this.core = null;
-			}
+			this.off();
 			this.$view.off("resize", this._onResize)
 				.off("scroll", this._onScroll);
-			this.off();
+			this._reset();
 		}
 	});
-
-	return {
-		"clone": clone
-	};
 });
 /**
- * InfiniteGrid in jQuery plugin
- * @ko InfiniteGrid in jQuery plugin
+ * A jQuery plugin available in the eg.InfiniteGrid module.
+ * @ko eg.InfiniteGrid 모듈의 jQuery 플러그인
  * @method jQuery.infiniteGrid
  * @example
-     <ul id="grid">
-        <li class="item">
-          <div>test1</div>
-        </li>
-        <li class="item">
-          <div>test3</div>
-        </li>
-      </ul>
-    <script>
+		 <ul id="grid">
+				<li class="item">
+					<div>test1</div>
+				</li>
+				<li class="item">
+					<div>test3</div>
+				</li>
+			</ul>
+		<script>
 	// create
-	$("#grid").infiniteGrid({
-        itemSelector : ".item"
-    });
- 	// method
- 	$("#grid").infiniteGrid("option","itemSelector",".selected"); //Set option
- 	$("#grid").infiniteGrid("instance"); // Return infiniteGrid instance
- 	$("#grid").infiniteGrid("getBottomElement"); // Get bottom element
- 	</script>
+	$("#grid").infiniteGrid();
+	// method
+	$("#grid").infiniteGrid("option","count","60"); //Set option
+	$("#grid").infiniteGrid("instance"); // Return infiniteGrid instance
+	$("#grid").infiniteGrid("getBottomElement"); // Get bottom element
+	</script>
  * @see eg.InfiniteGrid
  */
- /**
- * infiniteGrid:layoutComplete jQuery event plugin
+/**
+ * A jQuery custom event of the eg.InfiniteGrid module. This event is fired when a layout is successfully arranged.
  *
- * @ko infiniteGrid:layoutComplete jQuery event plugin
+ * @ko eg.InfiniteGrid 모듈의 jQuery 커스텀 이벤트. 레이아웃 배치가 완료됐을 때 발생한다
  * @name jQuery#infiniteGrid:layoutComplete
  * @event
  * @example
-     <ul id="grid">
-        <li class="item">
-          <div>test1</div>
-        </li>
-        <li class="item">
-          <div>test3</div>
-        </li>
-      </ul>
-    <script>
+		 <ul id="grid">
+				<li class="item">
+					<div>test1</div>
+				</li>
+				<li class="item">
+					<div>test3</div>
+				</li>
+			</ul>
+		<script>
 	// create
-	$("#grid").infiniteGrid({
-        itemSelector : ".item"
-    });
- 	// event
- 	$("#grid").on("infiniteGrid:layoutComplete",callback);
- 	$("#grid").off("infiniteGrid:layoutComplete",callback);
- 	$("#grid").trigger("infiniteGrid:layoutComplete",callback);
- 	</script>
+	$("#grid").infiniteGrid();
+	// event
+	$("#grid").on("infiniteGrid:layoutComplete",callback);
+	$("#grid").off("infiniteGrid:layoutComplete",callback);
+	$("#grid").trigger("infiniteGrid:layoutComplete",callback);
+	</script>
  * @see eg.InfiniteGrid#event:layoutComplete
  */
 /**
- * infiniteGrid:append jQuery event plugin
+ * A jQuery custom event of the eg.InfiniteGrid module. This event is fired when a card element must be added at the bottom of a grid layout
  *
- * @ko infiniteGrid:append jQuery event plugin
+ * @ko eg.InfiniteGrid 모듈의 jQuery 커스텀 이벤트. 그리드 레이아웃 아래에 카드 엘리먼트가 추가돼야 할 때 발생한다.
  * @name jQuery#infiniteGrid:append
  * @event
  * @example
-     <ul id="grid">
-        <li class="item">
-          <div>test1</div>
-        </li>
-        <li class="item">
-          <div>test3</div>
-        </li>
-      </ul>
-    <script>
+		 <ul id="grid">
+				<li class="item">
+					<div>test1</div>
+				</li>
+				<li class="item">
+					<div>test3</div>
+				</li>
+			</ul>
+		<script>
 	// create
-	$("#grid").infiniteGrid({
-        itemSelector : ".item"
-    });
- 	// event
- 	$("#grid").on("infiniteGrid:append",callback);
- 	$("#grid").off("infiniteGrid:append",callback);
- 	$("#grid").trigger("infiniteGrid:append",callback);
- 	</script>
+	$("#grid").infiniteGrid();
+	// event
+	$("#grid").on("infiniteGrid:append",callback);
+	$("#grid").off("infiniteGrid:append",callback);
+	$("#grid").trigger("infiniteGrid:append",callback);
+	</script>
  * @see eg.InfiniteGrid#event:append
  */
 /**
- * infiniteGrid:prepend jQuery event plugin
+ * A jQuery custom event of the eg.InfiniteGrid module. This event is fired when a card element must be added at the top of a grid layout
  *
- * @ko infiniteGrid:prepend jQuery event plugin
+ * @ko eg.InfiniteGrid 모듈의 jQuery 커스텀 이벤트. 그리드 레이아웃 위에 카드 엘리먼트가 추가돼야 할 때 발생한다
  * @name jQuery#infiniteGrid:prepend
  * @event
  * @example
-     <ul id="grid">
-        <li class="item">
-          <div>test1</div>
-        </li>
-        <li class="item">
-          <div>test3</div>
-        </li>
-      </ul>
-    <script>
+		 <ul id="grid">
+				<li class="item">
+					<div>test1</div>
+				</li>
+				<li class="item">
+					<div>test3</div>
+				</li>
+			</ul>
+		<script>
 	// create
-	$("#grid").infiniteGrid({
-        itemSelector : ".item"
-    });
- 	// event
- 	$("#grid").on("infiniteGrid:prepend",callback);
- 	$("#grid").off("infiniteGrid:prepend",callback);
- 	$("#grid").trigger("infiniteGrid:prepend",callback);
- 	</script>
+	$("#grid").infiniteGrid();
+	// event
+	$("#grid").on("infiniteGrid:prepend",callback);
+	$("#grid").off("infiniteGrid:prepend",callback);
+	$("#grid").trigger("infiniteGrid:prepend",callback);
+	</script>
  * @see eg.InfiniteGrid#event:prepend
  */

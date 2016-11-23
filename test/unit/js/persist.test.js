@@ -3,8 +3,6 @@
 * egjs projects are licensed under the MIT license
 */
 
-function noop() {};
-
 module("persist: mock", {
 	setup: function() {
 		console.oldWarn = console.warn;
@@ -48,7 +46,7 @@ module("persist: mock", {
 		};
 		this.fakeEvent = {};
 		this.storage = {};
-		
+
 		/*
 		 *	 Mock History Object
 		*/
@@ -58,8 +56,8 @@ module("persist: mock", {
 
 		History.prototype.replaceState = function(state) {
 			this.state = state;
-		};	
-		
+		};
+
 		this.method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
 		this.GLOBALKEY = this.method.GLOBALKEY;
 	},
@@ -68,52 +66,86 @@ module("persist: mock", {
 	}
 });
 
-test("reset", function() {
-	// When
-	this.method.reset();
+var UniversalTestMap = {
+	resetTest: {
+		"name": "reset",
+		"testFunc": function() {
+			// When
+			this.method.reset();
 
-	// Then
-	equal(this.fakeWindow.history.state, null);
+			// Then
+			equal($.persist(), null);
+		}
+	},
+	getAndsetDataTest: {
+		"name": "persist : save state data, get state data",
+		"testFunc": function() {
+			// When
+			var state = $.persist();
+
+			// Then
+			equal(state, null);
+
+			// When
+			var clonedState = $.persist(this.data);
+
+			// Then
+			ok(clonedState !== this.data);
+			deepEqual(clonedState, this.data);
+		}
+	},
+	getAndsetDataWithKeyTest: {
+		"name": "persist : save state data by key, get state data by key",
+		"testFunc": function() {
+			// When
+			var state = $.persist("TESTKEY");
+
+			// Then
+			equal(state, null);
+
+			// When
+			var clonedState = $.persist("TESTKEY", this.data);
+
+			// Then
+			ok(clonedState !== this.data);
+			deepEqual(clonedState, this.data);
+		}
+	},
+	removeDataWithKeyTest: {
+		"name": "persist : remove state data with value by key",
+		"testFunc": function(v){
+			// Given
+			var state = $.persist("TESTKEY");
+			$.persist("TESTKEY", this.data);
+
+			// When
+			var clonedState = $.persist("TESTKEY", v);
+
+			// Then
+			equal(clonedState, v);
+			
+		}
+	}
+};
+
+test(UniversalTestMap.resetTest.name, UniversalTestMap.resetTest.testFunc);
+test(UniversalTestMap.getAndsetDataTest.name, UniversalTestMap.getAndsetDataTest.testFunc);
+test(UniversalTestMap.getAndsetDataWithKeyTest.name, UniversalTestMap.getAndsetDataWithKeyTest.testFunc);
+
+$.each([null, undefined, ''], function(i, v) {
+	test(UniversalTestMap.removeDataWithKeyTest.name, UniversalTestMap.removeDataWithKeyTest.testFunc.bind(this, v));
 });
 
-test("persist : save state data, get state data", function() {
-	// When
-	var state = this.method.persist();
-	
-	// Then
-	equal(state, null);
-
-	// When
-	var clonedState = this.method.persist(this.data);
-	// Then
-	notEqual(clonedState, this.data);
-	deepEqual(clonedState, this.data);
-});
-
-test("persist : save state data by key, get state data by key", function() {
-	// When
-	var state = this.method.persist("TESTKEY");
-
-	// Then
-	equal(state, null);
-
-	// When
-	var clonedState = this.method.persist("TESTKEY", this.data);
-
-	// Then
-	notEqual(clonedState, this.data);
-	deepEqual(clonedState, this.data);
-});
 
 test("onPageshow : when bfCache miss and not BF navigated, _reset method must be executed.", function() {
 	// Given
 	var ht = {};
 	ht[this.GLOBALKEY] = this.data;
 	this.fakeWindow.performance.navigation.type = 2;	// navigation
-	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
-	method.persist(this.data)
-	deepEqual(method.persist(), this.data);
-	
+	eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
+	$.persist(this.data)
+	deepEqual($.persist(), this.data);
+
 	// When
 	$(this.fakeWindow).trigger({
 		type: "pageshow",
@@ -123,15 +155,15 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 	});
 
 	// Then
-	deepEqual(method.persist(), this.data);
+	deepEqual($.persist(), this.data);
 
 	// When
 	this.fakeWindow.performance.navigation.type = 0;	// enter url...
 	this.fakeWindow.history.state = JSON.stringify(ht);
-	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
+	eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
 
 	// Then
-	equal(method.persist(), null);	// must reset
+	equal($.persist(), null);	// must reset
 
 	// When
 	$(this.fakeWindow).trigger({
@@ -142,15 +174,15 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 	});
 
 	// Then
-	equal(method.persist(), null);
+	equal($.persist(), null);
 
 	// When
 	this.fakeWindow.performance.navigation.type = 1;
 	this.fakeWindow.history.state = JSON.stringify(ht);
-	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
+	eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
 
 	// Then
-	equal(method.persist(), null);
+	equal($.persist(), null);
 
 	// When
 	$(this.fakeWindow).trigger({
@@ -161,19 +193,8 @@ test("onPageshow : when bfCache miss and not BF navigated, _reset method must be
 	});
 
 	// Then
-	equal(method.persist(), null);
-
+	equal($.persist(), null);
 });
-
-test("getState, setState: getter, setter of state", function() {
-	// When
-	this.method.setState(this.data);
-	var clonedData = this.method.getState();
-
-	// Then
-	deepEqual(clonedData, this.data);
-});
-
 
 test("onPageshow : when bfCache miss and BF navigated, persist event must be triggered.", function(assert) {
 	// Given
@@ -185,13 +206,13 @@ test("onPageshow : when bfCache miss and BF navigated, persist event must be tri
 		TYPE_RESERVED: 255
 	};
 	this.fakeWindow.performance.navigation.type = 2;
-	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
+	eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
 
 	var restoredState = null;
 	$(this.fakeWindow).on("persist", function(e) {
 		restoredState = e.state;
 	});
-	var clonedData = method.persist(this.data);
+	var clonedData = $.persist(this.data);
 
 	// When
 	$(this.fakeWindow).trigger({
@@ -204,14 +225,14 @@ test("onPageshow : when bfCache miss and BF navigated, persist event must be tri
 	// Then
 	deepEqual(restoredState, clonedData);
 });
- 
+
 test("Test not throwing error for legacy browsers", function() {
 	// Given
 	this.fakeWindow.history = {};
 	delete this.fakeWindow.sessionStorage;
 
 	// When
-	var method = eg.invoke("persist",[null, eg, this.fakeWindow, this.fakeDocument]);
+	var method = eg.invoke("persist", [null, eg, this.fakeWindow, this.fakeDocument]);
 
 	// Then
 	ok(!method, "If browser don't have history.state neither web storage, persist shouldn't be defined.");
@@ -249,98 +270,59 @@ module("persist: native", {
 	}
 });
 
-test("reset", function() {
-	// When
-	this.method.reset();
+test(UniversalTestMap.resetTest.name, UniversalTestMap.resetTest.testFunc);
+test(UniversalTestMap.getAndsetDataTest.name, UniversalTestMap.getAndsetDataTest.testFunc);
+test(UniversalTestMap.getAndsetDataWithKeyTest.name, UniversalTestMap.getAndsetDataWithKeyTest.testFunc);
 
-	// Then
-	equal($.persist(), null);
-});
-
-test("persist : save state data, get state data", function() {
-	// When
-	var state = this.method.persist();
-	
-	// Then
-	equal(state, null);
-
-	// When
-	var clonedState = this.method.persist(this.data);
-	
-	// Then
-	notEqual(clonedState, this.data);
-	deepEqual(clonedState, this.data);
-});
-
-test("persist : save state data by key, get state data by key", function() {
-	// When
-	var state = this.method.persist("TESTKEY");
-
-	// Then
-	equal(state, null);
-
-	// When
-	var clonedState = this.method.persist("TESTKEY", this.data);
-
-	// Then
-	notEqual(clonedState, this.data);
-	deepEqual(clonedState, this.data);
+$.each([null, undefined, ''], function(i, v) {
+	test(UniversalTestMap.removeDataWithKeyTest.name, UniversalTestMap.removeDataWithKeyTest.testFunc.bind(this, v));
 });
 
 $.each(['{', '[ 1,2,3 ]', '1', '1.234', '"123"'], function(i, v) {
-	test("show warning message for storage polloution with value that can be parsed: "+ v, function() {	
-		// Given		
+	test("show warning message for storage polloution with value that can be parsed: "+ v, function() {
+		// Given
 		var callCount = 0;
 		console.warn = function(msg){
 			callCount++;
 		};
-		var clonedState = this.method.persist(this.data);
-		
-		var isSupportState = "replaceState" in history && "state" in history;	
-		var isSupportStorage = "sessionStorage" in window || "localStorage" in window;	
+		var clonedState = $.persist(this.data);
+
+		var isSupportState = "replaceState" in history && "state" in history;
+		var isSupportStorage = "sessionStorage" in window || "localStorage" in window;
 
 		var isNoExceptionThrown = true;
 		if(isSupportStorage) {
 			sessionStorage.setItem(location.href + "___persist___", v);
 			localStorage.setItem(location.href + "___persist___", v);
 		} else if(isSupportState) {
-			history.replaceState(v, document.title, location.href);	
+			history.replaceState(v, document.title, location.href);
 		}
-	
-		// When	
+
+		// When
 		try {
-			this.method.persist();
+			$.persist();
 		} catch (e) {
 			isNoExceptionThrown = false;
 		}
-	
-		// Then	
+
+		// Then
 		equal(callCount, (isSupportStorage || isSupportState) ? 1 : 0);
 		ok(isNoExceptionThrown)
-	
+
 		console.warn = console.oldWarn;
 	});
-});
-
-test("getState, setState: getter, setter of state", function() {
-	// When
-	this.method.setState(this.data);
-	var clonedData = this.method.getState();
-
-	// Then
-	deepEqual(clonedData, this.data);
 });
 
 test("Test not throwing error for legacy browsers", function() {
 	// Given
 	var isPersistAvailable = ("replaceState" in history && "state" in history) ||
-	"sessionStorage" in window || "localStorage" in window;	
+	"sessionStorage" in window || "localStorage" in window;
 
 	// When
 	var persist = eg.invoke("persist",[null, eg, window, document]);
-	
+
 	// Then
-	ok(isPersistAvailable ? persist : !persist, 
+	ok(isPersistAvailable ? persist : !persist,
 		"If browser don't have history.state neither web storage, persist shouldn't be defined.");
 });
 
@@ -364,14 +346,28 @@ test("Test for browsers which don't have JSON object", function() {
 });
 
 var ua = [
-
 	{
-		"device":  "Android 4.3.0",
-		"ua": "Mozilla/5.0 (Linux; Android 4.3.0; SM-G900S Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.108 Mobile Safari/537.36",
+		"device":  "Android 2.3.6 SamsungBrowser",
+		"ua": "Mozilla/5.0 (Linux;U;Android 2.3.6;ko-kr;SHV-E160S Build/GINGERBREAD) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1",
 		"isNeeded": false
 	},
 	{
-		"device":  "Android 5.1.1",
+		"device":  "Android 4.3.0 chrome42",
+		"ua": "Mozilla/5.0 (Linux; Android 4.3.0; SM-G900S Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.108 Mobile Safari/537.36",
+		"isNeeded": true
+	},
+	{
+		"device":  "Android 4.3.0(galaxy s3) SamsungBrowser",
+		"ua": "Mozilla/5.0 (Linux; Android 4.3; ko-kr; SHW-M440S Build/JSS15J) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+		"isNeeded": true
+	},
+	{
+		"device":  "Android 4.0.4 webview",
+		"ua": "Mozilla/5.0 (Linux; U; Android 4.0.4; SM-E210S Build/IMM76D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30 NAVER(inapp; search; 490; 7.4.1)",
+		"isNeeded": false
+	},
+	{
+		"device":  "Android 5.1.1 SamsungBrowser",
 		"ua": "Mozilla/5.0 (Linux; Android 5.1.1; SAMSUNG SM-G925S Build/LMY47X) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/3.2 Chrome/38.0.2125.102 Mobile Safari/537.36",
 		"isNeeded": true
 	},
@@ -379,6 +375,26 @@ var ua = [
 		"device":  "iOS 8.0",
 		"ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12B440",
 		"isNeeded": false
+	},
+	{
+		"device":  "iOS 7.0",
+		"ua": "Mozilla/5.0 (iPhone;CPU iPhone OS 7_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10B146 Safari/8536.25",
+		"isNeeded": false
+	},
+	{
+		"device":  "IE10",
+		"ua": "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)",
+		"isNeeded": true
+	},
+	{
+		"device":  "IE9",
+		"ua": "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)",
+		"isNeeded": true
+	},
+	{
+		"device":  "Chrome",
+		"ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/53.0.2785.143 Chrome/53.0.2785.143 Safari/537.36",
+		"isNeeded": true
 	}
 ];
 
@@ -388,7 +404,10 @@ module("extend Agent Test", {
 			location: {
 				href: ""
 			},
-			history: window.history,
+			history: $.extend({
+				replaceState: $.noop,
+				state: {}
+			}, window.history),
 			JSON: JSON,
 			performance : {
 					navigation : {
@@ -412,23 +431,17 @@ module("extend Agent Test", {
 			},
 			navigator: {}
 		};
-		this.agent = eg.agent;
 	},
 	teardown : function() {
-		eg.agent = this.agent;
 	}
 });
 
 $.each(ua, function(i, v) {
-	test("$.persist.isNeeded : "+ v.device, function() {
+	test("$.persist.isNeeded : "+ v.device + "(" +v.isNeeded+ ")", function() {
 		// Given
 		this.fakeWindow.navigator.userAgent = v.ua;
 		eg.invoke("eg",[null, null, this.fakeWindow]);
-		this.isNeeded = eg.invoke("persist").isNeeded;
-		var isNeeded;
-		// When
-		isNeeded = this.isNeeded();
-		//Then
-		equal(isNeeded, v.isNeeded);
+		eg.invoke("persist", [null, eg, this.fakeWindow]);
+		equal($.persist.isNeeded(), v.isNeeded, "isNeeded");
 	});
 });

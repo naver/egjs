@@ -3,36 +3,8 @@
 * egjs projects are licensed under the MIT license
 */
 
-eg.module("eg", ["jQuery", eg, window], function($, ns, global) {
+eg.module("eg", ["jQuery", eg, window, eg.Agent], function($, ns, global, Agent) {
 	"use strict";
-
-	var raf = global.requestAnimationFrame || global.webkitRequestAnimationFrame ||
-				global.mozRequestAnimationFrame || global.msRequestAnimationFrame;
-	var caf = global.cancelAnimationFrame || global.webkitCancelAnimationFrame ||
-				global.mozCancelAnimationFrame || global.msCancelAnimationFrame;
-
-	if (raf && !caf) {
-		var keyInfo = {};
-		var oldraf = raf;
-		raf = function(callback) {
-			function wrapCallback() {
-				if (keyInfo[key]) {
-					callback();
-				}
-			}
-			var key = oldraf(wrapCallback);
-			keyInfo[key] = true;
-			return key;
-		};
-		caf = function(key) {
-			delete keyInfo[key];
-		};
-	} else if (!(raf && caf)) {
-		raf = function(callback) {
-			return global.setTimeout(callback, 16);
-		};
-		caf = global.clearTimeout;
-	}
 
 	function resultCache(scope, name, param, defaultValue) {
 		var method = scope.hook[name];
@@ -57,28 +29,23 @@ eg.module("eg", ["jQuery", eg, window], function($, ns, global) {
 
 	/**
 	 * @name eg.VERSION
-	 * @description version infomation
-	 * @ko 버전 정보
+	 * @description The version numbers of egjs.
+	 * @ko egjs 버전
 	 */
 	ns.VERSION = "#__VERSION__#";
-	ns.hook =  {
-		// isHWAccelerable : null,
-		// isTransitional 	: null,
-		// agent : null
-	};
+	ns.hook =  {};
 	/**
-	* Get browser agent information
-	*
-	* @ko Agent 정보를 반환한다. 값은 캐싱된다.
+	* Returns the User-Agent information
+	* @ko user-agent 정보를 반환한다.
 	* @method eg#agent
 	* @return {Object} agent
-	* @return {String} agent.os os infomation <ko>os 정보 객체</ko>
-	* @return {String} agent.os.name os name (android, ios, window, mac) <ko>os 이름 (android, ios, window, mac)</ko>
-	* @return {String} agent.os.version os version <ko>os 버전</ko>
-	* @return {String} agent.browser browser information <ko>브라우저 정보 객체</ko>
-	* @return {String} agent.browser.name browser name (default, safari, chrome, sbrowser, ie, firefox) <ko>브라우저 이름 (default, safari, chrome, sbrowser, ie, firefox)</ko>
-	* @return {String} agent.browser.version browser version <ko>브라우저 버전 정보</ko>
-	* @return {String} agent.browser.webview check whether browser is webview <ko>웹뷰 브라우저 여부</ko>
+	* @return {Object} agent.os os Operating system information <ko>운영체제 정보</ko>
+	* @return {String} agent.os.name Operating system name (android, ios, window, mac) <ko>운영체제 이름 (android, ios, window, mac)</ko>
+	* @return {String} agent.os.version Operating system version <ko>운영체제 버전</ko>
+	* @return {String} agent.browser Browser information <ko>브라우저 정보</ko>
+	* @return {String} agent.browser.name Browser name (default, safari, chrome, sbrowser, ie, firefox) <ko>브라우저 이름 (default, safari, chrome, sbrowser, ie, firefox)</ko>
+	* @return {String} agent.browser.version Browser version <ko>브라우저 버전 </ko>
+	* @return {String} agent.browser.webview Indicates whether a WebView browser is available<ko>웹뷰 브라우저 여부</ko>
 	* @example
 eg.agent();
 // {
@@ -92,8 +59,6 @@ eg.agent();
 //          nativeVersion : "-1"
 //     }
 // }
-
-
 eg.hook.agent = function(agent) {
 if(agent.os.name === "naver") {
 	agent.browser.name = "inapp";
@@ -101,268 +66,20 @@ if(agent.os.name === "naver") {
 }
 }
 	*/
-	/*
-	*	{String|RegEx} criteria
-	*	{String|RegEx} identity
-	*	{String} versionSearch
-	*	{String} versionAlias
-	*	{String|RegEx} webviewBrowserVersion
-	*	{String|RegEx} webviewToken
-	*/
-	var userAgentRules = {
-		browser: [{
-			criteria: "PhantomJS",
-			identity: "PhantomJS"
-		}, {
-			criteria: /Edge/,
-			identity: "Edge",
-			versionSearch: "Edge"
-		}, {
-			criteria: /MSIE|Trident|Windows Phone/,
-			identity: "IE",
-			versionSearch: "IEMobile|MSIE|rv"
-		}, {
-			criteria: /SAMSUNG|SamsungBrowser/,
-			identity: "SBrowser",
-			versionSearch: "Chrome"
-		}, {
-			criteria: /Chrome|CriOS/,
-			identity: "Chrome"
-		}, {
-			criteria: /Android/,
-			identity: "default"
-		}, {
-			criteria: /iPhone|iPad/,
-			identity: "Safari",
-			versionSearch: "Version"
-		}, {
-			criteria: "Apple",
-			identity: "Safari",
-			versionSearch: "Version"
-		}, {
-			criteria: "Firefox",
-			identity: "Firefox"
-		}],
-		os: [{
-			criteria: /Windows Phone|Windows NT/,
-			identity: "Window",
-			versionSearch: "Windows Phone|Windows NT"
-		}, {
-			criteria: "Windows 2000",
-			identity: "Window",
-			versionAlias: "5.0"
-		}, {
-			criteria: /iPhone|iPad/,
-			identity: "iOS",
-			versionSearch: "iPhone OS|CPU OS"
-		}, {
-			criteria: "Mac",
-			versionSearch: "OS X",
-			identity: "MAC"
-		}, {
-			criteria: /Android/,
-			identity: "Android"
-		}],
-
-		// Webview check condition
-		// ios: If has no version information
-		// Android 5.0 && chrome 40+: Presence of "; wv" in userAgent
-		// Under android 5.0:  Presence of "NAVER" or "Daum" in userAgent
-		webview: [{
-			criteria: /iPhone|iPad/,
-			browserVersionSearch: "Version",
-			webviewBrowserVersion: /-1/
-		}, {
-			criteria: /iPhone|iPad|Android/,
-			webviewToken: /NAVER|DAUM|; wv/
-
-		}],
-		defaultString: {
-			browser: {
-				version: "-1",
-				name: "default"
-			},
-			os: {
-				version: "-1",
-				name: "unknown"
-			}
-		}
-	};
-
-	var UAParser = {
-		getBrowserName: function(browserRules) {
-			return this.getIdentityStringFromArray(
-				browserRules,
-				userAgentRules.defaultString.browser
-			);
-		},
-		getBrowserVersion: function(browserName) {
-			var browserVersion;
-			var versionToken;
-
-			if (!browserName) {
-				return;
-			}
-
-			versionToken =
-				this.getBrowserRule(browserName).versionSearch || browserName;
-
-			browserVersion = this.extractBrowserVersion(versionToken, this.ua);
-
-			return browserVersion;
-		},
-		extractBrowserVersion: function(versionToken, ua) {
-			var browserVersion = userAgentRules.defaultString.browser.version;
-			var versionIndex;
-			var versionTokenIndex;
-			var versionRegexResult =
-				(new RegExp("(" + versionToken + ")", "i")).exec(ua);
-
-			if (!versionRegexResult) {
-				return browserVersion;
-			}
-
-			versionTokenIndex = versionRegexResult.index;
-			versionToken = versionRegexResult[0];
-			if (versionTokenIndex > -1) {
-				versionIndex = versionTokenIndex + versionToken.length + 1;
-				browserVersion = ua.substring(versionIndex)
-					.split(" ")[0]
-					.replace(/_/g, ".")
-					.replace(/\;|\)/g, "");
-			}
-
-			return browserVersion;
-		},
-		getOSName: function(osRules) {
-			return this.getIdentityStringFromArray(
-				osRules,
-				userAgentRules.defaultString.os
-			);
-		},
-		getOSVersion: function(osName) {
-			var ua = this.ua;
-			var osRule = this.getOSRule(osName) || {};
-			var defaultOSVersion = userAgentRules.defaultString.os.version;
-			var osVersion;
-			var osVersionToken;
-			var osVersionRegex;
-			var osVersionRegexResult;
-
-			if (!osName) {
-				return;
-			}
-
-			if (osRule.versionAlias) {
-				return osRule.versionAlias;
-			}
-
-			osVersionToken = osRule.versionSearch || osName;
-			osVersionRegex =
-				new RegExp(
-					"(" + osVersionToken + ")\\s([\\d_\\.]+|\\d_0)",
-					"i"
-				);
-
-			osVersionRegexResult = osVersionRegex.exec(ua);
-			if (osVersionRegexResult) {
-				osVersion = osVersionRegex.exec(ua)[2].replace(/_/g, ".")
-													.replace(/\;|\)/g, "");
-			}
-
-			return osVersion || defaultOSVersion;
-		},
-		getOSRule: function(osName) {
-			return this.getRule(userAgentRules.os, osName);
-		},
-		getBrowserRule: function(browserName) {
-			return this.getRule(userAgentRules.browser, browserName);
-		},
-		getRule: function(rules, targetIdentity) {
-			var criteria;
-			var identityMatched;
-
-			for (var i = 0, rule; rule = rules[i]; i++) {
-				criteria = rule.criteria;
-				identityMatched =
-					new RegExp(rule.identity, "i").test(targetIdentity);
-				if (criteria ?
-					identityMatched && this.isMatched(this.ua, criteria) :
-					identityMatched) {
-					return rule;
-				}
-			}
-		},
-		getIdentityStringFromArray: function(rules, defaultStrings) {
-			for (var i = 0, rule; rule = rules[i]; i++) {
-				if (this.isMatched(this.ua, rule.criteria)) {
-					return rule.identity || defaultStrings.name;
-				}
-			}
-			return defaultStrings.name;
-		},
-		isMatched: function(base, target) {
-			return target &&
-				target.test ? !!target.test(base) : base.indexOf(target) > -1;
-		},
-		isWebview: function() {
-			var ua = this.ua;
-			var webviewRules = userAgentRules.webview;
-			var isWebview = false;
-			var browserVersion;
-
-			for (var i = 0, rule; rule = webviewRules[i]; i++) {
-				if (!this.isMatched(ua, rule.criteria)) {
-					continue;
-				}
-
-				browserVersion =
-					this.extractBrowserVersion(rule.browserVersionSearch, ua);
-
-				if (this.isMatched(ua, rule.webviewToken) ||
-					this.isMatched(browserVersion, rule.webviewBrowserVersion)) {
-					isWebview = true;
-					break;
-				}
-			}
-
-			return isWebview;
-		}
-	};
-
-	UAParser.create = function(useragent) {
-		UAParser.ua = useragent;
-		var agent = {
-			os: {},
-			browser: {}
-		};
-
-		agent.browser.name = UAParser.getBrowserName(userAgentRules.browser);
-		agent.browser.version = UAParser.getBrowserVersion(agent.browser.name);
-		agent.os.name = UAParser.getOSName(userAgentRules.os);
-		agent.os.version = UAParser.getOSVersion(agent.os.name);
-		agent.browser.webview = UAParser.isWebview();
-
-		agent.browser.name = agent.browser.name.toLowerCase();
-		agent.os.name = agent.os.name.toLowerCase();
-
-		return agent;
-	};
-
 	ns.agent = function() {
-		var info = UAParser.create(global.navigator.userAgent);
+		var info = Agent.create(global.navigator.userAgent);
 		return resultCache(this, "agent", [info], info);
 	};
 
 	/**
-	 * Get a translate string
+	 * Returns the syntax of the translate style which is applied to CSS transition properties.
 	 *
-	 * @ko translate 문자를 반환한다.
+	 * @ko CSS 트랜지션 속성에 적용할 translate 스타일 구문을 반환한다
 	 * @method eg#translate
-	 * @param {String} x x-coordinate <ko>x 좌표</ko>
-	 * @param {String} y y-coordinate <ko>y 좌표</ko>
-	 * @param {Boolean} [isHA] isHWAccelerable <ko>하드웨어 가속 여부</ko>
-	 * @return {String}
+	 * @param {String} x Distance to move along the X axis <ko>x축을 따라 이동할 거리</ko>
+	 * @param {String} y Distance to move along the Y axis <ko>y축을 따라 이동할 거리</ko>
+	 * @param {Boolean} [isHA] Force hardware acceleration <ko>하드웨어 가속 사용 여부</ko>
+	 * @return {String} Syntax of the translate style <ko>translate 스타일 구문</ko>
 	 * @example
 eg.translate('10px', '200%');  // translate(10px,200%);
 eg.translate('10px', '200%', true);  // translate3d(10px,200%,0);
@@ -375,13 +92,13 @@ eg.translate('10px', '200%', true);  // translate3d(10px,200%,0);
 	};
 
 	/**
-	 * Check hardware acceleration support
+	 * Checks whether hardware acceleration is enabled.
 	 *
-	 * @ko 해당 기기에서 하드웨어 가속을 할 수 있다면 true을 반환하며, 값은 캐싱된다.
+	 * @ko 하드웨어 가속을 사용할 수 있는 환경인지 확인한다
 	 * @method eg#isHWAccelerable
-	 * @return {Boolean}
+	 * @return {Boolean} Indicates whether hardware acceleration is enabled. <ko>하드웨어 가속 사용 가능 여부</ko>
 	 * @example
-eg.isHWAccelerable();  // Returns 'true' when supports hardware acceleration
+eg.isHWAccelerable();  // Returns 'true' when hardware acceleration is supported
 
 // also, you can control return value
 eg.hook.isHWAccelerable = function(defalutVal,agent) {
@@ -410,7 +127,7 @@ return defaultVal;
 			result = true;
 		} else if (agent.os.name.indexOf("android") !== -1) {
 			// for Xiaomi
-			useragent = (UAParser.ua.match(/\(.*\)/) || [null])[0];
+			useragent = (Agent.ua.match(/\(.*\)/) || [null])[0];
 
 			// android 4.1+ blacklist
 			// EK-GN120 : Galaxy Camera, SM-G386F : Galaxy Core LTE
@@ -423,13 +140,13 @@ return defaultVal;
 	};
 
 	/**
-	 * Check CSS transition support
+	 * Checks whether CSS transition properties can be used.
 	 *
-	 * @ko 해당 기기에서 css transtion을 할 수 있다면 true을 반환하며, 값은 캐싱된다.
+	 * @ko CSS 트랜지션 속성을 사용할 수 있는 환경인지 확인한다.
 	 * @method eg#isTransitional
-	 * @return {Boolean}
+	 * @return {Boolean} Indicates whether CSS transition properties can be used. <ko>CSS 트랜지션 속성 사용 가능 여부</ko>
 	 * @example
-eg.isTransitional();  // Returns 'true' when supports CSS transition
+eg.isTransitional();  // Returns 'true' when CSS transition is supported.
 
 // also, you can control return value
 eg.hook.isTransitional = function(defaultVal, agent) {
@@ -479,35 +196,7 @@ return defaultVal;
 		return resultCache(this, "_hasClickBug", [result, agent], result);
 	};
 
-	/*
-	* requestAnimationFrame polyfill
-	* @ko requestAnimationFrame 폴리필
-	* @method eg#requestAnimationFrame
-	* @param {Function} timer function
-	* @return {Number} key
-	* @example
-		var timerId = eg.requestAnimationFrame(function() {
-			console.log("call");
-		});
-	* @see  https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
-	*/
-	ns.requestAnimationFrame = function(fp) {
-		return raf(fp);
-	};
-	/*
-	* cancelAnimationFrame polyfill
-	* @ko cancelAnimationFrame 폴리필
-	* @method eg#cancelAnimationFrame
-	* @param {Number} key
-	* @example
-		eg.cancelAnimationFrame(timerId);
-	* @see  https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
-	*/
-	ns.cancelAnimationFrame = function(key) {
-		caf(key);
-	};
-
-	$.extend($.easing, {
+	$ && $.extend($.easing, {
 		easeOutCubic: function(p) {
 			return 1 - Math.pow(1 - p, 3);
 		}

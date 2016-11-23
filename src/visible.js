@@ -7,19 +7,17 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 	"use strict";
 
 	/**
-	 * Check element's visible state within viewport, regardless scroll position
-	 * @ko scroll 위치와 상관없이 특정 엘리먼트나 viewport 안에 엘리먼트가 보이는지 확인한다.
+	 * A module used to check whether an element is visible in the base element or viewport.
+	 * @ko 엘리먼트가 기준 엘리먼트나 뷰포트 안에 보이는지 확인하는 모듈
 	 * @class
 	 * @name eg.Visible
 	 * @extends eg.Component
 	 * @group egjs
 	 *
-	 * @param {HTMLElement|String|jQuery} [element=document] The parent element that to check targets (wrapper is only one.) <ko>확인할 영역의 상위 엘리먼트</ko>
-	 * @param {Object} options
-	 * @param {String} [options.targetClass="check_visible"] A class name of targets <ko>확인할 엘리먼트가 가진 클래스명</ko>
-	 * @param {Number} [options.expandSize=0] expand size of the wrapper.
-	 * e.g. If a wrapper size is 100 x 100 and 'expandSize' option is 20, visible range is 120 x 120
-	 * <ko> 상위 엘리먼트 기준으로 추가적인 영역을 확인하도록 지정</ko>
+	 * @param {HTMLElement|String|jQuery} [element=document] A base element that detects if another element is visible<ko>엘리먼트가 보이는 기준 엘리먼트</ko>
+	 * @param {Object} options The option object of the eg.Visible module<ko>eg.Visible 모듈의 옵션 객체</ko>
+	 * @param {String} [options.targetClass="check_visible"] The class name of the element to be checked<ko>보이는지 확인할 엘리먼트의 클래스 이름</ko>
+	 * @param {Number} [options.expandSize=0] The size of the expanded area to be checked whether an element is visible. If this value is less than zero, the size of the area is smaller than that of the base element. <ko>기준 엘리먼트의 경계를 넘어 엘리먼트가 보이는지 확인할 영역의 크기. 값이 0보다 작으면 엘리먼트가 보이는지 확인할 영역의 크기가 기준 엘리먼트보다 작아진다</ko>
 	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 *
 	 * @codepen {"id":"WbWzqq", "ko":"Visible 기본 예제", "en":"Visible basic example", "collectionId":"Ayrabj", "height" : 403}
@@ -64,14 +62,14 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 			this.refresh();
 		},
 		/**
-		 * Update targets
-		 * @ko target들을 갱신한다.
+		 * Updates the list of elements where the visibility property is to be checked
+		 * @ko visibility 속성을 검사할 엘리먼트의 목록을 갱신한다
 		 * @method eg.Visible#refresh
-		 * @return {eg.Visible} instance of itself<ko>자신의 인스턴스</ko>
+		 * @return {eg.Visible} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 		 *
 		 * @remark
-		 * If targets was added or removed, must be called to refresh
-		 * <ko> 확인 대상이 영역 안에 추가 된 경우, 또는 확인 대상이 영역 안에서 삭제 된 경우, 영역 내의 확인 대상을 이 메소드를 호출하여 갱신해야한다. <ko>
+		 * If targets was added or removed from DOM tree, must call refresh method to update internal target list.
+		 * <ko>확인 대상이 영역 안에 추가되거나 삭제된 경우, 모듈내부에서 사용하는 확인 대상 목록을 이 메소드를 호출하여 갱신해야한다.<ko>
 		 */
 		refresh: function() {
 			if (this._supportElementsByClassName) {
@@ -91,11 +89,11 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 			return this.refresh();
 		},
 		/**
-		 * Checks if the target elements has been changed.
-		 * @ko target들이 변경했는지 확인한다.
+		 * Checks whether the visibility property of the target elements has changed. The change event is fired when the property has changed.
+		 * @ko 보이는지 확인할 대상 엘리먼트 목록의 visibility 속성이 변경됐는지 확인한다. 속성이 변경됐으면 change 이벤트가 발생한다
 		 * @method eg.Visible#check
-		 * @param {Number} [delay=-1] Delay time in milliseconds <ko>호출 후, 일정 시간이 지난 후에 확인하고자 할때 사용한다.</ko>
-		 * @return {eg.Visible} instance of itself<ko>자신의 인스턴스</ko>
+		 * @param {Number} [delay=-1] Delay time. It is used to check the property after a method is called and a period of time has passed.<ko>속성 확인 지연 시간. 메서드를 호출하고 일정 시간이 지난 후에 속성을 확인할 때 사용한다</ko>
+		 * @return {eg.Visible} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 		 */
 		check: function(delay) {
 			if (typeof delay === "undefined") {
@@ -174,12 +172,12 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 				}
 			}
 			/**
-			 * Trigger when the target elements are visible or hidden based on the base area.
-			 * @ko 기준 영역을 기준으로 보이는 엘리먼트와 사라진 엘리먼트가 변경된 경우 발생하는 이벤트
+			 * This event is fired when the event is compared with the last verified one and there is an element of which the visibility property has changed.
+			 * @ko 마지막으로 확인한 결과와 비교해 visibility 속성이 변경된 엘리먼트가 있을 때 발생하는 이벤트
 			 * @name eg.Visible#change
 			 * @event
-			 * @param {Array} visible The visible elements (the element type is `HTMLElement`) <ko>보여지게 된 엘리먼트들 </ko>
-			 * @param {Array} invisible The invisible elements (the element type is `HTMLElement`) <ko>안 보여지게 된 엘리먼트들 </ko>
+			 * @param {Array} visible Visible elements  (the element type is `HTMLElement`) <ko>보이게 된 엘리먼트들</ko>
+			 * @param {Array} invisible Invisible elements  (the element type is `HTMLElement`) <ko>안 보이게 된 엘리먼트들</ko>
 			 */
 			this.trigger(this._prefix + EVENTS.change, {
 				visible: visibles,
@@ -194,9 +192,9 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 	});
 });
 /**
- * Visible in jQuery plugin
+ * A jQuery custom event of the eg.Visible module. This event is fired when the event is compared with the last verified one and there is an element of which the visibility property has changed.
  *
- * @ko Visible in jQuery plugin
+ * @ko eg.Visible 모듈의 jQuery 커스텀 이벤트. 마지막으로 확인한 결과와 비교해 visibility 속성이 변경된 엘리먼트가 있을 때 발생한다
  * @name jQuery#visible:change
  * @event
  * @example
@@ -210,9 +208,8 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
  * @see eg.Visble
  */
 /**
- * visible:change jQuery event plugin
- *
- * @ko visible:change jQuery 이벤트 plugin
+ * A jQuery plugin available in the eg.Visible module.
+ * @ko eg.Visible 모듈의 jQuery 플러그인
  * @method jQuery.visible
  * @example
 	// create

@@ -65,20 +65,9 @@ li.prepend {
 </style>
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-shim.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-sham.js"></script> -->
-<script src="../../bower_components/jquery/jquery.js"></script>
+<script src="../../node_modules/jquery/dist/jquery.js"></script>
 <script src="../../src/module.js"></script>
 <script src="../../src/eg.js"></script>
-<!-- <script src="../../src/customEvent/scrollEnd.js"></script> -->
-<script src="../../src/hook/cssPrefix.js"></script>
-<script src="../../bower_components/get-style-property/get-style-property.js"></script>
-<script src="../../bower_components/get-size/get-size.js"></script>
-<script src="../../bower_components/matches-selector/matches-selector.js"></script>
-<script src="../../bower_components/eventEmitter/EventEmitter.js"></script>
-<script src="../../bower_components/eventie/eventie.js"></script>
-<script src="../../bower_components/doc-ready/doc-ready.js"></script>
-<script src="../../bower_components/fizzy-ui-utils/utils.js"></script>
-<script src="../../bower_components/outlayer/item.js"></script>
-<script src="../../bower_components/outlayer/outlayer.js"></script>
 <script src="../../src/class.js"></script>
 <script src="../../src/component.js"></script>
 <script src="../../src/infiniteGrid.js"></script>
@@ -90,8 +79,8 @@ li.prepend {
   <button class="fit">fit</button>
   <button class="layout">layout</button><br>
   <button class="clear">clear</button>
-  <button class="store">store</button>
-  <button class="restore">restore</button><br>
+  <button class="getStatus">getStatus</button>
+  <button class="setStatus">setStatus</button><br>
   <button class="getTopElement">getTopElement</button>
   <button class="getBottomElement">getBottomElement</button>
 </div>
@@ -152,9 +141,9 @@ $("#controler").click(function(e) {
     oinst.layout();
   } else if ($el.hasClass("clear")) {
     oinst.clear();
-  } else if ($el.hasClass("store")) {
+  } else if ($el.hasClass("getStatus")) {
     tmpStatus = oinst.getStatus();
-  } else if ($el.hasClass("restore")) {
+  } else if ($el.hasClass("setStatus")) {
     oinst.setStatus(tmpStatus);
   } else if ($el.hasClass("getTopElement")) {
     var $el = $(oinst.getTopElement());

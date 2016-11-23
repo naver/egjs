@@ -99,7 +99,7 @@ div.notice {
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css"> -->
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script> -->
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script> -->
-<script src="../../bower_components/jquery/jquery.js"></script>
+<script src="../../node_modules/jquery/dist/jquery.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 <script src="../../src/module.js"></script>
 <script src="../../src/eg.js"></script>
@@ -235,7 +235,7 @@ function counter(){
     },
     complete: function() {
       this.Counter = 0;
-      $(this).text("0");
+      $(this).text("1");
       counter();
     }
   });
@@ -402,7 +402,7 @@ $delayBox
 				},
 				complete: function() {
 					this.Counter = 0;
-					$(this).text("0");
+					$(this).text("1");
 					counter();
 				}
 			});
