@@ -46,8 +46,8 @@ The following is a list of methods extended from jQuery.
 * persist() method: Stores the current state of a webpage into a key in JSON.
   - [API Documentation](http://naver.github.io/egjs/latest/doc/jQuery.html#persist)
   - [Usage Examples](http://naver.github.io/egjs/demo/persist/), [Usage Examples (CodePen)](http://codepen.io/collection/XOLpog/)
-* prefixCss() method: Enables to add CSS vendor prefixes when you use some jQuery version(1.4.3 ~ 1.7.x) that does not support them.
-  - [API Documentation](http://naver.github.io/egjs/latest/doc/jQuery.html#persist)
+* prefixCss() method: Enables to add CSS vendor prefixes when you use some jQuery version(1.4.3 ~ 1.8.x) that does not support them.
+  - [API Documentation](http://naver.github.io/egjs/latest/doc/jQuery.html#cssPrefix)
   - [Usage Examples](http://naver.github.io/egjs/demo/cssPrefix/)
 * animate() method: A method extended from the jQuery animate() method. It supports CSS transform property and 3D acceleration.
   - [API Documentation](http://naver.github.io/egjs/latest/doc/jQuery.html#animate)
