@@ -13,26 +13,14 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	var agent = ns.agent();
 
 	var isNeeded = (function() {
-		var isNeeded = true;
+		var version = parseFloat(agent.os.version);
 
-		if (agent.os.name === "ios") {
-			isNeeded = false;
-		} else if (agent.os.name === "mac" && agent.browser.name === "safari") {
-			isNeeded = false;
-		} else if (
-			agent.os.name === "android" &&
-			parseFloat(agent.os.version) <= 4.3 &&
-			agent.browser.webview === true
-		) {
-			isNeeded = false;
-		} else if (
-			agent.os.name === "android" &&
-			parseFloat(agent.os.version) < 3
-		) {
-			isNeeded = false;
-		}
-
-		return isNeeded;
+		return !(
+				agent.os.name === "ios" ||
+				(agent.os.name === "mac" && agent.browser.name === "safari") ||
+				(agent.os.name === "android" &&
+					(version <= 4.3 && agent.browser.webview === true || version < 3))
+		);
 	})();
 
 	var JSON = global.JSON;
@@ -203,58 +191,31 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 		setState(beforeData);
 	}
 	/**
-	* Stores the current state of the web page in a default key using JSON.
-	* @ko 웹 페이지의 현재 상태를 기본 키에 JSON 형식으로 저장한다.
+	* Get or store the current state of the web page in a default key using JSON.
+	* @ko 기본 키에 JSON 형식으로 웹 페이지의 현재 상태를  JSON 형식으로 저장하거나 읽는다.
 	* @method jQuery.persist
 	* @deprecated since version 1.2.0
 	* @support {"ie": "9+", "ch" : "latest", "ff" : "1.5+",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.2+ (except 3.x)"}
-	* @param {Object} state The state information of the web page written in JSON <ko>JSON 객체로 정의한 웹 페이지의 상태 정보</ko>
+	* @param {Object} [state] The state information of the web page written in JSON <ko>JSON 객체로 정의한 웹 페이지의 상태 정보</ko>
 	* @example
-	$("a").on("click",function(e){
-		e.preventdefault();
-		// save state
-		$.persist(state);
-	});
+	// save state
+	$.persist(state);
+	// get state
+	var state = $.persist();
 	*/
 	/**
-	* Return stored state in global namespace as object
-	* @ko 디폴트 키에 저장된 상태를 반환한다.
-`	* @method jQuery.persist
-	* @deprecated since version 1.2.0
-	* @return {Object}
-	* @example
-	$("a").on("click",function(e){
-		e.preventdefault();
-		// get state
-		var state = $.persist();
-	});
-	*/
-	/**
-	* Stores the current state of the web page using JSON.
-	* @ko 웹 페이지의 현재 상태를 JSON 형식으로 저장한다
+	* Get or store the current state of the web page using JSON.
+	* @ko 웹 페이지의 현재 상태를 JSON 형식으로 저장하거나 읽는다.
 	* @method jQuery.persist
-    * @param {String} key The key of the state information to be stored <ko>저장할 상태 정보의 키</ko>
-    * @param {Object} state The value to be stored in a given key<ko>키에 저장할 값</ko>
+    * @param {String} [key] The key of the state information to be stored <ko>저장할 상태 정보의 키</ko>
+    * @param {Object} [state] The value to be stored in a given key <ko>키에 저장할 값</ko>
 	* @example
-	$("a").on("click",function(e){
-		e.preventdefault();
-		// save state
-		$.persist("KEY",state);
-	});
+	// when 'key' and 'value' are given, it saves state object
+	$.persist("KEY",state);
+	* @example
+	// when only 'key' is given, it loads state object
+	var state = $.persist("KEY");
 	*/
-	/**
-	* Returns the state of stored web pages.
-	* @ko 저장된 웹 페이지의 상태를 반환한다
-	* @method jQuery.persist
-	* @param {String} key The name of the key to be checked<ko>값을 확인할 키의 이름</ko>
-	* @return {Object} The value of the key <ko>키의 값</ko>
-	* @example
-	$("a").on("click",function(e){
-		e.preventdefault();
-		// get state
-		var state = $.persist("KEY");
-	});
-		*/
 	$.persist = function(state, data) {
 		var key;
 
