@@ -96,16 +96,26 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 		 * @param {Boolean} [containment=false] Whether to check only elements that are completely contained within the reference area.<ko>기준 영역 안에 완전히 포함된 엘리먼트만 체크할지 여부.</ko>
 		 * @return {eg.Visible} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 		 */
-		check: function(delay) {
+		check: function(delay, containment) {
+			if (typeof delay !== "number") {
+				containment = delay;
+				delay = -1;
+			}
+
 			if (typeof delay === "undefined") {
 				delay = -1;
 			}
+
+			if (typeof containment === "undefined") {
+				containment = false;
+			}
+
 			clearTimeout(this._timer);
 			if (delay < 0) {
-				this._check();
+				this._check(containment);
 			} else {
 				this._timer = setTimeout($.proxy(function() {
-					this._check();
+					this._check(containment);
 					this._timer = null;
 				}, this), delay);
 			}
