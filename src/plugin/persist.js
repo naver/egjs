@@ -228,18 +228,21 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 		// get state
 		var state = $.persist("KEY");
 	});
-	*/
-	$.persist = function(state) {
+		*/
+	$.persist = function(state, data) {
 		var key;
-		var data;
+
 		if (typeof state === "string") {
 			key = state;
-			data = arguments.length === 2 ? arguments[1] : null;
 		} else {
 			key = GLOBAL_KEY;
 			data = arguments.length === 1 ? state : null;
 		}
-		data && setStateByKey(key, data);
+
+		if (data || arguments.length === 2) {
+			setStateByKey(key, data);
+		}
+
 		return getStateByKey(key);
 	};
 
