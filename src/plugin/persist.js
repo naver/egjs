@@ -207,7 +207,7 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	* Get or store the current state of the web page using JSON.
 	* @ko 웹 페이지의 현재 상태를 JSON 형식으로 저장하거나 읽는다.
 	* @method jQuery.persist
-    * @param {String} [key] The key of the state information to be stored <ko>저장할 상태 정보의 키</ko>
+    * @param {String} key The key of the state information to be stored <ko>저장할 상태 정보의 키</ko>
     * @param {Object} [state] The value to be stored in a given key <ko>키에 저장할 값</ko>
 	* @example
 	// when 'key' and 'value' are given, it saves state object
