@@ -152,7 +152,7 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 			}
 			return this._reviseElements(target, i);
 		},
-		_check: function() {
+		_check: function(containment) {
 			var expandSize = parseInt(this.options.expandSize, 10);
 			var visibles = [];
 			var invisibles = [];
@@ -173,12 +173,23 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 				}
 				if (this._reviseElements(target, i)) {
 					before = !!target.__VISIBLE__;
-					target.__VISIBLE__ = after = !(
-						targetArea.bottom < area.top ||
-						area.bottom < targetArea.top ||
-						targetArea.right < area.left ||
-						area.right < targetArea.left
-					);
+
+					if (containment) {
+						target.__VISIBLE__ = after = !(
+							targetArea.top < area.top  ||
+							targetArea.bottom > area.bottom  ||
+							targetArea.right > area.right ||
+							targetArea.left < area.left
+						);
+					} else {
+						target.__VISIBLE__ = after = !(
+							targetArea.bottom < area.top ||
+							area.bottom < targetArea.top ||
+							targetArea.right < area.left ||
+							area.right < targetArea.left
+						);
+					}
+
 					(before !== after) && (after ? visibles : invisibles).unshift(target);
 				}
 			}
