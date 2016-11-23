@@ -7,13 +7,13 @@ eg.module("cssPrefix", ["jQuery", document], function($, doc) {
 	"use strict";
 
 	/**
-	 * Apply css prefix cssHooks
-	 * @ko 자동으로 css prefix가 적용되지 않는 jQuery 1.4.3 ~ 1.8.x에서 css prefix을 자동으로 등록하는 cssHooks이다.
+	 * Enables to add CSS vendor prefixes when you use some jQuery version(1.4.3 ~ 1.8.x) that does not support them.
+	 * @ko css에 vender prefix를 자동으로 추가하는 cssHooks이다. 지원하지 않는 jQuery 1.4.3 ~ 1.8.x에서만 활성화 된다.
 	 *
 	 * @name jQuery#cssPrefix
 	 * @method
 	 *
-	 * * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
+	 * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 * @example
 	 * $("#ID").css("transform", "translate('10px', '10px');
 	 * $("#ID").css("Transform", "translate('10px', '10px');
