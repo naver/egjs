@@ -89,10 +89,11 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 			return this.refresh();
 		},
 		/**
-		 * Checks whether the visibility property of the target elements has changed. The change event is fired when the property has changed.
-		 * @ko 보이는지 확인할 대상 엘리먼트 목록의 visibility 속성이 변경됐는지 확인한다. 속성이 변경됐으면 change 이벤트가 발생한다
+		 * Checks whether the visible of the target elements has changed. It trigger that change event on a component.
+		 * @ko 대상 엘리먼트의 가시성이 변경됐는지 체크한다. change 이벤트를 발생한다.
 		 * @method eg.Visible#check
-		 * @param {Number} [delay=-1] Delay time. It is used to check the property after a method is called and a period of time has passed.<ko>속성 확인 지연 시간. 메서드를 호출하고 일정 시간이 지난 후에 속성을 확인할 때 사용한다</ko>
+		 * @param {Number} [delay=-1] Delay time. It delay that change event trigger.<ko>지연시간. change 이벤트 발생을 지연한다.</ko>
+		 * @param {Boolean} [containment=false] Whether to check only elements that are completely contained within the reference area.<ko>기준 영역 안에 완전히 포함된 엘리먼트만 체크할지 여부.</ko>
 		 * @return {eg.Visible} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 		 */
 		check: function(delay) {
