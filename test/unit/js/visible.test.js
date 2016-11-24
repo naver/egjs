@@ -235,3 +235,62 @@ test("Check prefixEvent", function (assert) {
 		done();
 	},200);
 });
+
+module ("containment elements check test", {
+	setup: function() {
+		var i,
+			$wrapper,
+			html;
+
+		html = [];
+		for(i = 0; i < 10; i++) {
+			html.push("<li class='list check_document_visible'>#" + (i + 1) + "</li>");
+		}
+
+		$wrapper = $("<div class='wrapper' style='overflow:scroll;height:100px'></div>");
+		$wrapper.append(html);
+		$("#content").append($wrapper);
+
+		this.inst = new eg.Visible($wrapper, {
+			targetClass : "check_document_visible"
+		});
+		this.$wrapper = $wrapper;
+	},
+	teardown: function() {
+		window.scrollTo(0,0);
+		$("#content").empty();
+		this.inst.destroy();
+		this.inst = null;
+	}
+});
+
+test("default", function(assert) {
+	var done = assert.async();
+
+	this.inst.on("change", function(e) {
+		ok(e.visible.length === 2, "visible element length");
+		ok(e.visible[0].innerText === "#1", "visible element length");
+		ok(e.visible[1].innerText === "#2", "visible element length");
+		done();
+	});
+
+	this.inst.check(true);
+});
+
+test("scroll position change", function(assert) {
+	var done = assert.async();
+	this.inst.check(true);
+
+	this.inst.on("change", function(e) {
+		ok(e.visible.length === 1, "visible element length is 1");
+		ok(e.invisible.length === 2, "invisible element length is 2");
+		ok(e.invisible[0].innerText === "#1", "first invisible element is #1");
+		ok(e.invisible[1].innerText === "#2", "second invisible element is #2");
+		ok(e.visible[0].innerText === "#4", "first visible element is #4");
+		done();
+	});
+
+	//when
+	this.$wrapper.scrollTop(110);
+	this.inst.check(true);
+});
