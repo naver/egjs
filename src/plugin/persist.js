@@ -4,23 +4,23 @@
 */
 
 // jscs:disable maximumLineLength
-eg.module("persist", ["jQuery", window, document], function($, global, doc) {
+eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, doc) {
 	"use strict";
 
 	// jscs:enable maximumLineLength
 	var wp = global.performance;
 	var history = global.history;
-	var isNeeded = (function() {
-		var ua = global.navigator.userAgent;
-		var version = ua ? ua.match(/Android\s([^\;]*)/i) : null;
+	var agent = ns.agent();
 
-		/*
-		* a isNeeded value is
-		*  - iOS: false,
-		*  - Android 4.4+: true
-		*  - Android 4.4 and less: false
-		*/
-		return !(/iPhone|iPad/.test(ua) || (version ? parseFloat(version.pop()) < 4.4 : true));
+	var isNeeded = (function() {
+		var version = parseFloat(agent.os.version);
+
+		return !(
+				agent.os.name === "ios" ||
+				(agent.os.name === "mac" && agent.browser.name === "safari") ||
+				(agent.os.name === "android" &&
+					(version <= 4.3 && agent.browser.webview === true || version < 3))
+		);
 	})();
 
 	var JSON = global.JSON;
@@ -76,6 +76,20 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 
 	// jscs:enable maximumLineLength
 
+	/**
+	 * This jQuery custom event is fired when device rotates.
+	 *
+	 * @ko 기기가 회전할 때 발생하는 jQuery 커스텀 이벤트
+	 * @name jQuery#persist
+	 * @event
+	 * @deprecated since version 1.2.0
+	 * @example
+	 * $(window).on("persist",function(){
+	 *      var state = $.persist("KEY");
+	 *		// Restore state
+	 * });
+	 *
+	 */
 	function onPageshow(e) {
 		isPersisted = isPersisted || (e.originalEvent && e.originalEvent.persisted);
 		if (!isPersisted && isBackForwardNavigated) {
@@ -177,58 +191,23 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 		setState(beforeData);
 	}
 	/**
-	* Stores the current state of the web page in a default key using JSON.
-	* @ko 웹 페이지의 현재 상태를 기본 키에 JSON 형식으로 저장한다.
-	* @method jQuery.persist
-	* @deprecated since version 1.2.0
-	* @support {"ie": "9+", "ch" : "latest", "ff" : "1.5+",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.2+ (except 3.x)"}
-	* @param {Object} state The state information of the web page written in JSON <ko>JSON 객체로 정의한 웹 페이지의 상태 정보</ko>
-	* @example
-	$("a").on("click",function(e){
-		e.preventdefault();
-		// save state
-		$.persist(state);
-	});
-	*/
-	/**
-	* Return stored state in global namespace as object
-	* @ko 디폴트 키에 저장된 상태를 반환한다.
-`	* @method jQuery.persist
-	* @deprecated since version 1.2.0
-	* @return {Object}
-	* @example
-	$("a").on("click",function(e){
-		e.preventdefault();
-		// get state
-		var state = $.persist();
-	});
-	*/
-	/**
-	* Stores the current state of the web page using JSON.
-	* @ko 웹 페이지의 현재 상태를 JSON 형식으로 저장한다
+	* Get or store the current state of the web page using JSON.
+	* @ko 웹 페이지의 현재 상태를 JSON 형식으로 저장하거나 읽는다.
 	* @method jQuery.persist
     * @param {String} key The key of the state information to be stored <ko>저장할 상태 정보의 키</ko>
-    * @param {Object} state The value to be stored in a given key<ko>키에 저장할 값</ko>
+    * @param {Object} [state] The value to be stored in a given key <ko>키에 저장할 값</ko>
 	* @example
-	$("a").on("click",function(e){
-		e.preventdefault();
-		// save state
-		$.persist("KEY",state);
-	});
+	// when 'key' and 'value' are given, it saves state object
+	$.persist("KEY",state);
+	// when only 'key' is given, it loads state object
+	var state = $.persist("KEY");
+	* @example
+	// this is deprecated API
+	// save state without Key
+	$.persist(state);
+	// get state without Key
+	var state = $.persist();
 	*/
-	/**
-	* Returns the state of stored web pages.
-	* @ko 저장된 웹 페이지의 상태를 반환한다
-	* @method jQuery.persist
-	* @param {String} key The name of the key to be checked<ko>값을 확인할 키의 이름</ko>
-	* @return {Object} The value of the key <ko>키의 값</ko>
-	* @example
-	$("a").on("click",function(e){
-		e.preventdefault();
-		// get state
-		var state = $.persist("KEY");
-	});
-		*/
 	$.persist = function(state, data) {
 		var key;
 
@@ -249,9 +228,11 @@ eg.module("persist", ["jQuery", window, document], function($, global, doc) {
 	/**
 	* Return whether you need "Persist" module by checking the bfCache support of the current browser
 	* @ko 현재 브라우저의 bfCache 지원여부에 따라 persist 모듈의 필요여부를 반환한다.
-	* @method $.persist.isApplicable
+	* @group jQuery Extension
+	* @namespace
+	* @property {function} isNeeded
 	* @example
-	$.persist.isApplicable();
+	$.persist.isNeeded();
 	*/
 	$.persist.isNeeded = function() {
 		return isNeeded;
