@@ -191,19 +191,6 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 		setState(beforeData);
 	}
 	/**
-	* Get or store the current state of the web page in a default key using JSON.
-	* @ko 기본 키에 JSON 형식으로 웹 페이지의 현재 상태를  JSON 형식으로 저장하거나 읽는다.
-	* @method jQuery.persist
-	* @deprecated since version 1.2.0
-	* @support {"ie": "9+", "ch" : "latest", "ff" : "1.5+",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.2+ (except 3.x)"}
-	* @param {Object} [state] The state information of the web page written in JSON <ko>JSON 객체로 정의한 웹 페이지의 상태 정보</ko>
-	* @example
-	// save state
-	$.persist(state);
-	// get state
-	var state = $.persist();
-	*/
-	/**
 	* Get or store the current state of the web page using JSON.
 	* @ko 웹 페이지의 현재 상태를 JSON 형식으로 저장하거나 읽는다.
 	* @method jQuery.persist
@@ -215,6 +202,12 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	* @example
 	// when only 'key' is given, it loads state object
 	var state = $.persist("KEY");
+
+	// below is deprecated API
+	// save state without Key
+	$.persist(state);
+	// get state without Key
+	var state = $.persist();
 	*/
 	$.persist = function(state, data) {
 		var key;
