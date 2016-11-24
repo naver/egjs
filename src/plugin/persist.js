@@ -199,11 +199,10 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 	* @example
 	// when 'key' and 'value' are given, it saves state object
 	$.persist("KEY",state);
-	* @example
 	// when only 'key' is given, it loads state object
 	var state = $.persist("KEY");
-
-	// below is deprecated API
+	* @example
+	// this is deprecated API
 	// save state without Key
 	$.persist(state);
 	// get state without Key
