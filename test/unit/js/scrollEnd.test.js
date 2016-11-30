@@ -5,14 +5,12 @@
 
 module("scrollEnd", {
   setup : function() {
-    this.agent = eg.agent;
     this.isFireEvent = false;
     this.topPos = 10;
     this.intervalNum = 0;
 
   },
   teardown : function() {
-    eg.agent = this.agent;
     $(window).off("scrollend");
   }
 });
@@ -21,20 +19,10 @@ test("It should fire scrollend event.", function() {
 
    // Given
   var checkInfo;
-  eg.agent = function(){
-    return {
-      "os" : {
-        "name" : "ios",
-        "version" : "8.0"
-      },
-      "browser" : {
-        "name" : ""
-      }
-    }
-  };
 
   window.scrollTo(0, 1);
   var method = eg.invoke("scrollEnd");
+  method.detectType = method.SCROLLBASE;
   var self = this;
 
   // When
@@ -59,276 +47,125 @@ test("It should fire scrollend event.", function() {
   }, 500);
 });
 
-test("getDeviceType : android && 2.1 ", function() {
+test("getDetectType : android && 2.1 ", function() {
     // Given
-  eg.agent = function(){
-      return {
-         "os" : {
-             "name" : "android",
-             "version" : "2.1"
-         },
-         "browser" : {}
-      }
-    }
     var method = eg.invoke("scrollEnd");
 
     // When
-    $(window).on("scrollend", function(){
-    });
+    var type = method.getDetectType("Mozilla/5.0 (Linux;U;Android 2.1;ko-kr;SHW-M110S Build/ÉCLAIR) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17");
 
     // Then
-    equal(method.getDeviceType(), method.TIMERBASE);
+    equal(type, method.TIMERBASE);
 
 });
 
-test("getDeviceType : android && chrome ", function() {
+test("getDetectType : android && chrome ", function() {
     // Given
-  eg.agent = function(){
-    return {
-       "os" : {
-           "name" : "android",
-           "version" : "2.1"
-       },
-       "browser" : {
-            "name" : "chrome"
-       }
-     }
-    };
     var method = eg.invoke("scrollEnd");
 
     // When
-    $(window).on("scrollend", function(){
-    });
+    var type = method.getDetectType("Mozilla/5.0 (Linux; U;Android 4.0.3;ko-kr; SHW-M250S Build/IML74K) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.77 Mobile Safari/535.7");
 
     // Then
-    equal(method.getDeviceType(), method.TIMERBASE);
+    equal(type, method.TIMERBASE);
 
 });
 
 
-test("getDeviceType : android && version 3.x over ", function() {
+test("getDetectType : android && version 3.x over ", function() {
     // Given
-  eg.agent = function(){
-    return {
-       "os" : {
-           "name" : "android",
-           "version" : "3.0"
-       },
-       "browser" : {
-            "name" : ""
-       }
-     }
-    };
     var method = eg.invoke("scrollEnd");
 
     // When
-    $(window).on("scrollend", function(){
-    });
+    var type = method.getDetectType("Mozilla/5.0 (Linux;U;Android 4.0.1;ko-kr;Galaxy Nexus Build/ITL41F)AppleWebKit/534.30 (KHTML, like Gecko)Version/4.0 Mobile Safari/534.30");
 
     // Then
-    equal(method.getDeviceType(), method.TIMERBASE);
+    equal(type, method.TIMERBASE);
 
 });
 
 
 
-test("getDeviceType : webview ", function() {
+test("getDetectType : webview ", function() {
     // Given
-  eg.agent = function(){
-    return {
-       "os" : {
-           "name" : "ios",
-           "version" : "7.0"
-        },
-        "browser" : {
-            "name" : "safari",
-            "version" : "7.0",
-            "webview" : true
-        }
-    };
-  };
     var method = eg.invoke("scrollEnd");
+    var type;
 
     // When
-    $(window).on("scrollend", function(){
-    });
-
+    type = method.getDetectType("Mozilla/5.0 (Linux; Android 4.4.2; SM-G900S Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/28.0.1500.94 Mobile Safari/537.36 NAVER(inapp; search; 340; 6.0.5)");
     // Then
-    equal(method.getDeviceType(), method.TIMERBASE);
-
-    // Given
-    eg.agent = function(){
-      return {
-         "os" : {
-             "name" : "ios",
-             "version" : "8.0"
-          },
-          "browser" : {
-              "name" : "safari",
-              "version" : "7.0",
-              "webview" : true
-          }
-      };
-    };
-    method = eg.invoke("scrollEnd");
+    equal(type, method.TIMERBASE);
 
     // When
-    $(window).on("scrollend", function(){
-    });
-
+    type = method.getDetectType("Mozilla/5.0 (Linux; Android 5.0; SM-G900S Build/LRX21T; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/42.0.2311.138 Mobile Safari/537.36");
     // Then
-    equal(method.getDeviceType(), method.TIMERBASE);
-
-    // Given
-    eg.agent = function(){
-      return {
-         "os" : {
-             "name" : "android",
-             "version" : "4.1"
-          },
-          "browser" : {
-              "name" : "default",
-              "webview" : true
-          }
-      };
-    };
-    method = eg.invoke("scrollEnd");
+    equal(type, method.TIMERBASE);
 
     // When
-    $(window).on("scrollend", function(){
-    });
-
+    type = method.getDetectType("Mozilla/5.0 (Linux; Android 4.4.2; SM-G900S Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.61 Mobile Safari/537.36 NAVER(higgs; search; 340; 6.0.5; 1.0.6.2)");
     // Then
-    equal(method.getDeviceType(), method.TIMERBASE);
+    equal(type, method.TIMERBASE);
 
 });
 
-test("getDeviceType : ios 7 && not webview ", function() {
+test("getDetectType : ios 7 && not webview ", function() {
     // Given
-  eg.agent = function(){
-    return {
-       "os" : {
-           "name" : "ios",
-           "version" : "7.0"
-        },
-        "browser" : {
-            "name" : "safari",
-            "version" : "7.0",
-            "webview" : false
-        }
-    };
-  };
     var method = eg.invoke("scrollEnd");
+    var type;
 
     // When
-    $(window).on("scrollend", function(){
-    });
-
+    type = method.getDetectType("Mozilla/5.0 (iPhone;CPU iPhone OS 7_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10B146 Safari/8536.25");
     // Then
-    equal(method.getDeviceType(), method.SCROLLBASE);
+    equal(type, method.SCROLLBASE);
 
 });
 
 
-test("getDeviceType : ios && version 8.x over ", function() {
-    // Given
-  eg.agent = function(){
-    return {
-       "os" : {
-           "name" : "ios",
-           "version" : "8.0"
-       },
-       "browser" : {
-            "name" : "safari",
-            "version" : "8.0",
-            "webview" : false
-       }
-     }
-    };
-    var method = eg.invoke("scrollEnd");
+test("getDetectType : ios && version 8.x over ", function() {
+  // Given
+  var method = eg.invoke("scrollEnd");
+  var type;
 
-    // When
-    $(window).on("scrollend", function(){
-    });
-
-    // Then
-    equal(method.getDeviceType(), method.TIMERBASE);
+  // When
+  type = method.getDetectType("Mozilla/5.0 (iPhone; CPU iPhone OS 9_0 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13A452 Safari/601.1");
+  // Then
+  equal(type, method.TIMERBASE);
 
 });
 
-test("getDeviceType : ios 8 && webview ", function() {
-    // Given
-  eg.agent = function(){
-    return {
-       "os" : {
-           "name" : "ios",
-           "version" : "8.0"
-        },
-        "browser" : {
-            "name" : "safari",
-            "version" : "-1",
-            "webview" : true
-        }
-    };
-    };
-    var method = eg.invoke("scrollEnd");
+test("getDetectType : ios 8 && webview ", function() {
+  // Given
+  var method = eg.invoke("scrollEnd");
+  var type;
 
-    // When
-    $(window).on("scrollend", function(){
-    });
-
-    // Then
-    equal(method.getDeviceType(), method.TIMERBASE);
+  // When
+  type = method.getDetectType("Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12B440");
+  // Then
+  equal(type, method.TIMERBASE);
 
 });
 
-test("getDeviceType : ios 7 && webview ", function() {
-    // Given
-  eg.agent = function(){
-    return {
-       "os" : {
-           "name" : "ios",
-           "version" : "7.0"
-        },
-        "browser" : {
-            "name" : "safari",
-            "version" : "-1",
-            "webview" : true
-        }
-    };
-    };
-    var method = eg.invoke("scrollEnd");
+test("getDetectType : ios 7 && webview ", function() {
+  // Given
+  var method = eg.invoke("scrollEnd");
+  var type;
 
-    // When
-    $(window).on("scrollend", function(){
-    });
-
-    // Then
-    equal(method.getDeviceType(), method.TIMERBASE);
+  // When
+  type = method.getDetectType("Mozilla/5.0 (iPhone;CPU iPhone OS 7_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Mobile/10B146");
+  // Then
+  equal(type, method.TIMERBASE);
 
 });
 
-test("getDeviceType : window && version 8.x over ", function() {
-    // Given
-  eg.agent = function(){
-    return {
-       "os" : {
-           "name" : "window",
-           "version" : "8.0"
-       },
-       "browser" : {
-            "name" : ""
-       }
-     }
-  };
-    var method = eg.invoke("scrollEnd");
+test("getDetectType : window && version 8.x over ", function() {
+	// Given
+  var method = eg.invoke("scrollEnd");
+  var type;
 
-    // When
-    $(window).on("scrollend", function(){
-    });
-
-    // Then
-    equal(method.getDeviceType(), method.TIMERBASE);
+  // When
+  type = method.getDetectType("Mozilla/5.0 (Windows NT 6.3; Win64, x64; Trident/7.0; Touch; rv:11.0) like Gecko");
+  // Then
+  equal(type, method.TIMERBASE);
 
 });
 
@@ -362,128 +199,61 @@ test("scroll after rotate", function() {
 
 if(eg.agent().browser.name === "PhantomJS") {
   test("scroll scroll", function() {
-    // Given
-    eg.agent = function(){
-      return {
-         "os" : {
-             "name" : "ios",
-             "version" : "7.0"
-         },
-         "browser" : {
-              "name" : ""
-         }
-       }
-      };
+		// Given
 
-      window.scrollTo(0, 1);
-      var method = eg.invoke("scrollEnd");
-      var self = this;
+		var method = eg.invoke("scrollEnd");
+		method.detectType = method.SCROLLBASE;
+		window.scrollTo(0, 1);
+		var self = this;
 
-    // When
-      $(window).on("scrollend", function(){
-         self.isFireEvent = true;
-      });
+		// When
+		$(window).on("scrollend", function(){
+			self.isFireEvent = true;
+		});
 
-      this.intervalNum = setInterval(function(){
-          self.topPos += 10;
-          window.scrollTo(0, self.topPos);
-          if(self.topPos > 20){
-              clearInterval(self.intervalNum);
-          }
-      }, 30);
+		this.intervalNum = setInterval(function(){
+			self.topPos += 10;
+			window.scrollTo(0, self.topPos);
+			if(self.topPos > 20){
+				clearInterval(self.intervalNum);
+			}
+		}, 30);
 
-    // Then
-    equal(method.getDeviceType(), method.SCROLLBASE);
+		// Then
 
-    stop();
-    setTimeout(function(){
-        strictEqual(self.isFireEvent , true, "scrollend event occurred");
-        start();
-    }, 500);
+		stop();
+		setTimeout(function(){
+			strictEqual(self.isFireEvent , true, "scrollend event occurred");
+			start();
+		}, 500);
   });
 
 
   test("timer scroll", function() {
-    // Given
-    eg.agent = function(){
-      return {
-         "os" : {
-             "name" : "ios",
-             "version" : "8.0"
-         },
-         "browser" : {
-              "name" : ""
-         }
-       }
-      };
+	  // Given
+    var method = eg.invoke("scrollEnd");
+    method.detectType = method.TIMERBASE;
+    window.scrollTo(0, 1);
+    var self = this;
 
-      window.scrollTo(0, 1);
-      var method = eg.invoke("scrollEnd");
-      var self = this;
+	  // When
+    $(window).on("scrollend", function(){
+       self.isFireEvent = true;
+    });
 
-    // When
-      $(window).on("scrollend", function(){
-         self.isFireEvent = true;
-      });
+    this.intervalNum = setInterval(function(){
+        self.topPos += 10;
+        window.scrollTo(0, self.topPos);
+        if(self.topPos > 20){
+            clearInterval(self.intervalNum);
+        }
+    }, 30);
 
-      this.intervalNum = setInterval(function(){
-          self.topPos += 10;
-          window.scrollTo(0, self.topPos);
-          if(self.topPos > 20){
-              clearInterval(self.intervalNum);
-          }
-      }, 30);
-
-    // Then
-    equal(method.getDeviceType(), method.TIMERBASE);
-
-    stop();
-    setTimeout(function(){
-        strictEqual(self.isFireEvent , true, "scrollend event occurred");
-        start();
-    }, 500);
-  });
-
-
-  test("chrome scroll", function() {
-    // Given
-    eg.agent = function(){
-      return {
-         "os" : {
-             "name" : "android",
-             "version" : "4.1"
-         },
-         "browser" : {
-              "name" : "chrome"
-         }
-       }
-      };
-
-      window.scrollTo(0, 1);
-      var method = eg.invoke("scrollEnd");
-      var self = this;
-
-    // When
-      $(window).on("scrollend", function(){
-         self.isFireEvent = true;
-      });
-      $(window).trigger("orientationchange");
-
-      this.intervalNum = setInterval(function(){
-          self.topPos += 10;
-          window.scrollTo(0, self.topPos);
-          if(self.topPos > 40){
-              clearInterval(self.intervalNum);
-          }
-      }, 30);
-
-    // Then
-    equal(method.getDeviceType(), method.TIMERBASE);
-
-    stop();
-    setTimeout(function(){
-        strictEqual(self.isFireEvent , true, "scrollend event occurred");
-        start();
-    }, 500);
+	  // Then
+	  stop();
+	  setTimeout(function(){
+	      strictEqual(self.isFireEvent , true, "scrollend event occurred");
+	      start();
+	  }, 500);
   });
 }
