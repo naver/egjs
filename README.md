@@ -46,8 +46,8 @@ The following is a list of methods extended from jQuery.
 * persist() method: Stores the current state of a webpage into a key in JSON.
   - [API Documentation](http://naver.github.io/egjs/latest/doc/jQuery.html#persist)
   - [Usage Examples](http://naver.github.io/egjs/demo/persist/), [Usage Examples (CodePen)](http://codepen.io/collection/XOLpog/)
-* prefixCss() method: Enables to add CSS vendor prefixes when you use some jQuery version(1.4.3 ~ 1.8.x) that does not support them.
-  - [API Documentation](http://naver.github.io/egjs/latest/doc/jQuery.html#cssPrefix)
+* prefixCss() method: Enables to add CSS vendor prefixes when you use some jQuery version(1.4.3 ~ 1.7.x) that does not support them.
+  - [API Documentation](http://naver.github.io/egjs/latest/doc/jQuery.html#persist)
   - [Usage Examples](http://naver.github.io/egjs/demo/cssPrefix/)
 * animate() method: A method extended from the jQuery animate() method. It supports CSS transform property and 3D acceleration.
   - [API Documentation](http://naver.github.io/egjs/latest/doc/jQuery.html#animate)
@@ -133,11 +133,13 @@ egjs has the dependencies for the following libraries:
 > Except jQuery, library dependencies may vary depending on modules. For more information, see API documentation.
 
 When add dependency library have to use `yarn`. 
-> yarn add: adds a package to use in your current package.
-> yarn init: initializes the development of a package.
-> yarn install: installs all the dependencies defined in a package.json file.
-> yarn publish: publishes a package to a package manager.
-> yarn remove: removes an unused package from your current package.
+```
+yarn add: adds a package to use in your current package.
+yarn init: initializes the development of a package.
+yarn install: installs all the dependencies defined in a package.json file.
+yarn publish: publishes a package to a package manager.
+yarn remove: removes an unused package from your current package.
+```
 For more information, see [API documentation](https://yarnpkg.com/en/docs/cli/).
 
 ## How to Use

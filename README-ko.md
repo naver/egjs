@@ -134,11 +134,13 @@ egjs는 다음 라이브러리에 의존성이 있다.
 > jQuery를 제외한 다른 라이브러리의 의존성은 모듈에 따라 다르다. 모듈을 사용하기 전에 API 문서를 참고한다.
 
 의존성 라이브러리를 추가할 때, `yarn`을 사용한다.
-> yarn add: 사용하는 package을 추가한다.
-> yarn init: 개발하는 package을 초기화 한다.
-> yarn install: package.json에 등록된 모든 의존성 package들을 설치한다.
-> yarn publish: package manager로 package을 배포한다.
-> yarn remove: 사용하지 않는 package을 삭제한다.
+```
+yarn add: 사용하는 package을 추가한다.
+yarn init: 개발하는 package을 초기화 한다.
+yarn install: package.json에 등록된 모든 의존성 package들을 설치한다.
+yarn publish: package manager로 package을 배포한다.
+yarn remove: 사용하지 않는 package을 삭제한다.
+```
 좀 더 자세한 내용은 [API 문서](https://yarnpkg.com/en/docs/cli/)를 참고한다.
 
 ## 사용 방법
