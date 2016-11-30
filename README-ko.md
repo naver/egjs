@@ -47,7 +47,7 @@ egjs의 jQuery 확장 메서드는 다음과 같다.
   - [API 문서](http://naver.github.io/egjs/latest/doc/jQuery.html#persist)
   - [메서드 사용 예](http://naver.github.io/egjs/demo/persist/), [메서드 사용 예(CodePen)](http://codepen.io/collection/XOLpog/)
 * prefixCss() 메서드: CSS 속성의 제조사 접두어(vendor prefix)를 지원하지 않는 일부 jQuery 버전(1.4.3 ~ 1.7.x)을 사용할 때 제조사 접두어를 지원할 수 있게 한다.
-  - [API 문서](http://naver.github.io/egjs/latest/doc/jQuery.html#persist)
+  - [API 문서](http://naver.github.io/egjs/latest/doc/jQuery.html#cssPrefix)
   - [메서드 사용 예](http://naver.github.io/egjs/demo/cssPrefix/)
 * animate() 메서드: jQuery의 animate() 메서드를 확장한 메서드. CSS의 transform 속성과 3D 가속을 사용할 수 있다.
   - [API 문서](http://naver.github.io/egjs/latest/doc/jQuery.html#animate)
