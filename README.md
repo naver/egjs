@@ -132,6 +132,14 @@ egjs has the dependencies for the following libraries:
 
 > Except jQuery, library dependencies may vary depending on modules. For more information, see API documentation.
 
+When add dependency library have to use `yarn`. 
+> yarn add: adds a package to use in your current package.
+> yarn init: initializes the development of a package.
+> yarn install: installs all the dependencies defined in a package.json file.
+> yarn publish: publishes a package to a package manager.
+> yarn remove: removes an unused package from your current package.
+For more information, see [API documentation](https://yarnpkg.com/en/docs/cli/).
+
 ## How to Use
 
 Let egjs load after jQuery loads.
