@@ -133,16 +133,6 @@ egjs는 다음 라이브러리에 의존성이 있다.
 
 > jQuery를 제외한 다른 라이브러리의 의존성은 모듈에 따라 다르다. 모듈을 사용하기 전에 API 문서를 참고한다.
 
-의존성 라이브러리를 추가할 때, `yarn`을 사용한다.
-```
-yarn add: 사용하는 package을 추가한다.
-yarn init: 개발하는 package을 초기화 한다.
-yarn install: package.json에 등록된 모든 의존성 package들을 설치한다.
-yarn publish: package manager로 package을 배포한다.
-yarn remove: 사용하지 않는 package을 삭제한다.
-```
-좀 더 자세한 내용은 [API 문서](https://yarnpkg.com/en/docs/cli/)를 참고한다.
-
 ## 사용 방법
 
 jQuery를 먼저 로딩한 다음 egjs를 로딩하게 설정한다.
@@ -190,7 +180,7 @@ grunt-cli를 전역으로 설치한다.
 $ npm install grunt-cli -g  # grunt-cli 설치
 ```
 
-#### 2. 저장소 복제와 의존성 모듈 설치
+#### 2. 저장소 복제
 
 egjs 저장소를 복제하고 Bower 의존성 모듈과 npm 의존성 모듈을 설치한다.
 
@@ -200,12 +190,22 @@ $ mkdir egjs && cd egjs
 
 # 저장소에서 코드를 복제
 $ git clone https://github.com/naver/egjs.git
-
-# node 의존성 모듈들을 설치
-$ npm install
 ```
 
-#### 3. 빌드
+#### 3. 의존성 모듈 설치
+
+npm과 yarn을 지원한다.
+
+```
+# 의존성 모듈들을 설치
+$ npm install
+
+# or
+$ yarn 
+```
+의존성 라이브러리를 추가할 때, [`yarn`](https://yarnpkg.com/en/docs/cli/)을 사용한다.
+
+#### 4. 빌드
 
 Grunt로 egjs를 빌드한다.
 

@@ -132,18 +132,6 @@ egjs has the dependencies for the following libraries:
 
 > Except jQuery, library dependencies may vary depending on modules. For more information, see API documentation.
 
-When add dependency library have to use `yarn`. 
-```
-yarn add: adds a package to use in your current package.
-yarn init: initializes the development of a package.
-yarn install: installs all the dependencies defined in a package.json file.
-yarn publish: publishes a package to a package manager.
-yarn remove: removes an unused package from your current package.
-```
-For more information, see [API documentation](https://yarnpkg.com/en/docs/cli/).
-
-## How to Use
-
 Let egjs load after jQuery loads.
 
 ```html
@@ -188,7 +176,7 @@ Install grunt-cli globally.
 $ npm install grunt-cli -g  # Install grunt-cli
 ```
 
-#### 2. Clone the repository and install dependencies
+#### 2. Clone the repository
 
 Clone the egjs depository and install the Bower and npm dependency modules.
 
@@ -198,12 +186,21 @@ $ mkdir egjs && cd egjs
 
 # Clone a repository.
 $ git clone https://github.com/naver/egjs.git
-
-# Install the node dependencies modules.
-$ npm install
 ```
 
-#### 3. Build
+#### 3. Install dependencies
+Support npm and yarn.
+
+```
+# Install the dependencies modules.
+$ npm install
+
+# or
+$ yarn 
+```
+When add dependency library have to use [`yarn`](https://yarnpkg.com/en/docs/cli/). 
+
+#### 4. Build
 
 Use Grunt to build egjs.
 
