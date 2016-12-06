@@ -405,7 +405,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			}
 
 			var size = this._getContainerSize();
-			this.el.style.width = size.width + "px";
 			this.el.style.height = size.height + "px";
 
 			// refresh element

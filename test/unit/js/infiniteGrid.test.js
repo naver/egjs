@@ -43,6 +43,7 @@ QUnit.test("check a initialization (there are children)", function(assert) {
 		assert.equal(e.target.length, 6, "a number of elements are 6");
 		assert.equal(this.items.length, 6, "a number of elements are 6");
 		assert.equal(this.isProcessing(), false, "idel in layoutComplete");
+		assert.equal(this.$el.get(0).style.width, "", "should not set width value");
 		done();
 	});
 	// Then
