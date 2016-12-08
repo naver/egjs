@@ -175,7 +175,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			}, 100);
 		},
 		_refreshViewport: function() {
-			this._clientHeight = this.$view.height();
+			var el = this.$view.get(0);
+			if (el) {
+				this._clientHeight = $.isWindow(el) ? el.innerHeight : el.clientHeight;
+			}
 		},
 		/**
 		 * Returns the current state of a module such as location information. You can use the setStatus() method to restore the information returned through a call to this method.
