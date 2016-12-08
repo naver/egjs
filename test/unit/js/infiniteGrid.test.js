@@ -819,3 +819,38 @@ QUnit.test("if width is not changed, layout should be not called on resize event
 		done();
 	},100);
 });
+
+
+
+QUnit.module("infiniteGrid private method Test", {
+	beforeEach : function() {
+		this.fakeWnd = {
+			navigator : {
+				userAgent: "iPad"
+			},
+			innerHeight: 100,
+			clientHeight: 100
+		};
+		eg.invoke("infiniteGrid", [ null, null, this.fakeWnd, null, null]);
+	},
+	afterEach : function() {
+		if(this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
+	}
+});
+
+
+QUnit.test("check _refreshViewport method", function(assert) {
+	// Given
+	var inst = new eg.InfiniteGrid("#grid");
+	// When
+	assert.equal(inst._clientHeight, 100, "height is not changed");
+	
+	this.fakeWnd.innerHeight = this.fakeWnd.clientHeight = 200;
+	inst._refreshViewport();
+
+	// Then
+	assert.equal(inst._clientHeight, 200, "height is changed");
+});
