@@ -120,8 +120,19 @@ test("getDetectType : ios 7 && not webview ", function() {
 
 });
 
+test("getDetectType : ios && version 10.1 ", function() {
+  // Given
+  var method = eg.invoke("scrollEnd");
+  var type;
 
-test("getDetectType : ios && version 8.x over ", function() {
+  // When
+  type = method.getDetectType("Mozilla/5.0 (iPhone; CPU iPhone OS 10_1 like Mac OS X) AppleWebKit/602.2.14 (KHTML, like Gecko) Version/10.0 Mobile/14B72 Safari/602.1");
+  // Then
+  equal(type, method.TIMERBASE);
+});
+
+
+test("getDetectType : ios && version 9.0 ", function() {
   // Given
   var method = eg.invoke("scrollEnd");
   var type;
@@ -130,7 +141,6 @@ test("getDetectType : ios && version 8.x over ", function() {
   type = method.getDetectType("Mozilla/5.0 (iPhone; CPU iPhone OS 9_0 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13A452 Safari/601.1");
   // Then
   equal(type, method.TIMERBASE);
-
 });
 
 test("getDetectType : ios 8 && webview ", function() {
