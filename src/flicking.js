@@ -30,7 +30,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 	 * @param {Number} [options.defaultIndex=0] The index number of a panel to be selected upon module initialization <ko>모듈이 초기화될 때 선택할 패널의 인덱스 번호</ko>
 	 * @param {Array} [options.inputType] Types of input devices.<br>- touch: A touch screen can be used to move a panel.<br>- mouse: A mouse can be used to move a panel. <ko>입력 장치 종류.<br>- touch: 터치 입력 장치로 패널을 이동할 수 있다.<br>- mouse: 마우스로 패널을 이동할 수 있다.</ko>
 	 * @param {Number} [options.thresholdAngle=45] The threshold value that determines whether user action is horizontal or vertical (0~90) <ko>사용자의 동작이 가로 방향인지 세로 방향인지 판단하는 기준 각도(0~90)</ko>
-	 * @param {Boolean} [options.adaptiveHeight=false] Set container's height be adaptive according panel's height <ko>컨테이너 영역이 패널의 높이값에 따라 변경될지 여부</ko>
+	 * @param {Boolean} [options.adaptiveHeight=false] Set container's height be adaptive according panel's height.<br>(Note: on Android 4.1.x stock browser, has rendering bug which not correctly render height value on panel with single node. To avoid just append another empty node at the end.)<ko>컨테이너 영역이 패널의 높이값에 따라 변경될지 여부<br>(참고: Android 4.1.x 스톡 브라우저에서 단일 노드로 구성된 패널의 높이값 변경이 제대로 렌더링 되지 않는 버그가 있음. 비어있는 노드를 추가하면 해결이 가능하다.)</ko>
 	 *
 	 * @codepen {"id":"rVOpPK", "ko":"플리킹 UI 기본 예제", "en":"Flicking UI default example", "collectionId":"ArxyLK", "height" : 403}
 	 * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest" , "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
@@ -797,7 +797,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 					direction === MC.DIRECTION_RIGHT && "Prev" || ""
 				) + "Element" ]();
 
-			$first = $panel.find(":first-child");
+			$first = $panel.find(":first");
 			height = $first.attr(dataName);
 
 			if (!height) {
