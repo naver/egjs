@@ -79,7 +79,8 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 			deviceName = matchedDevice[0];
 
 			// Browsers that trigger scroll event like scrollstop : SCROLLBASE
-			osVersion = userAgent.match(/(\d)_\d/);
+			osVersion = userAgent.match(/\s(\d{1,2})_\d/);
+
 			if (deviceName !== "Android" && webviewToken2.test(userAgent) && osVersion && parseInt(osVersion[1], 10) <= 7) {
 				retValue = SCROLLBASE;
 			} else if (deviceName === "Android") {
