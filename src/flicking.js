@@ -533,13 +533,12 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 					if (horizontal) {
 						value && (container.left = 0);
 					} else {
-						value !== paddingTop && (container.top = paddingTop + "px");
+						value !== paddingTop && (container.top = "0px");
 					}
 
 					this._setTranslate([-coords[+!options.horizontal], 0]);
 
 				} else if (phase === "end") {
-					!horizontal && (coords[0] += paddingTop);
 					coords = this._getCoordsValue(coords);
 
 					container.css({
