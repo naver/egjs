@@ -42,7 +42,7 @@ eg.module("rotate", ["jQuery", eg, window, document], function($, ns, global, do
 		};
 
 		if (match) {
-			res.os = match[1].replace(/(?:CPU|iPhone)\sOS/, "ios");
+			res.os = match[1].replace(/(?:CPU|iPhone)\sOS/, "ios").toLowerCase();
 			res.version = match[2].replace(/\D/g, ".");
 		}
 
