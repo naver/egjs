@@ -114,21 +114,10 @@ eg.module("pauseResume", ["jQuery"], function($) {
 		return this.each(function() {
 			//optall should be made for each elements.
 			var optall = $.speed(speed, easing, callback);
-			var userCallback = optall.old;//hook a user callback.
 
-			//Override to check current animation is done.
+			// prepare next animation when current animation completed.
 			optall.complete = function() {
-				//Dequeue animation property that was ended.
-				var removeProp = this.__aniProps.shift();
-				removeProp.clearEasingFn();
-
-				// Callback should be called before aniProps.init()
-				if (userCallback && typeof userCallback === "function") {
-					userCallback.call(this);
-				}
-
-				// If next ani property exists
-				this.__aniProps[0] && this.__aniProps[0].init();
+				prepareNextAniProp(this);
 			};
 
 			//Queue animation property to recover the current animation.
@@ -213,10 +202,36 @@ eg.module("pauseResume", ["jQuery"], function($) {
 			//Remember current animation property
 			if (p = this.__aniProps[0]) {
 				p.elapsed += $.now() - p.start;
-				p.paused = true;
+
+				// Complement native timer's inaccuracy (complete timer can be different from your request.)
+				// (eg. your request:400ms -> real :396 ~ 415 ms ))
+				if (p.elapsed >= p.opt.duration) {
+					p = prepareNextAniProp(this);
+				}
+
+				p && (p.paused = true);
 			}
 		});
 	};
+
+	function prepareNextAniProp(el) {
+		var removeProp;
+		var userCallback;
+
+		// Dequeue animation property that was ended.
+		removeProp = el.__aniProps.shift();
+		removeProp.clearEasingFn();
+		userCallback = removeProp.opt.old;
+
+		// Callback should be called before aniProps.init()
+		if (userCallback && typeof userCallback === "function") {
+			userCallback.call(el);
+		}
+
+		// If next ani property exists
+		el.__aniProps[0] && el.__aniProps[0].init();
+		return el.__aniProps[0];
+	}
 
 	/**
 	 * Resumes the animation paused through a call to the pause() method.
