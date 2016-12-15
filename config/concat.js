@@ -39,7 +39,7 @@ module.exports = {
 			banner : "<%=banner.common %><%=banner.pkgd('eg.infiniteGrid') %><%=concat.pkgd_infiniteGrid.src.join('\\n* ')%>\n*/",
 			process: changeSrc
 		},
-		src : dependency.eg.concat(dependency.egCore, ["src/plugin/persist.js", "src/infiniteGrid.js"]),
+		src : dependency.eg.concat(["src/agent.js"], dependency.egCore, ["src/plugin/persist.js", "src/infiniteGrid.js"]),
 		dest : "dist/pkgd/infiniteGrid.pkgd.js"
 	}
 };
