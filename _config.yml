@@ -1,11 +1,9 @@
 # Site settings
 title: egjs
-latestVersion: 1.3.0
+latestVersion: 1.4.0
 # Build settings
 safe: true
 markdown: kramdown
-sass:
-  sass_dir: _sass
 exclude:
   - .gitignore
   - .grunt
