@@ -7,7 +7,7 @@
 * http://naver.github.io/egjs
 *
 * @version 1.4.1
-* @SHA-1 76fc44a (1.4.1-rc)
+* @SHA-1 e09d135 (1.4.1-rc)
 */
 "use strict";
 /**
