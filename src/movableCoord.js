@@ -8,7 +8,7 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 	"use strict";
 
 	var SUPPORT_TOUCH = "ontouchstart" in global;
-	var assignFn = ("assign" in HM) ? HM.assign : HM.merge;
+	var assignFn = HM.assign || HM.merge;
 
 	// jscs:enable maximumLineLength
 	/**
