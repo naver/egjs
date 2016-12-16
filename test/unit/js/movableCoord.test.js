@@ -1349,7 +1349,7 @@ QUnit.test("_convertInputType (not support touch)", function(assert) {
 QUnit.test("assignFn (using Hammer)", function(assert) {
 	// Given
 	var mockHammer = {
-		merge: function() {}
+		merge: $.noop
 	};
 
 	// When
@@ -1360,7 +1360,7 @@ QUnit.test("assignFn (using Hammer)", function(assert) {
 
 	// Given
 	mockHammer = {
-		assign: function() {}
+		assign: $.noop
 	};
 
 	// When
