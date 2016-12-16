@@ -1345,3 +1345,27 @@ QUnit.test("_convertInputType (not support touch)", function(assert) {
 	// Then
 	assert.equal(inst._convertInputType(inputType), null, "type is null(not supporting touch)");
 });
+
+QUnit.test("assignFn (using Hammer)", function(assert) {
+	// Given
+	var mockHammer = {
+		merge: function() {}
+	};
+
+	// When
+	var method = eg.invoke("movableCoord", [eg, null, mockHammer]);
+
+	// Then
+	assert.equal(!!method.assignFn, true, "using merge function");
+
+	// Given
+	mockHammer = {
+		assign: function() {}
+	};
+
+	// When
+	method = eg.invoke("movableCoord", [eg, null, mockHammer]);
+
+	// Then
+	assert.equal(!!method.assignFn, true, "using assign function");
+});

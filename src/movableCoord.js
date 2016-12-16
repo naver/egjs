@@ -8,6 +8,7 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 	"use strict";
 
 	var SUPPORT_TOUCH = "ontouchstart" in global;
+	var assignFn = ("assign" in HM) ? HM.assign : HM.merge;
 
 	// jscs:enable maximumLineLength
 	/**
@@ -59,7 +60,7 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 	 */
 	var MC = ns.MovableCoord = ns.Class.extend(ns.Component, {
 		construct: function(options) {
-			HM.assign(this.options = {
+			assignFn(this.options = {
 				min: [0, 0],
 				max: [100, 100],
 				bounce: [10, 10, 10, 10],
@@ -115,7 +116,7 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 				inputType: [ "touch", "mouse" ]
 			};
 
-			HM.assign(subOptions, options);
+			assignFn(subOptions, options);
 
 			var inputClass = this._convertInputType(subOptions.inputType);
 			if (!inputClass) {
@@ -880,6 +881,7 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 	MC.DIRECTION_ALL = MC.DIRECTION_HORIZONTAL | MC.DIRECTION_VERTICAL;
 
 	return {
-		"MovableCoord": ns.MovableCoord
+		"MovableCoord": ns.MovableCoord,
+		"assignFn": assignFn
 	};
 });
