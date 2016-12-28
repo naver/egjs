@@ -113,8 +113,8 @@ eg.module("component", [eg], function(ns) {
 			return !isCanceled;
 		},
 		/**
-		 * Fire event just one time.
-		 * @ko 이벤트가 한번만 발생한다.
+		 * Executed event just one time.
+		 * @ko 이벤트가 한번만 실행된다.
 		 * @method eg.Component#once
 		 * @param {eventName} eventName The name of the event to be attached <ko>등록할 이벤트의 이름</ko>
 		 * @param {Function} handlerToAttach The handler function of the event to be attached <ko>등록할 이벤트의 핸들러 함수</ko>

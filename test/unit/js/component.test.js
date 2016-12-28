@@ -431,3 +431,21 @@ test("should be support object type.",function(){
 	ok( callCount, 1);
 	ok( callCount2, 1);
 });
+
+test("should be recevied parameters",function(){
+	//Given
+	var callCount = 0, e, a = {"a":1}, b = {"b":1}, param1;
+	this.oClass.once("test",function(event, aa){
+		callCount++;
+		e = event;
+		param1 = aa;
+	});
+
+	//When
+	this.oClass.trigger("test", a, b);
+
+	//Then
+	equal(a.a, e.a);
+	ok(typeof e.stop === "function");
+	equal(b, param1);
+});
