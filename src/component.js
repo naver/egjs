@@ -113,6 +113,51 @@ eg.module("component", [eg], function(ns) {
 			return !isCanceled;
 		},
 		/**
+		 * Fire event just one time.
+		 * @ko 이벤트가 한번만 발생한다.
+		 * @method eg.Component#once
+		 * @param {eventName} eventName The name of the event to be attached <ko>등록할 이벤트의 이름</ko>
+		 * @param {Function} handlerToAttach The handler function of the event to be attached <ko>등록할 이벤트의 핸들러 함수</ko>
+		 * @return {eg.Component} An instance of a component itself<ko>컴포넌트 자신의 인스턴스</ko>
+		 * @example
+			var Some = eg.Class.extend(eg.Component,{
+				"hi": function(){
+					alert("hi");
+				},
+				"thing": function(){
+					this.once("hi",this.hi);
+				}
+			});
+
+			var some = new Some();
+			some.thing();
+			some.trigger("hi");
+			// fire alert("hi");
+			some.trigger("hi");
+			// Nothing happens
+		 */
+		once: function(eventName, handlerToAttach) {
+			if (typeof eventName === "object" &&
+			typeof handlerToAttach === "undefined") {
+				var eventHash = eventName;
+				var i;
+				for (i in eventHash) {
+					this.once(i, eventHash[i]);
+				}
+				return this;
+			} else if (typeof eventName === "string" &&
+				typeof handlerToAttach === "function") {
+				var self = this;
+				this.on(eventName, function listener() {
+					var arg = Array.prototype.slice.call(arguments);
+					handlerToAttach.apply(self, arg);
+					self.off(eventName, listener);
+				});
+			}
+
+			return this;
+		},
+		/**
 		 * Checks whether an event has been attached to a component.
 		 * @ko 컴포넌트에 이벤트가 등록됐는지 확인한다.
 		 * @method eg.Component#hasOn
