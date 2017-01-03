@@ -377,3 +377,75 @@ test("The error should not occur without initialization of options property in S
 	//Then
 	ok(result);
 });
+
+module("once method", {
+	setup : function(){
+		this.oClass = new TestClass({
+			"foo": 1,
+			"bar": 2
+		});
+	}
+});
+
+test("once method should be fire event one time.",function(){
+	//Given
+	var callCount = 0;
+	//When
+	this.oClass.once("test",function(){
+		callCount++;
+	});
+	this.oClass.trigger("test");
+	//Then
+	ok( callCount, 1);
+
+	//Given
+	//When
+	this.oClass.trigger("test");
+	//Then
+	ok( callCount, 1);
+});
+
+test("should be support object type.",function(){
+	//Given
+	var callCount = 0, callCount2 = 0;
+	//When
+	this.oClass.once({
+		"test": function(){
+			callCount++;
+		},
+		"test2": function(){
+			callCount2++;
+		}
+	});
+	this.oClass.trigger("test");
+	this.oClass.trigger("test2");
+	//Then
+	ok( callCount, 1);
+	ok( callCount2, 1);
+
+	//Given
+	//When
+	this.oClass.trigger("test");
+	this.oClass.trigger("test2");
+	//Then
+	ok( callCount, 1);
+	ok( callCount2, 1);
+});
+
+test("should be recevied parameters",function(){
+	//Given
+	var callCount = 0, e, a = {"a":1}, b = {"b":1}, param1;
+	this.oClass.once("test",function(event, aa){
+		callCount++;
+		e = event;
+		param1 = aa;
+	});
+
+	//When
+	this.oClass.trigger("test", a, b);
+
+	//Then
+	equal(a.a, e.a);
+	ok(typeof e.stop === "function");
+	equal(b, param1);
+});
