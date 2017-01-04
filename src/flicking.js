@@ -1354,7 +1354,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			}
 
 			this._conf.indexToMove = indexToMove;
-			this._setValueToMove(isPositive);
+			this._setValueToMove(indexToMove > 0);
 
 			this._movePanelByPhase(
 				circular ? "setBy" : "setTo",
