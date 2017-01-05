@@ -1337,22 +1337,18 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				return this;
 			}
 
-			if (circular) {
-				indexToMove = no - panel.no;
+			indexToMove = no - (circular ? panel.no : currentIndex);
+			isPositive = indexToMove > 0;
+
+			// check for real panel count which can be moved on each sides in circular mode
+			if (circular &&
+				Math.abs(indexToMove) >
+					(isPositive ? panel.count - (currentIndex + 1) : currentIndex)) {
+				indexToMove = indexToMove + (isPositive ? -1 : 1) * panel.count;
 				isPositive = indexToMove > 0;
-
-				// check for real panel count which can be moved on each sides
-				if (Math.abs(indexToMove) > (isPositive ?
-					panel.count - (currentIndex + 1) : currentIndex)) {
-					indexToMove = indexToMove + (isPositive ? -1 : 1) * panel.count;
-				}
-
-				this._setPanelNo({ no: no });
-			} else {
-				indexToMove = no - currentIndex;
-				this._setPanelNo({ index: no, no: no });
 			}
 
+			this._setPanelNo(circular ? { no: no } : { no: no, index: no });
 			this._conf.indexToMove = indexToMove;
 			this._setValueToMove(isPositive);
 
