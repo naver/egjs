@@ -945,6 +945,48 @@ QUnit.test("Check for functionality", function(assert) {
 	runTest(1,value);
 });
 
+QUnit.test("Check for the direction", function(assert) {
+	var el;
+	var inst;
+	var MC = eg.MovableCoord;
+
+	var setCondition = function(no) {
+		el = inst.$wrapper[0];
+
+		el.eventDirection = [];
+		inst.moveTo(no, 0);
+	};
+
+	var runTest = function(direction) {
+		var eventDirection = $.unique(el.eventDirection);
+		var strDirection = direction === MC.DIRECTION_LEFT ? "LEFT" : "RIGHT";
+
+		assert.equal(direction, eventDirection.length === 1 && eventDirection[0], "Panel moved to "+ strDirection +"?");
+	};
+
+	// non-circular
+	inst = this.create("#mflick1");
+	setCondition(1);
+	runTest(MC.DIRECTION_LEFT);
+
+	setCondition(0);
+	runTest(MC.DIRECTION_RIGHT);
+
+	// circular
+	inst = this.create("#mflick2", {
+		circular : true
+	});
+
+	setCondition(2);
+	runTest(MC.DIRECTION_RIGHT);
+
+	setCondition(0);
+	runTest(MC.DIRECTION_LEFT);
+
+	setCondition(1);
+	runTest(MC.DIRECTION_LEFT);
+});
+
 QUnit.test("Animation #1 - Default duration value", function(assert) {
 	var done = assert.async();
 
