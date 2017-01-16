@@ -232,6 +232,40 @@ var ua = [
         "isTransitional" : false,
         "_hasClickBug" : true
     },
+		{
+        // iPhone 10.0 - WKWebView
+        "device" : "iPhone 10.0 - WKWebView",
+        "ua" : "Mozilla/5.0 (iPhone; CPU iPhone OS 10_0_2 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) Mobile/14A456 NAVER(inapp; search; 560; 7.7.0; 7)",
+        "os" : {
+            "name" : "ios",
+            "version" : "10.0.2"
+        },
+        "browser" : {
+            "name" : "safari",
+            "version" : "-1",
+            "webview" : true
+        },
+        "isHWAccelerable" : true,
+        "isTransitional" : false,
+        "_hasClickBug" : true
+    },
+		{
+        // iPad 10.0 - WKWebView
+        "device" : "iPad 10.0 - WKWebView",
+        "ua" : "Mozilla/5.0 (iPad; CPU OS 10_0_2 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) Mobile/14A456 Version/5.1 Safari/7534.48.3 NAVER(inapp; search; 134; 7.7.0)",
+        "os" : {
+            "name" : "ios",
+            "version" : "10.0.2"
+        },
+        "browser" : {
+            "name" : "safari",
+            "version" : "-1",
+            "webview" : true
+        },
+        "isHWAccelerable" : true,
+        "isTransitional" : false,
+        "_hasClickBug" : true
+    },
 	{
 		// GalaxyS:2.1
 		"device" : "GalaxyS:2.1",
