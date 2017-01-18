@@ -233,6 +233,19 @@ eg.module("agent", [eg], function(ns) {
 		return ret;
 	}
 
+	/**
+	 * agent post processing
+	 */
+	function postProcess(agent) {
+		agent.browser.name = agent.browser.name.toLowerCase();
+		agent.os.name = agent.os.name.toLowerCase();
+
+		if (agent.os.name === "ios" && agent.browser.webview) {
+			agent.browser.version = "-1";
+		}
+		return agent;
+	}
+
 	ns.Agent = {
 		"create": function(useragent) {
 			this.ua = UA = useragent;
@@ -246,10 +259,7 @@ eg.module("agent", [eg], function(ns) {
 			agent.os.version = getOSVersion(agent.os.name);
 			agent.browser.webview = isWebview();
 
-			agent.browser.name = agent.browser.name.toLowerCase();
-			agent.os.name = agent.os.name.toLowerCase();
-
-			return agent;
+			return postProcess(agent);
 		}
 	};
 });
