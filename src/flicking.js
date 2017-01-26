@@ -791,10 +791,21 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var height;
 			var dataName = "data-height";
 
-			$panel = this[ "get" + (
+			var conf = this._conf;
+			var indexToMove = conf.indexToMove;
+
+			$panel = indexToMove === 0 ?
+
+				// panel moved by 1
+				this[ "get" + (
 					direction === MC.DIRECTION_LEFT && "Next" ||
 					direction === MC.DIRECTION_RIGHT && "Prev" || ""
-				) + "Element" ]();
+				) + "Element" ]() :
+
+				// panel moved by .moveTo()
+				conf.panel.$list.eq(
+					conf.panel.currIndex + indexToMove
+				);
 
 			$first = $panel.find(":first");
 			height = $first.attr(dataName);
