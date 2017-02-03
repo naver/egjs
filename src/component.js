@@ -30,7 +30,12 @@ eg.module("component", [eg], function(ns) {
 		 * @param {Object} [value] The option value that corresponds to a given key <ko>키에 해당하는 옵션값</ko>
 		 * @return {eg.Component|Object} An instance, an option value, or an option object of a component itself.<br>- If both key and value are used to set an option, it returns an instance of a component itself.<br>- If only a key is specified for the parameter, it returns the option value corresponding to a given key.<br>- If nothing is specified, it returns an option object. <ko>컴포넌트 자신의 인스턴스나 옵션값, 옵션 객체.<br>- 키와 값으로 옵션을 설정하면 컴포넌트 자신의 인스턴스를 반환한다.<br>- 파라미터에 키만 설정하면 키에 해당하는 옵션값을 반환한다.<br>- 파라미터에 아무것도 설정하지 않으면 옵션 객체를 반환한다.</ko>
 		 * @example
-			var Some = eg.Class.extend(eg.Component);
+			var Some = eg.Class.extend(eg.Component, {
+				construct: function(options){
+					this.options = options; // You have to set this.options.
+				}
+			});
+
 			var some = new Some({
 				"foo": 1,
 				"bar": 2,
