@@ -458,17 +458,22 @@ QUnit.test("hwAccelerable", function(assert) {
 QUnit.test("adaptiveHeight", function(assert) {
 	// Given
 	var inst = this.create("#mflick4", {
-		adaptiveHeight: true,
-		circular: true
+		adaptiveHeight: true
 	});
 
 	// Then
-	for (var i = 0; i < inst._conf.panel.count; i++) {
+	for (var i = 0; i < inst._conf.panel.count-1; i++) {
 		var panelHeight = inst.getElement().outerHeight(true);
 		assert.ok(panelHeight === inst.$container.height(), "Should update container's height according to each panel's height");
 		inst.next(0);
 		assert.ok(panelHeight === Number(inst.getPrevElement().children(':first').attr('data-height')), "Should cache each panel's height to first element");
 	}
+
+	// When
+	inst.moveTo(0,0);
+
+	// Then
+	assert.ok(inst.$container.height() === Number(inst.getElement().children(':first').attr('data-height')), "The container's height should be updated");
 });
 
 QUnit.test("thresholdAngle", function(assert) {
