@@ -169,11 +169,11 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		_setConfig: function($children, _prefix) {
 			var options = this.options;
 			var padding = options.previewPadding;
-			var $first = $children.eq(0);
+			var $container = $children.filter("." + options.prefix + "-container:first");
 
-			if ($first.hasClass(options.prefix + "-container")) {
-				this.$container = $first;
-				$children = $first.children();
+			if ($container.length) {
+				this.$container = $container;
+				$children = $container.children();
 			}
 
 			// config value
