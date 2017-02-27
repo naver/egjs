@@ -32,10 +32,11 @@ border:0;
 }
 
 ul,ol {
-list-style:none;
+  list-style:none;
 }
 li {
-  width : 30%;
+  width : 33%;
+  height : 100px;
 
 }
 
@@ -43,6 +44,7 @@ li div {
     margin:10px;
     border:1px solid red;
     background-color:#eee;
+    height: calc(100% - 20px);
 }
 
 li.append {
@@ -117,6 +119,11 @@ var oinst = $inst.infiniteGrid("instance");
 var HTML = '<li class="item"><div>테스트1</div></li><li class="item"><div>테스트2</div></li><li class="item"><div>테스트3</div></li><li class="item"><div>테스트4</div></li><li class="item"><div>테스트5</div></li><li class="item"><div>테스트6</div></li><li class="item"><div>테스트7</div></li>';
 
 var tmpStatus = {};
+
+$("#grid").click(function(e) {
+  var $el = $(e.target);
+  console.log(oinst.remove(e.target.parentNode));
+});
 
 $("#controler").click(function(e) {
   var $el = $(e.target),
