@@ -183,7 +183,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		/**
 		 * Returns the current state of a module such as location information. You can use the setStatus() method to restore the information returned through a call to this method.
 		 * @ko 카드의 위치 정보 등 모듈의 현재 상태 정보를 반환한다. 이 메서드가 반환한 정보를 저장해 두었다가 setStatus() 메서드로 복원할 수 있다
-		 * @method eg.InfiniteGrid#getStatue
+		 * @method eg.InfiniteGrid#getStatus
 		 * @return {Object} State object of the eg.InfiniteGrid module<ko>eg.InfiniteGrid 모듈의 상태 객체</ko>
 		 */
 		getStatus: function() {
