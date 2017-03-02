@@ -5,6 +5,8 @@
 
 // jscs:disable validateLineBreaks, maximumLineLength
 eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, global, doc) {
+	var APPEND = BOTTOM = true;
+	var PREPEND = TOP = false;
 	"use strict";
 
 	/**
@@ -150,6 +152,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 						 * @param {Number} param.scrollTop Current vertical position of the scroll bar<ko>현재 스크롤의 y 좌표 값</ko>
 						 */
 						var croppedDistance = this.fit();
+						console.log("prepend", croppedDistance);
 						if (croppedDistance > 0) {
 							scrollTop -= croppedDistance;
 							this.$view.scrollTop(scrollTop);
@@ -266,48 +269,77 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		 */
 		layout: function(isRelayout, addItems, isAppend) {
 			isRelayout = typeof isRelayout === "undefined" ? true : isRelayout;
-			isAppend = typeof isAppend === "undefined" ? true : isAppend;
-			if (this.items.length || addItems) {
-				this._waitResource(isRelayout, addItems, isAppend);
+			isAppend = typeof isAppend === "undefined" ? APPEND : isAppend;
+
+			// for except case.
+			if (!addItems && !isAppend) {
+				isAppend = APPEND;
 			}
+			this._waitResource(isRelayout, addItems, isAppend);
 			return this;
 		},
 		_layoutComplete: function(isRelayout, addItems, isAppend) {
-			if (isRelayout) {
-				var item = null;
-				if(!this.items.length) {
-					item = addItems && addItems[0];
-					$.each(addItems, function(i, v) {
-						v.el.style.position = "absolute";
-					});
-					this.items = this.items.concat(addItems);
-				}
-				this._resetCols(this._measureColumns(item));
+			var isInit = !this.items.length;
+			
+			// insert items
+			if (addItems && isAppend) {
+				// this.items = isAppend ? this.items.concat(addItems) : addItems.reverse().concat(this.items);
+				this.items = this.items.concat(addItems);
+			}
+
+			if (isInit) {
+				$.each(addItems, function(i, v) {
+					v.el.style.position = "absolute";
+				});
+			}
+
+			if (isInit || isRelayout) {
+				this._resetCols(this._measureColumns());
 			} else {
 				if (!addItems) {
 					this._appendCols = this._prependCols.concat();
 				}
-				
 			}
 			this._layoutItems(isRelayout, addItems, isAppend);
 			this._postLayout(isRelayout, addItems, isAppend);
+			console.debug("*****:", this.el.children.length, this.items.length);
 		},
 		_layoutItems: function(isRelayout, addItems, isAppend) {
 			var self = this;
-			
+			var items = addItems || this.items;
+
+			$.each(items, function(i, v) {
+				v.position = self._getItemLayoutPosition(isRelayout, v, isAppend);
+			});
+			if (addItems && !isAppend) {
+				// addItems = addItems.sort(function(p, c) {
+				// 	return p.position.y > c.position.y;
+				// });
+				this.items = addItems.sort(function(p, c) {
+					return p.position.y > c.position.y;
+				}).concat(this.items);
+				
+				var y = this._getTopPositonY();
+				if (y !== 0) {
+					items = this.items;
+					$.each(items, function(i, v) {
+						var before=  v.position.y;
+						v.position.y -= y;
+						console.log(i, "y:", before, "=>", v.position.y);
+					});
+					this._syncCols(TOP);
+					this._syncCols(BOTTOM);
+				} 
+			}
+
 			// for performance
-			$.each(
-				$.map(addItems || this.items, function(v) {
-					v.position = self._getItemLayoutPosition(isRelayout, v, isAppend);
-					return v;
-				}),
-				function(i, v) {
-					if (v.el) {
-						var style = v.el.style;
-						style.left = v.position.x + "px";
-						style.top = v.position.y + "px";
-					}
-				});
+			$.each(items, function(i, v) {
+				if (v.el) {
+					var style = v.el.style;
+					style.left = v.position.x + "px";
+					style.top = v.position.y + "px";
+				}
+			});
 		},
 		/**
 		 * Adds a card element at the bottom of a grid layout. This method is available only if the isProcessing() method returns false.
@@ -330,7 +362,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				this._isRecycling =
 				(this.items.length + $elements.length) >= this.options.count;
 			}
-			this._insert($elements, groupKey, true);
+			this._insert($elements, groupKey, APPEND);
 			return $elements.length;
 		},
 		/**
@@ -351,11 +383,12 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			$elements = $($elements);
 
 			this._isProcessing = true;
-			this._fit();
+			console.error("prepend", $elements.length);
+			// this._fit();
 			if ($elements.length > this._removedContent) {
 				$elements = $elements.slice(0, this._removedContent);
 			}
-			this._insert($elements, groupKey, false);
+			this._insert($elements, groupKey, PREPEND);
 			return $elements.length;
 		},
 		/**
@@ -386,13 +419,25 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		_getTopItem: function() {
 			var item = null;
 			var min = Infinity;
-			$.each(this._getColItems(false), function(i, v) {
+			// $.each(this._getColItems(TOP), function(i, v) {
+			// 	if (v && v.position.y < min) {
+			// 		min = v.position.y;
+			// 		item = v;
+			// 	}
+			// });
+			$.each(this.items, function(i, v) {
 				if (v && v.position.y < min) {
 					min = v.position.y;
 					item = v;
 				}
 			});
+
 			return item;
+		},
+
+		_getTopPositonY: function() {
+			var item = this._getTopItem();
+			return item ? item.position.y : 0;
 		},
 
 		/**
@@ -405,7 +450,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		getBottomElement: function() {
 			var item = null;
 			var max = -Infinity;
-			$.each(this._getColItems(true), function(i, v) {
+			$.each(this._getColItems(BOTTOM), function(i, v) {
 				if (v && v.position.y + v.size.height > max) {
 					max = v.position.y + v.size.height;
 					item = v;
@@ -427,10 +472,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			this._bottomElement = this.getBottomElement();
 
 			var distance = 0;
-			console.log("post", isRelayout, isAppend);
 			if (!isAppend) {
-				this._isFitted = false;
-				this._fit(true);
 				distance = addItems.length >= this.items.length ?
 					0 : this.items[addItems.length].position.y;
 				if (distance > 0) {
@@ -474,17 +516,15 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				v.style.position = "absolute";
 				v.style.top = dummy;
 			});
-			var items = this._itemize(elements, groupKey, isAppend);
-			if (isAppend) {
-				this.items = this.items.concat(items);
-			} else {
-				this.items = items.concat(this.items);
-				items = items.reverse();
-			}
+			console.info("insert before", isAppend, $cloneElements.length);
 			this.isRecycling() && this._adjustRange(isAppend, $cloneElements);
 			
+			console.info("insert", isAppend, $cloneElements.length);
+			console.info("insert before el", this.el.children.length);
+			// prepare HTML
 			this.$el[isAppend ? "append" : "prepend"]($cloneElements);
-			this.layout(false, items, isAppend);
+			console.info("insert el", this.el.children.length);
+			this.layout(false, this._itemize($cloneElements, groupKey, isAppend), isAppend);
 		},
 		_waitResource: function(isRelayout, addItems, isAppend) {
 			this._isProcessing = true;
@@ -504,7 +544,12 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		},
 		
 		_adjustRange: function (isTop, $elements) {
-			var diff = this.items.length - this.options.count;
+			// trim $elements
+			if (this.options.count <= $elements.length) {
+				this._removedContent += isTop ? $elements.splice(0, $elements.length - this.options.count).length
+					: -$elements.splice(this.options.count).length
+			}
+			var diff = this.items.length + $elements.length - this.options.count;
 			var targets;
 			var idx;
 			if (diff <= 0 || (idx = this._getDelimiterIndex(isTop, diff)) < 0) {
@@ -512,13 +557,9 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			}
 			if (isTop) {
 				targets = this.items.splice(0, idx);
-				for (var i = 0, x, len = targets.length; i<len; i++) {
-					x = targets[i].position.x / this._columnWidth;
-					this._prependCols[x] = Math.max(this._prependCols[x], targets[i].position.y + targets[i].size.height);
-				}
-				this._isFitted = false;
+				this._syncCols(TOP);
 			} else {
-				targets = this.items.splice(idx, this.items.length - idx);
+				targets = idx === this.items.length ? this.items.splice(0) : this.items.splice(idx, this.items.length - idx);
 			}
 
 			// @todo improve performance
@@ -527,19 +568,23 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				if (idx !== -1) {
 					$elements.splice(idx, 1);
 				} else {
+					console.info("******* 삭제ㅠㅠㅠ");
 					v.el.parentNode.removeChild(v.el);
 				}
 			});
 			this._removedContent += isTop ? targets.length : -targets.length;
-			console.log(this._removedContent)
 		},
 		_getDelimiterIndex: function(isTop, removeCount) {
 			var len = this.items.length;
+			if (len === removeCount) {
+				return len;
+			}
 			var i;
 			var idx = 0;
 			var baseIdx = isTop ? removeCount - 1 : len - removeCount;
 			var targetIdx = baseIdx + (isTop ? 1 : -1);
 			var groupKey = this.items[baseIdx].groupKey;
+			console.log(groupKey, targetIdx);
 			if (groupKey != null && groupKey === this.items[targetIdx].groupKey) {
 				if (isTop) {
 					for (i = baseIdx; i > 0; i--) {
@@ -567,25 +612,22 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			// for caching
 			if (this.options.count <= 0) {
 				this._fit = function() {
-					return false;
+					return 0;
 				};
-				this._isFitted = true;
-				return false;
+				return 0;
 			}
-
-			if (this._isFitted) {
-				return false;
+			var y = this._getTopPositonY();
+			if (y !== 0) {
+				// need to fit
+				$.each(this.items, function(i, v) {
+					v.position.y -= y;
+					applyDom && (v.el.style.top = v.position.y + "px");
+				});
+				applyDom && (this.el.style.height = this._getContainerSize().height + "px");
+				this._syncCols(TOP);	// for prepending
+				this._syncCols(BOTTOM);	// for appending
 			}
-			var y = this._updateCols();	// for prepend
-			$.each(this.items, function(i, v) {
-				v.position.y -= y;
-				applyDom && (v.el.style.top = v.position.y + "px");
-			});
-			this._updateCols(true);	// for append
-			var height = this._getContainerSize().height;
-			applyDom && (this.el.style.height = height + "px");
-			this._isFitted = true;
-			return true;
+			return y;
 		},
 
 		/**
@@ -596,16 +638,13 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		* @return {Number} Actual length of space removed (unit: px) <ko>빈 공간이 제거된 실제 길이(단위: px)</ko>
 		*/
 		fit: function() {
-			var item = this._getTopItem();
-			var distance = item ? item.position.y : 0;
-			this._fit(true);
-			return distance;
+			return this._fit(true);
 		},
+
 		_reset: function() {
 			this._isProcessing = false;
 			this._topElement = null;
 			this._bottomElement = null;
-			this._isFitted = true;
 			this._isRecycling = false;
 			this._removedContent = 0;
 			this._prevScrollTop = 0;
@@ -642,16 +681,15 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				$el.on("load error", onCheck);
 			});
 		},
-		_measureColumns: function(item) {
+		_measureColumns: function() {
 			this.el.style.width = null;
 			this._containerWidth = this.$el.innerWidth();
-			this._columnWidth = this._getColumnWidth(item) || this._containerWidth;
+			this._columnWidth = this._getColumnWidth() || this._containerWidth;
 			var cols = this._containerWidth / this._columnWidth;
 			var excess = this._columnWidth - this._containerWidth % this._columnWidth;
 
 			// if overshoot is less than a pixel, round up, otherwise floor it
 			cols = Math.max(Math[ excess && excess <= 1 ? "round" : "floor" ](cols), 1);
-			console.warn(cols);
 			return cols || 0;
 		},
 		_resetCols: function(count) {
@@ -669,9 +707,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				width: this._containerWidth
 			};
 		},
-		_getColumnWidth: function(item) {
-			item = item || this.items[0];
-			var el =  item && item.el;
+		_getColumnWidth: function() {
+			var el =  this.items[0] && this.items[0].el;
 			var width = 0;
 			if (el) {
 				var $el = $(el);
@@ -685,37 +722,26 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			}
 			return width;
 		},
-		_updateCols: function(isAppend) {
-			var col = isAppend ? this._appendCols : this._prependCols;
-			var items = this._getColItems(isAppend);
-			var base = this._isFitted || isAppend ? 0 : this._getMinY(items);
-			var i = 0;
-			var len = col.length;
-			var item;
-			for (; i < len; i++) {
-				if (item = items[i]) {
-					col[i] = item.position.y + (isAppend ? item.size.height : -base);
-				} else {
-					col[i] = 0;
-				}
+		_syncCols: function(isBottom) {
+			if (!this.items.length) {
+				return;
 			}
-			return base;
-		},
-		_getMinY: function(items) {
-			return Math.min.apply(Math, $.map(items, function(v) {
-				return v ? v.position.y : 0;
-			}));
+			var items = this._getColItems(isBottom);
+			var col = isBottom ? this._appendCols : this._prependCols;
+			for(var i=0, len = col.length; i<len; i++) {
+				col[i] = items[i].position.y + (isBottom ? items[i].size.height : 0);
+			}
 		},
 		_getColIdx: function(item) {
 			return parseInt(item.position.x / parseInt(this._columnWidth, 10), 10);
 		},
-		_getColItems: function(isTail) {
+		_getColItems: function(isBottom) {
 			var len = this._appendCols.length;
 			var colItems = new Array(len);
 			var item;
 			var idx;
 			var count = 0;
-			var i = isTail ? this.items.length - 1 : 0;
+			var i = isBottom ? this.items.length - 1 : 0;
 			while (item = this.items[i]) {
 				idx = this._getColIdx(item);
 				if (!colItems[idx]) {
@@ -724,7 +750,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 						return colItems;
 					}
 				}
-				i += isTail ? -1 : 1;
+				i += isBottom ? -1 : 1;
 			}
 			return colItems;
 		},
@@ -736,24 +762,18 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 						x: 0,
 						y: 0
 					},
-					// isAppend: typeof isAppend === "undefined" ? true : isAppend,
 					groupKey: typeof groupKey === "undefined" ? null : groupKey
 				};
 			});
 		},
-		_getLayoutPositions: function(item, isRelayout) {
-
-		},
 		_getItemLayoutPosition: function(isRelayout, item, isAppend) {
-			if (!item.el) {
+			if (!item || !item.el) {
 				return;
 			}
 			var $el = $(item.el);
 			if (isRelayout || !item.size) {
 				item.size = this._getItemSize($el);
 			}
-			// var isAppend = isRelayout || item.isAppend;
-			console.warn(isAppend);
 			var cols = isAppend ? this._appendCols : this._prependCols;
 			var y = Math[isAppend ? "min" : "max"].apply(Math, cols);
 			var shortColIndex;
