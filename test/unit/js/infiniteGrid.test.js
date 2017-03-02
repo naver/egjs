@@ -54,7 +54,6 @@ QUnit.test("check a append after a initialization (there aren't children)", func
 	// Given
 	var done = assert.async();
 	var $el = getContent("append");
-	console.log($el);
 	this.inst = new eg.InfiniteGrid("#nochildren_grid");
 	// When
 	assert.equal(this.inst.isProcessing(), false, "idel");
@@ -205,11 +204,9 @@ QUnit.test("check a prepend module", function(assert) {
 
 	// When
 	this.inst.on("layoutComplete",function(e) {
-		console.log("layoutComplete");
 		// When
 		this.off();
 		this.on("layoutComplete",function(e) {
-			console.log(e);
 			beforeItem = this.items[e.target.length];
 			assert.equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
 			assert.equal(e.isAppend, false, "prepend type");
@@ -340,9 +337,6 @@ QUnit.test("check item/element order and check removed parts", function(assert) 
 			var self = this;
 			this.$el.children().slice(0,e.target.length).each( function(i, v) {
 				assert.equal($(v).data("prepend-index"), i, "check element order " + i);
-				console.log(i, $(v).data("prepend-index"), $(v).css("left"), $(v).css("top"));
-				console.info(i, $(self.items[i].el).data("prepend-index"), $(self.items[i].el).css("left"), $(self.items[i].el).css("top"));
-				// assert.deepEqual(self.items[i].el, v, "check item order");
 			});
 			assert.equal(e.isAppend, false, "prepend type");
 			done();

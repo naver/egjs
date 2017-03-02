@@ -152,7 +152,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 						 * @param {Number} param.scrollTop Current vertical position of the scroll bar<ko>현재 스크롤의 y 좌표 값</ko>
 						 */
 						var croppedDistance = this.fit();
-						console.log("prepend", croppedDistance);
 						if (croppedDistance > 0) {
 							scrollTop -= croppedDistance;
 							this.$view.scrollTop(scrollTop);
@@ -275,7 +274,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			if (!addItems && !isAppend) {
 				isAppend = APPEND;
 			}
-			this._waitResource(isRelayout, addItems, isAppend);
+			this._waitResource(isRelayout, isAppend ? addItems : addItems.reverse(), isAppend);
 			return this;
 		},
 		_layoutComplete: function(isRelayout, addItems, isAppend) {
@@ -283,7 +282,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			
 			// insert items
 			if (addItems && isAppend) {
-				// this.items = isAppend ? this.items.concat(addItems) : addItems.reverse().concat(this.items);
 				this.items = this.items.concat(addItems);
 			}
 
@@ -302,7 +300,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			}
 			this._layoutItems(isRelayout, addItems, isAppend);
 			this._postLayout(isRelayout, addItems, isAppend);
-			console.debug("*****:", this.el.children.length, this.items.length);
 		},
 		_layoutItems: function(isRelayout, addItems, isAppend) {
 			var self = this;
@@ -323,9 +320,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				if (y !== 0) {
 					items = this.items;
 					$.each(items, function(i, v) {
-						var before=  v.position.y;
 						v.position.y -= y;
-						console.log(i, "y:", before, "=>", v.position.y);
 					});
 					this._syncCols(TOP);
 					this._syncCols(BOTTOM);
@@ -383,8 +378,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			$elements = $($elements);
 
 			this._isProcessing = true;
-			console.error("prepend", $elements.length);
-			// this._fit();
 			if ($elements.length > this._removedContent) {
 				$elements = $elements.slice(0, this._removedContent);
 			}
@@ -516,14 +509,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				v.style.position = "absolute";
 				v.style.top = dummy;
 			});
-			console.info("insert before", isAppend, $cloneElements.length);
 			this.isRecycling() && this._adjustRange(isAppend, $cloneElements);
 			
-			console.info("insert", isAppend, $cloneElements.length);
-			console.info("insert before el", this.el.children.length);
 			// prepare HTML
 			this.$el[isAppend ? "append" : "prepend"]($cloneElements);
-			console.info("insert el", this.el.children.length);
 			this.layout(false, this._itemize($cloneElements, groupKey, isAppend), isAppend);
 		},
 		_waitResource: function(isRelayout, addItems, isAppend) {
@@ -568,7 +557,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				if (idx !== -1) {
 					$elements.splice(idx, 1);
 				} else {
-					console.info("******* 삭제ㅠㅠㅠ");
 					v.el.parentNode.removeChild(v.el);
 				}
 			});
@@ -584,7 +572,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			var baseIdx = isTop ? removeCount - 1 : len - removeCount;
 			var targetIdx = baseIdx + (isTop ? 1 : -1);
 			var groupKey = this.items[baseIdx].groupKey;
-			console.log(groupKey, targetIdx);
 			if (groupKey != null && groupKey === this.items[targetIdx].groupKey) {
 				if (isTop) {
 					for (i = baseIdx; i > 0; i--) {
