@@ -84,6 +84,7 @@ QUnit.test("Check for the initialization", function(assert) {
 
 	// https://github.com/naver/egjs/issues/216
 	var $container = $("#mflick1-1 > :first-child").attr("id", "container");
+	var panelCount = $container.children().size();
 	var inst3 = this.create("#mflick1-1");
 
 	// Then
@@ -100,6 +101,7 @@ QUnit.test("Check for the initialization", function(assert) {
 	assert.equal(inst2._conf.panel.size, inst2._conf.panel.$list.outerHeight(), "The panel should maintain same height as wrapper element.");
 
 	assert.equal($container.attr("id"), inst3.$container.attr("id"), "The given DOM is used as container element?");
+	assert.equal(panelCount, inst3._conf.panel.$list.length, "The panels are taken properly referenced?");
 });
 
 QUnit.module("Setting options", hooks);
