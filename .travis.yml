@@ -3,7 +3,9 @@ node_js:
   - "6"
 before_install:
   - npm install -g grunt-cli
+  - npm install -g bower
 install:
+  - bower install
   - npm install
 after_success:
   - npm install codeclimate-test-reporter
