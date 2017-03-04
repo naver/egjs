@@ -328,6 +328,36 @@ QUnit.test("check a count of remove contents", function(assert) {
 QUnit.test("check item/element order and check removed parts", function(assert) {
 	var done = assert.async();
 
+	function getUniqueX(target) {
+		var temp = {};
+		var x = $(target).map(function(i, v) {
+			return v.position.x;	
+		}).each(function(i, v) {
+			if (!(v in temp)) {
+				temp[v] = v;
+			} 
+		});
+		
+		var ret = [];
+		for(var p in temp) {
+			ret.push(p);
+		}
+		return ret;
+	}
+
+	function getGroups(target) {
+		var x = getUniqueX(target);
+		var group = {};
+		$.each(x, function(i, v) {
+			group[v] = $.grep(target, function(gv) {
+				return gv.position.x === ~~v;
+			}).sort(function(p, c) {
+				return p.position.y - c.position.y;
+			});
+		});
+		return group;
+	}
+
 	//When
 	this.inst.on("layoutComplete",function(e) {
 		this.off();
@@ -338,6 +368,15 @@ QUnit.test("check item/element order and check removed parts", function(assert) 
 			this.$el.children().slice(0,e.target.length).each( function(i, v) {
 				assert.equal($(v).data("prepend-index"), i, "check element order " + i);
 			});
+			var groups = getGroups(e.target);
+			for(var p in groups) {
+				$.each(groups[p], function(i, v) {
+					if (i > 0) {
+						assert.ok(v.position.y >=  groups[p][i-1].position.y, "it's greater than or equal to previous value");
+						assert.ok($(v.el).data("prepend-index") >=  $(groups[p][i-1].el).data("prepend-index"), "it's greater than or equal to previous value (data)");
+					}
+				})
+			}
 			assert.equal(e.isAppend, false, "prepend type");
 			done();
 		});
@@ -825,7 +864,6 @@ QUnit.test("if width is not changed, layout should be not called on resize event
 });
 
 
-
 QUnit.module("infiniteGrid private method Test", {
 	beforeEach : function() {
 		this.fakeWnd = {
@@ -857,4 +895,80 @@ QUnit.test("check _refreshViewport method", function(assert) {
 
 	// Then
 	assert.equal(inst._clientHeight, 200, "height is changed");
+});
+
+
+QUnit.module("infiniteGrid layout(false) Test", {
+	beforeEach : function() {
+		this.inst = new eg.InfiniteGrid("#nochildren_grid", {
+			"count" : 30
+		});
+	},
+	afterEach : function() {
+		if(this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
+	}
+});
+
+QUnit.test("check a remove module", function(assert) {
+	var done = assert.async();
+	var beforePrependCols = null;
+	var beforePosition = null;
+	function getItem(items, position) {
+		return $.grep(items, function(v) {
+			return v.position.x === position.x && v.position.y === position.y;
+		});
+	}
+
+	// Given
+	// When
+	this.inst.on("layoutComplete",function(e) {
+		$.each(this._prependCols, function(i, v) {
+			assert.ok(v === 0, "prependCols values are zero");
+		});
+
+		this.off();
+		this.on("layoutComplete",function(e) {
+			// Given
+			beforePrependCols = this._prependCols.concat();
+			$.each(this._prependCols, function(i, v) {
+				assert.ok(v !== 0, "prependCols values aren't zero");
+			});
+
+			beforePosition = e.target[5].position;
+			var beforeItemLen = this.items.length;
+			var beforeElementLen = this.el.children.length;
+			var ret = getItem(this.items, beforePosition);
+			assert.equal(ret.length, 1, "only one");
+			
+			// When 
+			this.remove(e.target[5].el);
+			
+			// Then 
+			ret = getItem(this.items, beforePosition);
+			assert.equal(ret.length, 0, "nothing");
+			assert.equal(this.items.length, beforeItemLen-1, "remove items");
+			assert.equal(this.el.children.length, beforeElementLen-1, "remove DOM");
+
+			this.off();
+			this.on("layoutComplete",function(e) {
+				beforePrependCols = this._prependCols.concat();
+				$.each(this._prependCols, function(i, v) {
+					assert.equal(v, beforePrependCols[i], "equal before PrependCols");
+				});
+				// Then
+				var ret = getItem(this.items, beforePosition);
+				assert.equal(ret.length, 1, "relayout items");
+				done();
+			});
+			// Then
+			this.layout(false);
+		});
+		this.append(getContent("append", 25));	
+	});
+
+	// Then
+	this.inst.append(getContent("append", 25));
 });

@@ -79,7 +79,8 @@ li.prepend {
   <button class="append">append</button>
   <button class="prepend">prepend</button>
   <button class="fit">fit</button>
-  <button class="layout">layout</button><br>
+  <button class="layout">layout()</button><br>
+  <button class="layout_false">layout(false)</button><br>
   <button class="clear">clear</button>
   <button class="getStatus">getStatus</button>
   <button class="setStatus">setStatus</button><br>
@@ -88,22 +89,22 @@ li.prepend {
 </div>
   <ul id="grid">
     <li class="item">
-      <div>테스트1</div>
+      <div>test1</div>
     </li>
     <li class="item">
-      <div>테스트2</div>
+      <div>test2</div>
     </li>
     <li class="item">
-      <div>테스트3</div>
+      <div>test3</div>
     </li>
     <li class="item">
-      <div>테스트4</div>
+      <div>test4</div>
     </li>
     <li class="item">
-      <div>테스트5</div>
+      <div>test5</div>
     </li>
     <li class="item">
-      <div>테스트6</div>
+      <div>test6</div>
     </li>
   </ul>
 <script>
@@ -127,13 +128,13 @@ var $inst = $("#grid").infiniteGrid({
 
 var oinst = $inst.infiniteGrid("instance");
 
-var HTML = '<li class="item"><div>테스트1</div></li><li class="item"><div>테스트2</div></li><li class="item"><div>테스트3</div></li><li class="item"><div>테스트4</div></li><li class="item"><div>테스트5</div></li><li class="item"><div>테스트6</div></li><li class="item"><div>테스트7</div></li>';
+var HTML = '<li class="item"><div>test1</div></li><li class="item"><div>test2</div></li><li class="item"><div>test3</div></li><li class="item"><div>test4</div></li><li class="item"><div>test5</div></li><li class="item"><div>test6</div></li><li class="item"><div>test7</div></li>';
 
 var tmpStatus = {};
 
 $("#grid").click(function(e) {
   var $el = $(e.target);
-  console.log(oinst.remove(e.target.parentNode));
+  oinst.remove(e.target.parentNode);
 });
 
 $("#controler").click(function(e) {
@@ -157,6 +158,8 @@ $("#controler").click(function(e) {
     oinst.fit();
   } else if ($el.hasClass("layout")) {
     oinst.layout();
+  } else if ($el.hasClass("layout_false")) {
+    oinst.layout(false);
   } else if ($el.hasClass("clear")) {
     oinst.clear();
   } else if ($el.hasClass("getStatus")) {
