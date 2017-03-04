@@ -261,7 +261,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		 * Rearranges a layout.
 		 * @ko 레이아웃을 다시 배치한다.
 		 * @method eg.InfiniteGrid#layout
-		 * @param {Boolean} [isRelayout=true]
+		 * @param {Boolean} [isRelayout=true] Indicates whether a card element is being relayouted <ko>카드 엘리먼트 재배치 여부</ko>
 		 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 		 */
 		layout: function(isRelayout, addItems, isAppend) {
