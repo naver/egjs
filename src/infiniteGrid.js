@@ -549,9 +549,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				this._syncCols(true);	// for appending;
 			}
 
-			// console.log("sync", "<---", this._prependCols);
-			// console.log("sync", "--->", this._appendCols);
-
 			// @todo improve performance
 			$.each(targets, function(i, v) {
 				idx = $elements.index(v.el);
