@@ -488,15 +488,15 @@ QUnit.test("restore status", function(assert) {
 			assert.deepEqual(v.size, beforeStatus.items[i].size,"check html and size information");
 			$el = $(v.el);
 			assert.deepEqual(v.position, {
-				"x" : parseInt($el.css("left"),10),
-				"y" : parseInt($el.css("top"),10)
-			}, "check html and position information");
+				"x" : parseInt(v.el.style.left, 10),
+				"y" : parseInt(v.el.style.top, 10)
+			}, "check html and position information-3");
 		});
 		assert.deepEqual(infinite.options, beforeStatus.options, "check options info");
 		for(var v in beforeStatus.prop) {
 			assert.equal(infinite[v], beforeStatus.prop[v], "check infiniteGrid properties " + v);
 		};
-		infinite.destroy();
+		// infinite.destroy();
 		done();
 	});
 
