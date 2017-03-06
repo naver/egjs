@@ -113,7 +113,9 @@ QUnit.test("check a append module", function(assert) {
 	// Given
 	var done = assert.async();
 	var addCount = 0,
-		itemsCount = 0;
+		itemsCount = 0,
+		beforeTotalCroppedCount = 0,
+		totalCroppedCount = 0;
 
 	// When
 	this.inst.on("layoutComplete",function(e) {
@@ -123,12 +125,15 @@ QUnit.test("check a append module", function(assert) {
 		assert.equal(e.distance, 0, "check distance");
 		itemsCount += e.target.length;
 		if(this.isRecycling()) {
+			totalCroppedCount = itemsCount - this.items.length;
 			assert.equal(this.items.length, this.options.count, "a number of elements are always 18");
-			assert.equal(e.croppedCount, itemsCount-this.options.count, "check croppedCount");
+			assert.equal(e.croppedCount, totalCroppedCount - beforeTotalCroppedCount, "check croppedCount");
 		} else {
 			assert.equal(itemsCount, this.items.length, "item added " + e.target.length);
 		}
 		assert.equal(this.el.children.length, this.items.length, "a number of elements(DOM) -> " + this.items.length);
+		beforeTotalCroppedCount = totalCroppedCount;
+
 		if(addCount++ < 10) {
 			this.append(getContent("append",5));
 		} else {
@@ -146,7 +151,9 @@ QUnit.test("check a append module with groupkey", function(assert) {
 	var addCount = 0,
 		groupkey = 0,
 		itemsCount = 0,
-		group = {};
+		group = {},
+		beforeTotalCroppedCount = 0,
+		totalCroppedCount = 0;
 
 	// When
 	this.inst.on("layoutComplete",function(e) {
@@ -161,12 +168,14 @@ QUnit.test("check a append module with groupkey", function(assert) {
 			for(var i=groupKeys[0]; i<=groupKeys[groupKeys.length-1]; i++) {
 				total += group[i];
 			}
+			totalCroppedCount = itemsCount - this.items.length;
 			assert.equal(this.items.length, total, "a number of elements are " + total);
-			assert.equal(e.croppedCount, itemsCount-this.items.length, "check croppedCount");
+			assert.equal(e.croppedCount, totalCroppedCount - beforeTotalCroppedCount, "check croppedCount");
 		} else {
 			assert.equal(itemsCount, this.items.length, "** item added " + e.target.length);
 		}
 		assert.equal(this.el.children.length, this.items.length, "a number of elements(DOM) -> " + this.items.length);
+		beforeTotalCroppedCount = totalCroppedCount;
 		if(addCount++ < 10) {
 			this.append(getContent("append"), ++groupkey);
 		} else {
@@ -197,8 +206,6 @@ QUnit.test("check a prepend module", function(assert) {
 		beforeItem = null;
 	// Given
 	// When
-	this.inst.prepend(getContent("prepend"));
-	// Then
 	assert.equal(this.inst.items.length, 0, "a number of elements are always 0");
 	assert.equal(this.inst.el.children.length, 0, "a number of elements(DOM) are always 0");
 
@@ -251,7 +258,6 @@ QUnit.test("check a prepend module with groupkey", function(assert) {
 	this.inst.on("layoutComplete",function(e) {
 		if(addCount++ <5) {
 			group[groupkey] = e.target.length;
-			assert.equal(this.el.children.length, this.items.length, "a number of elements(DOM) -> " + this.items.length + ", removeCount : " + this._removedContent);
 			assert.equal(this.isProcessing(), false, "idel in layoutComplete " + addCount);
 			this.append(getContent("append",20),groupkey++);
 		} else {
@@ -294,7 +300,6 @@ QUnit.test("check a count of remove contents", function(assert) {
 	// Given
 	// When
 	// Then
-	assert.equal(this.inst._removedContent, 0, "content is 0 from markup");
 	assert.equal(this.inst.isRecycling(), false, "elements are lacked");
 
 	//When
@@ -317,7 +322,7 @@ QUnit.test("check a count of remove contents", function(assert) {
 			assert.equal(this.isRecycling(), true, "recycle mode");
 			assert.equal(this.items.length, 18, "a number of elements are always 18");
 			assert.equal(this.el.children.length, 18, "a number of DOM are always 18");
-			assert.equal(e.croppedCount, 0, "a number of removed elements are 0");
+			assert.equal(e.croppedCount, 200, "a number of removed elements are 0");
 			done();
 		});
 		this.prepend(getContent("prepend", 200));
@@ -360,10 +365,13 @@ QUnit.test("check item/element order and check removed parts", function(assert) 
 
 	//When
 	this.inst.on("layoutComplete",function(e) {
+		assert.equal(e.target.length, this.options.count , "check a count of items");
+		assert.equal(e.croppedCount, 30 - this.options.count, "check croppedCount");
 		this.off();
 		this.on("layoutComplete",function(e) {
 			// Then
-			assert.equal(e.target.length, 30-this.options.count , "check remove a count of items");
+			assert.equal(e.target.length, this.options.count, "check remove a count of items");
+			assert.equal(e.croppedCount, 20, "check croppedCount");
 			var self = this;
 			this.$el.children().slice(0,e.target.length).each( function(i, v) {
 				assert.equal($(v).data("prepend-index"), i, "check element order " + i);
@@ -480,15 +488,15 @@ QUnit.test("restore status", function(assert) {
 			assert.deepEqual(v.size, beforeStatus.items[i].size,"check html and size information");
 			$el = $(v.el);
 			assert.deepEqual(v.position, {
-				"x" : parseInt($el.css("left"),10),
-				"y" : parseInt($el.css("top"),10)
-			}, "check html and position information");
+				"x" : parseInt(v.el.style.left, 10),
+				"y" : parseInt(v.el.style.top, 10)
+			}, "check html and position information-3");
 		});
 		assert.deepEqual(infinite.options, beforeStatus.options, "check options info");
 		for(var v in beforeStatus.prop) {
 			assert.equal(infinite[v], beforeStatus.prop[v], "check infiniteGrid properties " + v);
 		};
-		infinite.destroy();
+		// infinite.destroy();
 		done();
 	});
 
@@ -573,7 +581,7 @@ QUnit.test("Check append/prepend methods return", function (assert) {
 		this.off();
 		this.on("layoutComplete",function(e) {
 			// Then
-			assert.equal(prependCount, 182);
+			assert.equal(prependCount, 300);
 			assert.equal(e.target.length, 18);
 			done();
 		});
