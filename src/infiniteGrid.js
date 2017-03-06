@@ -292,10 +292,10 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			}
 
 			if (isInit) {
-				$.each(addItems, function(i, v) {		
- 					v.el.style.position = "absolute";		
- 				});		
- 			}
+				$.each(addItems, function(i, v) {
+					v.el.style.position = "absolute";
+				});
+			}
 
 			if (isInit || isRelayout) {
 				this._resetCols(this._measureColumns());
