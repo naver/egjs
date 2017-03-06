@@ -792,6 +792,11 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				height: $el.innerHeight()
 			};
 		},
+		/**
+		 * Removes a card element on a grid layout.
+		 * @ko 그리드 레이아웃의 카드 엘리먼트를 삭제한다.
+		 * @method eg.InfiniteGrid#remove
+		 */
 		remove: function(element) {
 			var item = null;
 			var idx = -1;
