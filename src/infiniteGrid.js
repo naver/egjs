@@ -274,7 +274,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				isAppend: true,
 				removedCount: 0
 			}, _options);
-			isRelayout = typeof isRelayout === "undefined" ? true : isRelayout;
+			isRelayout = typeof isRelayout === "undefined" || isRelayout;
 
 			// for except case.
 			if (!_addItems && !options.isAppend) {
