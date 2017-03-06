@@ -228,7 +228,7 @@ QUnit.test("check a prepend module", function(assert) {
 	});
 
 	// Then
-	this.inst.append(getContent("append",200));
+	this.inst.append(getContent("append", 200));
 });
 
 
@@ -312,7 +312,7 @@ QUnit.test("check a count of remove contents", function(assert) {
 		this.on("layoutComplete",function(e) {
 			// Then
 			assert.equal(this.isProcessing(), false, "idel in layoutComplete " + e.target.length);
-			assert.equal(e.target.length, 188, "a number of prepend elements are 188");
+			assert.equal(e.target.length, 18, "a number of prepend elements are 18");
 			assert.equal(e.isAppend, false, "prepend type");
 			assert.equal(this.isRecycling(), true, "recycle mode");
 			assert.equal(this.items.length, 18, "a number of elements are always 18");
@@ -328,6 +328,36 @@ QUnit.test("check a count of remove contents", function(assert) {
 QUnit.test("check item/element order and check removed parts", function(assert) {
 	var done = assert.async();
 
+	function getUniqueX(target) {
+		var temp = {};
+		var x = $(target).map(function(i, v) {
+			return v.position.x;	
+		}).each(function(i, v) {
+			if (!(v in temp)) {
+				temp[v] = v;
+			} 
+		});
+		
+		var ret = [];
+		for(var p in temp) {
+			ret.push(p);
+		}
+		return ret;
+	}
+
+	function getGroups(target) {
+		var x = getUniqueX(target);
+		var group = {};
+		$.each(x, function(i, v) {
+			group[v] = $.grep(target, function(gv) {
+				return gv.position.x === ~~v;
+			}).sort(function(p, c) {
+				return p.position.y - c.position.y;
+			});
+		});
+		return group;
+	}
+
 	//When
 	this.inst.on("layoutComplete",function(e) {
 		this.off();
@@ -336,9 +366,17 @@ QUnit.test("check item/element order and check removed parts", function(assert) 
 			assert.equal(e.target.length, 30-this.options.count , "check remove a count of items");
 			var self = this;
 			this.$el.children().slice(0,e.target.length).each( function(i, v) {
-				assert.equal($(v).data("prepend-index"), i, "check element order" );
-				assert.deepEqual(self.items[i].el, v, "check item order");
+				assert.equal($(v).data("prepend-index"), i, "check element order " + i);
 			});
+			var groups = getGroups(e.target);
+			for(var p in groups) {
+				$.each(groups[p], function(i, v) {
+					if (i > 0) {
+						assert.ok(v.position.y >=  groups[p][i-1].position.y, "it's greater than or equal to previous value");
+						assert.ok($(v.el).data("prepend-index") >=  $(groups[p][i-1].el).data("prepend-index"), "it's greater than or equal to previous value (data)");
+					}
+				})
+			}
 			assert.equal(e.isAppend, false, "prepend type");
 			done();
 		});
@@ -476,7 +514,6 @@ QUnit.test("check a clear", function(assert) {
 		// Then
 		assert.equal(this.items.length, 0, "a number of elements are 0");
 		assert.equal(this.el.children.length, 0, "a number of DOM are 0");
-		assert.equal(this._isFitted, true, "isFitted is true");
 		assert.equal(this._isRecycling, false, "_isRecycling is false");
 		assert.equal(this._isProcessing, false, "_isProcessing is false");
 		assert.equal(e.croppedCount, 0, "a number of removedContent are 0");
@@ -485,15 +522,22 @@ QUnit.test("check a clear", function(assert) {
 });
 
 QUnit.test("Check public methods return", function (assert) {
+	var done = assert.async();
+	var self = this;
+
 	// Given
 	// When
 	this.inst = new eg.InfiniteGrid("#grid");
-	var beforeStatus = this.inst.getStatus();
+	
+	setTimeout(function() {
+		var beforeStatus = self.inst.getStatus();
 
-	// Then
-	assert.equal(this.inst.setStatus(beforeStatus), this.inst, "return instance");
-	assert.equal(this.inst.layout(), this.inst, "return instance");
-	assert.equal(this.inst.clear(), this.inst, "return instance");
+		// Then
+		assert.equal(self.inst.setStatus(beforeStatus), self.inst, "return instance");
+		assert.equal(self.inst.layout(), self.inst, "return instance");
+		assert.equal(self.inst.clear(), self.inst, "return instance");
+		done();
+	},500);
 });
 
 QUnit.test("Check prefixEvent", function (assert) {
@@ -530,7 +574,7 @@ QUnit.test("Check append/prepend methods return", function (assert) {
 		this.on("layoutComplete",function(e) {
 			// Then
 			assert.equal(prependCount, 182);
-			assert.equal(e.target.length, 182);
+			assert.equal(e.target.length, 18);
 			done();
 		});
 
@@ -571,7 +615,7 @@ QUnit.test("Check type #1 - concated String type", function(assert) {
 	this.inst.on("layoutComplete",function(e) {
 		if(e.isAppend) {
 			// Then
-			assert.equal(e.target.length, 100, "[append] a number of elements are 100");
+			assert.equal(e.target.length, 20, "[append] a number of elements are 20");
 			assert.equal(this.items.length, 20, "[append] a number of items are 20");
 			assert.equal(this.el.children.length, 20, "[append] a number of DOM are 20");
 
@@ -579,7 +623,7 @@ QUnit.test("Check type #1 - concated String type", function(assert) {
 			this.prepend(data);
 		} else {
 			// Then
-			assert.equal(e.target.length, 80, "[prepend] a number of elements are 80");
+			assert.equal(e.target.length, 20, "[prepend] a number of elements are 20");
 			assert.equal(this.items.length, 20, "[prepend] a number of items are 20");
 			assert.equal(this.el.children.length, 20, "[prepend] a number of DOM are 20");
 			done();
@@ -601,7 +645,7 @@ QUnit.test("Check type #2 - array has HTMLElement type", function(assert) {
 	this.inst.on("layoutComplete",function(e) {
 		if(e.isAppend) {
 			// Then
-			assert.equal(e.target.length, 100, "[append] a number of elements are 100");
+			assert.equal(e.target.length, 20, "[append] a number of elements are 20");
 			assert.equal(this.items.length, 20, "[append] a number of items are 20");
 			assert.equal(this.el.children.length, 20, "[append] a number of DOM are 20");
 
@@ -609,7 +653,7 @@ QUnit.test("Check type #2 - array has HTMLElement type", function(assert) {
 			this.prepend(data.concat());
 		} else {
 			// Then
-			assert.equal(e.target.length, 80, "[prepend] a number of elements are 80");
+			assert.equal(e.target.length, 20, "[prepend] a number of elements are 20");
 			assert.equal(this.items.length, 20, "[prepend] a number of items are 20");
 			assert.equal(this.el.children.length, 20, "[prepend] a number of DOM are 20");
 			done();
@@ -632,7 +676,7 @@ QUnit.test("Check type #3 - jQuery type", function(assert) {
 	this.inst.on("layoutComplete",function(e) {
 		if(e.isAppend) {
 			// Then
-			assert.equal(e.target.length, 100, "[append] a number of elements are 100");
+			assert.equal(e.target.length, 20, "[append] a number of elements are 20");
 			assert.equal(this.items.length, 20, "[append] a number of items are 20");
 			assert.equal(this.el.children.length, 20, "[append] a number of DOM are 20");
 
@@ -640,7 +684,7 @@ QUnit.test("Check type #3 - jQuery type", function(assert) {
 			this.prepend($(data));
 		} else {
 			// Then
-			assert.equal(e.target.length, 80, "[prepend] a number of elements are 80");
+			assert.equal(e.target.length, 20, "[prepend] a number of elements are 20");
 			assert.equal(this.items.length, 20, "[prepend] a number of items are 20");
 			assert.equal(this.el.children.length, 20, "[prepend] a number of DOM are 20");
 			done();
@@ -780,7 +824,6 @@ QUnit.test("check a clear after scrolling", function(assert) {
 
 		assert.equal(this.items.length, 0, "a number of elements are 0");
 		assert.equal(this.el.children.length, 0, "a number of DOM are 0");
-		assert.equal(this._isFitted, true, "isFitted is true");
 		assert.equal(this._isRecycling, false, "_isRecycling is false");
 		assert.equal(this._isProcessing, false, "_isProcessing is false");
 		assert.equal(e.croppedCount, 0, "a number of removedContent are 0");
@@ -821,7 +864,6 @@ QUnit.test("if width is not changed, layout should be not called on resize event
 });
 
 
-
 QUnit.module("infiniteGrid private method Test", {
 	beforeEach : function() {
 		this.fakeWnd = {
@@ -853,4 +895,80 @@ QUnit.test("check _refreshViewport method", function(assert) {
 
 	// Then
 	assert.equal(inst._clientHeight, 200, "height is changed");
+});
+
+
+QUnit.module("infiniteGrid layout(false) Test", {
+	beforeEach : function() {
+		this.inst = new eg.InfiniteGrid("#nochildren_grid", {
+			"count" : 30
+		});
+	},
+	afterEach : function() {
+		if(this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
+	}
+});
+
+QUnit.test("check a remove module", function(assert) {
+	var done = assert.async();
+	var beforePrependCols = null;
+	var beforePosition = null;
+	function getItem(items, position) {
+		return $.grep(items, function(v) {
+			return v.position.x === position.x && v.position.y === position.y;
+		});
+	}
+
+	// Given
+	// When
+	this.inst.on("layoutComplete",function(e) {
+		$.each(this._prependCols, function(i, v) {
+			assert.ok(v === 0, "prependCols values are zero");
+		});
+
+		this.off();
+		this.on("layoutComplete",function(e) {
+			// Given
+			beforePrependCols = this._prependCols.concat();
+			$.each(this._prependCols, function(i, v) {
+				assert.ok(v !== 0, "prependCols values aren't zero");
+			});
+
+			beforePosition = e.target[5].position;
+			var beforeItemLen = this.items.length;
+			var beforeElementLen = this.el.children.length;
+			var ret = getItem(this.items, beforePosition);
+			assert.equal(ret.length, 1, "only one");
+			
+			// When 
+			this.remove(e.target[5].el);
+			
+			// Then 
+			ret = getItem(this.items, beforePosition);
+			assert.equal(ret.length, 0, "nothing");
+			assert.equal(this.items.length, beforeItemLen-1, "remove items");
+			assert.equal(this.el.children.length, beforeElementLen-1, "remove DOM");
+
+			this.off();
+			this.on("layoutComplete",function(e) {
+				beforePrependCols = this._prependCols.concat();
+				$.each(this._prependCols, function(i, v) {
+					assert.equal(v, beforePrependCols[i], "equal before PrependCols");
+				});
+				// Then
+				var ret = getItem(this.items, beforePosition);
+				assert.equal(ret.length, 1, "relayout items");
+				done();
+			});
+			// Then
+			this.layout(false);
+		});
+		this.append(getContent("append", 25));	
+	});
+
+	// Then
+	this.inst.append(getContent("append", 25));
 });
