@@ -83,7 +83,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			this._reset();
 			this._refreshViewport();
 			if (this.el.children.length > 0) {
-				this.layout(true, this._itemize($.makeArray(this.el.children), this.options.defaultGroupKey), true);
+				this.layout(true, this._itemize($.makeArray(this.el.children), this.options.defaultGroupKey));
 			}
 
 			this._onScroll = $.proxy(this._onScroll, this);
@@ -130,34 +130,32 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 					});
 				}
 			} else {
-				if (this.isRecycling() && this._removedContent > 0) {
-					if ($.isEmptyObject(this._topElement)) {
-						this._topElement = this.getTopElement();
-						if (this._topElement == null) {
-							return;
-						}
+				if ($.isEmptyObject(this._topElement)) {
+					this._topElement = this.getTopElement();
+					if (this._topElement == null) {
+						return;
 					}
-					ele = this._topElement;
-					rect = ele.getBoundingClientRect();
-					if (rect.bottom >= -this.options.threshold) {
-						/**
-						 * This event is fired when a card element must be added at the top of a grid layout because there is no card to be displayed on screen when a user scrolls near top. This event is available only if the isRecycling() method returns true.
-						 * @ko 카드가 그리드 레이아웃의 위에 추가돼야 할 때 발생하는 이벤트. 사용자가 위로 스크롤해서 화면에 표시될 카드가 없을 때 발생한다. 이 이벤트는 isRecycling() 메서드의 반환값이 'true'일 때만 발생한다
-						 * @name eg.InfiniteGrid#prepend
-						 * @event
-						 *
-						 * @param {Object} param The object of data to be sent to an event<ko>이벤트에 전달되는 데이터 객체</ko>
-						 * @param {Number} param.scrollTop Current vertical position of the scroll bar<ko>현재 스크롤의 y 좌표 값</ko>
-						 */
-						var croppedDistance = this.fit();
-						if (croppedDistance > 0) {
-							scrollTop -= croppedDistance;
-							this.$view.scrollTop(scrollTop);
-						}
-						this.trigger(this._prefix + EVENTS.prepend, {
-							scrollTop: scrollTop
-						});
+				}
+				ele = this._topElement;
+				rect = ele.getBoundingClientRect();
+				if (rect.bottom >= -this.options.threshold) {
+					/**
+					 * This event is fired when a card element must be added at the top of a grid layout because there is no card to be displayed on screen when a user scrolls near top. This event is available only if the isRecycling() method returns true.
+					 * @ko 카드가 그리드 레이아웃의 위에 추가돼야 할 때 발생하는 이벤트. 사용자가 위로 스크롤해서 화면에 표시될 카드가 없을 때 발생한다. 이 이벤트는 isRecycling() 메서드의 반환값이 'true'일 때만 발생한다
+					 * @name eg.InfiniteGrid#prepend
+					 * @event
+					 *
+					 * @param {Object} param The object of data to be sent to an event<ko>이벤트에 전달되는 데이터 객체</ko>
+					 * @param {Number} param.scrollTop Current vertical position of the scroll bar<ko>현재 스크롤의 y 좌표 값</ko>
+					 */
+					var croppedDistance = this.fit();
+					if (croppedDistance > 0) {
+						scrollTop -= croppedDistance;
+						this.$view.scrollTop(scrollTop);
 					}
+					this.trigger(this._prefix + EVENTS.prepend, {
+						scrollTop: scrollTop
+					});
 				}
 			}
 			this._prevScrollTop = scrollTop;
@@ -264,22 +262,25 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		 * @param {Boolean} [isRelayout=true] Indicates whether a card element is being relayouted <ko>카드 엘리먼트 재배치 여부</ko>
 		 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 		 */
-		layout: function(isRelayout, addItems, isAppend) {
+		layout: function(isRelayout, _addItems, _options) {
+			var options = $.extend({
+				isAppend: true,
+				removedCount: 0
+			}, _options);
 			isRelayout = typeof isRelayout === "undefined" ? true : isRelayout;
-			isAppend = typeof isAppend === "undefined" ? true : isAppend;
 
 			// for except case.
-			if (!addItems && !isAppend) {
-				isAppend = true;
+			if (!_addItems && !options.isAppend) {
+				options.isAppend = true;
 			}
-			this._waitResource(isRelayout, isAppend ? addItems : addItems.reverse(), isAppend);
+			this._waitResource(isRelayout, options.isAppend ? _addItems : _addItems.reverse(), options);
 			return this;
 		},
-		_layoutComplete: function(isRelayout, addItems, isAppend) {
+		_layoutComplete: function(isRelayout, addItems, options) {
 			var isInit = !this.items.length;
 
-			// insert items
-			if (addItems && isAppend) {
+			// insert items (when appending)
+			if (addItems && options.isAppend) {
 				this.items = this.items.concat(addItems);
 			}
 
@@ -296,17 +297,18 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 					this._appendCols = this._prependCols.concat();
 				}
 			}
-			this._layoutItems(isRelayout, addItems, isAppend);
-			this._postLayout(isRelayout, addItems, isAppend);
+			this._layoutItems(isRelayout, addItems, options);
+			this._postLayout(isRelayout, addItems, options);
 		},
-		_layoutItems: function(isRelayout, addItems, isAppend) {
+		_layoutItems: function(isRelayout, addItems, options) {
 			var self = this;
 			var items = addItems || this.items;
 
 			$.each(items, function(i, v) {
-				v.position = self._getItemLayoutPosition(isRelayout, v, isAppend);
+				v.position = self._getItemLayoutPosition(isRelayout, v, options.isAppend);
 			});
-			if (addItems && !isAppend) {
+			if (addItems && !options.isAppend) {
+				// insert items (when prepending)
 				this.items = addItems.sort(function(p, c) {
 					return p.position.y - c.position.y;
 				}).concat(this.items);
@@ -347,11 +349,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 
 			// convert jQuery instance
 			$elements = $($elements);
-			this._isProcessing = true;
-			if (!this.isRecycling()) {
-				this._isRecycling =
-				(this.items.length + $elements.length) >= this.options.count;
-			}
 			this._insert($elements, groupKey, true);
 			return $elements.length;
 		},
@@ -364,18 +361,12 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		 * @return {Number} The number of added card elements <ko>추가된 카드 엘리먼트의 개수</ko>
 		 */
 		prepend: function($elements, groupKey) {
-			if (!this.isRecycling() || this._removedContent === 0 ||
-				this._isProcessing || $elements.length === 0) {
+			if (this._isProcessing || $elements.length === 0) {
 				return;
 			}
 
 			// convert jQuery instance
 			$elements = $($elements);
-
-			this._isProcessing = true;
-			if ($elements.length > this._removedContent) {
-				$elements = $elements.slice(0, this._removedContent);
-			}
 			this._insert($elements, groupKey, false);
 			return $elements.length;
 		},
@@ -441,7 +432,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			return item && item.el;
 		},
 
-		_postLayout: function(isRelayout, addItems, isAppend) {
+		_postLayout: function(isRelayout, addItems, options) {
 			if (!this._isProcessing) {
 				return;
 			}
@@ -454,7 +445,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			this._bottomElement = this.getBottomElement();
 
 			var distance = 0;
-			if (!isAppend) {
+			if (!options.isAppend) {
 				distance = addItems.length >= this.items.length ?
 					0 : this.items[addItems.length].position.y;
 				if (distance > 0) {
@@ -480,14 +471,18 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			 */
 			this.trigger(this._prefix + EVENTS.layoutComplete, {
 				target: addItems.concat(),
-				isAppend: isAppend,
+				isAppend: options.isAppend,
 				distance: distance,
-				croppedCount: this._removedContent
+				croppedCount: options.removedCount
 			});
 		},
 
 		// $elements => $([HTMLElement, HTMLElement, ...])
 		_insert: function($elements, groupKey, isAppend) {
+			this._isProcessing = true;
+			if (!this.isRecycling()) {
+				this._isRecycling = (this.items.length + $elements.length) >= this.options.count;
+			}
 			if ($elements.length === 0) {
 				return;
 			}
@@ -498,18 +493,21 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				v.style.position = "absolute";
 				v.style.top = dummy;
 			});
-			this.isRecycling() && this._adjustRange(isAppend, $cloneElements);
+			var removedCount = this._adjustRange(isAppend, $cloneElements);
 
 			// prepare HTML
 			this.$el[isAppend ? "append" : "prepend"]($cloneElements);
-			this.layout(false, this._itemize($cloneElements, groupKey), isAppend);
+			this.layout(false, this._itemize($cloneElements, groupKey), {
+				isAppend: isAppend,
+				removedCount: removedCount
+			});
 		},
-		_waitResource: function(isRelayout, addItems, isAppend) {
+		_waitResource: function(isRelayout, addItems, options) {
 			this._isProcessing = true;
 			var needCheck = this._checkImageLoaded();
 			var self = this;
 			var callback = function() {
-				self._layoutComplete(isRelayout, addItems, isAppend);
+				self._layoutComplete(isRelayout, addItems, options);
 			};
 			if (needCheck.length > 0) {
 				this._waitImageLoaded(needCheck, callback);
@@ -522,23 +520,32 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		},
 
 		_adjustRange: function (isTop, $elements) {
+			var removedCount = 0;
+			if (!this.isRecycling()) {
+				return removedCount;
+			}
+
 			// trim $elements
 			if (this.options.count <= $elements.length) {
-				this._removedContent += isTop ? $elements.splice(0, $elements.length - this.options.count).length
-					: -$elements.splice(this.options.count).length;
+				removedCount += isTop ? $elements.splice(0, $elements.length - this.options.count).length
+					: $elements.splice(this.options.count).length;
 			}
 			var diff = this.items.length + $elements.length - this.options.count;
 			var targets;
 			var idx;
 			if (diff <= 0 || (idx = this._getDelimiterIndex(isTop, diff)) < 0) {
-				return;
+				return removedCount;
 			}
 			if (isTop) {
 				targets = this.items.splice(0, idx);
 				this._syncCols(false);	// for prepending
 			} else {
 				targets = idx === this.items.length ? this.items.splice(0) : this.items.splice(idx, this.items.length - idx);
+				this._syncCols(true);	// for appending;
 			}
+
+			// console.log("sync", "<---", this._prependCols);
+			// console.log("sync", "--->", this._appendCols);
 
 			// @todo improve performance
 			$.each(targets, function(i, v) {
@@ -549,7 +556,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 					v.el.parentNode.removeChild(v.el);
 				}
 			});
-			this._removedContent += isTop ? targets.length : -targets.length;
+			removedCount += targets.length;
+			return removedCount;
 		},
 		_getDelimiterIndex: function(isTop, removeCount) {
 			var len = this.items.length;
@@ -599,9 +607,9 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 					v.position.y -= y;
 					applyDom && (v.el.style.top = v.position.y + "px");
 				});
-				applyDom && (this.el.style.height = this._getContainerSize().height + "px");
 				this._syncCols(false);	// for prepending
 				this._syncCols(true);	// for appending
+				applyDom && (this.el.style.height = this._getContainerSize().height + "px");
 			}
 			return y;
 		},
@@ -622,7 +630,6 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			this._topElement = null;
 			this._bottomElement = null;
 			this._isRecycling = false;
-			this._removedContent = 0;
 			this._prevScrollTop = 0;
 			this._equalItemSize = 0;
 			this._resizeTimeout = null;
