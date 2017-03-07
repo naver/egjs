@@ -595,6 +595,21 @@ QUnit.test("Check append/prepend methods return", function (assert) {
 	assert.equal(appendCount, 200);
 });
 
+QUnit.test("check getBottomElement method (same position)", function(assert) {
+	var done = assert.async();
+	var self = this;
+
+	// Given
+	this.inst = new eg.InfiniteGrid("#grid", {
+		"count" : 18
+	}).on("layoutComplete", function(e) {
+		assert.equal(self.inst.getBottomElement().style.left, "500px");
+		assert.equal(self.inst.getTopElement().style.left, "0px");
+		done();
+	});
+});
+
+
 var complicatedHTML = "<div class='item'><div class='thumbnail'><img class='img-rounded' src='#' /><div class='caption'><p><a href='http://www.naver.com'></a></p></div></div></div>";
 
 QUnit.module("infiniteGrid data type Test", {
