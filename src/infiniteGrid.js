@@ -797,7 +797,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		 * @ko 그리드 레이아웃의 카드 엘리먼트를 삭제한다.
 		 * @method eg.InfiniteGrid#remove
 		 * @param {HTMLElement} Card element to be removed <ko>삭제될 카드 엘리먼트</ko>
-		 * @return {Object} Card element removed <ko>삭제된 카드 엘리먼트 정보</ko>
+		 * @return {Object}  Removed card element <ko>삭제된 카드 엘리먼트 정보</ko>
 		 */
 		remove: function(element) {
 			var item = null;
