@@ -395,7 +395,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		 * @ko 레이아웃의 맨 위에 있는 카드 엘리먼트를 반환한다.
 		 * @method eg.InfiniteGrid#getTopElement
 		 *
-		 * @return {HTMLElement} Card element at the top of a layout. (if the position of card element is same, returns left element) <ko>레이아웃의 맨 위에 있는 카드 엘리먼트 (카드의 위치가 같은 경우, 왼쪽 엘리먼트가 반환된다)</ko>
+		 * @return {HTMLElement} Card element at the top of a layout. (if the position of card elements are same, it returns the first left element) <ko>레이아웃의 맨 위에 있는 카드 엘리먼트 (카드의 위치가 같은 경우, 왼쪽 엘리먼트가 반환된다)</ko>
 		 */
 		getTopElement: function() {
 			var item = this._getTopItem();
@@ -425,7 +425,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		 * @ko 레이아웃의 맨 아래에 있는 카드 엘리먼트를 반환한다.
 		 * @method eg.InfiniteGrid#getBottomElement
 		 *
-		 * @return {HTMLElement} Card element at the bottom of a layout (f the position of card element is same, returns right element)<ko>레이아웃의 맨 아래에 있는 카드 엘리먼트 (카드의 위치가 같은 경우, 오른쪽 엘리먼트가 반환된다)</ko>
+		 * @return {HTMLElement} Card element at the bottom of a layout (if the position of card elements are same, it returns the first right element)<ko>레이아웃의 맨 아래에 있는 카드 엘리먼트 (카드의 위치가 같은 경우, 오른쪽 엘리먼트가 반환된다)</ko>
 		 */
 		getBottomElement: function() {
 			var item = null;
