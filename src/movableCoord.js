@@ -820,25 +820,34 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 		 * Enables input devices
 		 * @ko 입력 장치를 사용할 수 있게 한다
 		 * @method eg.MovableCoord#enableInput
-		 * @param {HTMLElement|String|jQuery} element An element from which the eg.MovableCoord module is using<ko>eg.MovableCoord 모듈을 사용하는 엘리먼트</ko>
+		 * @param {HTMLElement|String|jQuery} [element] An element from which the eg.MovableCoord module is using<ko>eg.MovableCoord 모듈을 사용하는 엘리먼트</ko>
 		 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
 		 */
 		enableInput: function(element) {
-			var hammer = this.getHammer(element);
-			hammer && hammer.get("pan").set({ enable: true });
-			return this;
+			return this._inputControl(true, element);
 		},
 
 		/**
 		 * Disables input devices
 		 * @ko 입력 장치를 사용할 수 없게 한다.
 		 * @method eg.MovableCoord#disableInput
-		 * @param {HTMLElement|String|jQuery} element An element from which the eg.MovableCoord module is using<ko>eg.MovableCoord 모듈을 사용하는 엘리먼트</ko>
+		 * @param {HTMLElement|String|jQuery} [element] An element from which the eg.MovableCoord module is using<ko>eg.MovableCoord 모듈을 사용하는 엘리먼트</ko>
 		 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
 		 */
 		disableInput: function(element) {
-			var hammer = this.getHammer(element);
-			hammer && hammer.get("pan").set({ enable: false });
+			return this._inputControl(false, element);
+		},
+
+		_inputControl: function(isEnable, element) {
+			var option = { enable: isEnable };
+			if (element) {
+				var hammer = this.getHammer(element);
+				hammer && hammer.get("pan").set(option);
+			} else { // for multi
+				for (var p in this._hammers) {
+					this._hammers[p].inst.get("pan").set(option);
+				}
+			}
 			return this;
 		},
 

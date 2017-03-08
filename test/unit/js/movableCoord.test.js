@@ -234,18 +234,42 @@ QUnit.test("getHammer", function(assert) {
 QUnit.test("disableInput/enableInput", function(assert) {
 	// Given
 	var el = document.getElementById("area");
+	var hEl = document.getElementById("hmove");
+	var vEl = document.getElementById("vmove");
 
 	// When
 	this.inst.bind(el);
 	assert.equal(this.inst.getHammer(el).get("pan").options.enable, true);
+	this.inst.disableInput(el);
 	
 	// Then
-	this.inst.disableInput(el);
 	assert.equal(this.inst.getHammer(el).get("pan").options.enable, false);
 
 	// When
 	this.inst.enableInput(el);
+
+	// Then
 	assert.equal(this.inst.getHammer(el).get("pan").options.enable, true);
+
+	// Givne (multi)
+	this.inst.bind(hEl);
+	this.inst.bind(vEl);
+	
+	// When
+	this.inst.disableInput();
+
+	// Then
+	assert.equal(this.inst.getHammer(el).get("pan").options.enable, false);
+	assert.equal(this.inst.getHammer(hEl).get("pan").options.enable, false);
+	assert.equal(this.inst.getHammer(vEl).get("pan").options.enable, false);
+
+	// When
+	this.inst.enableInput();
+
+	// Then
+	assert.equal(this.inst.getHammer(el).get("pan").options.enable, true);
+	assert.equal(this.inst.getHammer(hEl).get("pan").options.enable, true);
+	assert.equal(this.inst.getHammer(vEl).get("pan").options.enable, true);
 });
 
 
