@@ -820,7 +820,7 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 		 * Enables input devices
 		 * @ko 입력 장치를 사용할 수 있게 한다
 		 * @method eg.MovableCoord#enableInput
-		 * @param {HTMLElement|String|jQuery} [element] An element from which the eg.MovableCoord module is using<ko>eg.MovableCoord 모듈을 사용하는 엘리먼트</ko>
+		 * @param {HTMLElement|String|jQuery} [element] An element from which the eg.MovableCoord module is using (if the element parameter is not present, it applies to all binded elements)<ko>eg.MovableCoord 모듈을 사용하는 엘리먼트 (element 파라미터가 존재하지 않을 경우, 바인드된 모든 엘리먼트에 적용된다)</ko>
 		 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
 		 */
 		enableInput: function(element) {
@@ -831,7 +831,7 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 		 * Disables input devices
 		 * @ko 입력 장치를 사용할 수 없게 한다.
 		 * @method eg.MovableCoord#disableInput
-		 * @param {HTMLElement|String|jQuery} [element] An element from which the eg.MovableCoord module is using<ko>eg.MovableCoord 모듈을 사용하는 엘리먼트</ko>
+		 * @param {HTMLElement|String|jQuery} [element] An element from which the eg.MovableCoord module is using (if the element parameter is not present, it applies to all binded elements)<<ko>eg.MovableCoord 모듈을 사용하는 엘리먼트 (element 파라미터가 존재하지 않을 경우, 바인드된 모든 엘리먼트에 적용된다)</ko>
 		 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
 		 */
 		disableInput: function(element) {
