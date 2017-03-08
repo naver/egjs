@@ -171,14 +171,15 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 
 		_attachHammerEvents: function(hammer, options) {
 			return hammer.on("hammer.input", HM.bindFn(function(e) {
+					var enable = hammer.get("pan").options.enable;
 					if (e.isFirst) {
 						// apply options each
 						this._subOptions = options;
 						this._status.curHammer = hammer;
-						this._panstart(e);
+						enable && this._panstart(e);
 					} else if (e.isFinal) {
 						// substitute .on("panend tap", this._panend); Because it(tap, panend) cannot catch vertical(horizontal) movement on HORIZONTAL(VERTICAL) mode.
-						this._panend(e);
+						enable && this._panend(e);
 					}
 				}, this))
 				.on("panstart panmove", this._panmove);
@@ -229,7 +230,7 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 		 */
 		getHammer: function(element) {
 			var el = this._getEl(element);
-			var key = el[MC._KEY];
+			var key = el ? el[MC._KEY] : null;
 			if (key && this._hammers[key]) {
 				return this._hammers[key].inst;
 			} else {
@@ -813,6 +814,41 @@ eg.module("movableCoord", [eg, window, "Hammer"], function(ns, global, HM) {
 				return el[0];
 			}
 			return el;
+		},
+
+		/**
+		 * Enables input devices
+		 * @ko 입력 장치를 사용할 수 있게 한다
+		 * @method eg.MovableCoord#enableInput
+		 * @param {HTMLElement|String|jQuery} [element] An element from which the eg.MovableCoord module is using (if the element parameter is not present, it applies to all binded elements)<ko>eg.MovableCoord 모듈을 사용하는 엘리먼트 (element 파라미터가 존재하지 않을 경우, 바인드된 모든 엘리먼트에 적용된다)</ko>
+		 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
+		 */
+		enableInput: function(element) {
+			return this._inputControl(true, element);
+		},
+
+		/**
+		 * Disables input devices
+		 * @ko 입력 장치를 사용할 수 없게 한다.
+		 * @method eg.MovableCoord#disableInput
+		 * @param {HTMLElement|String|jQuery} [element] An element from which the eg.MovableCoord module is using (if the element parameter is not present, it applies to all binded elements)<<ko>eg.MovableCoord 모듈을 사용하는 엘리먼트 (element 파라미터가 존재하지 않을 경우, 바인드된 모든 엘리먼트에 적용된다)</ko>
+		 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
+		 */
+		disableInput: function(element) {
+			return this._inputControl(false, element);
+		},
+
+		_inputControl: function(isEnable, element) {
+			var option = { enable: isEnable };
+			if (element) {
+				var hammer = this.getHammer(element);
+				hammer && hammer.get("pan").set(option);
+			} else { // for multi
+				for (var p in this._hammers) {
+					this._hammers[p].inst.get("pan").set(option);
+				}
+			}
+			return this;
 		},
 
 		/**
