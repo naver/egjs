@@ -230,6 +230,49 @@ QUnit.test("getHammer", function(assert) {
 	assert.equal(this.inst.getHammer(el), null, "hammer instance is equal" );
 });
 
+
+QUnit.test("disableInput/enableInput", function(assert) {
+	// Given
+	var el = document.getElementById("area");
+	var hEl = document.getElementById("hmove");
+	var vEl = document.getElementById("vmove");
+
+	// When
+	this.inst.bind(el);
+	assert.equal(this.inst.getHammer(el).get("pan").options.enable, true);
+	this.inst.disableInput(el);
+	
+	// Then
+	assert.equal(this.inst.getHammer(el).get("pan").options.enable, false);
+
+	// When
+	this.inst.enableInput(el);
+
+	// Then
+	assert.equal(this.inst.getHammer(el).get("pan").options.enable, true);
+
+	// Givne (multi)
+	this.inst.bind(hEl);
+	this.inst.bind(vEl);
+	
+	// When
+	this.inst.disableInput();
+
+	// Then
+	assert.equal(this.inst.getHammer(el).get("pan").options.enable, false);
+	assert.equal(this.inst.getHammer(hEl).get("pan").options.enable, false);
+	assert.equal(this.inst.getHammer(vEl).get("pan").options.enable, false);
+
+	// When
+	this.inst.enableInput();
+
+	// Then
+	assert.equal(this.inst.getHammer(el).get("pan").options.enable, true);
+	assert.equal(this.inst.getHammer(hEl).get("pan").options.enable, true);
+	assert.equal(this.inst.getHammer(vEl).get("pan").options.enable, true);
+});
+
+
 QUnit.module("movableCoord methods Test", {
 	beforeEach : function() {
 		this.inst = new eg.MovableCoord( {
@@ -687,6 +730,57 @@ QUnit.test("fast movement test (velocity)", function(assert) {
 		},1000);
     	});
 });
+
+
+QUnit.test("fast movement test (velocity) when disableInput called", function(assert) {
+	var done = assert.async();
+	//Given
+	var el = $("#area").get(0);
+	var firedHold = 0;
+	var firedRelease = 0;
+	var firedAnimationStart = 0;
+	var firedAnimationEnd = 0;
+
+	this.inst.on( {
+		"hold" : function(e) {
+			firedHold++;
+		},
+		"change" : function(e) {
+			firedAnimationStart++;
+		},
+		"release" : function(e) {
+			firedRelease++;
+		},
+		"animationStart" : function(e) {
+			firedAnimationStart++;
+		},
+		"animationEnd" : function(e) {
+			firedAnimationEnd++;
+		}
+	});
+	this.inst.bind(el);
+
+	// When
+	this.inst.disableInput(el);
+	Simulator.gestures.pan(el, {
+		pos: [0, 0],
+		deltaX: 100,
+		deltaY: 100,
+		duration: 1000,
+		easing: "linear"
+	}, function() {
+		// Then
+		// for test custom event
+		setTimeout(function() {
+			assert.equal(firedHold, 0,"fired 'hold' event");
+			assert.equal(firedRelease, 0,"fired 'release' event");
+			assert.equal(firedAnimationStart, 0,"fired 'animationStart' event");
+			assert.equal(firedAnimationEnd, 0,"fired 'animationEnd' event");
+			done();
+		},1000);
+    	});
+});
+
 
 QUnit.test("movement test when stop method was called in 'animationStart' event", function(assert) {
 	var done = assert.async();
