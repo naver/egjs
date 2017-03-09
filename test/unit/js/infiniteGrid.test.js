@@ -410,6 +410,7 @@ QUnit.test("check a prepend workaround code (doublecheck)", function(assert) {
 		},
 		"layoutComplete": function(e) {
 			assert.equal(e.isAppend, false, "prepend type");
+			$(window).scrollTop(0);
 		}
 	});
 
