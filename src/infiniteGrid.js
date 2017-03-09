@@ -59,6 +59,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		"append": "append",
 		"prepend": "prepend"
 	};
+	var RETRY = 3;
 	ns.InfiniteGrid = ns.Class.extend(ns.Component, {
 		_events: function() {
 			return EVENTS;
@@ -448,6 +449,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			addItems = addItems || [];
 
 			this.el.style.height = this._getContainerSize().height + "px";
+			this._doubleCheckCount = RETRY;
 
 			// refresh element
 			this._topElement = this.getTopElement();
@@ -484,6 +486,22 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				distance: distance,
 				croppedCount: options.removedCount
 			});
+
+			// doublecheck!!! (workaround)
+			if (!options.isAppend) {
+				if (this._getScrollTop() === 0) {
+					var self = this;
+					clearInterval(this._doubleCheckTimer);
+					this._doubleCheckTimer = setInterval(function() {
+						if (self._getScrollTop() === 0) {
+							self.trigger(self._prefix + EVENTS.prepend, {
+								scrollTop: 0
+							});
+							(--self._doubleCheckCount <= 0) && clearInterval(self._doubleCheckTimer);
+						}
+					}, 500);
+				}
+			}
 		},
 
 		// $elements => $([HTMLElement, HTMLElement, ...])
@@ -639,6 +657,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			this._prevScrollTop = 0;
 			this._equalItemSize = 0;
 			this._resizeTimeout = null;
+			this._doubleCheckTimer = null;
+			this._doubleCheckCount = RETRY;
 			this._resetCols(this._appendCols.length || 0);
 			this.items = [];
 		},
