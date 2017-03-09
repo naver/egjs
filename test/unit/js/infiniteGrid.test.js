@@ -887,7 +887,7 @@ QUnit.test("if width is not changed, layout should be not called on resize event
 });
 
 
-QUnit.module("infiniteGrid private method Test", {
+QUnit.module("infiniteGrid private method/property Test", {
 	beforeEach : function() {
 		this.fakeWnd = {
 			navigator : {
@@ -920,6 +920,63 @@ QUnit.test("check _refreshViewport method", function(assert) {
 	assert.equal(inst._clientHeight, 200, "height is changed");
 });
 
+QUnit.test("check _isIE method", function(assert) {
+	// Given
+	var fakeWin = {
+		navigator: {
+			userAgent: ""
+		}
+	};
+	eg.invoke("infiniteGrid", [ null, null, fakeWin, null, null]);
+	
+	// when (android)
+	fakeWin.navigator.userAgent = "Mozilla/5.0 (Linux; Android 6.0.1; SAMSUNG SM-G935L Build/MMB29K) AppleWebkit/537.36 (KHTML, like Gecko) SamsungBrowser/4.0 Chrome/44.0.2403.133 Mobile Safari/537.36";
+	var inst = new eg.InfiniteGrid("#nochildren_grid");
+
+	// Then
+	assert.equal(inst._isIE, false);
+	inst.destroy();
+
+	// when (ios)
+	fakeWin.navigator.userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12B440";
+	inst = new eg.InfiniteGrid("#nochildren_grid");
+
+	// Then
+	assert.equal(inst._isIE, false);
+	inst.destroy();
+
+	// when (IE)
+	fakeWin.navigator.userAgent = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)";
+	inst = new eg.InfiniteGrid("#nochildren_grid");
+
+	// Then
+	assert.equal(inst._isIE, true);
+	inst.destroy();	
+
+	// when (chrome)
+	fakeWin.navigator.userAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36";
+	inst = new eg.InfiniteGrid("#nochildren_grid");
+
+	// Then
+	assert.equal(inst._isIE, false);
+	inst.destroy();	
+
+	// when (firefox)
+	fakeWin.navigator.userAgent = "Mozilla/5.0 (Windows NT 6.1; rv:36.0) Gecko/20100101 Firefox/36.0";
+	inst = new eg.InfiniteGrid("#nochildren_grid");
+
+	// Then
+	assert.equal(inst._isIE, false);
+	inst.destroy();	
+
+	// when (safari)
+	fakeWin.navigator.userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) AppleWebKit/600.3.18 (KHTML, like Gecko) Version/8.0.3 Safari/600.3.18";
+	inst = new eg.InfiniteGrid("#nochildren_grid");
+
+	// Then
+	assert.equal(inst._isIE, false);
+	inst.destroy();	
+});
 
 QUnit.module("infiniteGrid layout(false) Test", {
 	beforeEach : function() {

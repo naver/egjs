@@ -64,6 +64,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			return EVENTS;
 		},
 		construct: function(el, options, _prefix) {
+			var ua = global.navigator.userAgent;
 			this.options = $.extend({
 				isEqualSize: false,
 				defaultGroupKey: null,
@@ -76,8 +77,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			this.el = this.$el.get(0);
 			this.el.style.position = "relative";
 			this._prefix = _prefix || "";
-			this._isIos = /iPhone|iPad/.test(global.navigator.userAgent);
-			this._isIE10lower = !!(doc.documentMode && doc.documentMode < 10);
+			this._isIos = /iPhone|iPad/.test(ua);
+			this._isIE = /MSIE|Trident|Windows Phone|Edge/.test(ua);
 			this._appendCols = this._prependCols = [];
 			this.$view = $(global);
 			this._reset();
@@ -661,8 +662,8 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			$.each(needCheck, function(i, v) {
 				$el = $(v);
 
-				// for IE10 lower
-				if (self._isIE10lower) {
+				// workaround for IE10
+				if (self._isIE) {
 					var url = v.getAttribute("src");
 					v.setAttribute("src", "");
 					v.setAttribute("src", url);
