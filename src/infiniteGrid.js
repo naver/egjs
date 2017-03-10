@@ -169,6 +169,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 				self._refreshViewport();
 				(self.$el.innerWidth() !== self._containerWidth) && self.layout(true);
 				self._resizeTimeout = null;
+				self._prevScrollTop = -1;
 			}, 100);
 		},
 		_refreshViewport: function() {

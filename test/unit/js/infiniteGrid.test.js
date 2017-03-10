@@ -874,7 +874,8 @@ QUnit.test("if width is not changed, layout should be not called on resize event
 	$global.on("resize", function(e) {
 		resizeCount++;
 	});
-
+	$global.scrollTop(10000);
+	
 	// When
 	$global.trigger("resize");
 
@@ -920,6 +921,22 @@ QUnit.test("check _refreshViewport method", function(assert) {
 	assert.equal(inst._clientHeight, 200, "height is changed");
 });
 
+
+QUnit.test("check _prevScrollTop after resize event.", function(assert) {
+	// Given
+	var done = assert.async();
+	var inst = this.inst = new eg.InfiniteGrid("#grid");
+	assert.equal(inst._prevScrollTop, 0);
+	
+	// When
+	inst._onResize();
+
+	// Then
+	setTimeout(function() {
+		assert.equal(inst._prevScrollTop, -1);
+		done();
+	},200);
+});
 
 QUnit.module("infiniteGrid layout(false) Test", {
 	beforeEach : function() {
