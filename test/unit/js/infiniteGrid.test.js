@@ -399,6 +399,32 @@ QUnit.test("check item/element order and check removed parts", function(assert) 
 	this.inst.append(getContent("append",30));
 });
 
+QUnit.test("check a prepend workaround code (doublecheck)", function(assert) {
+	// Given
+	// When
+	var done = assert.async();
+	var prependCount = 0;
+	this.inst.on({
+		"prepend": function(e) {
+			prependCount++
+		},
+		"layoutComplete": function(e) {
+			assert.equal(e.isAppend, false, "prepend type");
+			$(window).scrollTop(0);
+		}
+	});
+
+	// When
+	this.inst.prepend(getContent("prepend", 200));
+
+	setTimeout(function() {
+		// Then
+		assert.equal(prependCount, 3);
+		done();
+	}, 2000);
+});
+
+
 QUnit.module("infiniteGrid unit method Test", {
 	beforeEach : function() {
 		this.inst = null;
