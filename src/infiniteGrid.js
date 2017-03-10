@@ -662,7 +662,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			$.each(needCheck, function(i, v) {
 				$el = $(v);
 
-				// workaround for IE10
+				// workaround for IE
 				if (self._isIE) {
 					var url = v.getAttribute("src");
 					v.setAttribute("src", "");
