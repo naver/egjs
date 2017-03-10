@@ -216,7 +216,6 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 						};
 					})
 				},
-				inputEvent: false,		// input event biding status
 				useLayerHack: options.hwAccelerable && !SUPPORT_WILLCHANGE,
 				dirData: [],			// direction constant value according horizontal or vertical
 				indexToMove: 0,
@@ -635,8 +634,6 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			} else {
 				mcInst.unbind($wrapper).off();
 			}
-
-			this._conf.inputEvent = !!bind;
 		},
 
 		/**
@@ -1496,28 +1493,14 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		},
 
 		/**
-		 * Set input event biding
-		 * @param {Boolean} bind - true: bind, false: unbind
-		 * @return {eg.Flicking} instance of itself
-		 */
-		_setInputEvent: function(bind) {
-			var inputEvent = this._conf.inputEvent;
-
-			if (bind ^ inputEvent) {
-				this._bindEvents(bind);
-			}
-
-			return this;
-		},
-
-		/**
 		 * Enables input devices.
 		 * @ko 입력 장치를 사용할 수 있게 한다
 		 * @method eg.Flicking#enableInput
 		 * @return {eg.Flicking} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 		 */
 		enableInput: function() {
-			return this._setInputEvent(true);
+			this._mcInst.enableInput();
+			return this;
 		},
 
 		/**
@@ -1527,7 +1510,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 * @return {eg.Flicking} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 		 */
 		disableInput: function() {
-			return this._setInputEvent();
+			this._mcInst.disableInput();
+			return this;
 		},
 
 		/**
@@ -1557,7 +1541,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			});
 
 			// unbind events
-			this.disableInput();
+			this._bindEvents(false);
 			this.off();
 
 			// release resources

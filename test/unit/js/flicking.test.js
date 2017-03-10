@@ -756,8 +756,20 @@ QUnit.test("enableInput() / disableInput()", function(assert) {
 		isEventFired = true;
 	});
 
-	// When
+	// check for correct panel move on panel resize
+	var currentIndex = inst.getIndex();
+	el.style.width = "500px";
+	inst.resize();
+
+	// when
 	inst.disableInput();
+	inst.next(0);
+
+	assert.equal(currentIndex + 1, inst.getIndex(), "Panel moved correctly?");
+
+	// revert to original status
+	el.style.width = "";
+	isEventFired = false;
 
 	simulator(el, {
 		deltaX: -70
