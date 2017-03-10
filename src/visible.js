@@ -102,10 +102,6 @@ eg.module("visible", ["jQuery", eg, document], function($, ns, doc) {
 				delay = -1;
 			}
 
-			if (typeof delay === "undefined") {
-				delay = -1;
-			}
-
 			if (typeof containment === "undefined") {
 				containment = false;
 			}

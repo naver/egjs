@@ -256,9 +256,9 @@ eg.module("component", [eg], function(ns) {
 			if (handlerList) {
 				var k;
 				var handlerFunction;
-				for (k = 0, handlerFunction; handlerFunction = handlerList[k]; k++) {
+				for (k = 0; handlerFunction = handlerList[k]; k++) {
 					if (handlerFunction === handlerToDetach) {
-						handlerList = handlerList.splice(k, 1);
+						handlerList.splice(k, 1);
 						break;
 					}
 				}

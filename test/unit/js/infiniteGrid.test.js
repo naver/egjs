@@ -372,7 +372,7 @@ QUnit.test("check item/element order and check removed parts", function(assert) 
 			// Then
 			assert.equal(e.target.length, this.options.count, "check remove a count of items");
 			assert.equal(e.croppedCount, 20, "check croppedCount");
-			var self = this;
+
 			this.$el.children().slice(0,e.target.length).each( function(i, v) {
 				assert.equal($(v).data("prepend-index"), i, "check element order " + i);
 			});

@@ -85,7 +85,7 @@ eg.module("scrollEnd", ["jQuery", eg, window], function($, ns, global) {
 				retValue = SCROLLBASE;
 			} else if (deviceName === "Android") {
 				osVersion = userAgent.match(/Android\b(.*?);/);
-				if (!/Chrome/.test(userAgent) && osVersion && parseFloat(osVersion, 10) <= 2.3) {
+				if (!/Chrome/.test(userAgent) && osVersion && parseFloat(osVersion) <= 2.3) {
 					retValue = SCROLLBASE;
 				}
 			}
