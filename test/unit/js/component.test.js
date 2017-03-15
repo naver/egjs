@@ -227,7 +227,7 @@ test("Return value test for trigger method",function(){
 	//Given
 	this.oClass.on("test", noop);
 	//When
-	var returnVal = this.oClass.trigger("test");
+	returnVal = this.oClass.trigger("test");
 	//Then
 	ok(returnVal, "When pull the event handler trigger for 'test', return value must be true.");
 });
@@ -332,14 +332,14 @@ test("Option method should be support 4 features.",function(){
 
 	//Given
 	//When
-	var result = this.oClass.option("foo",2);
+	result = this.oClass.option("foo",2);
 	//Then
 	equal( this.oClass.option("foo"), 2);
 	ok( result instanceof TestClass );
 
 	//Given
 	//When
-	var result = this.oClass.option({
+	result = this.oClass.option({
 		"foo": 3,
 		"bar": 4
 	});
@@ -350,7 +350,7 @@ test("Option method should be support 4 features.",function(){
 
 	//Given
 	//When
-	var result = this.oClass.option();
+	result = this.oClass.option();
 	//Then
 	deepEqual( result, {
 		"foo": 3,
