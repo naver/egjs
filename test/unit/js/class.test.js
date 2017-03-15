@@ -83,7 +83,7 @@ test( "Class extend basic test", function(  ) {
   strictEqual(nSumOfB, 15, "A Class constructor initialized values successfully");
   strictEqual(nSumOfA, 6, "B Class constructor initialized values successfully");
   strictEqual(nMultiOfB, 120, "B Class has its own method.");
-  strictEqual(b.multi(), 6, "Changed properties of B instance successfully");
+  strictEqual(nChangedMultiB, 6, "Changed properties of B instance successfully");
   throws(
   	function() {
   		a.multi();

@@ -116,6 +116,9 @@ var UniversalTestMap = {
 		"testFunc": function(v){
 			// Given
 			var state = $.persist("TESTKEY");
+
+			equal(state, null);
+
 			$.persist("TESTKEY", this.data);
 
 			// When

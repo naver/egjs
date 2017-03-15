@@ -1412,7 +1412,7 @@ QUnit.test("When changes panel normally", function(assert) {
 
 				$.each(panel, function(i) {
 					var oPanel = panel[i];
-					var condition, value;
+					var condition;
 
 					if (i === "flickEnd") {
 						condition = {
@@ -1427,10 +1427,12 @@ QUnit.test("When changes panel normally", function(assert) {
 						};
 
 						$.each(oPanel, function(x) {
-							if (/^(index|no|getIndex)$/.test(x)) {
-								var value = currentPanel[x];
+							var value;
 
-								if (!isCircular || (isCircular && x !== "index")) {
+							if (/^(index|no|getIndex)$/.test(x)) {
+								value = currentPanel[x];
+
+								if (!isCircular || (x !== "index")) {
 									value += 1;
 								}
 

@@ -33,18 +33,18 @@ $.each( nativeVersionProfile, function( i, v ) {
 		eg.invoke("eg",[null, null, this.fakeWindow]);
 		eg.hook = {};
 		eg.hook.agent = function(agent){
-			var dm = dm || v._documentMode || -1,
+			var dm = v._documentMode || -1,
 				nativeVersion;
 			if(dm > 0) {
 				if(m = /(Trident)[\/\s]([\d.]+)/.exec(v.ua)) {
 					if(m[2] > 3) {
-						nativeVersion = parseFloat(m[2],10) + 4;
+						nativeVersion = parseFloat(m[2]) + 4;
 					}
 				} else {
 					nativeVersion = dm;
 				}
 			} else {
-				nativeVersion = parseFloat(agent.browser.version,10);
+				nativeVersion = parseFloat(agent.browser.version);
 			}
 
 			agent.browser.nativeVersion = nativeVersion;

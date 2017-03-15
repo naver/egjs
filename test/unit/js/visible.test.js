@@ -49,8 +49,7 @@ test("check a visible/invisible status", function(assert) {
 test("When a scroll position of the window was changed", function(assert) {
 	// Given
 	var done = assert.async();
-	var i, el,
-		invisible = [],
+	var invisible = [],
 		visible = [];
 
 	// When

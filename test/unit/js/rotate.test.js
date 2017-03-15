@@ -336,7 +336,7 @@ test("If event is orientationchange then trigger and android.", function() {
 
 	// When
 	this.clock.tick(510);
-	var checkFail = method.handler({
+	checkFail = method.handler({
 		type: "orientationchange"
 	});
 	this.clock.tick(310);
@@ -406,6 +406,7 @@ test("If eg.isPortrait() affect the rotate event not to be fired.", function() {
 	var isCall = false;
 	var isVertical1 = false;
 	var isVertical2 = false;
+	// Note: Please check this 'agent' variable is actually used.
 	var agent = eg.agent();
 	agent = {
 		os: "android",

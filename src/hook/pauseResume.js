@@ -196,7 +196,7 @@ eg.module("pauseResume", ["jQuery"], function($) {
 
 			//Clear fx-queue except 1 dummy function
 			//for promise not to be expired when calling stop()
-			$.queue(this, type || "fx", [$.noop]);
+			$.queue(this, type, [$.noop]);
 			stopFn.call($(this));
 
 			//Remember current animation property
@@ -255,7 +255,7 @@ eg.module("pauseResume", ["jQuery"], function($) {
 
 			//Clear fx-queue,
 			//And this queue will be initialized by animate call.
-			$.queue(this, type || "fx", []);
+			$.queue(this, type, []);
 
 			// Restore __aniProps
 			i = 0;
