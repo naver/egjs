@@ -463,19 +463,36 @@ QUnit.test("adaptiveHeight", function(assert) {
 		adaptiveHeight: true
 	});
 
-	// Then
-	for (var i = 0; i < inst._conf.panel.count-1; i++) {
-		var panelHeight = inst.getElement().outerHeight(true);
-		assert.ok(panelHeight === inst.$container.height(), "Should update container's height according to each panel's height");
-		inst.next(0);
-		assert.ok(panelHeight === Number(inst.getPrevElement().children(':first').attr('data-height')), "Should cache each panel's height to first element");
-	}
+	var runTest = function() {
+		for (var i = 0; i < inst._conf.panel.count - 1; i++) {
+			var panelHeight = inst.getElement().outerHeight(true);
+			assert.ok(panelHeight === inst.$container.height(), "Should update container's height according to each panel's height");
 
-	// When
-	inst.moveTo(0,0);
+			// When
+			inst.next(0);
+
+			// Then
+			assert.ok(panelHeight === Number(inst.getPrevElement().children(':first').attr('data-height')), "Should cache each panel's height to first element");
+		}
+
+		// When
+		inst.moveTo(0, 0);
+
+		// Then
+		assert.ok(inst.$container.height() === Number(inst.getElement().children(':first').attr('data-height')), "The container's height should be updated");
+	};
 
 	// Then
-	assert.ok(inst.$container.height() === Number(inst.getElement().children(':first').attr('data-height')), "The container's height should be updated");
+	runTest();
+
+	// When - simulate rotate case
+	inst.$wrapper.attr("style", "font-size:52px");
+
+	// Then
+	inst.resize();
+	runTest();
+
+	inst.$wrapper.attr("style", null);
 });
 
 QUnit.test("thresholdAngle", function(assert) {

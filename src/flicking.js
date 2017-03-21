@@ -83,6 +83,9 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 	var IS_ANDROID2 = ns.agent().os;
 	IS_ANDROID2 = IS_ANDROID2.name === "android" && /^2\./.test(IS_ANDROID2.version);
 
+	// data-height attribute's name for adaptiveHeight option
+	var DATA_HEIGHT = "data-height";
+
 	ns.Flicking = ns.Class.extend(ns.Component, {
 		_events: function() {
 			return EVENTS;
@@ -787,8 +790,6 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var $first;
 			var $children;
 			var height;
-			var dataName = "data-height";
-
 			var conf = this._conf;
 			var indexToMove = conf.indexToMove;
 
@@ -806,14 +807,14 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				);
 
 			$first = $panel.find(":first");
-			height = $first.attr(dataName);
+			height = $first.attr(DATA_HEIGHT);
 
 			if (!height) {
 				$children = $panel.children();
 				height = ($children.length > 1 ? $panel.css("height", "auto") : $first)
 					.outerHeight(true);
 
-				$first.attr(dataName, height);
+				$first.attr(DATA_HEIGHT, height);
 			}
 
 			this.$wrapper.height(height);
@@ -1433,6 +1434,14 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			// resize elements
 			horizontal && this.$container.width(maxCoords[0] + panelSize);
 			panel.$list.css(horizontal ? "width" : "height", panelSize);
+
+			// remove data-height attribute and re-evaluate panel's height
+			if (options.adaptiveHeight) {
+				var $panel = this.$container.find("[" + DATA_HEIGHT + "]");
+
+				$panel.size() && $panel.attr(DATA_HEIGHT, null) &&
+					this._setAdaptiveHeight();
+			}
 
 			this._mcInst.options.max = maxCoords;
 			this._setMovableCoord("setTo", [panelSize * panel.index, 0], true, 0);
