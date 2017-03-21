@@ -189,7 +189,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 					origCount: 0,		// total count of given original panels
 					changed: false,		// if panel changed
 					animating: false,	// current animating status boolean
-					minCount: padding[0] + padding[1] > 0 ? 5 : 3  // minimum panel count
+					minCount: padding[0] + padding[1] > 0 ? 5 : 3,  // minimum panel count
+					dataHeight: "data-height"   // data-height attribute's name for adaptiveHeight option
 				},
 				touch: {
 					holdPos: [0, 0],	// hold x,y coordinate
@@ -1433,6 +1434,14 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			// resize elements
 			horizontal && this.$container.width(maxCoords[0] + panelSize);
 			panel.$list.css(horizontal ? "width" : "height", panelSize);
+
+			// remove data-height attribute and re-evaluate panel's height
+			if (options.adaptiveHeight) {
+				var $panel = this.$container.find("[" + panel.dataHeight + "]");
+
+				$panel.size() && $panel.attr(panel.dataHeight, null) &&
+					this._setAdaptiveHeight();
+			}
 
 			this._mcInst.options.max = maxCoords;
 			this._setMovableCoord("setTo", [panelSize * panel.index, 0], true, 0);
