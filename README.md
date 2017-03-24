@@ -127,7 +127,7 @@ The following table shows browsers supported by egjs.
 egjs has the dependencies for the following libraries:
 
 |[jQuery](https://jquery.com/) (required)|[Hammer.JS](http://hammerjs.github.io/)|
-|---|---|---|
+|---|---|
 |1.7.0+ |2.0.4+|
 
 > Except jQuery, library dependencies may vary depending on modules. For more information, see API documentation.
