@@ -629,8 +629,12 @@ QUnit.test("check getBottomElement method (same position)", function(assert) {
 	this.inst = new eg.InfiniteGrid("#grid", {
 		"count" : 18
 	}).on("layoutComplete", function(e) {
-		assert.equal(self.inst.getBottomElement().style.left, "500px");
-		assert.equal(self.inst.getTopElement().style.left, "0px");
+		var bottomStyle = self.inst.getBottomElement().style;
+		var topStyle = self.inst.getTopElement().style;
+		assert.equal(bottomStyle.left, "500px");
+		assert.notEqual(bottomStyle.top, "0px");
+		assert.equal(topStyle.left, "0px");
+		assert.equal(topStyle.top, "0px");
 		done();
 	});
 });
