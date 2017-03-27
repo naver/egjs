@@ -434,7 +434,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 			var item = null;
 			var max = -Infinity;
 			var pos;
-			$.each(this._getColItems(false), function(i, v) {
+			$.each(this._getColItems(true), function(i, v) {
 				pos = v ? v.position.y + v.size.height : 0;
 				if (pos >= max) {
 					max = pos;
