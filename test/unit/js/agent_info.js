@@ -1039,6 +1039,70 @@ var ua = [
 		"isHWAccelerable" : false,
 		"isTransitional" : false,
 		"_hasClickBug" : false
+	},
+	{
+		// Windows NT && Opera 15
+		"device" : "Windows NT && Opera 15",
+		"ua" : "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.95 Safari/537.36 OPR/15.0.1147.153",
+		"browser" : {
+			"name" : "opera",
+			"version" : "15.0.1147.153"
+		},
+		"os" : {
+			"name" : "window",
+			"version" : "6.2"
+		},
+		"isHWAccelerable" : false,
+		"isTransitional" : false,
+		"_hasClickBug" : false
+	},
+	{
+		// Windows NT && Opera 9
+		"device" : "Windows NT && Opera 9.8",
+		"ua" : "Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.16",
+		"browser" : {
+			"name" : "opera",
+			"version" : "9.80"
+		},
+		"os" : {
+			"name" : "window",
+			"version" : "6.1"
+		},
+		"isHWAccelerable" : false,
+		"isTransitional" : false,
+		"_hasClickBug" : false
+	},
+	{
+		// Android 4.0 && Opera 19
+		"device" : "Android 4.0 && Opera 19",
+		"ua" : "Mozilla/5.0 (Linux; Android 4.0.4; LT15i Build/4.1.B.0.587) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.72 Mobile Safari/537.36 OPR/19.0.1340.69721",
+		"browser" : {
+			"name" : "opera",
+			"version" : "19.0.1340.69721"
+		},
+		"os" : {
+			"name" : "android",
+			"version" : "4.0.4"
+		},
+		"isHWAccelerable" : false,
+		"isTransitional" : false,
+		"_hasClickBug" : false
+	},
+	{
+		// Android && Opera Mini
+		"device": "Android && Opera Mini",
+		"ua": "Opera/9.80 (Android; Opera Mini/7.5.31657/34.926; U; fa) Presto/2.8.119 Version/11.1010",
+		"browser": {
+			"name": "opera mini",
+			"version": "7.5.31657/34.926"
+		},
+		"os": {
+			"name": "android",
+			"version": "-1"
+		},
+		"isHWAccelerable": false,
+		"isTransitional": false,
+		"_hasClickBug": false
 	}
 ];
 
