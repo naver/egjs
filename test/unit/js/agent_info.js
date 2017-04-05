@@ -1087,6 +1087,22 @@ var ua = [
 		"isHWAccelerable" : false,
 		"isTransitional" : false,
 		"_hasClickBug" : false
+	},
+	{
+		// Android && Opera Mini
+		"device": "Android && Opera Mini",
+		"ua": "Opera/9.80 (Android; Opera Mini/7.5.31657/34.926; U; fa) Presto/2.8.119 Version/11.1010",
+		"browser": {
+			"name": "opera mini",
+			"version": "7.5.31657/34.926"
+		},
+		"os": {
+			"name": "android",
+			"version": "-1"
+		},
+		"isHWAccelerable": false,
+		"isTransitional": false,
+		"_hasClickBug": false
 	}
 ];
 

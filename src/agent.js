@@ -19,6 +19,10 @@ eg.module("agent", [eg], function(ns) {
 			criteria: "PhantomJS",
 			identity: "PhantomJS"
 		}, {
+			criteria: /Opera Mini/,
+			identity: "Opera mini",
+			versionSearch: "Opera Mini"
+		}, {
 			criteria: /Opera|OPR/,
 			identity: "Opera",
 			versionSearch: "Opera|OPR"
