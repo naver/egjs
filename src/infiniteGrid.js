@@ -177,7 +177,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		_refreshViewport: function() {
 			var el = this.$view.get(0);
 			if (el) {
-				this._clientHeight = $.isWindow(el) ? el.innerHeight : el.clientHeight;
+				this._clientHeight = $.isWindow(el) ? el.innerHeight || document.documentElement.clientHeight : el.clientHeight;
 			}
 		},
 		/**
