@@ -118,6 +118,11 @@ eg.module("persist", ["jQuery", eg, window, document], function($, ns, global, d
 			return {};
 		}
 
+		// the storage is clean
+		if (stateStr === null) {
+			return {};
+		}
+
 		// "null" is not a valid
 		var isValidStateStr = typeof stateStr === "string" &&
 									stateStr.length > 0 && stateStr !== "null";
