@@ -937,7 +937,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				panel.changed && this._triggerEvent(EVENTS.flickEnd);
 			}
 
-			!(phase === "start" && pos === undefined) && this._adjustContainerCss(phase);
+			this._adjustContainerCss(phase);
 		},
 
 		/**
