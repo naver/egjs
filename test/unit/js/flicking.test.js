@@ -1931,44 +1931,6 @@ QUnit.test("Workaround for buggy link highlighting on android 2.x", function(ass
 	assert.ok(leftValue && parseInt(leftValue, 10) > 0, "Panel should be moved using left property instead of translate.");
 });
 
-QUnit.test("Android 2.x panel move by API", function(assert) {
-	var done = assert.async();
-
-	// Given
-	eg.hook.agent = function () {
-		return {
-			// GalaxyS:2.3.4
-			"device": "GalaxyS:2.3.4",
-			"ua": "Mozilla/5.0 (Linux;U;Android 2.3.4;ko-kr;SHW-M110S Build/GINGERBREAD)AppleWebKit/533.1(KHTML, like Gecko) Version/4.0 Mobile Safari/533.1",
-			"os": {
-				"name": "android",
-				"version": "2.3.4"
-			},
-			"browser": {
-				"name": "default",
-				"version": "-1"
-			},
-			"isHWAccelerable": false,
-			"isTransitional": false,
-			"_hasClickBug": false
-		};
-	};
-	eg.invoke("flicking",[null, eg]);
-
-	// When
-	var inst = this.create("#mflick1");
-	var $container = inst.$container;
-
-	inst.next(300);
-
-	assert.equal($container.css("left"), "0px", "During the panel move, container's left should be 0px.");
-
-	setTimeout(function() {
-		assert.notEqual($container.css("left"), "0px", "After panel move container's left shouldn't be 0px.");
-		done();
-	}, 500);
-});
-
 QUnit.test("Check public methods return", function (assert) {
 	var inst = this.create("#mflick1", { circular: true });
 	var instances = [
