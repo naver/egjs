@@ -747,7 +747,7 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 
 			panel.animating = true;
 
-			if (!customEvent.restoreCall && e.hammerEvent &&
+			if (!customEvent.restoreCall &&
 				this._setPhaseValue("start", {
 					depaPos: e.depaPos,
 					destPos: e.destPos
