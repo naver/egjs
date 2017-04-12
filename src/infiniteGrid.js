@@ -408,7 +408,7 @@ eg.module("infiniteGrid", ["jQuery", eg, window, document], function($, ns, glob
 		_getTopItem: function() {
 			var item = null;
 			var min = Infinity;
-			$.each(this.items, function(i, v) {
+			$.each(this._getColItems(false), function(i, v) {
 				if (v && v.position.y < min) {
 					min = v.position.y;
 					item = v;
