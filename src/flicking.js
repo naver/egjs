@@ -1053,17 +1053,23 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 		 */
 		_isMovable: function () {
 			var options = this.options;
+			var conf = this._conf;
 			var mcInst = this._mcInst;
+			var panel = conf.panel;
 			var isMovable = Math.abs(this._conf.touch.distance) >= options.threshold;
 			var max;
 			var currPos;
+			var touchDirection;
 
 			if (!options.circular && isMovable) {
+				touchDirection = conf.touch.direction;
 				max = this._getDataByDirection(mcInst.options.max)[0];
 				currPos = this._getDataByDirection(mcInst.get())[0];
 
 				// if current position out of range
-				if (currPos < 0 || currPos > max) {
+				if (( panel.currNo === 0 && touchDirection === conf.dirData[1] ||  // first panel
+					  panel.count - 1 === panel.currNo && touchDirection === conf.dirData[0]  // last panel
+					) && (currPos < 0 || currPos > max)) {
 					return false;
 				}
 			}
