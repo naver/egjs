@@ -1,6 +1,6 @@
 # Site settings
 title: egjs
-latestVersion: 1.4.1
+latestVersion: 1.5.0
 # Build settings
 safe: true
 markdown: kramdown
