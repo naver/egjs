@@ -4,8 +4,6 @@ sample/
 .DS_Store
 report/
 temp/
-doc/
-dist/
 .idea/
 _site/
 *.log
