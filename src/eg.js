@@ -45,7 +45,7 @@ eg.module("eg", ["jQuery", eg, window, eg.Agent], function($, ns, global, Agent)
 	* @return {String} agent.browser Browser information <ko>브라우저 정보</ko>
 	* @return {String} agent.browser.name Browser name (default, safari, chrome, sbrowser, ie, firefox) <ko>브라우저 이름 (default, safari, chrome, sbrowser, ie, firefox)</ko>
 	* @return {String} agent.browser.version Browser version <ko>브라우저 버전 </ko>
-	* @return {String} agent.browser.webview Indicates whether a WebView browser is available<ko>웹뷰 브라우저 여부</ko>
+	* @return {Boolean} agent.browser.webview Indicates whether a WebView browser is available<ko>웹뷰 브라우저 여부</ko>
 	* @example
 eg.agent();
 // {
@@ -55,8 +55,8 @@ eg.agent();
 //     },
 //     browser : {
 //          name : "safari",
-//          version : "8.2"
-//          nativeVersion : "-1"
+//          version : "8.2",
+			webview : true
 //     }
 // }
 eg.hook.agent = function(agent) {
