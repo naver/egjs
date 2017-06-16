@@ -1067,8 +1067,8 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 				currPos = this._getDataByDirection(mcInst.get())[0];
 
 				// if current position out of range
-				if (( panel.currNo === 0 && touchDirection === conf.dirData[1] ||  // first panel
-					  panel.count - 1 === panel.currNo && touchDirection === conf.dirData[0]  // last panel
+				if ((panel.currNo === 0 && touchDirection === conf.dirData[1] ||  // first panel
+						panel.count - 1 === panel.currNo && touchDirection === conf.dirData[0]  // last panel
 					) && (currPos < 0 || currPos > max)) {
 					return false;
 				}
