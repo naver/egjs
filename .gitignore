@@ -11,4 +11,4 @@ _site/
 *.log
 *.iml
 browserstack-run.pid
-config/browertstack.config.json
+config/

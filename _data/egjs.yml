@@ -1,0 +1,21 @@
+component: MovableCoord
+home: //naver.github.io/egjs
+desc: A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system.
+download:
+  development: movablecoord.pkgd.js
+  production: movablecoord.pkgd.min.js
+GA: UA-70842526-16
+github:
+  user: naver
+  repo: egjs-movablecoord 
+js:
+- release/latest/dist/movablecoord.pkgd.min.js
+- assets/js/car360viewer.js
+- assets/js/cardinhand.js
+- assets/js/cube.js
+- assets/js/cover.js
+css:
+- assets/css/car360viewer.css
+- assets/css/cardinhand.css
+- assets/css/cube.css
+- assets/css/cover.css

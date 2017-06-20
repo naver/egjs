@@ -13,4 +13,4 @@ jsdoc.json
 .jscsrc
 .jshintrc
 .editorconfig
-*.yml
+_site
