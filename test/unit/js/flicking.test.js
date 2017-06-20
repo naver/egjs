@@ -1188,6 +1188,12 @@ QUnit.test("When change padding option", function(assert) {
 
 	// Then
 	runTest([20,30], true);
+
+	// When
+	setCondition([0,20]);
+
+	// Then
+	runTest([0,20], true);
 	inst.destroy();
 
 	// Given
