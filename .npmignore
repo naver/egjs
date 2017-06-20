@@ -14,3 +14,5 @@ jsdoc.json
 .jshintrc
 .editorconfig
 _site
+.npmignore
+package.json
