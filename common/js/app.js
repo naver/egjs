@@ -97,7 +97,7 @@ jQuery(document).ready(function($) {
                     js_pre_processor   : "babel",
                     html_classes       : "loading",
                     css_external       : "",
-                    js_external        : "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js;" + LIBLINK
+                    js_external        : "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js;" + window.LIBLINK.join(";")
                 };
                 $el.prepend('<form class="codepenform" action="https://codepen.io/pen/define" method="POST" target="_blank">' + 
                     '<input type="hidden" name="data" value=\'' + JSON.stringify(data).replace(/"/g, "&quot;").replace(/'/g, "&apos;") + '\'>' + 

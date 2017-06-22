@@ -16,3 +16,4 @@ jsdoc.json
 _site
 .npmignore
 release
+_data/version.yml

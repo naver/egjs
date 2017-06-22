@@ -12,3 +12,4 @@ _site/
 *.iml
 browserstack-run.pid
 config/
+_data/version.yml

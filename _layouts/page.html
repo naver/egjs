@@ -4,6 +4,16 @@
 {% for css in site.data.egjs.css %}
 	<link rel="stylesheet" href="{{ css }}">
 {% endfor %}
+{% for dist in site.data.egjs.dist %}
+	<script src="{{ dist }}"></script>
+{% endfor %}
+<script>
+	window.LIBLINK = [];
+	{% for dist in site.data.egjs.dist %}
+	window.LIBLINK.push(window.location.href.replace("/index.html", "/")
+            .replace("/gallery.html", "/") + "{{ dist }}");
+	{% endfor %}
+</script>
 <body>
 {% include facebook.html %}
 {% include header.html %}
@@ -28,10 +38,6 @@
 		</div>
 	</section>
 </div>
-<script>
-var LIBLINK = window.location.href.replace("/index.html", "/")
-            .replace("/galary.html", "/") + "release/latest/dist/{{ site.data.egjs.download.production }}";
-</script>
 {% include footer.html %}
 {% for js in site.data.egjs.js %}
 	<script src="{{ js }}"></script>

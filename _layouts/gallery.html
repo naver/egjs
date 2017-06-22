@@ -4,6 +4,16 @@
 {% for css in site.data.egjs.css %}
 	<link rel="stylesheet" href="{{ css }}">
 {% endfor %}
+{% for dist in site.data.egjs.dist %}
+	<script src="{{ dist }}"></script>
+{% endfor %}
+<script>
+	window.LIBLINK = [];
+	{% for dist in site.data.egjs.dist %}
+	window.LIBLINK.push(window.location.href.replace("/index.html", "/")
+            .replace("/gallery.html", "/") + "{{ dist }}");
+	{% endfor %}
+</script>
 <body>
 <link rel="stylesheet" href="./common/css/gallery.css">
 <div>
@@ -16,10 +26,7 @@
 		</div>
 	</section>
 </div>
-<script>
-var LIBLINK = window.location.href.replace("/index.html", "/")
-            .replace("/gallery.html", "/") + "release/latest/dist/{{ site.data.egjs.download.production }}";
-</script>
+<script src="./common/js/jquery-2.2.4.js"></script>
 <script src="./common/js/jquery-2.2.4.js"></script>
 <script src="./common/js/bootstrap.min.js"></script>
 {% for js in site.data.egjs.js %}
