@@ -1,0 +1,32 @@
+@charset "UTF-8";
+.car_spot {
+  position:relative;
+  height:180px;
+  background:url(../image/car360/spot_bg.png) #343944 0 100% repeat-x;
+  background-size:1px 201px;
+  -webkit-background-size:1px 201px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+.car_rotate {
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:150px;
+  text-align:center;
+}
+.car_rotate .ratate_bg {
+  position:absolute;
+  bottom:15px;
+  left:50%;
+  margin-left:-152px;
+  width:304px;
+  height:50px;
+  background:url(../image/car360/bg_rotate.png) no-repeat;
+  background-size:304px 50px;
+  -webkit-background-size:304px 50px;
+  color:transparent;
+}
+
+

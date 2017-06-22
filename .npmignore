@@ -15,4 +15,4 @@ jsdoc.json
 .editorconfig
 _site
 .npmignore
-package.json
+release
