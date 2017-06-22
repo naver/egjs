@@ -93,6 +93,7 @@ pre code {
   color: #fff;
   position: fixed;
   width: 100%;
+  z-index: 999999;
 }
 .header .main-nav {
   height: 50px;
@@ -241,6 +242,10 @@ pre code {
 }
 .promo .meta li {
   margin-right: 15px;
+}
+
+.container.text-center {
+  padding: 0px 30px;
 }
 /*.promo .meta a {
   color: #0a7396;
@@ -411,6 +416,9 @@ pre code {
 
 /* Extra small devices (phones, less than 768px) */
 @media (max-width: 767px) {
+  .docs .docs-inner {
+    padding: 15px;
+  }
   .header .main-nav button {
     margin-right: 0;
   }
