@@ -37,7 +37,6 @@ jQuery(document).ready(function($) {
     $("#docs .highlight").each(function() {
         var $el = $(this);
         var $htmlEl = $el.parent().prev();
-
         if ($htmlEl.length && $htmlEl.attr("codepen")) {
             var codepen = $htmlEl.attr("codepen");
             var cssPath = "assets/css/" + codepen + ".css";
@@ -45,12 +44,11 @@ jQuery(document).ready(function($) {
             var htmlPath = "assets/html/" + codepen + ".html";
 
             var $title = $htmlEl.prev();
-            if ($title.get(0).tagName === "H3") {
+            if (/^H/.test($title.get(0).tagName)) {
                 $title.wrap(function() {
                     return "<a class='page-scroll' href='#" + this.id + "'></div>";
                 });
             }
-
             $.when(
                 $.ajax({
                     url: htmlPath,
@@ -77,11 +75,11 @@ jQuery(document).ready(function($) {
                         return getDomainUrl() + url;
                     });
 
-                // for design
-                $htmlEl.css({
-                    "margin-bottom": "20px",
-                    "border-radius": "4px",
-                });
+                // // for design
+                // $htmlEl.css({
+                //     "margin-bottom": "20px",
+                //     "border-radius": "4px",
+                // });
                                 
                 var data = {
                     title              : $htmlEl.prev().text(),

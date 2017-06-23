@@ -529,6 +529,11 @@ h3 {
   margin-bottom: 20px;
 }
 
+h4 {
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
 .docs-inner a:hover h3 {
   text-decoration: none;
   color: #eebf3f;
