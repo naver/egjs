@@ -1,5 +1,5 @@
 ### Browser support
-IE 10+, latest of Chrome/FF/Safari, iOS 7+ and Android 2.3+ (except 3.x)
+IE 9+, latest of Chrome/FF/Safari, iOS 7+ and Android 2.3+ (except 3.x)
 
 ### Quick steps to use:
 
@@ -7,7 +7,7 @@ IE 10+, latest of Chrome/FF/Safari, iOS 7+ and Android 2.3+ (except 3.x)
 #### Set up your HTML
 
 ``` html
-<div id="area">
+<div>
 ```
 
 #### Load files or import library
@@ -22,23 +22,15 @@ IE 10+, latest of Chrome/FF/Safari, iOS 7+ and Android 2.3+ (except 3.x)
 
 ##### ES6+
 ```js
-import MovableCoord from "@egjs/movablecoord";
+import <%= ComponentName %> from "@egjs/<%= componentname %>";
 ```
 
 ### Initialize
 
 #### ES5
 ```javascript
-// create eg.MovableCoord with option
-var instance = new eg.MovableCoord("#area", {
-  max : [300, 400]
-}).bind(el);
 ```
 
 #### ES6+
 ```js
-// create MovableCoord with option
-const instance = new MovableCoord("#area", {
-  max : [300, 400]
-}).bind(el);
 ```
