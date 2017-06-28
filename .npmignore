@@ -2,7 +2,6 @@ bower_components/
 node_modules/
 .idea/
 .github/
-assets/
 config/
 report/
 tc/
