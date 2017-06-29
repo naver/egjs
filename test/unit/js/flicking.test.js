@@ -1217,6 +1217,19 @@ QUnit.test("When change padding option", function(assert) {
 	runTest([10,20]);
 });
 
+QUnit.test("Calling .resize() during panel moves", function(assert) {
+	// Given
+	var inst = this.create("#mflick1", {
+		circular: true
+	});
+
+	// When
+	inst.next();
+
+	inst.resize();
+	assert.ok(true, "Error should not been thrown?");
+});
+
 
 QUnit.module("restore() method", hooks);
 QUnit.test("Check for basic functionality", function(assert) {
