@@ -1402,33 +1402,36 @@ eg.module("flicking", ["jQuery", eg, window, document, eg.MovableCoord], functio
 			var panelSize;
 			var maxCoords;
 
-			if (~~options.previewPadding.join("")) {
-				this._setPadding(options.previewPadding.concat());
-				panelSize = panel.size;
-			} else if (horizontal) {
-				panelSize = panel.size = this.$wrapper.width();
-			}
+			// resize when panel is not animating
+			if (!this.isPlaying()) {
+				if (~~options.previewPadding.join("")) {
+					this._setPadding(options.previewPadding.concat());
+					panelSize = panel.size;
+				} else if (horizontal) {
+					panelSize = panel.size = this.$wrapper.width();
+				}
 
-			maxCoords = this._getDataByDirection([panelSize * (panel.count - 1), 0]);
+				maxCoords = this._getDataByDirection([panelSize * (panel.count - 1), 0]);
 
-			// resize elements
-			horizontal && this.$container.width(maxCoords[0] + panelSize);
-			panel.$list.css(horizontal ? "width" : "height", panelSize);
+				// resize elements
+				horizontal && this.$container.width(maxCoords[0] + panelSize);
+				panel.$list.css(horizontal ? "width" : "height", panelSize);
 
-			// remove data-height attribute and re-evaluate panel's height
-			if (options.adaptiveHeight) {
-				var $panel = this.$container.find("[" + DATA_HEIGHT + "]");
+				// remove data-height attribute and re-evaluate panel's height
+				if (options.adaptiveHeight) {
+					var $panel = this.$container.find("[" + DATA_HEIGHT + "]");
 
-				$panel.size() && $panel.attr(DATA_HEIGHT, null) &&
-					this._setAdaptiveHeight();
-			}
+					$panel.size() && $panel.attr(DATA_HEIGHT, null) &&
+						this._setAdaptiveHeight();
+				}
 
-			this._mcInst.options.max = maxCoords;
-			this._setMovableCoord("setTo", [panelSize * panel.index, 0], true, 0);
+				this._mcInst.options.max = maxCoords;
+				this._setMovableCoord("setTo", [panelSize * panel.index, 0], true, 0);
 
-			if (IS_ANDROID2) {
-				this._applyPanelsPos();
-				this._adjustContainerCss("end");
+				if (IS_ANDROID2) {
+					this._applyPanelsPos();
+					this._adjustContainerCss("end");
+				}
 			}
 
 			return this;
