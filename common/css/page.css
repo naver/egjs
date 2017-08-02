@@ -296,6 +296,9 @@ pre code {
   background-clip: padding-box;
   margin: 0 auto;
 }
+.docs .docs-inner a {
+   color:#337ab7; 
+}
 .docs .block {
   margin-bottom: 60px;
 }
