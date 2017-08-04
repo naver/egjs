@@ -1,7 +1,6 @@
 # egjs
-[![Build Status](https://travis-ci.org/naver/egjs.svg?branch=master)](https://travis-ci.org/naver/egjs) [![Test coverage](https://codeclimate.com/github/naver/egjs/badges/coverage.svg)](https://codeclimate.com/github/naver/egjs/coverage)
 
-egjs는 jQuery를 기반으로 하는 JavaScript 라이브러리로, UI 인터랙션, 이펙트, 유틸리티로 구성된 통합 라이브러리다. egjs로 다양한 환경을 지원하는 빠른 웹 어플리케이션을 쉽게 개발할 수 있다.
+egjs는 UI 인터랙션, 이펙트, 유틸리티로 구성된 통합 라이브러리다. egjs로 다양한 환경을 지원하는 빠른 웹 어플리케이션을 쉽게 개발할 수 있다.
 
 * egjs 사용 예: http://codepen.io/egjs
 * API 문서
