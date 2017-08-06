@@ -9,7 +9,7 @@
     "type": "git"
   },
   "scripts": {
-    "build": "rm -rf node_modules/@egjs && npm i && node ./build.js"
+    "update": "rm -rf node_modules/@egjs && npm i && node ./update.js"
   },
   "author": "NAVER corp",
   "licenseurl": "https://naver.github.io/egjs/license.txt",
