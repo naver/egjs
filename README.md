@@ -1,7 +1,8 @@
 # [egjs](https://naver.github.io/egjs/)
 egjs is Javascript components group that brings easiest and fastest way to build a web application in your way.
+<img src="https://naver.github.io/egjs/assets/img/logotype1_black.svg" width="200px">
 
-Officail homepage: https://naver.github.io/egjs/
+Official website: https://naver.github.io/egjs/
 
 * [egjs-agent](https://github.com/naver/egjs-agent)
 * [egjs-axes](https://github.com/naver/egjs-axes)
