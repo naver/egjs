@@ -4,16 +4,21 @@ egjs is Javascript components group that brings easiest and fastest way to build
 
 Official website: https://naver.github.io/egjs/
 
-* [egjs-agent](https://github.com/naver/egjs-agent)
-* [egjs-axes](https://github.com/naver/egjs-axes)
-* [egjs-component](https://github.com/naver/egjs-component)
-* [egjs-flicking](https://github.com/naver/egjs-flicking)
-* [egjs-infinitegrid](https://github.com/naver/egjs-infinitegrid)
-* [egjs-persist](https://github.com/naver/egjs-persist)
-* [egjs-rotate](https://github.com/naver/egjs-rotate)
-* [egjs-visible](https://github.com/naver/egjs-visible)
-* [egjs-jquery-pauseresume](https://github.com/naver/egjs-jquery-pauseresume)
-* [egjs-jquery-transform](https://github.com/naver/egjs-jquery-transform)
+* [egjs-agent](https://github.com/naver/egjs-agent) [[website](https://naver.github.io/egjs-agent/)]
+* [egjs-axes](https://github.com/naver/egjs-axes) [[website](https://naver.github.io/egjs-axes/)]
+* [egjs-component](https://github.com/naver/egjs-component) [[website](https://naver.github.io/egjs-component/)]
+* [egjs-flicking](https://github.com/naver/egjs-flicking) [[website](https://naver.github.io/egjs-flicking/)]
+* [egjs-infinitegrid](https://github.com/naver/egjs-infinitegrid) [[website](https://naver.github.io/egjs-infinitegrid/)]
+* [egjs-persist](https://github.com/naver/egjs-persist) [[website](https://naver.github.io/egjs-persist/)] 
+* [egjs-rotate](https://github.com/naver/egjs-rotate) [[website](https://naver.github.io/egjs-rotate/)] 
+* [egjs-visible](https://github.com/naver/egjs-visible) [[website](https://naver.github.io/egjs-visible/)] 
+* [egjs-jquery-pauseresume](https://github.com/naver/egjs-jquery-pauseresume) [[website](https://naver.github.io/egjs-jquery-pauseresume/)] 
+* [egjs-jquery-transform](https://github.com/naver/egjs-jquery-transform) [[website](https://naver.github.io/egjs-jquery-transform/)]
+
+
+If you have used egjs 1.x.x, refer to the following document.  
+[Migrating From egjs 1.x.x to egjs 2.0.0](https://github.com/naver/egjs/wiki/Migrating-From-egjs-1.x.x-to-egjs-2.0.0)
+
 
 ## Issue and PR registration
 Please file issues and pull requests to each Github repository.
