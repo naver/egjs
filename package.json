@@ -18,7 +18,10 @@
     "@egjs/agent": "^2.0.0",
     "@egjs/axes": "^2.0.0",
     "@egjs/component": "^2.0.0",
+    "@egjs/flicking": "^2.0.1",
     "@egjs/infinitegrid": "^2.0.0",
+    "@egjs/jquery-pauseresume": "^2.0.0",
+    "@egjs/jquery-transform": "^2.0.0",
     "@egjs/persist": "^2.0.0",
     "@egjs/rotate": "^2.0.0",
     "@egjs/visible": "^2.0.0"

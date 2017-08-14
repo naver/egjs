@@ -16,8 +16,8 @@ Official website: https://naver.github.io/egjs/
 * [egjs-jquery-transform](https://github.com/naver/egjs-jquery-transform) [[website](https://naver.github.io/egjs-jquery-transform/)]
 
 
-If you have used egjs 1.x.x, refer to the following document.  
-[Migrating From egjs 1.x.x to egjs 2.0.0](https://github.com/naver/egjs/wiki/Migrating-From-egjs-1.x.x-to-egjs-2.0.0)
+> If you have used egjs 1.x.x, refer to the following document.  
+> [Migrating From egjs 1.x.x to egjs 2.0.0](https://github.com/naver/egjs/wiki/Migrating-From-egjs-1.x.x-to-egjs-2.0.0)
 
 
 ## Issue and PR registration
