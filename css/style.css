@@ -24,6 +24,9 @@
     .download-links .h-link {
         display: block;
     }
+    a.h-link.ref-link {
+        color: rgba(43, 43, 43, .5);
+    }
     a.h-link.ref-link:hover {
         background: rgba(100,100,100,0.1);
     }
@@ -102,7 +105,7 @@
     text-transform: uppercase;
     letter-spacing: 0.2em;
     1margin-top: 34px;
-    margin-left: 15px;
+    margin-left: 20px;
     text-align: right;
     font-weight: 500;
     float: right;
@@ -257,7 +260,7 @@ footer #footerContent .right {
     padding-top: 10px;
 }
 
-.naver_opensource_logo {
-    height: 26px;
+.naver_opensource {
+    height: 27px;
     vertical-align: middle;
 }
