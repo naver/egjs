@@ -1,14 +1,2 @@
-node_modules/
-bower_components/
-sample/
 .DS_Store
-report/
-temp/
-doc/
-dist/
-.idea/
-_site/
-*.log
-*.iml
-browserstack-run.pid
-config/browertstack.config.json
+node_modules/
