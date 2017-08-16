@@ -18,7 +18,8 @@ Official website: https://naver.github.io/egjs/
 
 > If you have used egjs 1.x.x, refer to the following document.  
 > [Migrating From egjs 1.x.x to egjs 2.0.0](https://github.com/naver/egjs/wiki/Migrating-From-egjs-1.x.x-to-egjs-2.0.0)
-
+>
+> [egjs 1.5.0](https://github.com/naver/egjs/tree/1.5.0) no longer adds new features.
 
 ## Issue and PR registration
 Please file issues and pull requests to each Github repository.
