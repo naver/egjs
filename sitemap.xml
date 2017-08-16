@@ -5,7 +5,7 @@
       xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 <url>
-  <loc>https://naver.github.io/egjs/</loc>
+  <loc>https://naver.github.io/egjs-axes/</loc>
   <priority>1.00</priority>
 </url>
 <url>
@@ -13,59 +13,49 @@
   <priority>0.90</priority>
 </url>
 <url>
-  <loc>https://naver.github.io/egjs/demo/eg/</loc>
+  <loc>https://naver.github.io/egjs-flicking/</loc>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://naver.github.io/egjs/demo/class/</loc>
+  <loc>https://naver.github.io/egjs-infinitegrid/</loc>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://naver.github.io/egjs/demo/component/</loc>
+  <loc>https://naver.github.io/egjs-visible/</loc>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://naver.github.io/egjs/demo/movableCoord/</loc>
+  <loc>https://naver.github.io/egjs-jquery-pauseresume/</loc>
   <priority>0.88</priority>
 </url>
 <url>
-  <loc>https://naver.github.io/egjs/demo/flicking/</loc>
+  <loc>https://naver.github.io/egjs-jquery-transform/</loc>
   <priority>0.88</priority>
 </url>
 
 <url>
-  <loc>https://naver.github.io/egjs/demo/visible/</loc>
+  <loc>https://naver.github.io/egjs-agent/</loc>
   <priority>0.88</priority>
 </url>
 <url>
-  <loc>https://naver.github.io/egjs/demo/infiniteGrid/</loc>
+  <loc>https://naver.github.io/egjs-rotate/</loc>
   <priority>0.88</priority>
 </url>
 
 <url>
-  <loc>https://naver.github.io/egjs/demo/persist/</loc>
+  <loc>https://naver.github.io/egjs-persist/</loc>
   <priority>0.88</priority>
 </url>
 <url>
-  <loc>https://naver.github.io/egjs/demo/cssPrefix/</loc>
+  <loc>https://naver.github.io/egjs-component/</loc>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://naver.github.io/egjs/demo/pauseResume/</loc>
-  <priority>0.88</priority>
+  <loc>https://naver.github.io/billboard.js/</loc>
+  <priority>0.7</priority>
 </url>
 <url>
-  <loc>https://naver.github.io/egjs/demo/transform/</loc>
+  <loc>https://github.com/naver/egjs/</loc>
   <priority>0.80</priority>
-</url>
-
-<url>
-  <loc>https://naver.github.io/egjs/demo/rotate/</loc>
-  <priority>0.88</priority>
-</url>
-
-<url>
-  <loc>https://naver.github.io/egjs/demo/scrollEnd/</loc>
-  <priority>0.88</priority>
 </url>
 </urlset>
