@@ -103,9 +103,8 @@
     #tools article .download-links {
     font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 0.2em;
-    1margin-top: 34px;
-    margin-left: 20px;
+    letter-spacing: 0.1em;
+    padding-left: 20px;
     text-align: right;
     font-weight: 500;
     float: right;
@@ -263,4 +262,7 @@ footer #footerContent .right {
 .naver_opensource {
     height: 27px;
     vertical-align: middle;
+}
+span.size {
+    opacity: .6;
 }
