@@ -4,22 +4,25 @@ egjs is Javascript components group that brings easiest and fastest way to build
 
 Official website: https://naver.github.io/egjs/
 
-* [egjs-agent](https://github.com/naver/egjs-agent) [[website](https://naver.github.io/egjs-agent/)]
-* [egjs-axes](https://github.com/naver/egjs-axes) [[website](https://naver.github.io/egjs-axes/)]
-* [egjs-component](https://github.com/naver/egjs-component) [[website](https://naver.github.io/egjs-component/)]
-* [egjs-flicking](https://github.com/naver/egjs-flicking) [[website](https://naver.github.io/egjs-flicking/)]
-* [egjs-infinitegrid](https://github.com/naver/egjs-infinitegrid) [[website](https://naver.github.io/egjs-infinitegrid/)]
-* [egjs-persist](https://github.com/naver/egjs-persist) [[website](https://naver.github.io/egjs-persist/)] 
-* [egjs-rotate](https://github.com/naver/egjs-rotate) [[website](https://naver.github.io/egjs-rotate/)] 
-* [egjs-visible](https://github.com/naver/egjs-visible) [[website](https://naver.github.io/egjs-visible/)] 
-* [egjs-jquery-pauseresume](https://github.com/naver/egjs-jquery-pauseresume) [[website](https://naver.github.io/egjs-jquery-pauseresume/)] 
-* [egjs-jquery-transform](https://github.com/naver/egjs-jquery-transform) [[website](https://naver.github.io/egjs-jquery-transform/)]
+* [egjs-agent](https://github.com/naver/egjs-agent) [[website](https://naver.github.io/egjs-agent/)] [[download](https://unpkg.com/@egjs/agent/dist/)]
+* [egjs-axes](https://github.com/naver/egjs-axes) [[website](https://naver.github.io/egjs-axes/)] [[download](https://unpkg.com/@egjs/axes/dist/)]
+* [egjs-component](https://github.com/naver/egjs-component) [[website](https://naver.github.io/egjs-component/)] [[download](https://unpkg.com/@egjs/component/dist/)]
+* [egjs-flicking](https://github.com/naver/egjs-flicking) [[website](https://naver.github.io/egjs-flicking/)] [[download](https://unpkg.com/@egjs/flicking/dist/)]
+* [egjs-infinitegrid](https://github.com/naver/egjs-infinitegrid) [[website](https://naver.github.io/egjs-infinitegrid/)] [[download](https://unpkg.com/@egjs/infinitegrid/dist/)]
+* [egjs-persist](https://github.com/naver/egjs-persist) [[website](https://naver.github.io/egjs-persist/)] [[download](https://unpkg.com/@egjs/persist/dist/)]
+* [egjs-rotate](https://github.com/naver/egjs-rotate) [[website](https://naver.github.io/egjs-rotate/)] [[download](https://unpkg.com/@egjs/rotate/dist/)]
+* [egjs-visible](https://github.com/naver/egjs-visible) [[website](https://naver.github.io/egjs-visible/)] [[download](https://unpkg.com/@egjs/jquery-pauseresume/dist/)]
+* [egjs-jquery-pauseresume](https://github.com/naver/egjs-jquery-pauseresume) [[website](https://naver.github.io/egjs-jquery-pauseresume/)] [[download](https://unpkg.com/@egjs/agent/dist/)]
+* [egjs-jquery-transform](https://github.com/naver/egjs-jquery-transform) [[website](https://naver.github.io/egjs-jquery-transform/)] [[download](https://unpkg.com/@egjs/jquery-transform/dist/)]
 
 
 > If you have used egjs 1.x.x, refer to the following document.  
 > [Migrating From egjs 1.x.x to egjs 2.0.0](https://github.com/naver/egjs/wiki/Migrating-From-egjs-1.x.x-to-egjs-2.0.0)
 >
 > [egjs 1.5.0](https://github.com/naver/egjs/tree/1.5.0) no longer adds new features.
+
+## Articles
+https://github.com/naver/egjs/wiki#articles
 
 ## Issue and PR registration
 Please file issues and pull requests to each Github repository.
