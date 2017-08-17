@@ -292,7 +292,7 @@ pre code {
   margin: 0 auto;
 }
 .docs .docs-inner a {
-   color:#337ab7; 
+/*  color:#337ab7; */
 }
 .docs .block {
   margin-bottom: 60px;
@@ -566,7 +566,7 @@ h4 {
 
 .docs-inner a:hover h3 {
   text-decoration: none;
-  color: #eebf3f;
+  color: #2b2b2b;
 }
 
 .demobox {
