@@ -266,3 +266,7 @@ footer #footerContent .right {
 span.size {
     opacity: .6;
 }
+header p {
+    margin: 0 auto;
+    max-width: 380px;
+}
