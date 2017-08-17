@@ -11,8 +11,8 @@ Official website: https://naver.github.io/egjs/
 * [egjs-infinitegrid](https://github.com/naver/egjs-infinitegrid) [[website](https://naver.github.io/egjs-infinitegrid/)] [[download](https://unpkg.com/@egjs/infinitegrid/dist/)]
 * [egjs-persist](https://github.com/naver/egjs-persist) [[website](https://naver.github.io/egjs-persist/)] [[download](https://unpkg.com/@egjs/persist/dist/)]
 * [egjs-rotate](https://github.com/naver/egjs-rotate) [[website](https://naver.github.io/egjs-rotate/)] [[download](https://unpkg.com/@egjs/rotate/dist/)]
-* [egjs-visible](https://github.com/naver/egjs-visible) [[website](https://naver.github.io/egjs-visible/)] [[download](https://unpkg.com/@egjs/jquery-pauseresume/dist/)]
-* [egjs-jquery-pauseresume](https://github.com/naver/egjs-jquery-pauseresume) [[website](https://naver.github.io/egjs-jquery-pauseresume/)] [[download](https://unpkg.com/@egjs/agent/dist/)]
+* [egjs-visible](https://github.com/naver/egjs-visible) [[website](https://naver.github.io/egjs-visible/)] [[download](https://unpkg.com/@egjs/visible/dist/)]
+* [egjs-jquery-pauseresume](https://github.com/naver/egjs-jquery-pauseresume) [[website](https://naver.github.io/egjs-jquery-pauseresume/)] [[download](https://unpkg.com/@egjs/jquery-pauseresume/dist/)]
 * [egjs-jquery-transform](https://github.com/naver/egjs-jquery-transform) [[website](https://naver.github.io/egjs-jquery-transform/)] [[download](https://unpkg.com/@egjs/jquery-transform/dist/)]
 
 
