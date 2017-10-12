@@ -65,7 +65,7 @@
         display: flex;
         flex-direction: column;
         width: 100%;
-    padding-bottom: 60px;
+        padding-bottom: 44px;
     }
 
     footer ul {
@@ -138,18 +138,34 @@
 }
 
 .cover-image {
+    position: relative;
     display: block;
     width: 100%;
     /* padding-top: 61.8%; */
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
-
-
+    background-color: #f3f3f3;
     background-image: url(./img/thumbnail_flicking.png);
     height: 234.24px;
 
 }
+
+.cover-image h2 {
+
+    font-family: 'Zilla Slab', serif;
+    font-size: 60px;
+    /* line-height: 100%; */
+    letter-spacing: -0.8px;
+    color: #2B2B2B;
+    position: absolute;
+    top: 50%;
+    margin: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+}
+
 
 #tools article h3 {
     clear: both;
@@ -158,7 +174,8 @@
 
 #tools article p {
 
-    margin-bottom: 35px;
+ 
+    margin-bottom: 18px;
     padding-top: 18px;
     /* margin-top: 210px; */
     clear: both;
@@ -205,7 +222,7 @@
 }
 
 footer {
-
+    
     clear: both;
     display: block;
     /* margin-top: 50px; */
@@ -213,36 +230,36 @@ footer {
     text-align: center;
     padding-top: 40px;
     border-top: 1px solid #DFDFDF;
-}
-footer #footerContent ul li {
-
+    }
+    footer #footerContent ul li {
+    
     display: inline-block;
     position: relative;
     list-style: none;
     line-height: 30px;
     vertical-align: middle;
-}
-footer #footerContent ul li:not(:first-child) {
+    }
+    footer #footerContent ul li:not(:first-child) {
     margin-left: 28px;
-}
-footer #footerContent ul li:not(:first-child):before {
+    }
+    footer #footerContent ul li:not(:first-child):before {
     position: absolute;
     left: -17px;
     top: 8px;
     height: 14px;
     border-left: 1px solid #aaa;
     content: "";
-}footer #footerContent ul li a {
+    }footer #footerContent ul li a {
     1color: #01ABF7;
-}footer #footerContent a {
+    }footer #footerContent a {
     color: #888;
-}a {
+    }a {
     text-decoration: none;
-}
-.octicon-mark-github:hover {
+    }
+    .octicon-mark-github:hover {
     fill: #444;
-}
-.octicon-mark-github {
+    }
+    .octicon-mark-github {
     /* position: absolute; */
     top: 37px;
     /* left: 50%; */
@@ -251,22 +268,110 @@ footer #footerContent ul li:not(:first-child):before {
     font-size: 24px;
     color: #c6cbd1;
     fill: #888;
-}svg:not(:root) {
+    }svg:not(:root) {
     overflow: hidden;
-}
-footer #footerContent .right {
+    }
+    footer #footerContent .right {
     text-align: right;
     padding-top: 10px;
-}
-
-.naver_opensource {
-    height: 40px;    
+    }
+    
+    .naver_opensource {
+    height: 30px;    
     vertical-align: middle;
-}
-span.size {
+    }
+    span.size {
     opacity: .6;
-}
-header p {
+    }
+    
+    header h1 {
+    font-family: 'Zilla Slab', serif;
+    font-weight: bold;
+    font-size: 92px;
+    margin: 30px 0;
+    }
+    header p {
     margin: 0 auto;
-    max-width: 380px;
-}
+    }
+    
+    .billboard_logo {
+    height: 21px;
+    vertical-align: middle;
+    }
+    .logo-image {
+    height: 100%;
+    background-position: center;
+    background-size: cover;
+    }
+    
+    .cover-image canvas {
+    1height: 100%;
+    margin: 0 !important;
+    }
+    
+    .header .logo {
+        background-repeat: no-repeat;
+        width: 80px;
+        height: 27px;
+        margin-top: 5px;
+        position: absolute;
+        left: 25px;
+    }
+    
+    .header .logo {
+        margin: 0;
+        font-size: 26px;
+        padding-top: 10px;
+    }
+    
+    .pull-left {
+        float: left!important;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Zilla Slab', serif;
+        font-weight: 700;
+        letter-spacing: -0.8px;
+        color: #2B2B2B;
+        font-weight: bold;
+        line-height: 1.1;
+    }
+    
+    .header {
+        position: relative;
+        width: 100%;
+        float: right;
+    }
+    .home {
+        -webkit-user-drag: none;
+        user-select: none;
+        height: 27px;
+    }
+    
+    span.version {
+        position: absolute;
+        font-size: 16px;
+        vertical-align: top;
+        line-height: 16px;
+        margin: 8px;
+        color: #2B2B2B;
+        font-weight: 500;
+        font-family: 'Open Sans', sans-serif;
+        text-decoration: underline;
+    }
+    
+    .github {
+        float: right;
+        text-decoration: none;   
+        box-sizing: content-box;
+        padding: 0 10px;
+        line-height: 24px;
+        display: inline-block;
+        color: #2B2B2B;
+    }
+    
+    @media (max-width: 520px) {
+        header h1 {
+            font-size: 64px;
+        }
+      }
