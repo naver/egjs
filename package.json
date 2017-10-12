@@ -1,12 +1,12 @@
 {
-  "name": "@egjs/common-demo",
-  "version": "1.0.3",
-  "description": "egjs demo boilerplate",
-  "homepage": "http://naver.github.io/egjs",
-  "repository": {
-    "url": "https://github.com/naver/egjs",
-    "type": "git"
-  },
-  "author": "NAVER corp",
-  "license": "MIT"
+    "name": "@egjs/common-demo",
+    "version": "1.0.3",
+    "description": "egjs demo boilerplate",
+    "homepage": "http://naver.github.io/egjs",
+    "repository": {
+      "url": "https://github.com/naver/egjs",
+      "type": "git"
+    },
+    "author": "NAVER corp",
+    "license": "MIT"
 }

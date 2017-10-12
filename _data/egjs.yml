@@ -6,8 +6,35 @@ dist:
 GA: <%= GA %>
 github:
   user: naver
-  repo: egjs-<%= componentname %> 
+  repo: egjs-<%= componentname %>
 js:
 - assets/js/demo.js
 css:
 - assets/css/demo.css
+# subComponents:
+# - name: PanoViewer
+#   desc: A panoramic media viewer for the mobile web
+#   hashtags:
+#     - photoSphere
+#     - 360
+#     - panorama
+#     - inside-out
+#     - motion-tracking
+#   distPath: release/latest/dist/PanoViewer/
+#   dists:
+#     - filename: view360.panoviewer.pkgd.js
+#       size: 162
+#     - filename: view360.panoviewer.pkgd.min.js
+#       size: 102
+#   examples:
+#     - name: ex1
+#       image:
+#       url:
+#   tools:
+#     - name: tool1
+#       image:
+#       url:
+#   projects:
+#     - name: project1
+#       image: 
+#       url:

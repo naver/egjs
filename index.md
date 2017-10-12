@@ -1,3 +1,3 @@
 ---
-layout: page
+layout: page # or main
 ---
