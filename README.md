@@ -29,7 +29,7 @@ https://github.com/naver/egjs/wiki#articles
 Please file issues and pull requests to each Github repository.
 
 ## License
-egjs is released under the [MIT license](http://naver.github.io/egjs/license.txt).
+egjs is released under the [MIT license](https://github.com/naver/egjs/blob/master/LICENSE.txt).
 
 ```
 Copyright (c) 2015 NAVER Corp.
