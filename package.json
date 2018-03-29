@@ -1,6 +1,6 @@
 {
   "name": "egjs",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "egjs is Javascript components group that brings easiest and fastest way to build a web application in your way.",
   "main": "index.js",
   "homepage": "http://naver.github.io/egjs",
@@ -15,16 +15,16 @@
   "licenseurl": "https://naver.github.io/egjs/license.txt",
   "license": "MIT",
   "dependencies": {
-    "@egjs/agent": "^2.0.0",
-    "@egjs/axes": "^2.0.0",
-    "@egjs/component": "^2.0.0",
-    "@egjs/flicking": "^2.0.1",
-    "@egjs/infinitegrid": "^2.0.0",
-    "@egjs/jquery-pauseresume": "^2.0.1",
-    "@egjs/jquery-transform": "^2.0.0",
-    "@egjs/persist": "^2.0.0",
-    "@egjs/rotate": "^2.0.0",
-    "@egjs/visible": "^2.0.0"
+    "@egjs/agent": "latest",
+    "@egjs/axes": "latest",
+    "@egjs/component": "latest",
+    "@egjs/flicking": "latest",
+    "@egjs/infinitegrid": "latest",
+    "@egjs/jquery-pauseresume": "latest",
+    "@egjs/jquery-transform": "latest",
+    "@egjs/persist": "latest",
+    "@egjs/rotate": "latest",
+    "@egjs/visible": "latest"
   },
   "devDependencies": {
     "fs-extra": "^4.0.1"
