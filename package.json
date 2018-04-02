@@ -1,6 +1,6 @@
 {
   "name": "egjs",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "egjs is Javascript components group that brings easiest and fastest way to build a web application in your way.",
   "main": "index.js",
   "homepage": "http://naver.github.io/egjs",
