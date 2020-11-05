@@ -13,6 +13,8 @@ Official website: https://naver.github.io/egjs/
 * [egjs-rotate](https://github.com/naver/egjs-rotate) [[website](https://naver.github.io/egjs-rotate/)] [[download](https://unpkg.com/@egjs/rotate/dist/)]
 * [egjs-view360](https://github.com/naver/egjs-view360) [[website](https://naver.github.io/egjs-view360/)] [[download](https://unpkg.com/@egjs/view360/dist/)]
 * [egjs-visible](https://github.com/naver/egjs-visible) [[website](https://naver.github.io/egjs-visible/)] [[download](https://unpkg.com/@egjs/visible/dist/)]
+* [egjs-list-differ](https://github.com/naver/egjs-list-differ) [[website](https://naver.github.io/egjs-list-differ/)] [[download](https://unpkg.com/@egjs/list-differ/dist/)]
+* [egjs-children-differ](https://github.com/naver/egjs-children-differ) [[website](https://naver.github.io/egjs-list-differ/)] [[download](https://unpkg.com/@egjs/children-differ/dist/)]
 * [egjs-jquery-pauseresume](https://github.com/naver/egjs-jquery-pauseresume) [[website](https://naver.github.io/egjs-jquery-pauseresume/)] [[download](https://unpkg.com/@egjs/jquery-pauseresume/dist/)]
 * [egjs-jquery-transform](https://github.com/naver/egjs-jquery-transform) [[website](https://naver.github.io/egjs-jquery-transform/)] [[download](https://unpkg.com/@egjs/jquery-transform/dist/)]
 
