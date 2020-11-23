@@ -12,6 +12,8 @@ Official website: https://naver.github.io/egjs/
 * [egjs-persist](https://github.com/naver/egjs-persist) [[website](https://naver.github.io/egjs-persist/)] [[download](https://unpkg.com/@egjs/persist/dist/)]
 * [egjs-rotate](https://github.com/naver/egjs-rotate) [[website](https://naver.github.io/egjs-rotate/)] [[download](https://unpkg.com/@egjs/rotate/dist/)]
 * [egjs-view360](https://github.com/naver/egjs-view360) [[website](https://naver.github.io/egjs-view360/)] [[download](https://unpkg.com/@egjs/view360/dist/)]
+* [egjs-view3d](https://github.com/naver/egjs-view3d) [[website](https://naver.github.io/egjs-view3d/)] [[download](https://unpkg.com/@egjs/view3d@latest/dist/)]
+* [egjs-view3d-editor](https://github.com/naver/egjs-view3d-editor) [[website](https://naver.github.io/egjs-view3d-editor/)]
 * [egjs-visible](https://github.com/naver/egjs-visible) [[website](https://naver.github.io/egjs-visible/)] [[download](https://unpkg.com/@egjs/visible/dist/)]
 * [egjs-list-differ](https://github.com/naver/egjs-list-differ) [[website](https://naver.github.io/egjs-list-differ/)] [[download](https://unpkg.com/@egjs/list-differ/dist/)]
 * [egjs-children-differ](https://github.com/naver/egjs-children-differ) [[download](https://unpkg.com/@egjs/children-differ/dist/)]
