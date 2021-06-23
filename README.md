@@ -1,5 +1,5 @@
-# <img src="https://naver.github.io/egjs/img/logotype1_black.svg" width="200px">
-egjs is Javascript components group that brings easiest and fastest way to build a web application in your way.  
+# <a href="https://naver.github.io/egjs/"><img src="https://naver.github.io/egjs/img/logotype1_black.svg" width="200px"></a>
+egjs is Javascript components group that brings easiest and fastest way to build a web application in your way.
 
 
 Official website: https://naver.github.io/egjs/
