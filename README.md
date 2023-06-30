@@ -12,16 +12,10 @@ Official website: https://naver.github.io/egjs/
 * [egjs-persist](https://github.com/naver/egjs-persist) [[website](https://naver.github.io/egjs-persist/)] [[download](https://unpkg.com/@egjs/persist/dist/)]
 * [egjs-view360](https://github.com/naver/egjs-view360) [[website](https://naver.github.io/egjs-view360/)] [[download](https://unpkg.com/@egjs/view360/dist/)]
 * [egjs-view3d](https://github.com/naver/egjs-view3d) [[website](https://naver.github.io/egjs-view3d/)] [[download](https://unpkg.com/@egjs/view3d@latest/dist/)]
-* [egjs-view3d-editor](https://github.com/naver/egjs-view3d-editor) [[website](https://naver.github.io/egjs-view3d-editor/)]
 * [egjs-grid](https://github.com/naver/egjs-grid) [[website](https://naver.github.io/egjs-grid/)] [[download](https://unpkg.com/@egjs/grid/dist/)]
 * [egjs-conveyer](https://github.com/naver/egjs-conveyer) [[website](https://naver.github.io/egjs-conveyer/)] [[download](https://unpkg.com/@egjs/conveyer/dist/)]
-* [egjs-list-differ](https://github.com/naver/egjs-list-differ) [[website](https://naver.github.io/egjs-list-differ/)] [[download](https://unpkg.com/@egjs/list-differ/dist/)]
-* [egjs-children-differ](https://github.com/naver/egjs-children-differ) [[download](https://unpkg.com/@egjs/children-differ/dist/)]
 * [egjs-imready](https://github.com/naver/egjs-imready) [[website](https://naver.github.io/egjs-imready/)] [[download](https://unpkg.com/@egjs/imready/dist/)]
-* [egjs-visible](https://github.com/naver/egjs-visible) [[website](https://naver.github.io/egjs-visible/)] [[download](https://unpkg.com/@egjs/visible/dist/)]
-* [egjs-rotate](https://github.com/naver/egjs-rotate) [[website](https://naver.github.io/egjs-rotate/)] [[download](https://unpkg.com/@egjs/rotate/dist/)]
-* [egjs-jquery-pauseresume](https://github.com/naver/egjs-jquery-pauseresume) [[website](https://naver.github.io/egjs-jquery-pauseresume/)] [[download](https://unpkg.com/@egjs/jquery-pauseresume/dist/)]
-* [egjs-jquery-transform](https://github.com/naver/egjs-jquery-transform) [[website](https://naver.github.io/egjs-jquery-transform/)] [[download](https://unpkg.com/@egjs/jquery-transform/dist/)]
+* [Cross Framework Components](https://github.com/naver/cfcs) [[website](https://naver.github.io/cfcs/)] [[download](https://unpkg.com/@cfcs/core/dist/)]
 
 
 > If you have used egjs 1.x.x, refer to the following document.  
